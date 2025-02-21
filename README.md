@@ -45,10 +45,33 @@ Before you begin, ensure you have met the following requirements:
     JWT_SECRET=your-jwt-secret
     ```
 
+    To generate a `JWT_SECRET` key, run the  commandfollowing:
+    ```sh
+    node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+    ```
+
+    You can then copy-paste the generated secret key into your .env file:
+    ```env
+    JWT_SECRET=<randomly-generated-secret-key>
+    ```
+
 5. Create the database in your MySQL client:
 
     ```sql
-    CREATE DATABASE rentalhub;
+    CREATE DATABASE IF NOT EXISTS rentalhub;
+    ```
+
+6. And run this in the sql query editor
+
+    ```sql
+    USE rentalhub;
+
+    CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) NOT NULL UNIQUE,
+        email VARCHAR(100) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL
+    );
     ```
 
 
@@ -65,7 +88,7 @@ Before you begin, ensure you have met the following requirements:
 3. Open your browser and navigate to:
 
     ```sh
-    http://localhost:8080
+    http://localhost:8000
     ```
 
 ## Project Structure
