@@ -1,0 +1,192 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(to right, #ffffff, #303d74);
+    margin: 0;
+}
+
+h2 {
+     color:  #1B2E3C;
+    font-weight: bold;
+    font-size: 1.8rem;
+}
+.container {
+    width: 350px;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    text-align: center;
+    height: 500px;
+}
+
+/* Input Group */
+.input-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+.input-group input {
+    width: 48%;
+}
+
+/* Input Fields */
+input {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    margin-top: 5px;
+    row-gap: 5px;
+    justify-content: space-between;
+    margin: 5px 5px;
+}
+
+p {
+    font-size: 0.9rem;
+}
+/* Button Styling */
+.btn {
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+    &:hover {
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+}
+
+.primary {
+    background: #1B2E3C;
+    color: white;
+    display: block;
+    margin: 25px auto;
+    width: 70%;
+    border-radius: 25px;
+    font-weight: bold;
+}
+
+
+.secondary {
+    font-weight: bold;
+    border: 2px solid #a30000;
+    color: #1B2E3C;
+    background: transparent;
+    display: block;
+    border-radius: 25px;
+    text-decoration: none;
+    width: 70%;
+    margin: 25px auto;
+    
+
+}
+
+.error-message {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.navbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #1B2E3C;
+}
+
+.rental {
+    color: #1B2E3C;  
+}
+
+.hub {
+    color: #a30000;
+}
+
+
+.error-message {
+    color: red;
+    font-size: 0.6rem;
+    margin-top: 0.5px;
+}
+
+
+/* RESPONSIVE SHIT */
+/*  Mobile (Up to 480px) */
+@media screen and (max-width: 480px) {
+    .container {
+        width: 90%;
+        height: auto;
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .navbar {
+        padding: 10px;
+    }
+}
+
+/*  Tablets (481px - 768px) */
+@media screen and (max-width: 768px) {
+    .container {
+        width: 80%;
+        height: auto;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    input {
+        width: 90%;
+    }
+
+    .btn {
+        width: 90%;
+    }
+}
+
+/* Small Laptops (769px - 1024px) */
+@media screen and (max-width: 1024px) {
+    .container {
+        width: 60%;
+    }
+}
+
+/*  Large Screens (1025px and up) */
+@media screen and (min-width: 1025px) {
+    .container {
+        width: 350px;
+    }
+}
