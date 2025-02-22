@@ -1,3 +1,4 @@
+const e = require("express")
 
 const loginButton = document.querySelector('#login-button')
 const emailField = document.querySelector('input[name="email"]')
@@ -46,8 +47,6 @@ async function signup(event) {
     const emailError = document.getElementById("email-error");
     const passwordError = document.getElementById("password-error");
 
-    // console.log('hello signup', firstName, lastName, contactNumber, email, password, confirmPassword)
-
     try {
         const response = await fetch("/api/auth/register", {
             method: "POST",
@@ -57,11 +56,32 @@ async function signup(event) {
                 last_name: lastName,
                 contact_number: contactNumber,
                 email: email,
-                password: password
+                password: password,
+                confirm_password: confirmPassword
             }),
         });
 
         const data = await response.json();
+
+        if ('errors' in data) {
+            if (data.errors.email) {
+                emailError.textContent = data.errors.email
+            } else {
+                emailError.textContent = ""
+            }
+
+            if (data.errors.password) {
+                passwordError.textContent = data.errors.password
+            } else {
+                passwordError.textContent = ""
+            }
+
+            if (data.errors.contact_number) {
+                contactError.textContent = data.errors.contact_number
+            } else {
+                contactError.textContent = ""
+            }
+        }
 
         if (!response.ok) {
             throw new Error(data.message || "Signup failed. Please try again.");
@@ -74,41 +94,4 @@ async function signup(event) {
     } catch (error) {
         alert(error.message);
     }
-
-    /*
-    let valid = true;
-
-    //  Validate Contact Number (10-12 digits)
-    if (!/^\d{10,12}$/.test(contactNumber)) {
-        contactError.textContent = "Contact number must be 10-12 digits.";
-        valid = false;
-    } else {
-        contactError.textContent = "";
-    }
-
-    //  Validate Email Format
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        emailError.textContent = "Enter a valid email address.";
-        valid = false;
-    } else {
-        emailError.textContent = "";
-    }
-
-    //  Validate Password Strength (8+ characters, at least one letter and number)
-    if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
-        passwordError.textContent = "Password must be at least 8 characters, include letters and numbers.";
-        valid = false;
-    } else if (password !== confirmPassword) {
-        passwordError.textContent = "Passwords do not match.";
-        valid = false;
-    } else {
-        passwordError.textContent = "";
-    }
-
-    // If all validations pass, submit the form
-    if (valid) {
-        alert("Signup successful!"); // Replace this with actual form submission logic
-        document.getElementById("signup-form").submit();
-    }
-    */
 }

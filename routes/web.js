@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const toTitleCase = require("../utils/toTitleCase");
+const toTitleCase = require("../helpers/toTitleCase");
 
 const router = express.Router();
 

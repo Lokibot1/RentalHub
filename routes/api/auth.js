@@ -8,12 +8,34 @@ const router = express.Router();
 
 // Register a new user
 router.post("/register", async (req, res) => {
+  const { first_name, last_name, contact_number, email, password, confirm_password } = req.body
+  let errors = {}
+
+  // Validate email
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errors.email = "Enter a valid email address."
+  }
+
+  //  Validate Password Strength (8+ characters, at least one letter and number)
+  if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
+    errors.password = "Password must be at least 8 characters, include letters and numbers."
+  } else if (password !== confirm_password) {
+    errors.password = "Password does not match!"
+  }
+
+  // Validate contact number
+  if (!/^\d{10,12}$/.test(contact_number)) {
+    errors.contact_number = "Contact number must be 10-12 digits."
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({ errors })
+  }
+
   db.connect(async (err) => {
     if (err) {
       console.error("Database connection failed:", err);
     } else {
-      const { first_name, last_name, contact_number, email, password } = req.body;
-
       // Check if user already exists
       const [existingUser] = await db.promise().query("SELECT * FROM users WHERE email = ?", [email]);
 
@@ -38,6 +60,7 @@ router.post("/register", async (req, res) => {
       res.status(201).json({ message: "User registered successfully" });
     }
   });
+
 });
 
 // User login route ✅
