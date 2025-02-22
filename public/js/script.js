@@ -1,3 +1,4 @@
+/*
 document.addEventListener("DOMContentLoaded", function () {
     // Attach form validation when the page loads
     const signupForm = document.getElementById("signup-form");
@@ -115,6 +116,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+*/
+
 
 // LOGOUT FUNCTIONALITY
 const logoutBtn = document.getElementById("logout-btn");
@@ -279,4 +282,3 @@ const ownerImages = [
     document.getElementById("renterContent").style.display = "none";
     document.getElementById("ownerContent").style.display = "block";
   });
-  

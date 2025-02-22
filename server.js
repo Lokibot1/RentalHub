@@ -7,6 +7,7 @@ app.use(express.json()); // Enables parsing of JSON request bodies
 
 // Set EJS as the view engine
 app.set("view engine", "ejs");
+app.set("layout extractScripts", true);
 app.set("layout extractStyles", true);
 app.set("views", path.join(__dirname, "views"));
 app.use(expressLayouts);
@@ -25,7 +26,7 @@ app.use("/", webRoutes);
 app.use("/api/auth", apiAuthRoutes);
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server running on port http://localhost:${PORT}`);
 });
