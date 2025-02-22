@@ -1,12 +1,12 @@
 const express = require("express");
-const { dbConnect } = require("./utils/db"); // Import the connect function
 const path = require("path");
 
 const app = express();
 app.use(express.json()); // Enables parsing of JSON request bodies
 
-// Connect to MySQL database
-// dbConnect();
+// Set EJS as the view engine
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, "public/")));

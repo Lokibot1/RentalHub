@@ -1,18 +1,26 @@
 const express = require("express");
 const path = require("path");
+const toTitleCase = require("../utils/toTitleCase");
 
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../views/index.html"));
+  res.render("index");
 });
 
 router.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "../views/login.html"));
+  res.render("login");
 });
 
 router.get("/signup", (req, res) => {
-  res.sendFile(path.join(__dirname, "../views/signup.html"));
+  res.render("signup");
+});
+
+router.get("/shopping/:category", (req, res) => {
+  res.render("shopping", {
+    category: req.params.category,
+    title: toTitleCase(req.params.category),
+  });
 });
 
 module.exports = router;
