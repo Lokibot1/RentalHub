@@ -1,4 +1,3 @@
-/*
 document.addEventListener("DOMContentLoaded", function () {
     // Attach form validation when the page loads
     const signupForm = document.getElementById("signup-form");
@@ -7,6 +6,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+/*
+    Note: 
+    In a real application, you would send the form data to a server for processing.
+    This example demonstrates client-side form validation only.
+    The backend should always validate the data again to prevent tampering.
+*/
 // Form validation function
 function validateForm(event) {
     event.preventDefault(); // Prevent form submission
@@ -60,64 +65,32 @@ function validateForm(event) {
     }
 }
 
-//  LOGIN FUNCTIONALITY
-document.addEventListener("DOMContentLoaded", () => {
-    const loginForm = document.querySelector("#login-form");
-  
-    if (loginForm) {
-        loginForm.addEventListener("submit", async (event) => {
-            event.preventDefault();
-  
-            const email = document.querySelector("#login-email")?.value.trim();
-            const password = document.querySelector("#login-password")?.value.trim();
-
-            try {
-                const response = await fetch("http://localhost:5000/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password }),
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.message || "Login failed. Please try again.");
-                }
-
-                localStorage.setItem("token", data.token); // Store token
-                alert("Login successful!");
-                window.location.href = "index.html"; // Redirect to homepage
-            } catch (error) {
-                alert(error.message);
-            }
-        });
-    }
-});
 
 // CHECK IF USER IS LOGGED IN (PROTECTED ROUTES)
 document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("token");
 
     if (token) {
-        fetch("http://localhost:5000/protected", {
+        fetch("/api/auth/protected", {
             method: "GET",
             headers: { Authorization: token },
         })
-        .then((res) => res.json())
-        .then((data) => {
-            if (!data.success) {
-                localStorage.removeItem("token"); // Clear invalid token
-                window.location.href = "login.html"; // Redirect to login
-            }
-        })
-        .catch(() => {
-            localStorage.removeItem("token");
-            window.location.href = "login.html";
-        });
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.success) {
+                    localStorage.removeItem("token"); // Clear invalid token
+                    window.location.href = "/login"; // Redirect to login
+                }
+            })
+            .catch(() => {
+                localStorage.removeItem("token");
+                window.location.href = "/login";
+            });
     }
 });
-*/
 
+/*
+*/
 
 // LOGOUT FUNCTIONALITY
 const logoutBtn = document.getElementById("logout-btn");
@@ -177,31 +150,31 @@ document.addEventListener("DOMContentLoaded", function () {
     const slider = document.querySelector(".toggle-slider");
     const renterContent = document.getElementById("renterContent");
     const ownerContent = document.getElementById("ownerContent");
-  
+
     // Default state: Show "For Renters" and position the slider
     slider.style.transform = "translateX(0%)";
     renterBtn.style.color = "#12263f";
     ownerBtn.style.color = "white";
     renterContent.style.display = "block"; // Show renters section
     ownerContent.style.display = "none";   // Hide owners section
-  
+
     renterBtn.addEventListener("click", function () {
-      slider.style.transform = "translateX(0%)";
-      renterBtn.style.color = "#12263f";
-      ownerBtn.style.color = "white";
-      renterContent.style.display = "block";  // Show renters section
-      ownerContent.style.display = "none";    // Hide owners section
+        slider.style.transform = "translateX(0%)";
+        renterBtn.style.color = "#12263f";
+        ownerBtn.style.color = "white";
+        renterContent.style.display = "block";  // Show renters section
+        ownerContent.style.display = "none";    // Hide owners section
     });
-  
+
     ownerBtn.addEventListener("click", function () {
-      slider.style.transform = "translateX(100%)";
-      ownerBtn.style.color = "#12263f";
-      renterBtn.style.color = "white";
-      renterContent.style.display = "none";   // Hide renters section
-      ownerContent.style.display = "block";   // Show owners section
+        slider.style.transform = "translateX(100%)";
+        ownerBtn.style.color = "#12263f";
+        renterBtn.style.color = "white";
+        renterContent.style.display = "none";   // Hide renters section
+        ownerContent.style.display = "block";   // Show owners section
     });
-  });
-  
+});
+
 // Toggle between renter and owner    
 document.addEventListener("DOMContentLoaded", function () {
     const renterBtn = document.getElementById("renterBtn");
@@ -209,32 +182,32 @@ document.addEventListener("DOMContentLoaded", function () {
     const slider = document.querySelector(".toggle-slider");
     const renterContent = document.getElementById("renterContent");
     const ownerContent = document.getElementById("ownerContent");
-  
+
     // Default state: Show "For Renters" and position the slider
     slider.style.transform = "translateX(0%)";
     renterBtn.style.color = "#12263f";
     ownerBtn.style.color = "white";
     renterContent.style.display = "block";
     ownerContent.style.display = "none";
-  
+
     renterBtn.addEventListener("click", function () {
-      slider.style.transform = "translateX(0%)";
-      renterBtn.style.color = "#12263f";
-      ownerBtn.style.color = "white";
-      renterContent.style.display = "block";
-      ownerContent.style.display = "none";
+        slider.style.transform = "translateX(0%)";
+        renterBtn.style.color = "#12263f";
+        ownerBtn.style.color = "white";
+        renterContent.style.display = "block";
+        ownerContent.style.display = "none";
     });
-  
+
     ownerBtn.addEventListener("click", function () {
-      slider.style.transform = "translateX(100%)";
-      ownerBtn.style.color = "#12263f";
-      renterBtn.style.color = "white";
-      renterContent.style.display = "none";
-      ownerContent.style.display = "block";
+        slider.style.transform = "translateX(100%)";
+        ownerBtn.style.color = "#12263f";
+        renterBtn.style.color = "white";
+        renterContent.style.display = "none";
+        ownerContent.style.display = "block";
     });
-  });
-  
-  
+});
+
+
 // Slideshow for Renters and Owners
 // Image arrays for Renters and Owners
 const renterImages = [
@@ -242,43 +215,44 @@ const renterImages = [
     "request.png",
     "recieve.png"
 ];
-  
+
 const ownerImages = [
     "howitworksowner1.png",
     "howitworksowner2.png",
     "howitoworksowner3.png",
     "howitowrksowner4.png"
 ];
-  
-  let renterIndex = 0;
-  let ownerIndex = 0;
-    function changeRenterImage() {
+
+let renterIndex = 0;
+let ownerIndex = 0;
+
+function changeRenterImage() {
     renterIndex = (renterIndex + 1) % renterImages.length;
     document.getElementById("renterImage").style.opacity = 0; // Fade out
     setTimeout(() => {
-      document.getElementById("renterImage").src = `/images/${renterImages[renterIndex]}`;
-      document.getElementById("renterImage").style.opacity = 1; // Fade in
+        document.getElementById("renterImage").src = `/images/${renterImages[renterIndex]}`;
+        document.getElementById("renterImage").style.opacity = 1; // Fade in
     }, 500);
-  }
+}
 
-  function changeOwnerImage() {
+function changeOwnerImage() {
     ownerIndex = (ownerIndex + 1) % ownerImages.length;
     document.getElementById("ownerImage").style.opacity = 0; // Fade out
     setTimeout(() => {
-      document.getElementById("ownerImage").src = `/images/${ownerImages[ownerIndex]}`;
-      document.getElementById("ownerImage").style.opacity = 1; // Fade in
+        document.getElementById("ownerImage").src = `/images/${ownerImages[ownerIndex]}`;
+        document.getElementById("ownerImage").style.opacity = 1; // Fade in
     }, 500);
-  }
-  
-  setInterval(changeRenterImage, 3000);
-  setInterval(changeOwnerImage, 3000);
+}
 
-  document.getElementById("renterBtn").addEventListener("click", () => {
+setInterval(changeRenterImage, 3000);
+setInterval(changeOwnerImage, 3000);
+
+document.getElementById("renterBtn").addEventListener("click", () => {
     document.getElementById("renterContent").style.display = "block";
     document.getElementById("ownerContent").style.display = "none";
-  });
-  
-  document.getElementById("ownerBtn").addEventListener("click", () => {
+});
+
+document.getElementById("ownerBtn").addEventListener("click", () => {
     document.getElementById("renterContent").style.display = "none";
     document.getElementById("ownerContent").style.display = "block";
-  });
+});

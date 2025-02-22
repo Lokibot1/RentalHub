@@ -1,9 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const authenticateToken = (req, res, next) => {
-  const token = req.header("Authorization").split(" ")[1]; // Get token from request header
-console.log(req.headers);
-console.log(token);
+  const token = req.header("authorization") // Get token from request header
 
   if (!token) return res.status(401).json({ message: "Access Denied" }); // If no token, deny access
 
