@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const expressLayouts = require("express-ejs-layouts");
 
 const app = express();
 app.use(express.json()); // Enables parsing of JSON request bodies
@@ -7,6 +8,8 @@ app.use(express.json()); // Enables parsing of JSON request bodies
 // Set EJS as the view engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.use(expressLayouts);
+app.set("layout extractStyles", true);
 
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, "public/")));

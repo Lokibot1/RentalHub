@@ -1,37 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | RentalHub</title>
-    <link rel="stylesheet" href="/css/login.css">
-</head>
-<body>
-    <nav class="navbar">
-        <a href="/" class="logo">
-            <span class="rental">Rental</span><span class="hub">Hub</span>
-        </a>
-    </nav>
-    
-    <div class="container">
-        <h2>
-            Welcome to <span class="brand">Rental<span class="highlight">Hub</span></span>
-        </h2>
+<!-- CSS -->
+<link rel="stylesheet" href="/css/login.css">
 
-        <input type="email" placeholder="Email" required>
+<!-- Body -->
+<nav class="navbar">
+    <a href="/" class="logo">
+        <span class="rental">Rental</span><span class="hub">Hub</span>
+    </a>
+</nav>
 
-        <div class="password-box">
-            <input type="password" id="login-password" placeholder="Password" required>
-            <span class="toggle-password" onclick="togglePassword('login-password')"></span>
-        </div>
+<div class="container">
+    <h2>
+        Welcome to <span class="brand">Rental<span class="highlight">Hub</span></span>
+    </h2>
 
-        <button class="btn primary">LOG IN</button>
+    <input type="email" placeholder="Email" required>
 
-        <p class="text1">Don't Have an Account?</p>
-        <p class="text2">Enjoy added benefits and a richer experience by creating a personal account.</p>
-        <a href="/signup" class="btn secondary">CREATE ACCOUNT</a>
+    <div class="password-box">
+        <input type="password" id="login-password" placeholder="Password" required>
+        <span class="toggle-password" onclick="togglePassword('login-password')"></span>
     </div>
 
-    <script src="/js/script.js"></script>
-</body>
-</html>
+    <button class="btn primary">LOG IN</button>
+
+    <p class="text1">Don't Have an Account?</p>
+    <p class="text2">Enjoy added benefits and a richer experience by creating a personal account.</p>
+    <a href="/signup" class="btn secondary">CREATE ACCOUNT</a>
+</div>
