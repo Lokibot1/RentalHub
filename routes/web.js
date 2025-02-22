@@ -5,20 +5,26 @@ const toTitleCase = require("../utils/toTitleCase");
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  res.render("index");
+  res.render("index", {
+    title: "Main"
+  });
 });
 
 router.get("/login", (req, res) => {
-  res.render("login");
+  res.render("login", {
+    title: "Login"
+  });
 });
 
 router.get("/signup", (req, res) => {
-  res.render("signup");
+  res.render("signup", {
+    title: "Signup"
+  });
 });
 
 router.get("/shopping/:category", (req, res) => {
   res.render("shopping", {
-    category: req.params.category,
+    category: toTitleCase(req.params.category),
     title: toTitleCase(req.params.category),
   });
 });
