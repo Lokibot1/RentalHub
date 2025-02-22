@@ -6,13 +6,13 @@ const authenticateToken = require("../../middleware/authMiddleware"); // Import 
 
 const router = express.Router();
 
-// Register a new user ✅
+// Register a new user
 router.post("/register", async (req, res) => {
   db.connect(async (err) => {
     if (err) {
       console.error("Database connection failed:", err);
     } else {
-      const { username, email, password } = req.body;
+      const { first_name, last_name, contact_number, email, password } = req.body;
 
       // Check if user already exists
       const [existingUser] = await db.promise().query("SELECT * FROM users WHERE email = ?", [email]);
@@ -23,9 +23,13 @@ router.post("/register", async (req, res) => {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        const sql = "INSERT INTO users (first_name, last_name, contact_number, email, password) VALUES (?, ?, ?, ?, ?)";
+
         // Insert user into database
-        await db.promise().query("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", [
-          username,
+        await db.promise().query(sql, [
+          first_name,
+          last_name,
+          contact_number,
           email,
           hashedPassword,
         ]);
