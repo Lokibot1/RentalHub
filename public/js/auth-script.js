@@ -20,7 +20,10 @@ loginButton.addEventListener('click', async (event) => {
             throw new Error(data.message || "Login failed. Please try again.");
         }
 
-        localStorage.setItem("token", data.token); // Store token
+        // Set the token as a cookie
+        document.cookie = `token=${data.token}; path=/; secure=${location.protocol === 'https:'}; HttpOnly`;
+
+        // localStorage.setItem("token", data.token); // Store token
 
         window.location.href = "/dashboard"; // Redirect to homepage
     } catch (error) {
@@ -85,7 +88,9 @@ async function signup(event) {
             throw new Error(data.message || "Signup failed. Please try again.");
         }
 
-        localStorage.setItem("token", data.token); // Store token
+        // Set the token as a cookie
+        document.cookie = `token=${data.token}; path=/; secure=${location.protocol === 'https:'}; HttpOnly`;
+
         alert("Signup successful!"); // Replace this with actual form submission logic
 
         window.location.href = "/login"; // Redirect to homepage

@@ -65,38 +65,37 @@ router.post("/register", async (req, res) => {
 
 // User login route ✅
 router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
   db.connect(async (err) => {
-    if (err) {
-      console.error("Database connection failed:", err);
-    } else {
-      const { email, password } = req.body;
+      if (err) {
+          console.error("Database connection failed:", err);
+          return res.status(500).json({ message: "Internal server error" });
+      }
 
       const sql = "SELECT * FROM users WHERE email = ?";
-
       db.query(sql, [email], async (err, results) => {
-        if (err) {
-          return res.status(500).json({ message: "Database error" });
-        }
+          if (err) {
+              console.error("Query error:", err);
+              return res.status(500).json({ message: "Internal server error" });
+          }
 
-        if (results.length === 0) {
-          return res.status(401).json({ message: "Invalid email or password" }); // If user not found
-        }
+          if (results.length === 0) {
+              return res.status(400).json({ message: "Invalid email or password" });
+          }
 
-        const user = results[0];
-        const isPasswordValid = bcrypt.compare(password, user.password); // Compare input password with stored hash
+          const user = results[0];
+          const isMatch = await bcrypt.compare(password, user.password);
 
-        if (!isPasswordValid) {
-          return res.status(401).json({ message: "Invalid email or password" }); // If password doesn't match
-        }
+          if (!isMatch) {
+              return res.status(400).json({ message: "Invalid email or password" });
+          }
 
-        // Generate JWT token valid for 1 hour
-        const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-          expiresIn: "1h",
-        });
+          const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-        res.json({ token, message: "Login successful" }); // Send token and success message
+          res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "Strict" });
+          res.json({ message: "Login successful", token });
       });
-    }
   });
 });
 
@@ -107,19 +106,20 @@ router.get("/protected", authenticateToken, (req, res) => {
 
 // Check if user is authenticated
 router.post("/check-auth", (req, res) => {
-  const { token } = req.body;
+  const token = req.cookies.token || '';
 
   if (!token) {
-    return res.json({ isAuthenticated: false });
+      return res.json({ isAuthenticated: false });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return res.json({ isAuthenticated: true, user: decoded });
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      return res.json({ isAuthenticated: true, user: decoded });
   } catch (err) {
-    return res.json({ isAuthenticated: false });
+      return res.json({ isAuthenticated: false });
   }
 });
+
 
 // Get all users (Testing purposes only) ✅
 router.get("/all", async (req, res) => {

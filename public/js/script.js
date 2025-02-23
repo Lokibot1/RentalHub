@@ -1,38 +1,43 @@
+import { getCookie, deleteCookie } from "../../helpers/cookies.js";
+
 // Initialize the auth status
 document.addEventListener("DOMContentLoaded", () => {
-    const token = localStorage.getItem("token");
+    const token = getCookie("token");
 
     if (token) {
         fetch("/api/auth/check-auth", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": token
             },
             body: JSON.stringify({ token }),
         })
             .then((response) => response.json())
             .then((data) => {
                 if (data.isAuthenticated) {
-                    document.getElementById("auth-status").innerHTML = `<a href='/logout' id='logout-link'>Logout</a>`
+                    document.getElementById("auth-status").innerHTML = `<a href='/logout' id='logout-link'>Logout</a>`;
                 } else {
-                    document.getElementById("auth-status").innerHTML = `<a href='/login'>Login</a>`
+                    document.getElementById("auth-status").innerHTML = `<a href='/login'>Login</a>`;
                 }
             })
             .catch((error) => {
                 console.error("Error:", error);
+                document.getElementById("auth-status").innerHTML = `<a href='/login'>Login</a>`;
             });
     } else {
-        document.getElementById("auth-status").innerHTML = `<a href='/login'>Login</a>`
+        document.getElementById("auth-status").innerHTML = `<a href='/login'>Login</a>`;
     }
 
     // Add event listener for logout link
     document.addEventListener("click", (event) => {
         if (event.target && event.target.id === "logout-link") {
-            localStorage.removeItem("token"); // Remove token from localStorage
+            deleteCookie("token"); // Remove token from cookies
             window.location.href = "/logout"; // Redirect to /logout route
         }
     });
 });
+
 
 // document.addEventListener("DOMContentLoaded", function () {
 //     // Attach form validation when the page loads

@@ -1,9 +1,13 @@
 const express = require("express");
 const path = require("path");
+const cookieParser = require("cookie-parser");
 const expressLayouts = require("express-ejs-layouts");
 
 const app = express();
 app.use(express.json()); // Enables parsing of JSON request bodies
+
+// Use cookie parser middleware
+app.use(cookieParser());
 
 // Set EJS as the view engine
 app.set("view engine", "ejs");

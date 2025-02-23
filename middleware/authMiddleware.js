@@ -1,11 +1,11 @@
 const jwt = require("jsonwebtoken");
 
 function checkAuth(req, res, next) {
-  const token = req.token || '';
+  const token = req.cookies.token || '';
 
   if (!token) {
     req.isAuthenticated = false;
-    return next();
+    return res.redirect("/login");
   }
 
   try {
@@ -14,6 +14,7 @@ function checkAuth(req, res, next) {
     req.isAuthenticated = true;
   } catch (err) {
     req.isAuthenticated = false;
+    return res.redirect("/login");
   }
 
   next();
