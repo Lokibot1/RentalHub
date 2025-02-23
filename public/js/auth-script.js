@@ -22,7 +22,7 @@ loginButton.addEventListener('click', async (event) => {
 
         localStorage.setItem("token", data.token); // Store token
 
-        window.location.href = "/"; // Redirect to homepage
+        window.location.href = "/dashboard"; // Redirect to homepage
     } catch (error) {
         alert(error.message);
     }

@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .then((response) => response.json())
             .then((data) => {
                 if (data.isAuthenticated) {
-                    document.getElementById("auth-status").innerHTML = `<a href='/logout'>Logout</a>`
+                    document.getElementById("auth-status").innerHTML = `<a href='/logout' id='logout-link'>Logout</a>`
                 } else {
                     document.getElementById("auth-status").innerHTML = `<a href='/login'>Login</a>`
                 }
@@ -24,6 +24,14 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         document.getElementById("auth-status").innerHTML = `<a href='/login'>Login</a>`
     }
+
+    // Add event listener for logout link
+    document.addEventListener("click", (event) => {
+        if (event.target && event.target.id === "logout-link") {
+            localStorage.removeItem("token"); // Remove token from localStorage
+            window.location.href = "/logout"; // Redirect to /logout route
+        }
+    });
 });
 
 // document.addEventListener("DOMContentLoaded", function () {
@@ -128,7 +136,7 @@ if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("token"); // Remove token
         alert("Logged out successfully");
-        window.location.href = "login.html"; // Redirect to login
+        window.location.href = "/login"; // Redirect to login
     });
 }
 

@@ -16,11 +16,13 @@ app.use(expressLayouts);
 app.use(express.static(path.join(__dirname, "public/")));
 
 // Import routes
-const webRoutes = require("./routes/web");
+const mainRoutes = require("./routes/frontend/main");
+const dashboardRoutes = require("./routes/frontend/dashboard");
 const apiAuthRoutes = require("./routes/api/auth");
 
 // Frontend routes
-app.use("/", webRoutes);
+app.use("/", mainRoutes);
+app.use("/dashboard", dashboardRoutes);
 
 // Backend routes
 app.use("/api/auth", apiAuthRoutes);
