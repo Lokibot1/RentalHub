@@ -1,24 +1,26 @@
 const express = require("express");
 const toTitleCase = require("../../helpers/toTitleCase");
-const checkAuth = require("../../middleware/authMiddleware");
+const { optionalAuth, checkAuth } = require("../../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.get("/", checkAuth, (req, res) => {
+router.get("/", optionalAuth, (req, res) => {
   res.render("main/index", {
     layout: "layouts/main",
     title: "Main",
+    isAuthenticated: req.isAuthenticated,
   });
 });
 
 router.get("/login", (req, res) => {
   res.render("main/login", {
     layout: "layouts/main",
-    title: "Login"
+    title: "Login",
   });
 });
 
 router.get("/logout", (req, res) => {
+  res.clearCookie("token");
   res.redirect("/login");
 });
 

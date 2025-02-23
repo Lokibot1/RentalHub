@@ -20,7 +20,13 @@
                 </a>
             </li>
             -->
-            <li id="auth-status">Checking authentication...</li>
+            <li id="auth-status">
+            <% if (isAuthenticated) { %>
+                <a href='/logout' id='logout-link'>Logout</a>
+            <% } else { %>
+                <a href='/login'>Login</a>
+            <% } %>
+            </li>
         </ul>
     </nav>
 </header>

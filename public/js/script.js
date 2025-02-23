@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch((error) => {
                 console.error("Error:", error);
-                document.getElementById("auth-status").innerHTML = `<a href='/login'>Login</a>`;
             });
     } else {
         document.getElementById("auth-status").innerHTML = `<a href='/login'>Login</a>`;
@@ -33,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (event) => {
         if (event.target && event.target.id === "logout-link") {
             deleteCookie("token"); // Remove token from cookies
-            window.location.href = "/logout"; // Redirect to /logout route
+            window.location.href = "/login"; // Redirect to /logout route
         }
     });
 });
@@ -110,40 +109,40 @@ function validateForm(event) {
 */
 
 // CHECK IF USER IS LOGGED IN (PROTECTED ROUTES)
-document.addEventListener("DOMContentLoaded", () => {
-    const token = localStorage.getItem("token");
+// document.addEventListener("DOMContentLoaded", () => {
+//     const token = localStorage.getItem("token");
 
-    if (token) {
-        fetch("/api/auth/protected", {
-            method: "GET",
-            headers: { Authorization: token },
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                if (!data.success) {
-                    localStorage.removeItem("token"); // Clear invalid token
-                    window.location.href = "/login"; // Redirect to login
-                }
-            })
-            .catch(() => {
-                localStorage.removeItem("token");
-                window.location.href = "/login";
-            });
-    }
-});
+//     if (token) {
+//         fetch("/api/auth/protected", {
+//             method: "GET",
+//             headers: { Authorization: token },
+//         })
+//             .then((res) => res.json())
+//             .then((data) => {
+//                 if (!data.success) {
+//                     localStorage.removeItem("token"); // Clear invalid token
+//                     window.location.href = "/login"; // Redirect to login
+//                 }
+//             })
+//             .catch(() => {
+//                 localStorage.removeItem("token");
+//                 window.location.href = "/login";
+//             });
+//     }
+// });
 
 /*
 */
 
 // LOGOUT FUNCTIONALITY
-const logoutBtn = document.getElementById("logout-btn");
-if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem("token"); // Remove token
-        alert("Logged out successfully");
-        window.location.href = "/login"; // Redirect to login
-    });
-}
+// const logoutBtn = document.getElementById("logout-btn");
+// if (logoutBtn) {
+//     logoutBtn.addEventListener("click", () => {
+//         localStorage.removeItem("token"); // Remove token
+//         alert("Logged out successfully");
+//         window.location.href = "/login"; // Redirect to login
+//     });
+// }
 
 //  TOGGLE PASSWORD VISIBILITY
 function togglePassword(fieldId) {

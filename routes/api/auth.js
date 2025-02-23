@@ -2,7 +2,6 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { connection: db } = require("../../utils/db"); // Adjust the path as needed
-const authenticateToken = require("../../middleware/authMiddleware"); // Import the middleware
 
 const router = express.Router();
 
@@ -100,9 +99,9 @@ router.post("/login", async (req, res) => {
 });
 
 // Protected route - only accessible with a valid token
-router.get("/protected", authenticateToken, (req, res) => {
-  res.json({ success: true, message: "Access granted", user: req.user });
-});
+// router.get("/protected", authenticateToken, (req, res) => {
+//   res.json({ success: true, message: "Access granted", user: req.user });
+// });
 
 // Check if user is authenticated
 router.post("/check-auth", (req, res) => {
