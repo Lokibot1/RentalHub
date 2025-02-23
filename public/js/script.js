@@ -1,10 +1,38 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // Attach form validation when the page loads
-    const signupForm = document.getElementById("signup-form");
-    if (signupForm) {
-        signupForm.addEventListener("submit", validateForm);
+// Initialize the auth status
+document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+        fetch("/api/auth/check-auth", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.isAuthenticated) {
+                    document.getElementById("auth-status").innerHTML = `<a href='/logout'>Logout</a>`
+                } else {
+                    document.getElementById("auth-status").innerHTML = `<a href='/login'>Login</a>`
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    } else {
+        document.getElementById("auth-status").innerHTML = `<a href='/login'>Login</a>`
     }
 });
+
+// document.addEventListener("DOMContentLoaded", function () {
+//     // Attach form validation when the page loads
+//     const signupForm = document.getElementById("signup-form");
+//     if (signupForm) {
+//         signupForm.addEventListener("submit", validateForm);
+//     }
+// });
 
 /*
     Note: 
@@ -12,6 +40,8 @@ document.addEventListener("DOMContentLoaded", function () {
     This example demonstrates client-side form validation only.
     The backend should always validate the data again to prevent tampering.
 */
+
+/*
 // Form validation function
 function validateForm(event) {
     event.preventDefault(); // Prevent form submission
@@ -64,7 +94,7 @@ function validateForm(event) {
         document.getElementById("signup-form").submit();
     }
 }
-
+*/
 
 // CHECK IF USER IS LOGGED IN (PROTECTED ROUTES)
 document.addEventListener("DOMContentLoaded", () => {

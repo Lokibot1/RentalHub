@@ -1,12 +1,14 @@
 const express = require("express");
-const path = require("path");
 const toTitleCase = require("../helpers/toTitleCase");
+const checkAuth = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", checkAuth, (req, res) => {
   res.render("index", {
-    title: "Main"
+    title: "Main",
+    isAuthenticated: req.isAuthenticated,
+    user: req.user
   });
 });
 

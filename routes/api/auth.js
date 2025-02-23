@@ -105,6 +105,22 @@ router.get("/protected", authenticateToken, (req, res) => {
   res.json({ success: true, message: "Access granted", user: req.user });
 });
 
+// Check if user is authenticated
+router.post("/check-auth", (req, res) => {
+  const { token } = req.body;
+
+  if (!token) {
+    return res.json({ isAuthenticated: false });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return res.json({ isAuthenticated: true, user: decoded });
+  } catch (err) {
+    return res.json({ isAuthenticated: false });
+  }
+});
+
 // Get all users (Testing purposes only) ✅
 router.get("/all", async (req, res) => {
   db.connect((err) => {
