@@ -1,4 +1,13 @@
-import { getCookie, deleteCookie } from "../../helpers/cookies.js";
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+function deleteCookie(name) {
+    document.cookie = `${name}=; Max-Age=0; path=/;`;
+}
+
 
 // Initialize the auth status
 document.addEventListener("DOMContentLoaded", () => {
@@ -24,8 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch((error) => {
                 console.error("Error:", error);
             });
-    } else {
-        document.getElementById("auth-status").innerHTML = `<a href='/login'>Login</a>`;
     }
 
     // Add event listener for logout link
@@ -37,112 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-
-// document.addEventListener("DOMContentLoaded", function () {
-//     // Attach form validation when the page loads
-//     const signupForm = document.getElementById("signup-form");
-//     if (signupForm) {
-//         signupForm.addEventListener("submit", validateForm);
-//     }
-// });
-
-/*
-    Note: 
-    In a real application, you would send the form data to a server for processing.
-    This example demonstrates client-side form validation only.
-    The backend should always validate the data again to prevent tampering.
-*/
-
-/*
-// Form validation function
-function validateForm(event) {
-    event.preventDefault(); // Prevent form submission
-
-    // Get input values
-    const firstName = document.getElementById("first-name")?.value.trim();
-    const lastName = document.getElementById("last-name")?.value.trim();
-    const contactNumber = document.getElementById("contact-number")?.value.trim();
-    const email = document.getElementById("email")?.value.trim();
-    const password = document.getElementById("signup-password")?.value;
-    const confirmPassword = document.getElementById("confirm-password")?.value;
-
-    // Error elements
-    const contactError = document.getElementById("contact-error");
-    const emailError = document.getElementById("email-error");
-    const passwordError = document.getElementById("password-error");
-
-    let valid = true;
-
-    //  Validate Contact Number (10-12 digits)
-    if (!/^\d{10,12}$/.test(contactNumber)) {
-        contactError.textContent = "Contact number must be 10-12 digits.";
-        valid = false;
-    } else {
-        contactError.textContent = "";
-    }
-
-    //  Validate Email Format
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        emailError.textContent = "Enter a valid email address.";
-        valid = false;
-    } else {
-        emailError.textContent = "";
-    }
-
-    //  Validate Password Strength (8+ characters, at least one letter and number)
-    if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
-        passwordError.textContent = "Password must be at least 8 characters, include letters and numbers.";
-        valid = false;
-    } else if (password !== confirmPassword) {
-        passwordError.textContent = "Passwords do not match.";
-        valid = false;
-    } else {
-        passwordError.textContent = "";
-    }
-
-    // If all validations pass, submit the form
-    if (valid) {
-        alert("Signup successful!"); // Replace this with actual form submission logic
-        document.getElementById("signup-form").submit();
-    }
-}
-*/
-
-// CHECK IF USER IS LOGGED IN (PROTECTED ROUTES)
-// document.addEventListener("DOMContentLoaded", () => {
-//     const token = localStorage.getItem("token");
-
-//     if (token) {
-//         fetch("/api/auth/protected", {
-//             method: "GET",
-//             headers: { Authorization: token },
-//         })
-//             .then((res) => res.json())
-//             .then((data) => {
-//                 if (!data.success) {
-//                     localStorage.removeItem("token"); // Clear invalid token
-//                     window.location.href = "/login"; // Redirect to login
-//                 }
-//             })
-//             .catch(() => {
-//                 localStorage.removeItem("token");
-//                 window.location.href = "/login";
-//             });
-//     }
-// });
-
-/*
-*/
-
-// LOGOUT FUNCTIONALITY
-// const logoutBtn = document.getElementById("logout-btn");
-// if (logoutBtn) {
-//     logoutBtn.addEventListener("click", () => {
-//         localStorage.removeItem("token"); // Remove token
-//         alert("Logged out successfully");
-//         window.location.href = "/login"; // Redirect to login
-//     });
-// }
 
 //  TOGGLE PASSWORD VISIBILITY
 function togglePassword(fieldId) {

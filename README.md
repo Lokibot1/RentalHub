@@ -38,11 +38,17 @@ Before you begin, ensure you have met the following requirements:
     Then, open the [.env](http://_vscodecontentref_/5) file and add your database configuration:
 
     ```env
+    # Application
+    PORT=8000
+
+    # Database
     DB_HOST=localhost
     DB_USER=root
-    DB_PASSWORD=your-database-password
-    DB_NAME=rentalhub
-    JWT_SECRET=your-jwt-secret
+    DB_PASSWORD=yourpassword
+    DB_NAME=rentalhub 
+
+    # JWT Auth
+    JWT_SECRET=your_secret_key
     ```
 
     To generate a `JWT_SECRET` key, run the  commandfollowing:
@@ -68,9 +74,12 @@ Before you begin, ensure you have met the following requirements:
 
     CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        username VARCHAR(50) NOT NULL UNIQUE,
+        first_name VARCHAR(100) NOT NULL,
+        last_name VARCHAR(100) NOT NULL,
+        contact_number VARCHAR(20) NOT NULL,
         email VARCHAR(100) NOT NULL UNIQUE,
-        password VARCHAR(255) NOT NULL
+        password VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     ```
 
@@ -94,7 +103,11 @@ Before you begin, ensure you have met the following requirements:
 ## Project Structure
 
 - [server.js](http://_vscodecontentref_/1): The main entry point of the application.
-- [routes](http://_vscodecontentref_/2): Contains route definitions for the application.
-- [utils](http://_vscodecontentref_/3): Contains utility functions, including database connection.
-- [public](http://_vscodecontentref_/4): Contains static files such as CSS, JavaScript, and images.
-- [views](http://_vscodecontentref_/5): Contains HTML files for the frontend.
+- [package.json](http://_vscodecontentref_/2): Contains third party libraries.
+- [.env](http://_vscodecontentref_/3): Contains environment configs.
+- [configs/](http://_vscodecontentref_/4): Contains db configuration and schemas.
+- [helpers/](http://_vscodecontentref_/5): Contains helper functions for the backend/frontend.
+- [middlewares/](http://_vscodecontentref_/6): Contains functions that processes requests and responses before passing control to the next function.
+- [public/](http://_vscodecontentref_/7): Contains static files such as CSS, JavaScript, and images.
+- [routes/](http://_vscodecontentref_/8): Contains route definitions for the application.
+- [views/](http://_vscodecontentref_/9): Contains HTML files (EJS Templating) for the frontend.

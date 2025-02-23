@@ -91,10 +91,8 @@ async function signup(event) {
         // Set the token as a cookie
         document.cookie = `token=${data.token}; path=/; secure=${location.protocol === 'https:'}; HttpOnly`;
 
-        alert("Signup successful!"); // Replace this with actual form submission logic
-
         window.location.href = "/login"; // Redirect to homepage
     } catch (error) {
-        alert(error.message);
+        console.log(error.message);
     }
 }
