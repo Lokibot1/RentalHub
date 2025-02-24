@@ -1,6 +1,6 @@
 const express = require("express");
 const toTitleCase = require("../../helpers/toTitleCase");
-const { optionalAuth } = require("../../middlewares/authMiddleware");
+const { optionalAuth } = require("../../middlewares/auth");
 
 const router = express.Router();
 
