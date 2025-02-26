@@ -3,6 +3,11 @@ const { checkAuth } = require("../../middlewares/auth");
 
 const router = express.Router();
 
+
+/**
+ * Dashboard
+ * @route GET /dashboard
+ */
 router.get("/", checkAuth, (req, res) => {
   res.render("dashboard/index", {
     layout: "layouts/dashboard",

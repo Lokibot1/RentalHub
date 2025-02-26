@@ -2,8 +2,11 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const expressLayouts = require("express-ejs-layouts");
+const morgan = require("morgan");
 
 const app = express();
+
+app.use(morgan("tiny"));
 app.use(express.json()); // Enables parsing of JSON request bodies
 
 // Use cookie parser middleware

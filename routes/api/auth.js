@@ -5,7 +5,11 @@ const { connection: db } = require("../../configs/db"); // Adjust the path as ne
 
 const router = express.Router();
 
-// Register a new user
+
+/**
+ * Register a new user
+ * @route POST /api/auth/register
+ */
 router.post("/register", async (req, res) => {
   const { first_name, last_name, contact_number, email, password, confirm_password } = req.body
   let errors = {}
@@ -62,7 +66,11 @@ router.post("/register", async (req, res) => {
 
 });
 
-// User login route ✅
+
+/**
+ * Login a user
+ * @route POST /api/auth/login
+ */
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -98,12 +106,11 @@ router.post("/login", async (req, res) => {
   });
 });
 
-// Protected route - only accessible with a valid token
-// router.get("/protected", authenticateToken, (req, res) => {
-//   res.json({ success: true, message: "Access granted", user: req.user });
-// });
 
-// Check if user is authenticated
+/**
+ * Check if user is authenticated
+ * @route POST /api/auth/check-auth
+ */
 router.post("/check-auth", (req, res) => {
   const token = req.cookies.token || '';
 
@@ -120,7 +127,10 @@ router.post("/check-auth", (req, res) => {
 });
 
 
-// Get all users (Testing purposes only) ✅
+/**
+ * Get all users
+ * @route GET /api/auth/all
+ */
 router.get("/all", async (req, res) => {
   db.connect((err) => {
     if (err) {

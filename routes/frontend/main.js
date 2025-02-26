@@ -4,6 +4,11 @@ const { optionalAuth } = require("../../middlewares/auth");
 
 const router = express.Router();
 
+
+/**
+ * Main page
+ * @route GET /
+ */
 router.get("/", optionalAuth, (req, res) => {
   res.render("main/index", {
     layout: "layouts/main",
@@ -12,6 +17,11 @@ router.get("/", optionalAuth, (req, res) => {
   });
 });
 
+
+/**
+ * Login page
+ * @route GET /login
+ */
 router.get("/login", (req, res) => {
   res.render("main/login", {
     layout: "layouts/main",
@@ -19,11 +29,21 @@ router.get("/login", (req, res) => {
   });
 });
 
+
+/**
+ * Logout
+ * @route GET /logout
+ */
 router.get("/logout", (req, res) => {
   res.clearCookie("token");
   res.redirect("/login");
 });
 
+
+/**
+ * Signup page
+ * @route GET /signup
+ */
 router.get("/signup", (req, res) => {
   res.render("main/signup", {
     layout: "layouts/main",
@@ -31,6 +51,11 @@ router.get("/signup", (req, res) => {
   });
 });
 
+
+/**
+ * Shopping page
+ * @route GET /shopping/:category
+ */
 router.get("/shopping/:category", (req, res) => {
   res.render("main/shopping", {
     layout: "layouts/main",
