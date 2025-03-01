@@ -100,6 +100,22 @@ Before you begin, ensure you have met the following requirements:
     http://localhost:8000
     ```
 
+## Updating and Creating a New Branch
+Before starting new work, ensure your local repository is up-to-date with the latest changes from the develop branch. Follow these steps:  
+
+1. Pull the latest updates from the develop branch:  
+```sh
+git checkout develop
+git pull origin develop
+```
+
+2. Create a new branch for your work:  
+```sh
+git checkout -b your-feature-branch
+```
+
+Replace your-feature-branch with a descriptive name for your new branch. This ensures you are always working with the latest updates.
+
 ## Project Structure
 
 - [server.js](http://_vscodecontentref_/1): The main entry point of the application.
