@@ -1,63 +1,40 @@
-<link rel="stylesheet" href="/css/archives.css" />
+<link rel="stylesheet" href="/css/archives.css"/>
 
 <!--Navigation Bar-->
-<nav>
-    <a href="/">
-      <div class="logo">
-        <h1>Rental<span>Hub</span></h1>
-      </div>
-    </a>
-    <ul>
-      <li><a href="/shopping">Shop</a></li>
-      <li>
-        <a href="/listing"
-          ><img src="/images/WhiteAdd.png" class="add-icon"
-        /></a>
-      </li>
-      <li>
-        <a href="/login">
-          <img
-            src="/images/Icon1.png"
-            alt="Profile"
-            class="profile-icon"
-          />
-        </a>
-      </li>
-    </ul>
-  </nav>
+<%- include('../partials/header-navbar.ejs'); %>
 
-  <div class="main">
+<div class="main">
     <!--Sidebar-->
     <%- include('../partials/sidebar.ejs'); %>
 
     <!--Main Content-->
     <div class="content">
-      <button class="restore-btn">Restore All</button>
+        <button class="restore-btn">Restore All</button>
     </div>
-  </div>
+</div>
 
-  <!--JAVASCRIPT-->
-  <script>
+<!--JAVASCRIPT-->
+<script>
     document.addEventListener("DOMContentLoaded", fetchArchivedListings);
 
     // FETCH ARCHIVED LISTINGS FROM THE BACKEND
     async function fetchArchivedListings() {
-      try {
-        const response = await fetch("/api/archived-listings");
-        const listings = await response.json();
-        const archiveList = document.getElementById("archive-list");
+        try {
+            const response = await fetch("/api/archived-listings");
+            const listings = await response.json();
+            const archiveList = document.getElementById("archive-list");
 
-        archiveList.innerHTML = ""; // Clear previous content
+            archiveList.innerHTML = ""; // Clear previous content
 
-        if (listings.length === 0) {
-          archiveList.innerHTML = "<p>No archived items found.</p>";
-          return;
-        }
+            if (listings.length === 0) {
+                archiveList.innerHTML = "<p>No archived items found.</p>";
+                return;
+            }
 
-        listings.forEach((listing) => {
-          const listingCard = document.createElement("div");
-          listingCard.classList.add("listing-card");
-          listingCard.innerHTML = `
+            listings.forEach((listing) => {
+                const listingCard = document.createElement("div");
+                listingCard.classList.add("listing-card");
+                listingCard.innerHTML = `
             <p class="listing-title">${listing.title}</p>
             <div class="listing-item">
               <img src="${listing.image || 'placeholder.png'}" alt="Listing Image" class="listing-image">
@@ -65,43 +42,43 @@
             </div>
             <button class="restore-btn" onclick="restoreListing('${listing.id}')">Restore</button>
           `;
-          archiveList.appendChild(listingCard);
-        });
-      } catch (error) {
-        console.error("Error fetching archived listings:", error);
-      }
+                archiveList.appendChild(listingCard);
+            });
+        } catch (error) {
+            console.error("Error fetching archived listings:", error);
+        }
     }
 
     // RESTORE A SINGLE LISTING
     async function restoreListing(listingId) {
-      try {
-        const response = await fetch(`/api/restore-listing/${listingId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-        });
-        if (response.ok) {
-          alert("Listing restored successfully.");
-          fetchArchivedListings();
+        try {
+            const response = await fetch(`/api/restore-listing/${listingId}`, {
+                method: "PUT",
+                headers: {"Content-Type": "application/json"},
+            });
+            if (response.ok) {
+                alert("Listing restored successfully.");
+                fetchArchivedListings();
+            }
+        } catch (error) {
+            console.error("Error restoring listing:", error);
         }
-      } catch (error) {
-        console.error("Error restoring listing:", error);
-      }
     }
 
     // RESTORE ALL ARCHIVED LISTINGS
     async function restoreAllListings() {
-      try {
-        const response = await fetch(`/api/restore-all`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-        });
+        try {
+            const response = await fetch(`/api/restore-all`, {
+                method: "PUT",
+                headers: {"Content-Type": "application/json"},
+            });
 
-        if (response.ok) {
-          alert("All archived listings have been restored.");
-          fetchArchivedListings();
+            if (response.ok) {
+                alert("All archived listings have been restored.");
+                fetchArchivedListings();
+            }
+        } catch (error) {
+            console.error("Error restoring all listings:", error);
         }
-      } catch (error) {
-        console.error("Error restoring all listings:", error);
-      }
     }
-  </script>
+</script>

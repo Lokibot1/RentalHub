@@ -1,76 +1,54 @@
-<link rel="stylesheet" href="/css/archives.css" />
+<link rel="stylesheet" href="/css/archives.css"/>
 
-<nav>
-    <a href="/">
-      <div class="logo">
-        <h1>Rental<span>Hub</span></h1>
-      </div>
-    </a>
-    <ul>
-      <li><a href="/shopping">Shop</a></li>
-      <li>
-        <a href="/listing"
-          ><img src="/images/WhiteAdd.png" class="add-icon"
-        /></a>
-      </li>
-      <li>
-        <a href="/profile">
-          <img
-            src="/images/Icon1.png"
-            alt="Profile"
-            class="profile-icon"
-          />
-        </a>
-      </li>
-    </ul>
-  </nav>
+<!--Navigation Bar-->
+<%- include('../partials/header-navbar.ejs'); %>
 
-  <div class="main">
+<div class="main">
     <!--Sidebar-->
     <%- include('../partials/sidebar.ejs'); %>
 
     <!--Main Content-->
     <div class="content">
-      <div class="dashboard-cards">
-        <div class="card">
-          <p>Rents</p>
-          <span class="count" id="rents-count">0</span>
+        <div class="dashboard-cards">
+            <div class="card">
+                <p>Rents</p>
+                <span class="count" id="rents-count">0</span>
+            </div>
+            <div class="card">
+                <p>Pending Posts</p>
+                <span class="count" id="pending-posts-count">0</span>
+            </div>
+            <div class="card">
+                <p>Rental Request</p>
+                <span class="count" id="rental-request-count">0</span>
+            </div>
+            <div class="card">
+                <p>Item Posted</p>
+                <span class="count" id="item-posted-count">0</span>
+            </div>
         </div>
-        <div class="card">
-          <p>Pending Posts</p>
-          <span class="count" id="pending-posts-count">0</span>
-        </div>
-        <div class="card">
-          <p>Rental Request</p>
-          <span class="count" id="rental-request-count">0</span>
-        </div>
-        <div class="card">
-          <p>Item Posted</p>
-          <span class="count" id="item-posted-count">0</span>
-        </div>
-      </div>
-      </div>
     </div>
-  </div>
+</div>
+</div>
 
-  <!--JavaScript-->
-  <script>
-   // Fetch dashboard counts from backend API
-   document.addEventListener("DOMContentLoaded", async function () {
-      try {
-        // Fetch data from backend API
-        const response = await fetch("/api/dashboard-counts"); // Adjust mo nalang tong API route Juls
-        const data = await response.json();
+<!--JavaScript-->
+<script>
+    // Fetch dashboard counts from backend API
+    document.addEventListener("DOMContentLoaded", async function () {
+        try {
+            // Fetch data from backend API
+            const response = await fetch("/api/dashboard-counts"); // Adjust mo nalang tong API route Juls
+            const data = await response.json();
 
-        // Update counts dynamically
-        document.getElementById("rents-count").textContent = data.rents || 0;
-        document.getElementById("pending-posts-count").textContent =
-          data.pendingPosts || 0;
-        document.getElementById("rental-request-count").textContent =
-          data.rentalRequests || 0;
-        document.getElementById("item-posted-count").textContent =
-          data.itemsPosted || 0;
-      } catch (error) {
-        console.error("Error fetching dashboard counts:", error);
-      }
+            // Update counts dynamically
+            document.getElementById("rents-count").textContent = data.rents || 0;
+            document.getElementById("pending-posts-count").textContent =
+                data.pendingPosts || 0;
+            document.getElementById("rental-request-count").textContent =
+                data.rentalRequests || 0;
+            document.getElementById("item-posted-count").textContent =
+                data.itemsPosted || 0;
+        } catch (error) {
+            console.error("Error fetching dashboard counts:", error);
+        }
     });
