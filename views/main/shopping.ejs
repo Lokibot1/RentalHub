@@ -120,29 +120,51 @@
         });
     });
 
+
+    // Tabs Functionality
     // Tabs Functionality
     function openCategory(evt, categoryName) {
-        let i, tabs, buttons;
-
-        tabs = document.querySelectorAll(".shoppingContainer");
-
-        for (i = 0; i < tabs.length; i++) {
-            tabs[i].style.display = "none";
-        }
-
-        buttons = document.querySelectorAll(".category");
-        for (i = 0; i < buttons.length; i++) {
-            buttons[i].classList.remove("active");
-        }
-
-        let selectedTab = document.getElementById(categoryName);
-        if (selectedTab) {
-            selectedTab.style.display = "block";
-        } else {
-            console.error(`No element found with ID: ${categoryName}`);
-        }
-        evt.currentTarget.classList.add("active");
+        // Redirect to the category page with the path
+        window.location.href = `/shopping/${categoryName}`;
     }
+
+    // Set the active category based on URL path
+    document.addEventListener("DOMContentLoaded", function () {
+        const path = window.location.pathname;
+        const category = path.split("/").pop();
+
+        if (category) {
+            // Hide all shoppingContainers
+            document.querySelectorAll(".shoppingContainer").forEach((container) => {
+                container.style.display = "none";
+            });
+
+            // Show the selected category container
+            const selectedContainer = document.getElementById(category);
+            if (selectedContainer) {
+                selectedContainer.style.display = "block";
+            } else {
+                console.error(`No element found with ID: ${category}`);
+            }
+
+            // Remove active class from all buttons
+            document.querySelectorAll(".category").forEach((button) => {
+                button.classList.remove("active");
+            });
+
+            // Add active class to the button corresponding to the category
+            const activeButton = document.querySelector(`.category[onclick="openCategory(event, '${category}')"]`);
+            if (activeButton) {
+                activeButton.classList.add("active");
+            } else {
+                console.error(`No button found for category: ${category}`);
+            }
+        } else {
+            // Default to the first category if no category is specified
+            const defaultCategory = document.querySelector(".category").getAttribute("onclick").match(/'([^']+)'/)[1];
+            openCategory(null, defaultCategory);
+        }
+    });
 
     document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("event-and-parties").style.display = "block";

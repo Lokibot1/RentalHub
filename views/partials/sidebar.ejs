@@ -1,10 +1,29 @@
 <div class="sidebar">
     <ul>
-        <li><a href="/dashboard/user-dashboard" class="active">Dashboard</a></li>
-        <li><a href="/dashboard/profile">Profile</a></li>
-        <li><a href="/dashboard/rents">My Rents</a></li>
-        <li><a href="/dashboard/my-listing">My Listings</a></li>
-        <li><a href="/dashboard/archives">Archives</a></li>
+        <li><a id="user-dashboard-link" href="/dashboard/user-dashboard">Dashboard</a></li>
+        <li><a id="profile-link" href="/dashboard/profile">Profile</a></li>
+        <li><a id="rents-link" href="/dashboard/rents">My Rents</a></li>
+        <li><a id="my-listing-link" href="/dashboard/my-listing">My Listings</a></li>
+        <li><a id="archives-link" href="/dashboard/archives">Archives</a></li>
         <li><a href="/logout">Log Out</a></li>
     </ul>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const path = window.location.pathname;
+
+        const sidebarLinks = {
+            "/dashboard/user-dashboard": "user-dashboard-link",
+            "/dashboard/profile": "profile-link",
+            "/dashboard/rents": "rents-link",
+            "/dashboard/my-listing": "my-listing-link",
+            "/dashboard/archives": "archives-link"
+        };
+
+        const activeLinkId = sidebarLinks[path];
+        if (activeLinkId) {
+            document.getElementById(activeLinkId).classList.add("active");
+        }
+    });
+</script>
