@@ -23,8 +23,7 @@ router.get("/listing", checkAuth, (req, res) => {
  */
 router.get("/user-dashboard", checkAuth, (req, res) => {
   res.render("dashboard/user-dashboard", {
-    layout: "layouts/main",
-    /*category: toTitleCase(AddListing), */
+    layout: "layouts/dashboard",
     title:  "User Dashboard",
   });
 });
@@ -36,8 +35,7 @@ router.get("/user-dashboard", checkAuth, (req, res) => {
  */
 router.get("/profile", checkAuth, (req, res) => {
   res.render("dashboard/profile", {
-    layout: "layouts/main",
-    /*category: toTitleCase(AddListing), */
+    layout: "layouts/dashboard",
     title:  "User Profile",
   });
 });
@@ -49,8 +47,7 @@ router.get("/profile", checkAuth, (req, res) => {
  */
 router.get("/rents", checkAuth, (req, res) => {
   res.render("dashboard/rents", {
-    layout: "layouts/main",
-    /*category: toTitleCase(AddListing), */
+    layout: "layouts/dashboard",
     title:  "My Rents",
   });
 });
@@ -62,8 +59,7 @@ router.get("/rents", checkAuth, (req, res) => {
  */
 router.get("/my-listing", checkAuth, (req, res) => {
   res.render("dashboard/my-listing", {
-    layout: "layouts/main",
-    /*category: toTitleCase(AddListing), */
+    layout: "layouts/dashboard",
     title:  "My Listings",
   });
 });
@@ -75,8 +71,7 @@ router.get("/my-listing", checkAuth, (req, res) => {
  */
 router.get("/archives", checkAuth, (req, res) => {
   res.render("dashboard/archives", {
-    layout: "layouts/main",
-    /*category: toTitleCase(AddListing), */
+    layout: "layouts/dashboard",
     title:  "Archives",
   });
 });

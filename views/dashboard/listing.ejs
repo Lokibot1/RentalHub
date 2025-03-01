@@ -5,6 +5,7 @@
 
 <!--Form to add a new listing-->
 <h2>Add a new listing</h2>
+
 <div class="container">
     <div class="form">
         <form action="" id="listingForm">
@@ -72,95 +73,96 @@
             <label>Item Description: <span id="product-description"></span></label>
         </div>
     </div>
+</div>
 
-    <!--Script-->
-    <script>
-        //Listing Functionality
-        document
-            .getElementById("listingForm")
-            .addEventListener("submit", function (e) {
-                e.preventDefault();
+<!--Script-->
+<script>
+    //Listing Functionality
+    document
+        .getElementById("listingForm")
+        .addEventListener("submit", function (e) {
+            e.preventDefault();
 
-                let itemName = document.getElementById("itemName").value.trim();
-                let itemPrice = parseFloat(
-                    document.getElementById("itemPrice").value
-                );
-                let itemDescription = document
-                    .getElementById("itemDescription")
-                    .value.trim();
-                let location = document.getElementById("location").value.trim();
-                let ewallet = document.getElementById("ewallet").value.trim();
-                let category = document.getElementById("categories").value;
-                let imgInput = document.getElementById("img");
+            let itemName = document.getElementById("itemName").value.trim();
+            let itemPrice = parseFloat(
+                document.getElementById("itemPrice").value
+            );
+            let itemDescription = document
+                .getElementById("itemDescription")
+                .value.trim();
+            let location = document.getElementById("location").value.trim();
+            let ewallet = document.getElementById("ewallet").value.trim();
+            let category = document.getElementById("categories").value;
+            let imgInput = document.getElementById("img");
 
-                // Validate price
-                if (itemPrice <= 0 || isNaN(itemPrice)) {
-                    alert("Please enter a valid price greater than zero.");
-                    return;
-                }
+            // Validate price
+            if (itemPrice <= 0 || isNaN(itemPrice)) {
+                alert("Please enter a valid price greater than zero.");
+                return;
+            }
 
-                // Validate e-wallet number (ensure only digits)
-                if (!/^\d{10,16}$/.test(ewallet)) {
-                    alert("Please enter a valid e-wallet number (10-16 digits).");
-                    return;
-                }
+            // Validate e-wallet number (ensure only digits)
+            if (!/^\d{10,16}$/.test(ewallet)) {
+                alert("Please enter a valid e-wallet number (10-16 digits).");
+                return;
+            }
 
-                if (imgInput.files.length > 0) {
-                    let reader = new FileReader();
-                    reader.onload = function (event) {
-                        let item = {
-                            name: itemName,
-                            price: itemPrice.toFixed(2),
-                            description: itemDescription,
-                            location: location,
-                            image: event.target.result, // Base64 encoded image
-                            category: category,
-                            ewallet: ewallet,
-                        };
-
-                        // Save to localStorage
-                        let items = JSON.parse(localStorage.getItem("items")) || [];
-                        items.push(item);
-                        localStorage.setItem("items", JSON.stringify(items));
-
-                        alert("Item added!");
-                        document.getElementById("listingForm").reset(); // Reset form
-                        window.location.href = "shopping.html"; // Redirect to shopping page
-                    };
-                    reader.readAsDataURL(imgInput.files[0]); // Convert image to Base64
-                } else {
-                    alert("Please select an image.");
-                }
-            });
-
-        // Preview Functionality
-        function updatePreview() {
-            document.getElementById("product-name").textContent = document.getElementById("itemName").value;
-            document.getElementById("product-price").textContent = document.getElementById("itemPrice").value;
-            document.getElementById("itemDescription").addEventListener("input", function () {
-                document.getElementById("product-description").innerHTML = this.value.replace(/\n/g, "<br>");
-            });
-
-        }
-
-        function previewImage() {
-            let file = document.getElementById("img").files[0];
-            let preview = document.getElementById("preview");
-
-            if (file) {
+            if (imgInput.files.length > 0) {
                 let reader = new FileReader();
                 reader.onload = function (event) {
-                    preview.src = event.target.result;
-                };
-                reader.readAsDataURL(file);
-            } else {
-                preview.src = "";
-            }
-        }
+                    let item = {
+                        name: itemName,
+                        price: itemPrice.toFixed(2),
+                        description: itemDescription,
+                        location: location,
+                        image: event.target.result, // Base64 encoded image
+                        category: category,
+                        ewallet: ewallet,
+                    };
 
-        // Attach event listeners to inputs for live preview
-        document.getElementById("itemName").addEventListener("input", updatePreview);
-        document.getElementById("itemPrice").addEventListener("input", updatePreview);
-        document.getElementById("itemDescription").addEventListener("input", updatePreview);
-        document.getElementById("img").addEventListener("change", previewImage);
-    </script>
+                    // Save to localStorage
+                    let items = JSON.parse(localStorage.getItem("items")) || [];
+                    items.push(item);
+                    localStorage.setItem("items", JSON.stringify(items));
+
+                    alert("Item added!");
+                    document.getElementById("listingForm").reset(); // Reset form
+                    window.location.href = "shopping.html"; // Redirect to shopping page
+                };
+                reader.readAsDataURL(imgInput.files[0]); // Convert image to Base64
+            } else {
+                alert("Please select an image.");
+            }
+        });
+
+    // Preview Functionality
+    function updatePreview() {
+        document.getElementById("product-name").textContent = document.getElementById("itemName").value;
+        document.getElementById("product-price").textContent = document.getElementById("itemPrice").value;
+        document.getElementById("itemDescription").addEventListener("input", function () {
+            document.getElementById("product-description").innerHTML = this.value.replace(/\n/g, "<br>");
+        });
+
+    }
+
+    function previewImage() {
+        let file = document.getElementById("img").files[0];
+        let preview = document.getElementById("preview");
+
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function (event) {
+                preview.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "";
+        }
+    }
+
+    // Attach event listeners to inputs for live preview
+    document.getElementById("itemName").addEventListener("input", updatePreview);
+    document.getElementById("itemPrice").addEventListener("input", updatePreview);
+    document.getElementById("itemDescription").addEventListener("input", updatePreview);
+    document.getElementById("img").addEventListener("change", previewImage);
+</script>
