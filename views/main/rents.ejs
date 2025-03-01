@@ -1,0 +1,161 @@
+<link rel="stylesheet" href="css/archives.css" />
+    
+    <!--Navigation Bar-->
+    <nav>
+        <a href="/">
+          <div class="logo">
+            <h1>Rental<span>Hub</span></h1>
+          </div>
+        </a>
+        <ul>
+          <li><a href="/shopping">Shop</a></li>
+          <li>
+            <a href="/listing"
+              ><img src="/images/WhiteAdd.png" class="add-icon"
+            /></a>
+          </li>
+          <li>
+            <a href="/login">
+              <img
+                src="/images/Icon1.png"
+                alt="Profile"
+                class="profile-icon"
+              />
+            </a>
+          </li>
+        </ul>
+      </nav>
+  
+      <div class="main">
+        <!--Sidebar-->
+        <div class="sidebar">
+          <ul>
+            <li><a href="/user-dashboard">Dashboard</a></li>
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/rents" class="active">My Rents</a></li>
+            <li><a href="/my-listing">My Listings</a></li>
+            <li><a href="/archives">Archives</a></li>
+            <li><a href="/logout">Log Out</a></li>
+          </ul>
+        </div>
+  
+        <!--Main Content-->
+        <div class="content">
+          <div class="tab">
+            <button class="tablinks active" onclick="openTab(event, 'Requests')">
+              Requests
+            </button>
+            <button class="tablinks" onclick="openTab(event, 'Review')">
+              Review
+            </button>
+          </div>
+  
+          <!--Tab Content-->
+          <div id="Requests" class="tab-content"> 
+            <!-- Rent Item Card -->
+            <div class="rent-card">
+                <p class="seller-name">Name Seller</p>
+                <div class="rent-item">
+                    <img src="/images/placeholder.png" alt="Product Image" class="product-image" />
+                    <span class="product-name">Name ng Product</span>
+                </div>
+                <button class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+        
+        <div id="Review" class="tab-content" style="display: none;">
+            <button  class="cancel-btn">Cancel All</button>
+        </div>
+  
+  
+      <!--JavaScript-->
+      <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+          await loadActiveTab(); // Auto load data for the active tab
+  
+    // "Cancel All" BTN EVENT LISTENER
+        document.getElementById("cancel-all").addEventListener("click", async function () {
+          try {
+            const activeTab = document.querySelector(".tablinks.active").dataset.api; // Get active tab's API
+            const response = await fetch("/api/cancel-all", { //ready na to juls for api, adjust mo nalang if diff api gagamitin mo.
+              method: "DELETE",                               //eto rin juls, adjust mo nalang din, pwede rin POST method if server restriced kase frontend
+              headers: { "Content-Type": "application/json" },
+            });
+  
+            if (response.ok) {
+              alert("All rentals have been canceled.");
+              await fetchRents(activeTab, activeTab === "/api/my-rents" ? "request-container" : "review-container"); // Refresh only the active tab
+            }
+          } catch (error) {
+            console.error("Error canceling all rentals:", error);
+          }
+        });
+      });
+  
+        // LOAD ACTIVE TAB DATA AUTOMATICALLY
+        async function loadActiveTab() {
+          const activeTab = document.querySelector(".tablinks.active")?.dataset.api || "/api/my-rents"; // Default to "my-rents"
+          await fetchRents(activeTab, activeTab === "/api/my-rents" ? "request-container" : "review-container");
+        }
+  
+        // FETCH RENTS FUNCTION
+        async function fetchRents(apiUrl, containerId) {
+          try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+  
+            data.forEach((rent) => {
+              const rentCard = document.createElement("div");
+              rentCard.classList.add("rent-card");
+              rentCard.innerHTML = `
+                <p class="seller-name">${rent.seller}</p>
+                <div class="rent-item">
+                  <img src="${rent.image || "/images/placeholder.png"}" alt="Product Image" class="product-image">
+                  <span class="product-name">${rent.product}</span>
+                </div>
+                <button class="cancel-btn" onclick="cancelRent('${rent.id}', '${containerId}')">Cancel</button>
+              `;
+              container.appendChild(rentCard);
+            });
+          } catch (error) {
+            console.error(`Error fetching data from ${apiUrl}:`, error);
+          }
+        }
+  
+        // CANCEL RENT FUNCTION SA REVIEWS TAB
+        async function cancelRent(rentId, containerId) {
+          try {
+            const response = await fetch(`/api/cancel-rent/${rentId}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+            });
+            if (response.ok) {
+              alert("Rental canceled successfully.");
+              await fetchRents(containerId === "request-container" ? "/api/my-rents" : "/api/my-reviews", containerId); //eto change api if diff api gagamitin mo
+            }
+          } catch (error) {
+            console.error("Error canceling rent:", error);
+          }
+        }
+  
+          // OPEN TAB FUNCTION
+          function openTab(evt, tabName, apiUrl) {
+            var i, tabs, buttons;
+            tabs = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabs.length; i++) {
+              tabs[i].style.display = "none";
+            }
+            buttons = document.getElementsByClassName("tablinks");
+            for (i = 0; i < buttons.length; i++) {
+              buttons[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.classList.add("active");
+            evt.currentTarget.dataset.api = apiUrl; //STORE API ENDPOINT SA BUTTON
+            fetchRents(apiUrl, tabName === "request-container" ? "request-container" : "review-container");
+          }
+  
+      </script>
