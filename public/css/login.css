@@ -10,6 +10,7 @@ body {
     height: 100vh;
     background: linear-gradient(to right, #ffffff, #303d74);
     margin: 0;
+    overflow: hidden;
 }
 
 .container {
