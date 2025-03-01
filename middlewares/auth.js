@@ -9,8 +9,7 @@ function checkAuth(req, res, next) {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
     req.isAuthenticated = true;
   } catch (err) {
     req.isAuthenticated = false;
@@ -29,8 +28,7 @@ function optionalAuth(req, res, next) {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
     req.isAuthenticated = true;
   } catch (err) {
     req.isAuthenticated = false;

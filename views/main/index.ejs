@@ -3,225 +3,224 @@
 <!-- Navbar -->
 <nav>
     <a href="#Hero">
-      <div class="logo">
-        <h1>Rental <span> Hub</span></h1>
-      </div>
+        <div class="logo">
+            <h1>Rental <span> Hub</span></h1>
+        </div>
     </a>
     <ul>
-      <li><a href="#About-Us">About Us</a></li>
-      <li>
+        <li><a href="#About-Us">About Us</a></li>
+        <li>
         <li><a href="#How-It-Works">How It Works</a></li>
-      </li>
-      <li>
+        </li>
+        <li>
         <li><a href="/shopping/events-and-parties">Shop</a></li>
-      </li>
+        </li>
 
-      <li id="auth-status">
-        <% if (isAuthenticated) { %>
-            <a href='/dashboard/profile'>Dashboard Profile</a>
-        <% } else { %>
-            <a href="/login">
-                <img
-                  src="/images/Icon1.png"
-                  alt="Profile"
-                  class="profile-icon"
-                />
-              </a>
-        <% } %>
+        <li id="auth-status">
+            <% if (isAuthenticated) { %>
+                <a href='/dashboard/profile'>Dashboard Profile</a>
+            <% } else { %>
+                <a href="/login">
+                    <img
+                            src="/images/Icon1.png"
+                            alt="Profile"
+                            class="profile-icon"
+                    />
+                </a>
+            <% } %>
         </li>
 
     </ul>
-  </nav>
+</nav>
 
-  <!-- Hero Section -->
-  <section id="Hero">
+<!-- Hero Section -->
+<section id="Hero">
     <div class="landing">
-      <div class="search">
-        <h1>Want it? Rent It!</h1>
-        <h4>Nearby and at times that suit you</h4>
-        <div class="search-bar">
-          <span class="location-icon">📍</span>
-          <input type="text" placeholder="Location" />
-          <button class="search-btn">Search</button>
+        <div class="search">
+            <h1>Want it? Rent It!</h1>
+            <h4>Nearby and at times that suit you</h4>
+            <div class="search-bar">
+                <span class="location-icon">📍</span>
+                <input type="text" placeholder="Location"/>
+                <button class="search-btn">Search</button>
+            </div>
         </div>
     </div>
-  </section>
+</section>
 
-  <!-- Categories -->
-  <div class="categories-cont">
+<!-- Categories -->
+<div class="categories-cont">
     <button
-      class="category active"
-      onclick="openCategory('events-and-parties')"
+            class="category active"
+            onclick="openCategory('events-and-parties')"
     >
-      <div class="img">
-        <img src="images/events.jpg" alt="" />
-      </div>
-      <span class="category-text">Events & Parties</span>
+        <div class="img">
+            <img src="images/events.jpg" alt=""/>
+        </div>
+        <span class="category-text">Events & Parties</span>
     </button>
     <button
-      class="category"
-      onclick="openCategory(event, 'Tech & Gadgets')"
+            class="category"
+            onclick="openCategory(event, 'Tech & Gadgets')"
     >
-      <div class="img">
-        <img src="images/tech.jpg" alt="" />
-      </div>
-      <span class="category-text">Tech & Gadgets</span>
+        <div class="img">
+            <img src="images/tech.jpg" alt=""/>
+        </div>
+        <span class="category-text">Tech & Gadgets</span>
     </button>
 
     <button
-      class="category"
-      onclick="openCategory(event, 'Clothing & Accessories')"
+            class="category"
+            onclick="openCategory(event, 'Clothing & Accessories')"
     >
-      <div class="img">
-        <img src="images/events.jpg" alt="" />
-      </div>
-      <span class="category-text">Clothing & Accessories</span>
+        <div class="img">
+            <img src="images/events.jpg" alt=""/>
+        </div>
+        <span class="category-text">Clothing & Accessories</span>
     </button>
     <button
-      class="category"
-      onclick="openCategory(event, 'Sports & Outdoor')"
+            class="category"
+            onclick="openCategory(event, 'Sports & Outdoor')"
     >
-      <div class="img">
-        <img src="images/events.jpg" alt="" />
-      </div>
-      <span class="category-text">Sports & Outdoor Gear</span>
+        <div class="img">
+            <img src="images/events.jpg" alt=""/>
+        </div>
+        <span class="category-text">Sports & Outdoor Gear</span>
     </button>
     <button
-      class="category"
-      onclick="openCategory(event, 'Tools & Equipment')"
+            class="category"
+            onclick="openCategory(event, 'Tools & Equipment')"
     >
-      <div class="img">
-        <img src="images/tools.jpg" alt="" />
-      </div>
-      <span class="category-text">Tools & Equipment</span>
+        <div class="img">
+            <img src="images/tools.jpg" alt=""/>
+        </div>
+        <span class="category-text">Tools & Equipment</span>
     </button>
     <button
-      class="category"
-      onclick="openCategory(event, 'Musical Instruments')"
+            class="category"
+            onclick="openCategory(event, 'Musical Instruments')"
     >
-      <div class="img">
-        <img src="images/events.jpg" alt="" />
-      </div>
-      <span class="category-text">Musical Instruments</span>
+        <div class="img">
+            <img src="images/events.jpg" alt=""/>
+        </div>
+        <span class="category-text">Musical Instruments</span>
     </button>
     <button class="category" onclick="openCategory(event, 'Home & Office')">
-      <div class="img">
-        <img src="images/events.jpg" alt="" />
-      </div>
-      <span class="category-text">Home & Office</span>
+        <div class="img">
+            <img src="images/events.jpg" alt=""/>
+        </div>
+        <span class="category-text">Home & Office</span>
     </button>
     <button
-      class="category"
-      onclick="openCategory(event, 'Pets Accessories')"
+            class="category"
+            onclick="openCategory(event, 'Pets Accessories')"
     >
-      <div class="img">
-        <img src="images/events.jpg" alt="" />
-      </div>
-      <span class="category-text">Pets Accessories</span>
+        <div class="img">
+            <img src="images/events.jpg" alt=""/>
+        </div>
+        <span class="category-text">Pets Accessories</span>
     </button>
-  </div>
-  
-  <!-- About Us Section -->
-  <section id="About-Us">
+</div>
+
+<!-- About Us Section -->
+<section id="About-Us">
     <div class="about-us">
-      <div class="about">
-        <h1>About Us</h1>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-      occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-      mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur
-      adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-      magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-      laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-      pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa
-      qui officia deserunt mollit anim id est laborum
-        </p>
-      </div>
-      <div class="why">
-        <h1>Why RentalHub</h1>
-        <div class="cons">
-        <div class="con1">
-          <img src="images/pig1.png" alt="">
-          <p>To save money from buying</p>
+        <div class="about">
+            <h1>About Us</h1>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+                velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+                occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+                mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur
+                adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa
+                qui officia deserunt mollit anim id est laborum
+            </p>
         </div>
-        <div class="con2">
-          <img src="images/plantmoney.png" alt="">
-          <p>To earn money from lending</p>
+        <div class="why">
+            <h1>Why RentalHub</h1>
+            <div class="cons">
+                <div class="con1">
+                    <img src="images/pig1.png" alt="">
+                    <p>To save money from buying</p>
+                </div>
+                <div class="con2">
+                    <img src="images/plantmoney.png" alt="">
+                    <p>To earn money from lending</p>
+                </div>
+                <div class="con3">
+                    <img src="images/reuse.png" alt="">
+                    <p>Experience more, own less.</p>
+                </div>
+            </div>
         </div>
-        <div class="con3">
-          <img src="images/reuse.png" alt="">
-          <p>Experience more, own less.</p>
-        </div>
-        </div>
-      </div>
     </div>
-  </section>
-  
-  <!-- How It Works Section -->
-  <section id="How-It-Works">
+</section>
+
+<!-- How It Works Section -->
+<section id="How-It-Works">
     <h1>How RentalHub Works</h1>
     <div class="toggle-wrapper">
-      <div class="toggle-container">
-        <button id="renterBtn" class="toggle-btn">Renter</button>
-        <button id="ownerBtn" class="toggle-btn">Owner</button>
-        <div class="toggle-slider"></div>
-      </div>
+        <div class="toggle-container">
+            <button id="renterBtn" class="toggle-btn">Renter</button>
+            <button id="ownerBtn" class="toggle-btn">Owner</button>
+            <div class="toggle-slider"></div>
+        </div>
     </div>
 
     <div id="renterContent" class="content-box">
-      <h3>For Renters</h3>
-      <div class="content-wrapper">
-        <ul>
-          <li><strong>1. Browse</strong> – Find the item you need.</li>
-          <li>
-            <strong>2. Request</strong> – Send a rental request & pay a
-            deposit.
-          </li>
-          <li><strong>3. Use</strong> – Enjoy the item.</li>
-          <li>
-            <strong>4. Return</strong> – Give it back & get your deposit
-            refunded.
-          </li>
-        </ul>
-        <img
-          src="images/magnifyingglass.png"
-          id="renterImages"
-          alt="For Renters"
-          class="toggle-image"
-        />
-      </div>
+        <h3>For Renters</h3>
+        <div class="content-wrapper">
+            <ul>
+                <li><strong>1. Browse</strong> – Find the item you need.</li>
+                <li>
+                    <strong>2. Request</strong> – Send a rental request & pay a
+                    deposit.
+                </li>
+                <li><strong>3. Use</strong> – Enjoy the item.</li>
+                <li>
+                    <strong>4. Return</strong> – Give it back & get your deposit
+                    refunded.
+                </li>
+            </ul>
+            <img
+                    src="images/magnifyingglass.png"
+                    id="renterImages"
+                    alt="For Renters"
+                    class="toggle-image"
+            />
+        </div>
     </div>
 
     <div id="ownerContent" class="content-box" style="display: none">
-      <h3>For Owners</h3>
-      <div class="content-wrapper">
-        <ul>
-          <li><strong>1. List</strong> – Upload your item for rent.</li>
-          <li>
-            <strong>2. Approve</strong> – Review & accept rental requests.
-          </li>
-          <li><strong>3. Lend</strong> – Hand over the item.</li>
-          <li>
-            <strong>4. Earn</strong> – Get paid once the item is returned
-            safely.
-          </li>
-        </ul>
-        <img
-          src="images/howitworksowner1.png"
-          id="ownerImages"
-          alt="For Owners"
-          class="toggle-image"
-        />
-      </div>
+        <h3>For Owners</h3>
+        <div class="content-wrapper">
+            <ul>
+                <li><strong>1. List</strong> – Upload your item for rent.</li>
+                <li>
+                    <strong>2. Approve</strong> – Review & accept rental requests.
+                </li>
+                <li><strong>3. Lend</strong> – Hand over the item.</li>
+                <li>
+                    <strong>4. Earn</strong> – Get paid once the item is returned
+                    safely.
+                </li>
+            </ul>
+            <img
+                src="images/howitworksowner1.png"
+                id="ownerImages"
+                alt="For Owners"
+                class="toggle-image"
+            />
+        </div>
     </div>
-  </section>
-
-
+</section>
 
 
 <script src="/js/script.js"></script>

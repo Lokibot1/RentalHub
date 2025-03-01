@@ -6,7 +6,7 @@ const router = express.Router();
 
 /**
  * Dashboard
- * @route GET /listing
+ * @route GET /dashboard/listing
  */
 router.get("/listing", checkAuth, (req, res) => {
   res.render("dashboard/listing", {
@@ -18,8 +18,8 @@ router.get("/listing", checkAuth, (req, res) => {
 
 
 /**
- * Add newLisitng page
- * @route GET /user-dashboard
+ * User Dashboard
+ * @route GET /dashboard/user-dashboard
  */
 router.get("/user-dashboard", checkAuth, (req, res) => {
   res.render("dashboard/user-dashboard", {
@@ -31,8 +31,8 @@ router.get("/user-dashboard", checkAuth, (req, res) => {
 
 
 /**
- * Add newLisitng page
- * @route GET /profile
+ * Profile Page
+ * @route GET /dashboard/profile
  */
 router.get("/profile", checkAuth, (req, res) => {
   res.render("dashboard/profile", {
@@ -44,8 +44,8 @@ router.get("/profile", checkAuth, (req, res) => {
 
 
 /**
- * Add newLisitng page
- * @route GET /rents
+ * Rents Page
+ * @route GET /dashboard/rents
  */
 router.get("/rents", checkAuth, (req, res) => {
   res.render("dashboard/rents", {
@@ -57,8 +57,8 @@ router.get("/rents", checkAuth, (req, res) => {
 
 
 /**
- * Add newLisitng page
- * @route GET /my-listings
+ * My Listing Page
+ * @route GET /dashboard/my-listing
  */
 router.get("/my-listing", checkAuth, (req, res) => {
   res.render("dashboard/my-listing", {
@@ -70,8 +70,8 @@ router.get("/my-listing", checkAuth, (req, res) => {
 
 
 /**
- * Add newLisitng page
- * @route GET /archives
+ * Archives Page
+ * @route GET /dashboard/archives
  */
 router.get("/archives", checkAuth, (req, res) => {
   res.render("dashboard/archives", {

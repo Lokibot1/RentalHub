@@ -214,13 +214,15 @@ document.addEventListener("DOMContentLoaded", function () {
     "howitwrksowner4.png",
   ];
   
-  let renterIndex = 0;
-  let ownerIndex = 0;
+  let imageIndex = 0;
+  // let ownerIndex = 0;
+
   function changeImage(element, imageArray) {
-    renterIndex = (renterIndex + 1) % renterImages.length;
+    imageIndex = (imageIndex + 1) % imageArray.length;
     document.getElementById(element).style.opacity = 0; // Fade out
+
     setTimeout(() => {
-      document.getElementById(element).src = `/images/${imageArray}`;
+      document.getElementById(element).src = `/images/${imageArray[imageIndex]}`;
       document.getElementById(element).style.opacity = 1; // Fade in
     }, 500);
   }
