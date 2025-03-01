@@ -202,39 +202,42 @@ document.addEventListener("DOMContentLoaded", function () {
   // Slideshow for Renters and Owners
   // Image arrays for Renters and Owners
   const renterImages = [
-    "/frontend/img/magnifyingglass.png",
-    "/frontend/img/recieve.png",
-    "/frontend/img/request.png",
+    "magnifyingglass.png",
+    "recieve.png",
+    "request.png",
   ];
   
   const ownerImages = [
-    "img/howitworksowner1.png",
-    "img/howitworksowner2.png",
-    "img/howitworksowner3.png",
+    "howitworksowner1.png",
+    "howitworksowner2.png",
+    "howitoworksowner3.png",
+    "howitwrksowner4.png",
   ];
   
   let renterIndex = 0;
   let ownerIndex = 0;
-  function changeRenterImage() {
+  function changeImage(element, imageArray) {
     renterIndex = (renterIndex + 1) % renterImages.length;
-    document.getElementById("renterImages").style.opacity = 0; // Fade out
+    document.getElementById(element).style.opacity = 0; // Fade out
     setTimeout(() => {
-      document.getElementById("renterImages").src = renterImages[renterIndex];
-      document.getElementById("renterImages").style.opacity = 1; // Fade in
+      document.getElementById(element).src = `/images/${imageArray}`;
+      document.getElementById(element).style.opacity = 1; // Fade in
     }, 500);
   }
   
+  /*
   function changeOwnerImage() {
     ownerIndex = (ownerIndex + 1) % ownerImages.length;
-    document.getElementById("ownerImages").style.opacity = 0; // Fade out
+    document.getElementById("ownerImages").style.opacity = 0  ; // Fade out
     setTimeout(() => {
-      document.getElementById("ownerImages").src = ownerImages[ownerIndex];
+      document.getElementById("ownerImages").src = `/images/${ownerImages[ownerIndex]}`;
       document.getElementById("ownerImage").style.opacity = 1; // Fade in
     }, 500);
   }
-  
-  setInterval(changeRenterImage, 3000);
-  setInterval(changeOwnerImage, 3000);
+  */
+
+  setInterval(changeImage("renterImages", renterImages), 3000);
+  setInterval(changeImage("ownerImages", ownerImages), 3000);
   
   document.getElementById("renterBtn").addEventListener("click", () => {
     document.getElementById("renterContent").style.display = "block";
