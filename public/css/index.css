@@ -137,6 +137,7 @@
     background-color: #8e001f;
   }
   
+
   .categories-cont {
     margin: 20px 10px;
     height: 400px;
@@ -151,6 +152,7 @@
   .categories-cont::-webkit-scrollbar {
     display: none;
   }
+  
   .category {
     width: 336px;
     height: 350px;

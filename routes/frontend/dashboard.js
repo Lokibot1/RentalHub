@@ -17,4 +17,16 @@ router.get("/", checkAuth, (req, res) => {
 });
 
 
+/**
+ * Dashboard
+ * @route GET /listing
+ */
+router.get("/listing", checkAuth, (req, res) => {
+  res.render("dashboard/listing", {
+    layout: "layouts/dashboard",
+    title: "Add New Listing",
+    isAuthenticated: req.isAuthenticated,
+  });
+});
+
 module.exports = router;

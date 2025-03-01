@@ -15,15 +15,21 @@
       <li>
         <li><a href="shopping.html">Shop</a></li>
       </li>
-      <li>
-        <a href="/login">
-          <img
-            src="images/Icon1.png"
-            alt="Profile"
-            class="profile-icon"
-          />
-        </a>
-      </li>
+
+      <li id="auth-status">
+        <% if (isAuthenticated) { %>
+            <a href='/dashboard'>Dashboard</a>
+        <% } else { %>
+            <a href="/login">
+                <img
+                  src="images/Icon1.png"
+                  alt="Profile"
+                  class="profile-icon"
+                />
+              </a>
+        <% } %>
+        </li>
+
     </ul>
   </nav>
 
@@ -45,7 +51,7 @@
   <div class="categories-cont">
     <button
       class="category active"
-      onclick="openCategory(event, 'Events & Parties')"
+      onclick="openCategory('events-and-parties')"
     >
       <div class="img">
         <img src="images/events.jpg" alt="" />
