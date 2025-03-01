@@ -42,8 +42,9 @@ router.post("/register", async (req, res) => {
       // Check if user already exists
       const [existingUser] = await db.promise().query("SELECT * FROM users WHERE email = ?", [email]);
 
+
       if (existingUser.length > 0) {
-        return res.status(400).json({ message: "User already exists" });
+        return res.status(400).json({ message: "Email already used. Please try another email." });
       } else {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -59,7 +60,7 @@ router.post("/register", async (req, res) => {
           hashedPassword,
         ]);
       }
-
+      
       res.status(201).json({ message: "User registered successfully" });
     }
   });

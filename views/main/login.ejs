@@ -16,7 +16,7 @@
     <input type="email" name="email" placeholder="Email" required>
 
     <div class="password-box">
-        <input type="password" name="password" id="login-password" placeholder="Password" required>
+        <input type="password" name="password" id="login-password" oncopy="return false" onpaste="return false"  placeholder="Password" required>
         <span class="toggle-password" onclick="togglePassword('login-password')"></span>
     </div>
 

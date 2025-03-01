@@ -303,7 +303,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let ewallet = document.getElementById("ewallet").value.trim();
     let category = document.getElementById("categories").value;
     let imgInput = document.getElementById("img");
-  
+    
     // Validate price
     if (itemPrice <= 0 || isNaN(itemPrice)) {
       alert("Please enter a valid price greater than zero.");

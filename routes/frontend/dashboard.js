@@ -6,19 +6,6 @@ const router = express.Router();
 
 /**
  * Dashboard
- * @route GET /dashboard
- */
-router.get("/", checkAuth, (req, res) => {
-  res.render("dashboard/index", {
-    layout: "layouts/dashboard",
-    title: "Dashboard",
-    isAuthenticated: req.isAuthenticated,
-  });
-});
-
-
-/**
- * Dashboard
  * @route GET /listing
  */
 router.get("/listing", checkAuth, (req, res) => {

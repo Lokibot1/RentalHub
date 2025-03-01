@@ -25,7 +25,7 @@ loginButton.addEventListener('click', async (event) => {
 
         // localStorage.setItem("token", data.token); // Store token
 
-        window.location.href = "/dashboard"; // Redirect to homepage
+        window.location.href = "/shopping/events-and-parties"; // Redirect to homepage
     } catch (error) {
         alert(error.message);
     }
