@@ -1,139 +1,100 @@
 <!-- Place here your css styles -->
-<link rel="stylesheet" href="/css/shopping.css" />
+<link rel="stylesheet" href="/css/shopping.css"/>
 
 <!-- Body -->
 
-    <!--Navigation Bar-->
-    <nav>
-        <a href="/">
-          <div class="logo">
+<!--Navigation Bar-->
+<nav>
+    <a href="/">
+        <div class="logo">
             <h1>Rental <span> Hub</span></h1>
-          </div>
-        </a>
-        <div class="search-bar">
-          <input type="text" placeholder="Search" />
-          <button><img src="/images/search.png" /></button>
         </div>
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li>
+    </a>
+    <div class="search-bar">
+        <input type="text" placeholder="Search"/>
+        <button><img src="/images/search.png"/></button>
+    </div>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li>
             <a href="/dashboard/listing"
-              ><img src="/images/blueAdd.png" class="add-icon"
-            /></a>
-          </li>
-          <li>
+            ><img src="/images/blueAdd.png" class="add-icon"
+                /></a>
+        </li>
+        <li>
             <a href="/dashboard/profile">
-              <img
-                src="/images/blueProfile.png"
-                alt="Profile"
-                class="profile-icon"
-              />
+                <img
+                        src="/images/blueProfile.png"
+                        alt="Profile"
+                        class="profile-icon"
+                />
             </a>
-          </li>
-        </ul>
-      </nav>
-  
-      <!-- Categories -->
-      <div class="categories-cont">
-        <button
-          class="category active"
-          onclick="openCategory(event, 'Events & Parties')"
-        >
-          Events & Parties
-        </button>
-        <button class="category" onclick="openCategory(event, 'Tech & Gadgets')">
-          Tech & Gadgets
-        </button>
-        <button
-          class="category"
-          onclick="openCategory(event, 'Clothing & Accessories')"
-        >
-          Clothing & Accessories
-        </button>
-        <button
-          class="category"
-          onclick="openCategory(event, 'Sports & Outdoor')"
-        >
-          Sports & Outdoor Gear
-        </button>
-        <button
-          class="category"
-          onclick="openCategory(event, 'Tools & Equipment')"
-        >
-          Tools & Equipment
-        </button>
-        <button
-          class="category"
-          onclick="openCategory(event, 'Musical Instruments')"
-        >
-          Musical Instruments
-        </button>
-        <button class="category" onclick="openCategory(event, 'Home & Office')">
-          Home & Office
-        </button>
-        <button
-          class="category"
-          onclick="openCategory(event, 'Pets Accessories')"
-        >
-          Pets Accessories
-        </button>
-      </div>
-  
-      <!-- Tabs -->
-      <div id="Events & Parties" class="shoppingContainer"></div>
-      <div
-        id="Tech & Gadgets"
-        class="shoppingContainer"
-        style="display: none"
-      ></div>
-      <div
-        id="Clothing & Accessories"
-        class="shoppingContainer"
-        style="display: none"
-      ></div>
-      <div
-        id="Sports & Outdoor"
-        class="shoppingContainer"
-        style="display: none"
-      ></div>
-      <div
-        id="Tools & Equipment"
-        class="shoppingContainer"
-        style="display: none"
-      ></div>
-      <div
-        id="Musical Instruments"
-        class="shoppingContainer"
-        style="display: none"
-      ></div>
-      <div
-        id="Home & Office"
-        class="shoppingContainer"
-        style="display: none"
-      ></div>
-      <div
-        id="Pets Accessories"
-        class="shoppingContainer"
-        style="display: none"
-      ></div>
-  
-      <!--Scripts-->
-      <script>
-        // Listings Display
-        document.addEventListener("DOMContentLoaded", function () {
-          let items = JSON.parse(localStorage.getItem("items")) || []; //PALITAN MO NALANG TO JULS NG DATABASE KASE LOCALDATA KINUKUHA NETO E
-  
-          items.forEach((item) => {
+        </li>
+    </ul>
+</nav>
+
+<!-- Categories -->
+<div class="categories-cont">
+    <button class="category active" onclick="openCategory(event, 'events-and-parties')">
+        Events & Parties
+    </button>
+
+    <button class="category" onclick="openCategory(event, 'tech-and-gadgets')">
+        Tech & Gadgets
+    </button>
+
+    <button class="category" onclick="openCategory(event, 'clothing-and-accessories')">
+        Clothing & Accessories
+    </button>
+
+    <button class="category" onclick="openCategory(event, 'sports-and-outdoor')">
+        Sports & Outdoor Gear
+    </button>
+
+    <button class="category" onclick="openCategory(event, 'tools-and-equipment')">
+        Tools & Equipment
+    </button>
+
+    <button class="category" onclick="openCategory(event, 'musical-instruments')">
+        Musical Instruments
+    </button>
+
+    <button class="category" onclick="openCategory(event, 'home-and-office')">
+        Home & Office
+    </button>
+
+    <button class="category" onclick="openCategory(event, 'pets-accessories')">
+        Pets Accessories
+    </button>
+</div>
+
+<!-- Tabs -->
+<div id="events-and-parties" class="shoppingContainer"></div>
+<div id="tech-and-gadgets" class="shoppingContainer" style="display: none"></div>
+<div id="clothing-and-accessories" class="shoppingContainer" style="display: none"></div>
+<div id="sports-and-outdoor" class="shoppingContainer" style="display: none"></div>
+<div id="tools-and-equipment" class="shoppingContainer" style="display: none"></div>
+<div id="musical-instruments" class="shoppingContainer" style="display: none"></div>
+<div id="home-and-office" class="shoppingContainer" style="display: none"></div>
+<div id="pets-accessories" class="shoppingContainer" style="display: none"></div>
+
+<!--Scripts-->
+<script>
+    // Listings Display
+    document.addEventListener("DOMContentLoaded", function () {
+        let items = JSON.parse(localStorage.getItem("items")) || []; //PALITAN MO NALANG TO JULS NG DATABASE KASE LOCALDATA KINUKUHA NETO E
+
+        items.forEach((item) => {
             let shoppingContainer = document.getElementById(item.category);
             if (!shoppingContainer) return;
-  
+
             let shoppingList = shoppingContainer.querySelector("ul");
             if (!shoppingList) {
-              shoppingList = document.createElement("ul");
-              shoppingList.className = "shoppingList"; // For CSS
-              shoppingContainer.appendChild(shoppingList);
+                shoppingList = document.createElement("ul");
+                shoppingList.className = "shoppingList"; // For CSS
+                shoppingContainer.appendChild(shoppingList);
             }
-  
+
             let li = document.createElement("li");
             li.className = "shoppingItem"; // For CSS
             li.innerHTML = `
@@ -148,58 +109,65 @@
               📍: ${item.location}
               <br>
             `;
-  
+
             // Make the item clickable
             li.addEventListener("click", function () {
-              localStorage.setItem("selectedItem", JSON.stringify(item));
-              window.location.href = "view-product.html";
+                localStorage.setItem("selectedItem", JSON.stringify(item));
+                window.location.href = "view-product.html";
             });
-  
+
             shoppingList.appendChild(li);
-          });
         });
-  
-        // Tabs Functionality
-        function openCategory(evt, categoryName) {
-          var i, tabs, buttons;
-  
-          tabs = document.getElementsByClassName("shoppingContainer");
-          for (i = 0; i < tabs.length; i++) {
+    });
+
+    // Tabs Functionality
+    function openCategory(evt, categoryName) {
+        let i, tabs, buttons;
+
+        tabs = document.querySelectorAll(".shoppingContainer");
+
+        for (i = 0; i < tabs.length; i++) {
             tabs[i].style.display = "none";
-          }
-  
-          buttons = document.getElementsByClassName("category");
-          for (i = 0; i < buttons.length; i++) {
-            buttons[i].classList.remove("active");
-          }
-  
-          document.getElementById(categoryName).style.display = "block";
-          evt.currentTarget.classList.add("active");
         }
-  
-        document.addEventListener("DOMContentLoaded", function () {
-          document.getElementById("Events & Parties").style.display = "block";
-        });
-  
-        //home to shopping
-        document.addEventListener("DOMContentLoaded", function () {
-          // Get the URL parameters
-          const params = new URLSearchParams(window.location.search);
-          const category = params.get("category");
-  
-          if (category) {
+
+        buttons = document.querySelectorAll(".category");
+        for (i = 0; i < buttons.length; i++) {
+            buttons[i].classList.remove("active");
+        }
+
+        let selectedTab = document.getElementById(categoryName);
+        if (selectedTab) {
+            selectedTab.style.display = "block";
+        } else {
+            console.error(`No element found with ID: ${categoryName}`);
+        }
+        evt.currentTarget.classList.add("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("event-and-parties").style.display = "block";
+    });
+
+
+    //home to shopping
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get the URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const category = params.get("category");
+
+        if (category) {
             // Hide all shoppingContainers
             document
-              .querySelectorAll(".shoppingContainer")
-              .forEach((container) => {
-                container.style.display = "none";
-              });
-  
+                .querySelectorAll(".shoppingContainer")
+                .forEach((container) => {
+                    container.style.display = "none";
+                });
+
             // Show the selected category container
             const selectedContainer = document.getElementById(category);
             if (selectedContainer) {
-              selectedContainer.style.display = "block";
+                selectedContainer.style.display = "block";
             }
-          }
-        });
-      </script>
+        }
+    });
+</script>
