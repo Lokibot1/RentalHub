@@ -28,6 +28,11 @@ CREATE TABLE IF NOT EXISTS users
     created_at     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Note: (Only for development)
+-- Password is '1234567a'
+INSERT INTO users (role_id, first_name, last_name, contact_number, email, password)
+VALUES (1, 'Admin', 'Admin', '09123456789', 'admin@gmail.com', '$2a$10$Bru/3reMfMIXlu4uw9PQ..RDNyRPVZ49YeHlhveh4.PpsFTmBopjW');
+
 -- roles
 CREATE TABLE IF NOT EXISTS roles
 (
