@@ -22,6 +22,9 @@ app.use(expressLayouts);
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, "public/")));
 
+// Serve static files from the "C:\uploads" directory
+app.use("/uploads", express.static(process.env.STORAGE_PATH));
+
 // Import routes
 const mainRoutes = require("./routes/frontend/main");
 const dashboardRoutes = require("./routes/frontend/dashboard");

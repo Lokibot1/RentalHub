@@ -32,12 +32,6 @@ const upload = multer({ storage: storage });
 router.post("/listing", checkAuth, upload.single('item_file'), async (req, res) => {
     const { item_name, item_price, item_description, location, categories } = req.body;
     const item_file = req.file; // Access the uploaded file
-    let errors = {}
-
-    // console.log('user', req.user.id)
-    // console.log('body', item_name, item_price, item_description, location, categories)
-    // console.log('file', item_file)
-
 
     if (!item_file) {
         return res.status(400).json({ success: false, message: "File upload failed." });
@@ -54,5 +48,40 @@ router.post("/listing", checkAuth, upload.single('item_file'), async (req, res) 
     });
 });
 
+
+/**
+ * Get all items/listing
+ * @route POST /api/listing
+ */
+router.get("/listing/:category_id", checkAuth, upload.single('item_file'), async (req, res) => {
+    // Get the category ID from the request
+    const { category_id } = req.params;
+
+    // Handle the received data and insert it into the database
+    const sql = "SELECT * FROM items where category_id = ?";
+    db.query(sql, [category_id], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({ success: false, message: "Failed to add item." });
+        }
+
+        const filteredResults = results.map(({ id, name, price, description, location, file_path }) => {
+            return {
+                id,
+                name,
+                price,
+                description,
+                location,
+                image: `/uploads/${file_path}`
+            }
+        });
+        // console.log(filteredResults);
+
+        res.status(200).json({
+            success: true,
+            data: filteredResults
+        });
+    });
+});
 
 module.exports = router;

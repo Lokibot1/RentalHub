@@ -35,65 +35,73 @@
 
 <!-- Categories -->
 <div class="categories-cont">
-    <button class="category active" onclick="openCategory(event, 'events-and-parties')">
+    <button class="category active" onclick="openCategory('events-and-parties')">
         Events & Parties
     </button>
 
-    <button class="category" onclick="openCategory(event, 'tech-and-gadgets')">
+    <button class="category" onclick="openCategory('tech-and-gadgets')">
         Tech & Gadgets
     </button>
 
-    <button class="category" onclick="openCategory(event, 'clothing-and-accessories')">
+    <button class="category" onclick="openCategory('clothing-and-accessories')">
         Clothing & Accessories
     </button>
 
-    <button class="category" onclick="openCategory(event, 'sports-and-outdoor-gear')">
+    <button class="category" onclick="openCategory('sports-and-outdoor-gear')">
         Sports & Outdoor Gear
     </button>
 
-    <button class="category" onclick="openCategory(event, 'tools-and-equipment')">
+    <button class="category" onclick="openCategory('tools-and-equipment')">
         Tools & Equipment
     </button>
 
-    <button class="category" onclick="openCategory(event, 'musical-instruments')">
+    <button class="category" onclick="openCategory('musical-instruments')">
         Musical Instruments
     </button>
 
-    <button class="category" onclick="openCategory(event, 'home-and-office')">
+    <button class="category" onclick="openCategory('home-and-office')">
         Home & Office
     </button>
 
-    <button class="category" onclick="openCategory(event, 'pets-accessories')">
+    <button class="category" onclick="openCategory('pets-accessories')">
         Pets Accessories
     </button>
 </div>
 
 <!-- Tabs -->
-<div id="events-and-parties" class="shoppingContainer"></div>
-<div id="tech-and-gadgets" class="shoppingContainer" style="display: none"></div>
-<div id="clothing-and-accessories" class="shoppingContainer" style="display: none"></div>
-<div id="sports-and-outdoor-gear" class="shoppingContainer" style="display: none"></div>
-<div id="tools-and-equipment" class="shoppingContainer" style="display: none"></div>
-<div id="musical-instruments" class="shoppingContainer" style="display: none"></div>
-<div id="home-and-office" class="shoppingContainer" style="display: none"></div>
-<div id="pets-accessories" class="shoppingContainer" style="display: none"></div>
+<div id="shopping-container"></div>
+
 
 <!--Scripts-->
 <script>
-    // Listings Display
-    document.addEventListener("DOMContentLoaded", function () {
-        let items = JSON.parse(localStorage.getItem("items")) || []; //PALITAN MO NALANG TO JULS NG DATABASE KASE LOCALDATA KINUKUHA NETO E
+    let items = [];
 
-        items.forEach((item) => {
-            let shoppingContainer = document.getElementById(item.category);
+    // Listings Display
+    document.addEventListener("DOMContentLoaded", async function () {
+        // Get the URL parameter after shopping/
+        const category = window.location.pathname.split("/").pop();
+        console.log('start')
+
+        const data = await fetch(`/api/listing/${getCategoryId(category)}`)
+            .then((response) => response.json())
+            .then((data) => {
+                // items = data.data;
+                return data.data
+            })
+
+        let shoppingList = ''
+
+            shoppingList = document.createElement("ul");
+            shoppingList.className = "shoppingList"; // For CSS
+
+        data.forEach(item => {
+            console.log(item)
+            let shoppingContainer = document.getElementById('shopping-container');
             if (!shoppingContainer) return;
 
-            let shoppingList = shoppingContainer.querySelector("ul");
-            if (!shoppingList) {
-                shoppingList = document.createElement("ul");
-                shoppingList.className = "shoppingList"; // For CSS
+            // if (!shoppingList) {
                 shoppingContainer.appendChild(shoppingList);
-            }
+            // }
 
             let li = document.createElement("li");
             li.className = "shoppingItem"; // For CSS
@@ -110,6 +118,7 @@
               <br>
             `;
 
+
             // Make the item clickable
             li.addEventListener("click", function () {
                 localStorage.setItem("selectedItem", JSON.stringify(item));
@@ -118,12 +127,17 @@
 
             shoppingList.appendChild(li);
         });
+            // })
+            // .catch((error) => {
+            //     console.error("Error:", error);
+            // });
+
+        console.log('end')
     });
 
 
     // Tabs Functionality
-    // Tabs Functionality
-    function openCategory(evt, categoryName) {
+    function openCategory(categoryName) {
         // Redirect to the category page with the path
         window.location.href = `/shopping/${categoryName}`;
     }
@@ -153,7 +167,7 @@
             });
 
             // Add active class to the button corresponding to the category
-            const activeButton = document.querySelector(`.category[onclick="openCategory(event, '${category}')"]`);
+            const activeButton = document.querySelector(`.category[onclick="openCategory('${category}')"]`);
             if (activeButton) {
                 activeButton.classList.add("active");
             } else {
@@ -162,12 +176,14 @@
         } else {
             // Default to the first category if no category is specified
             const defaultCategory = document.querySelector(".category").getAttribute("onclick").match(/'([^']+)'/)[1];
-            openCategory(null, defaultCategory);
+            openCategory(defaultCategory);
         }
     });
 
+
     document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("event-and-parties").style.display = "block";
+
     });
 
 
@@ -193,3 +209,4 @@
         }
     });
 </script>
+<script src="/js/get-category-id.js"></script>
