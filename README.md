@@ -56,6 +56,10 @@ Before you begin, ensure you have met the following requirements:
    
        Then create a folder named `uploads` in the `C:\`.
        This is where the uploaded files will be stored.
+       ```sh
+         # Copy and paste this command in your command prompt
+         mkdir C:\uploads
+       ```
 
        To generate a `JWT_SECRET` key, run the  commandfollowing:
        ```sh
