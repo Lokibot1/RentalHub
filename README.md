@@ -29,37 +29,43 @@ Before you begin, ensure you have met the following requirements:
     npm install
     ```
 
-4. Create a [.env](http://_vscodecontentref_/3) file by copying [.env.example](http://_vscodecontentref_/4) and update the details:
+   4. Create a [.env](http://_vscodecontentref_/3) file by copying [.env.example](http://_vscodecontentref_/4) and update the details:
 
-    ```sh
-    cp .env.example .env
-    ```
+       ```sh
+       cp .env.example .env
+       ```
 
-    Then, open the [.env](http://_vscodecontentref_/5) file and add your database configuration:
+       Then, open the [.env](http://_vscodecontentref_/5) file and add your database configuration:
 
-    ```env
-    # Application
-    PORT=8000
+       ```env
+       # Application
+       PORT=8000
 
-    # Database
-    DB_HOST=localhost
-    DB_USER=root
-    DB_PASSWORD=yourpassword
-    DB_NAME=rentalhub 
+       # Database
+       DB_HOST=localhost
+       DB_USER=root
+       DB_PASSWORD=yourpassword
+       DB_NAME=rentalhub 
+   
+       # Upload Directory
+       STORAGE_PATH=C:\uploads
 
-    # JWT Auth
-    JWT_SECRET=your_secret_key
-    ```
+       # JWT Auth
+       JWT_SECRET=your_secret_key
+       ```
+   
+       Then create a folder named `uploads` in the `C:\`.
+       This is where the uploaded files will be stored.
 
-    To generate a `JWT_SECRET` key, run the  commandfollowing:
-    ```sh
-    node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-    ```
+       To generate a `JWT_SECRET` key, run the  commandfollowing:
+       ```sh
+       node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+       ```
 
-    You can then copy-paste the generated secret key into your .env file:
-    ```env
-    JWT_SECRET=<randomly-generated-secret-key>
-    ```
+       You can then copy-paste the generated secret key into your .env file:
+       ```env
+       JWT_SECRET=<randomly-generated-secret-key>
+       ```
 
 5. Create the database in your MySQL client:
 
