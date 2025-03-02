@@ -1,10 +1,12 @@
 # RentalHub
 
-RentalHub is a platform that allows users to rent and lend items. This project is built using Node.js, Express, and MySQL.
+RentalHub is a platform that allows users to rent and lend items. This project is built using Node.js, Express, and
+MySQL.
 
 ## Prerequisites
 
 Before you begin, ensure you have met the following requirements:
+
 - You have installed Node.js and npm.
 - You have installed MySQL.
 - You have a MySQL database set up.
@@ -29,70 +31,59 @@ Before you begin, ensure you have met the following requirements:
     npm install
     ```
 
-   4. Create a [.env](http://_vscodecontentref_/3) file by copying [.env.example](http://_vscodecontentref_/4) and update the details:
+4. Create a [.env](http://_vscodecontentref_/3) file by copying [.env.example](http://_vscodecontentref_/4) and
+   update the details:
 
-       ```sh
-       cp .env.example .env
-       ```
+    ```sh
+    cp .env.example .env
+    ```
 
-       Then, open the [.env](http://_vscodecontentref_/5) file and add your database configuration:
+   Then, open the [.env](http://_vscodecontentref_/5) file and add your database configuration:
 
-       ```env
-       # Application
-       PORT=8000
+    ```env
+    # Application
+    PORT=8000
 
-       # Database
-       DB_HOST=localhost
-       DB_USER=root
-       DB_PASSWORD=yourpassword
-       DB_NAME=rentalhub 
-   
-       # Upload Directory
-       STORAGE_PATH=C:\uploads
+    # Database
+    DB_HOST=localhost
+    DB_USER=root
+    DB_PASSWORD=yourpassword
+    DB_NAME=rentalhub 
 
-       # JWT Auth
-       JWT_SECRET=your_secret_key
-       ```
-   
-       Then create a folder named `uploads` in the `C:\`.
-       This is where the uploaded files will be stored.
-       ```sh
-         # Copy and paste this command in your command prompt
-         mkdir C:\uploads
-       ```
+    # Upload Directory
+    STORAGE_PATH=C:\uploads
 
-       To generate a `JWT_SECRET` key, run the  commandfollowing:
-       ```sh
-       node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-       ```
+    # JWT Auth
+    JWT_SECRET=your_secret_key
+    ```
 
-       You can then copy-paste the generated secret key into your .env file:
-       ```env
-       JWT_SECRET=<randomly-generated-secret-key>
-       ```
+   Then create a folder named `uploads` in the `C:\`.
+   This is where the uploaded files will be stored.
+    ```sh
+      # Copy and paste this command in your command prompt
+      mkdir C:\uploads
+    ```
 
-5. Create the database in your MySQL client:
+   To generate a `JWT_SECRET` key, run the commandfollowing:
+    ```sh
+    node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+    ```
+
+   You can then copy-paste the generated secret key into your .env file:
+   `Note: Angle brackets are not part of the secret key.`
+    ```env
+    JWT_SECRET=<randomly-generated-secret-key>
+    ```
+
+## Database Setup
+
+1. Create the database in your MySQL client.
 
     ```sql
     CREATE DATABASE IF NOT EXISTS rentalhub;
     ```
 
-6. And run this in the sql query editor
-
-    ```sql
-    USE rentalhub;
-
-    CREATE TABLE IF NOT EXISTS users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        first_name VARCHAR(100) NOT NULL,
-        last_name VARCHAR(100) NOT NULL,
-        contact_number VARCHAR(20) NOT NULL,
-        email VARCHAR(100) NOT NULL UNIQUE,
-        password VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-    ```
-
+2. Run the SQL queries in `configs/schema.sql` to create the tables and insert sample data.
 
 ## Running the Project
 
@@ -111,20 +102,25 @@ Before you begin, ensure you have met the following requirements:
     ```
 
 ## Updating and Creating a New Branch
-Before starting new work, ensure your local repository is up-to-date with the latest changes from the develop branch. Follow these steps:  
 
-1. Pull the latest updates from the develop branch:  
+Before starting new work, ensure your local repository is up-to-date with the latest changes from the develop branch.
+Follow these steps:
+
+1. Pull the latest updates from the develop branch:
+
 ```sh
 git checkout develop
 git pull origin develop
 ```
 
-2. Create a new branch for your work:  
+2. Create a new branch for your work:
+
 ```sh
 git checkout -b your-feature-branch
 ```
 
-Replace your-feature-branch with a descriptive name for your new branch. This ensures you are always working with the latest updates.
+Replace your-feature-branch with a descriptive name for your new branch. This ensures you are always working with the
+latest updates.
 
 ## Project Structure
 
@@ -133,7 +129,8 @@ Replace your-feature-branch with a descriptive name for your new branch. This en
 - [.env](http://_vscodecontentref_/3): Contains environment configs.
 - [configs/](http://_vscodecontentref_/4): Contains db configuration and schemas.
 - [helpers/](http://_vscodecontentref_/5): Contains helper functions for the backend/frontend.
-- [middlewares/](http://_vscodecontentref_/6): Contains functions that processes requests and responses before passing control to the next function.
+- [middlewares/](http://_vscodecontentref_/6): Contains functions that processes requests and responses before passing
+  control to the next function.
 - [public/](http://_vscodecontentref_/7): Contains static files such as CSS, JavaScript, and images.
 - [routes/](http://_vscodecontentref_/8): Contains route definitions for the application.
 - [views/](http://_vscodecontentref_/9): Contains HTML files (EJS Templating) for the frontend.
