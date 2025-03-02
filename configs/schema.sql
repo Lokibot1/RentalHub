@@ -25,8 +25,10 @@ CREATE TABLE IF NOT EXISTS items (
     description TEXT,
     location VARCHAR(255) NOT NULL,
     file_path VARCHAR(100) NOT NULL,
+    user_id INT NOT NULL,
     category_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES categories(id)
+    FOREIGN KEY (category_id) REFERENCES categories(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );

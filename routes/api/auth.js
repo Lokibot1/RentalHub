@@ -135,28 +135,5 @@ router.post("/check-auth", (req, res) => {
 });
 
 
-/**
- * Get all users
- * @route GET /api/auth/all
- */
-router.get("/all", async (req, res) => {
-    db.connect((err) => {
-        if (err) {
-            console.error("Database connection failed:", err);
-        } else {
-            // A simple SELECT query
-            db.query(
-                'SELECT * FROM `users`',
-                function (err, results, fields) {
-                    console.log(results); // results contains rows returned by server
-                    console.log(fields); // fields contains extra meta data about results, if available
-                }
-            );
-
-            res.status(201).json({message: "Success"});
-        }
-    });
-
-});
 
 module.exports = router;

@@ -8,9 +8,10 @@
 
 <div class="container">
     <div class="form">
-        <form id="listingForm">
+        <form id="listingForm" enctype="multipart/form-data">
             <input
                     type="text"
+                    name="item_name"
                     id="itemName"
                     placeholder="Enter item name"
                     oninput="updatePreview()"
@@ -18,6 +19,7 @@
             />
             <input
                     type="number"
+                    name="item_price"
                     id="itemPrice"
                     placeholder="Enter item price"
                     oninput="updatePreview()"
@@ -25,32 +27,56 @@
             />
             <textarea
                     id="itemDescription"
+                    name="item_description"
                     placeholder="Enter item description"
                     oninput="updatePreview()"
                     required
             ></textarea>
-            <input
-                    type="text"
-                    id="location"
-                    placeholder="Enter location"
-                    required
+
+            <input type="text"
+                   name="location"
+                   id="location"
+                   placeholder="Enter location"
+                   required
             />
-            <input type="file" id="img" for="imageInput" accept="image/*" onchange="previewImage()" required/>
+
+            <input type="file"
+                   name="item_file"
+                   id="img"
+                   for="imageInput"
+                   accept="image/*"
+                   onchange="previewImage()"
+                   required
+            />
 
             <select name="categories" id="categories" required>
-                <option value="events-and-parties">Events & Parties</option>
-                <option value="tech-and-gadgets">Tech & Gadgets</option>
-                <option value="clothing-and-accessories">
+                <option value="1">
+                    Events & Parties
+                </option>
+                <option value="2">
+                    Tech & Gadgets
+                </option>
+                <option value="3">
                     Clothing & Accessories
                 </option>
-                <option value="sports-and-outdoor-gear">
+                <option value="4">
                     Sports & Outdoor Gear
                 </option>
-                <option value="Tools & Equipment">Tools & Equipment</option>
-                <option value="Musical Instruments">Musical Instruments</option>
-                <option value="Home & Office">Home & Office</option>
-                <option value="Pets Accessories">Pets Accessories</option>
+                <option value="5">
+                    Tools & Equipment
+                </option>
+                <option value="6">
+                    Musical Instruments
+                </option>
+                <option value="7">
+                    Home & Office
+                </option>
+                <option value="8">
+                    Pets Accessories
+                </option>
             </select>
+
+                <!-- TODO: To be removed -->
 <!--            <input-->
 <!--                    type="number"-->
 <!--                    id="ewallet"-->
@@ -84,17 +110,9 @@
         .addEventListener("submit", function (e) {
             e.preventDefault();
 
-            let itemName = document.getElementById("itemName").value.trim();
             let itemPrice = parseFloat(
-                document.getElementById("itemPrice").value
+                document.querySelector("input[name='item_price']").value
             );
-            let itemDescription = document
-                .getElementById("itemDescription")
-                .value.trim();
-            let location = document.getElementById("location").value.trim();
-            let ewallet = document.getElementById("ewallet").value.trim();
-            let category = document.getElementById("categories").value;
-            let imgInput = document.getElementById("img");
 
             // Validate price
             if (itemPrice <= 0 || isNaN(itemPrice)) {
@@ -103,38 +121,62 @@
             }
 
             // Validate e-wallet number (ensure only digits)
-            if (!/^\d{10,16}$/.test(ewallet)) {
-                alert("Please enter a valid e-wallet number (10-16 digits).");
-                return;
-            }
+            // if (!/^\d{10,16}$/.test(ewallet)) {
+            //     alert("Please enter a valid e-wallet number (10-16 digits).");
+            //     return;
+            // }
 
-            if (imgInput.files.length > 0) {
-                let reader = new FileReader();
-                reader.onload = function (event) {
-                    let item = {
-                        name: itemName,
-                        price: itemPrice.toFixed(2),
-                        description: itemDescription,
-                        location: location,
-                        image: event.target.result, // Base64 encoded image
-                        category: category,
-                        // ewallet: ewallet,
-                    };
+            let formData = new FormData(this);
 
-                    // Save to localStorage
-                    let items = JSON.parse(localStorage.getItem("items")) || [];
-                    items.push(item);
-                    localStorage.setItem("items", JSON.stringify(items));
+            fetch("/api/listing", {
+                method: "POST",
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        alert("Item added!");
+                        document.getElementById("listingForm").reset(); // Reset form
+                        window.location.href = `/shopping/${getCategoryName(formData.get('categories'))}`; // Redirect to shopping page
+                    } else {
+                        alert("Failed to add item.");
+                    }
+                });
 
-                    alert("Item added!");
-                    document.getElementById("listingForm").reset(); // Reset form
-                    window.location.href = "shopping.html"; // Redirect to shopping page
-                };
-                reader.readAsDataURL(imgInput.files[0]); // Convert image to Base64
-            } else {
-                alert("Please select an image.");
-            }
         });
+
+    function getCategoryName(categoryValue) {
+        let category = categoryValue
+        let categoryName = "";
+
+        switch (category) {
+            case "1":
+                categoryName = "events-and-parties";
+                break;
+            case "2":
+                categoryName = "tech-and-gadgets";
+                break;
+            case "3":
+                categoryName = "clothing-and-accessories";
+                break;
+            case "4":
+                categoryName = "sports-and-outdoor-gear";
+                break;
+            case "5":
+                categoryName = "tools-and-equipment";
+                break;
+            case "6":
+                categoryName = "musical-instruments";
+                break;
+            case "7":
+                categoryName = "home-and-office";
+                break;
+            case "8":
+                categoryName = "pets-accessories";
+                break;
+        }
+        return categoryName;
+    }
 
     // Preview Functionality
     function updatePreview() {
