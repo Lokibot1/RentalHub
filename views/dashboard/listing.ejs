@@ -8,7 +8,7 @@
 
 <div class="container">
     <div class="form">
-        <form action="" id="listingForm">
+        <form id="listingForm">
             <input
                     type="text"
                     id="itemName"
@@ -36,13 +36,14 @@
                     required
             />
             <input type="file" id="img" for="imageInput" accept="image/*" onchange="previewImage()" required/>
+
             <select name="categories" id="categories" required>
-                <option value="Events & Parties">Events & Parties</option>
-                <option value="Tech & Gadgets">Tech & Gadgets</option>
-                <option value="Clothing & Accessories">
+                <option value="events-and-parties">Events & Parties</option>
+                <option value="tech-and-gadgets">Tech & Gadgets</option>
+                <option value="clothing-and-accessories">
                     Clothing & Accessories
                 </option>
-                <option value="Sports & Outdoor Gear">
+                <option value="sports-and-outdoor-gear">
                     Sports & Outdoor Gear
                 </option>
                 <option value="Tools & Equipment">Tools & Equipment</option>
@@ -50,12 +51,12 @@
                 <option value="Home & Office">Home & Office</option>
                 <option value="Pets Accessories">Pets Accessories</option>
             </select>
-            <input
-                    type="number"
-                    id="ewallet"
-                    placeholder="Enter e-wallet"
-                    required
-            />
+<!--            <input-->
+<!--                    type="number"-->
+<!--                    id="ewallet"-->
+<!--                    placeholder="Enter e-wallet"-->
+<!--                    required-->
+<!--            />-->
             <button type="submit">Add Listing</button>
         </form>
     </div>
@@ -117,7 +118,7 @@
                         location: location,
                         image: event.target.result, // Base64 encoded image
                         category: category,
-                        ewallet: ewallet,
+                        // ewallet: ewallet,
                     };
 
                     // Save to localStorage
