@@ -76,5 +76,16 @@ router.get("/archives", checkAuth, (req, res) => {
   });
 });
 
+/**
+ * View Product Page
+ * @route GET /dashboard/view-product
+ */
+router.get("/view-product", checkAuth, (req, res) => {
+  res.render("dashboard/view-product", {
+    layout: "layouts/dashboard",
+    title:  "View Product",
+  });
+});
+
 
 module.exports = router;

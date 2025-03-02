@@ -1,0 +1,581 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+* {
+    text-decoration: none;
+}
+/* General styling */
+body {
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+}
+/*Navigation Bar*/
+nav {
+    height: 80px;
+    width: auto;
+    background-color: #1b2e3d;
+    position: sticky;
+    top: 0%;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+nav ul {
+    display: flex;
+    justify-content: space-around;
+    gap: 30px;
+    align-items: center;
+}
+nav ul li {
+    display: inline-block;
+    margin: 0 10px;
+    font-weight: 780;
+    transition: transform 0.3s ease-in-out;
+}
+nav ul li a {
+    color: #f5f5f5;
+    font-size: 20px;
+    padding: 7px 13px;
+    text-transform: uppercase;
+    transition: transform 0.3s ease-in-out;
+}
+nav ul li:hover {
+    transform: scale(1.2);
+}
+nav h1 {
+    font-size: 25px;
+    color: #f5f5f5;
+    transition: transform 0.3s ease-in-out;
+    font-weight: 900;
+}
+span {
+    font-weight: 900;
+    color: #cf0034;
+}
+.profile-icon,
+.add-icon {
+    width: 35px;
+    height: 35px;
+    display: block;
+}
+.profile-icon {
+    width: 40px;
+    height: 40px;
+}
+.search-bar {
+    display: flex;
+    align-items: center;
+}
+.search-bar input {
+    width: 100%;
+    height: 30px;
+    padding: 0 10px;
+    border: 2px solid #1b2e3d;
+    border-radius: 50px;
+    font-size: 15px;
+    color: #1b2e3d;
+}
+.search-bar img {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+nav button {
+    all: unset;
+}
+/*scroll bar*/
+::-webkit-scrollbar {
+    width: 5px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #800020;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #e9003a;
+}
+
+/* Main container */
+.view-product-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 100px;
+    padding: 20px;
+}
+
+/* Left Section: Product Image + Details (Stacked) */
+.left-section {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    max-height: 600px;
+}
+
+/* Product Image Section */
+.product-image {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 100%;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.product-image img {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 10px;
+}
+
+/* Product Details Section */
+.product-details {
+    background: white;
+    border: #1b2e3d solid 2px;
+    border-radius: 25px;
+    padding: 20px;
+    width: 100%;
+}
+
+.product-details label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+.product-details p {
+    border-bottom: 1px solid black;
+    padding-bottom: 5px;
+}
+
+/* Rental options */
+.rental-options {
+    background: white;
+    border: #1b2e3d solid 2px;
+    border-radius: 25px;
+    padding: 20px;
+    width: 25%;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    margin-left: 25px;
+}
+
+.pickdate {
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+.mod {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.rental-options h3 {
+    font-size: 1.8rem;
+}
+
+.delivery-options {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    border-radius: 50%;
+    gap: 3px;
+}
+
+#meetup-btn {
+    background-color: #009959;
+    color: white;
+    border: none;
+    padding: 5px 20px;
+    border-radius: 50px 0px 0px 50px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#delivery-btn {
+    background-color: #1b2e3d;
+    color: white;
+    border: none;
+    padding: 13px 20px;
+    border-radius: 0px 50px 50px 0px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#meetup-btn.pressed,
+#delivery-btn.pressed {
+    transform: translateY(3px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#request-btn {
+    border: 2px solid black;
+    background: white;
+    padding: 10px 65px;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+#meetup-btn:hover {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+}
+
+#delivery-btn:hover {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+}
+
+#meetup-btn:active,
+#delivery-btn:active {
+    transform: scale(0.2);
+}
+
+#request-btn:hover {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+}
+
+#request-btn:hover {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+}
+
+/* Right Section: Owner Info */
+.owner-info {
+    border: 1px solid #1b2e3d;
+    border-radius: 25px;
+    padding: 20px;
+}
+
+/* Product Details */
+.product-details {
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+.posted-by {
+    border: 2px solid #354f52;
+    padding: 15px;
+    border-radius: 10px;
+    background: #ffffff;
+    margin-top: 20px; /* Force it below */
+}
+
+/* Owner Details */
+.owner-details {
+    display: flex;
+    align-items: center;
+    gap: 90px;
+    padding: 20px;
+}
+
+/* Profile Picture */
+.owner-details img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+/* Rating */
+.rating {
+    color: #800020;
+    font-size: 18px;
+    margin-top: 5px;
+}
+
+/*PUTANGINANG KALENDARYO TO*/
+.calendar {
+    width: 100%;
+    max-width: 300px;
+    padding: 20px;
+    margin: 0 auto;
+    border: #1b2e3d solid 1px;
+    border-radius: 5px;
+}
+
+.month {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+.nav {
+    text-decoration: none;
+    color: #333;
+    cursor: pointer;
+}
+
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+#dates-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    max-width: 350px;
+    margin-top: 10px;
+}
+
+.dates {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.date-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 25px; /* Adjust to fit your design */
+    height: 30px;
+    padding: 5px; /* Add padding */
+    border-radius: 50%; /* Make it circular */
+    border: 1px solid #ddd; /* Add spacing */
+    cursor: pointer;
+}
+
+.date-cell:hover:not(.disabled) {
+    background: #f0f0f0;
+}
+
+.date-cell.selected {
+    background-color: #009959;
+    color: white;
+}
+
+.date-cell.range {
+    background-color: #a7d7a7;
+}
+
+.date-cell.disabled {
+    color: #aaa;
+    background-color: #f8f8f8;
+    pointer-events: none;
+}
+
+.date-cell.unavailable {
+    color: #fff;
+    background-color: #800020;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.date-cell.selected::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+}
+
+.empty-cell {
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+}
+
+#instruction-text {
+    font-size: 14px;
+    color: #555;
+    margin-top: 25px;
+}
+
+#reset-selection {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #800020;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* pop-up after ng request */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Darkened background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Modal box */
+.modal {
+    background: rgba(255, 255, 255, 0.486);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Buttons inside modal */
+.modal-buttons {
+    margin-top: 10px;
+}
+
+.modal-buttons button {
+    padding: 8px 16px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.modal-buttons button:first-child {
+    background: #009959; /* Green for confirm */
+    color: white;
+}
+
+.modal-buttons button:last-child {
+    background: #800020; /* Red for cancel */
+    color: white;
+}
+
+/* Highlight selected delivery button */
+.selected {
+    background: #009959 !important;
+    color: white !important;
+}
+
+/* Floating Form (Centered) */
+#myForm {
+    display: none;
+    flex-direction: row;
+    position: fixed;
+    top: 55%;
+    left: 50%;
+    gap: 20px;
+    transform: translate(-50%, -50%);
+    width: 900px;
+    height: 500px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 100px #c6c6c6;
+    z-index: 999;
+    overflow: hidden;
+}
+.profile {
+    margin: auto;
+    width: 200px;
+    height: 200px;
+    border: 5px solid #f5f5f5;
+}
+.profile img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Side Profile*/
+.side-profile {
+    flex: 0.7;
+    padding: 20px;
+    box-shadow: 0px 0px 5px rgba(27, 46, 61, 0.5),
+    0px 0px 5px rgba(27, 46, 61, 0.5);
+    border-radius: 50px;
+    background-image: linear-gradient(to bottom left, #1b2e3d -100%, #ffff 80%);
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+    overflow: auto;
+}
+
+/* Side Info*/
+.side-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    overflow: auto;
+}
+
+/* Tab Buttons */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    border: 2px solid #1b2e3d;
+    border-radius: 30px;
+    background: white;
+    color: #1b2e3d;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.tab-btn.active {
+    background: #1b2e3d;
+    color: white;
+}
+
+/* Tab Content */
+.content {
+    width: 90%;
+    padding: 15px;
+    background: #f8f8f8;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background: #800020;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}

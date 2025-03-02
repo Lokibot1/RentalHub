@@ -1,188 +1,189 @@
-<link rel="stylesheet" href="css/listing.css" />
+<link rel="stylesheet" href="css/listing.css"/>
 
 <nav>
     <a href="/">
-      <div class="logo">
-        <h1>Rental <span> Hub</span></h1>
-      </div>
+        <div class="logo">
+            <h1>Rental <span> Hub</span></h1>
+        </div>
     </a>
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li>
-        <a href="/listing"
-          ><img src="/images/WhiteAdd.png" class="add-icon"
-        /></a>
-      </li>
-      <li>
-        <a href="/login">
-          <img
-            src="/images/Icon1.png"
-            alt="Profile"
-            class="profile-icon"
-          />
-        </a>
-      </li>
-    </ul>
-  </nav>
 
-  <!--Form to add a new listing-->
-  <h2>Add a new listing</h2>
-  <div class="container">
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li>
+            <a href="/listing">
+                <img src="/images/WhiteAdd.png" class="add-icon" />
+            </a>
+        </li>
+
+        <li>
+            <a href="/login">
+                <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<!--Form to add a new listing-->
+<h2>Add a new listing</h2>
+
+<div class="container">
     <div class="form">
-      <form action="" id="listingForm">
-          <input
-            type="text"
-            id="itemName"
-            placeholder="Enter item name"
-            oninput="updatePreview()"
-            required
-          />
-          <input
-            type="number"
-            id="itemPrice"
-            placeholder="Enter item price"
-            oninput="updatePreview()"
-            required
-          />
-          <textarea
-          id="itemDescription"
-          placeholder="Enter item description"
-          oninput="updatePreview()"
-          required
-        ></textarea>
-          <input
-            type="text"
-            id="location"
-            placeholder="Enter location"
-            required
-          />
-          <input type="file" id="img" for="imageInput" accept="image/*" onchange="previewImage()" required />
-          <select name="categories" id="categories" required>
-            <option value="Events & Parties">Events & Parties</option>
-            <option value="Tech & Gadgets">Tech & Gadgets</option>
-            <option value="Clothing & Accessories">
-              Clothing & Accessories
-            </option>
-            <option value="Sports & Outdoor Gear">
-              Sports & Outdoor Gear
-            </option>
-            <option value="Tools & Equipment">Tools & Equipment</option>
-            <option value="Musical Instruments">Musical Instruments</option>
-            <option value="Home & Office">Home & Office</option>
-            <option value="Pets Accessories">Pets Accessories</option>
-          </select>
-          <input
-            type="number"
-            id="ewallet"
-            placeholder="Enter e-wallet"
-            required
-          />
-          <button type="submit">Add Listing</button>
-      </form>
+        <form action="" id="listingForm">
+            <input
+                    type="text"
+                    id="itemName"
+                    placeholder="Enter item name"
+                    oninput="updatePreview()"
+                    required
+            />
+            <input
+                    type="number"
+                    id="itemPrice"
+                    placeholder="Enter item price"
+                    oninput="updatePreview()"
+                    required
+            />
+            <textarea
+                    id="itemDescription"
+                    placeholder="Enter item description"
+                    oninput="updatePreview()"
+                    required
+            ></textarea>
+            <input
+                    type="text"
+                    id="location"
+                    placeholder="Enter location"
+                    required
+            />
+            <input type="file" id="img" for="imageInput" accept="image/*" onchange="previewImage()" required/>
+            <select name="categories" id="categories" required>
+                <option value="Events & Parties">Events & Parties</option>
+                <option value="Tech & Gadgets">Tech & Gadgets</option>
+                <option value="Clothing & Accessories">
+                    Clothing & Accessories
+                </option>
+                <option value="Sports & Outdoor Gear">
+                    Sports & Outdoor Gear
+                </option>
+                <option value="Tools & Equipment">Tools & Equipment</option>
+                <option value="Musical Instruments">Musical Instruments</option>
+                <option value="Home & Office">Home & Office</option>
+                <option value="Pets Accessories">Pets Accessories</option>
+            </select>
+            <input
+                    type="number"
+                    id="ewallet"
+                    placeholder="Enter e-wallet"
+                    required
+            />
+            <button type="submit">Add Listing</button>
+        </form>
     </div>
 
     <!--Preview Section-->
     <div class="preview">
-      <div class="pic">
-        <img id="preview" alt="">
-      </div>
-      <div class="product-details">
-        <label>Name of product: <span id="product-name"></span></label>
-        <hr>
-        <label>Price per day: <span id="product-price"></span></label>
-        <hr>
-        <label>Item Description: <span id="product-description"></span></label>
-    </div>      
-  </div>
+        <div class="pic">
+            <img id="preview" alt="">
+        </div>
+        <div class="product-details">
+            <label>Name of product: <span id="product-name"></span></label>
+            <hr>
+            <label>Price per day: <span id="product-price"></span></label>
+            <hr>
+            <label>Item Description: <span id="product-description"></span></label>
+        </div>
+    </div>
 
-  <!--Script-->
-  <script>
+</div>
+
+<!--Script-->
+<script>
     //Listing Functionality
     document
-      .getElementById("listingForm")
-      .addEventListener("submit", function (e) {
-        e.preventDefault();
+        .getElementById("listingForm")
+        .addEventListener("submit", function (e) {
+            e.preventDefault();
 
-        let itemName = document.getElementById("itemName").value.trim();
-        let itemPrice = parseFloat(
-          document.getElementById("itemPrice").value
-        );
-        let itemDescription = document
-          .getElementById("itemDescription")
-          .value.trim();
-        let location = document.getElementById("location").value.trim();
-        let ewallet = document.getElementById("ewallet").value.trim();
-        let category = document.getElementById("categories").value;
-        let imgInput = document.getElementById("img");
+            let itemName = document.getElementById("itemName").value.trim();
+            let itemPrice = parseFloat(
+                document.getElementById("itemPrice").value
+            );
+            let itemDescription = document
+                .getElementById("itemDescription")
+                .value.trim();
+            let location = document.getElementById("location").value.trim();
+            let ewallet = document.getElementById("ewallet").value.trim();
+            let category = document.getElementById("categories").value;
+            let imgInput = document.getElementById("img");
 
-        // Validate price
-        if (itemPrice <= 0 || isNaN(itemPrice)) {
-          alert("Please enter a valid price greater than zero.");
-          return;
-        }
+            // Validate price
+            if (itemPrice <= 0 || isNaN(itemPrice)) {
+                alert("Please enter a valid price greater than zero.");
+                return;
+            }
 
-        // Validate e-wallet number (ensure only digits)
-        if (!/^\d{10,16}$/.test(ewallet)) {
-          alert("Please enter a valid e-wallet number (10-16 digits).");
-          return;
-        }
+            // Validate e-wallet number (ensure only digits)
+            if (!/^\d{10,16}$/.test(ewallet)) {
+                alert("Please enter a valid e-wallet number (10-16 digits).");
+                return;
+            }
 
-        if (imgInput.files.length > 0) {
-          let reader = new FileReader();
-          reader.onload = function (event) {
-            let item = {
-              name: itemName,
-              price: itemPrice.toFixed(2),
-              description: itemDescription,
-              location: location,
-              image: event.target.result, // Base64 encoded image
-              category: category,
-              ewallet: ewallet,
+            if (imgInput.files.length > 0) {
+                let reader = new FileReader();
+                reader.onload = function (event) {
+                    let item = {
+                        name: itemName,
+                        price: itemPrice.toFixed(2),
+                        description: itemDescription,
+                        location: location,
+                        image: event.target.result, // Base64 encoded image
+                        category: category,
+                        ewallet: ewallet,
+                    };
+
+                    // Save to localStorage
+                    let items = JSON.parse(localStorage.getItem("items")) || [];
+                    items.push(item);
+                    localStorage.setItem("items", JSON.stringify(items));
+
+                    alert("Item added!");
+                    document.getElementById("listingForm").reset(); // Reset form
+                    window.location.href = "shopping.html"; // Redirect to shopping page
+                };
+                reader.readAsDataURL(imgInput.files[0]); // Convert image to Base64
+            } else {
+                alert("Please select an image.");
+            }
+        });
+
+    // Preview Functionality
+    function updatePreview() {
+        document.getElementById("product-name").textContent = document.getElementById("itemName").value;
+        document.getElementById("product-price").textContent = document.getElementById("itemPrice").value;
+        document.getElementById("itemDescription").addEventListener("input", function () {
+            document.getElementById("product-description").innerHTML = this.value.replace(/\n/g, "<br>");
+        });
+
+    }
+
+    function previewImage() {
+        let file = document.getElementById("img").files[0];
+        let preview = document.getElementById("preview");
+
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function (event) {
+                preview.src = event.target.result;
             };
-
-            // Save to localStorage
-            let items = JSON.parse(localStorage.getItem("items")) || [];
-            items.push(item);
-            localStorage.setItem("items", JSON.stringify(items));
-
-            alert("Item added!");
-            document.getElementById("listingForm").reset(); // Reset form
-            window.location.href = "shopping.html"; // Redirect to shopping page
-          };
-          reader.readAsDataURL(imgInput.files[0]); // Convert image to Base64
+            reader.readAsDataURL(file);
         } else {
-          alert("Please select an image.");
+            preview.src = "";
         }
-      });
+    }
 
-      // Preview Functionality
-      function updatePreview() {
-      document.getElementById("product-name").textContent = document.getElementById("itemName").value;
-      document.getElementById("product-price").textContent = document.getElementById("itemPrice").value;
-      document.getElementById("itemDescription").addEventListener("input", function() {
-document.getElementById("product-description").innerHTML = this.value.replace(/\n/g, "<br>");
-});
-
-  }
-
-  function previewImage() {
-      let file = document.getElementById("img").files[0];
-      let preview = document.getElementById("preview");
-
-      if (file) {
-          let reader = new FileReader();
-          reader.onload = function(event) {
-              preview.src = event.target.result;
-          };
-          reader.readAsDataURL(file);
-      } else {
-          preview.src = "";
-      }
-  }
-
-  // Attach event listeners to inputs for live preview
-  document.getElementById("itemName").addEventListener("input", updatePreview);
-  document.getElementById("itemPrice").addEventListener("input", updatePreview);
-  document.getElementById("itemDescription").addEventListener("input", updatePreview);
-  document.getElementById("img").addEventListener("change", previewImage);
-  </script>
+    // Attach event listeners to inputs for live preview
+    document.getElementById("itemName").addEventListener("input", updatePreview);
+    document.getElementById("itemPrice").addEventListener("input", updatePreview);
+    document.getElementById("itemDescription").addEventListener("input", updatePreview);
+    document.getElementById("img").addEventListener("change", previewImage);
+</script>
