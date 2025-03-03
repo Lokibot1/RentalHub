@@ -93,6 +93,10 @@ router.get("/view-product", checkAuth, (req, res) => {
  * @route GET /dashboard/setup-profile
  */
 router.get("/setup-profile", checkAuth, (req, res) => {
+  // remove the otp from cookies
+  res.clearCookie('otp');
+
+
   res.render("dashboard/setup-profile", {
     layout: "layouts/dashboard",
     title:  "Setup Profile",
