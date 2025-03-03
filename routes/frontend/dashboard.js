@@ -88,4 +88,16 @@ router.get("/view-product", checkAuth, (req, res) => {
 });
 
 
+/**
+ * Setup Profile Pae
+ * @route GET /dashboard/setup-profile
+ */
+router.get("/setup-profile", checkAuth, (req, res) => {
+  res.render("dashboard/setup-profile", {
+    layout: "layouts/dashboard",
+    title:  "Setup Profile",
+  });
+});
+
+
 module.exports = router;

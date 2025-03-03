@@ -60,11 +60,14 @@ router.post("/register", async (req, res) => {
                     last_name,
                     contact_number,
                     email,
-                    hashedPassword,
+                    hashedPassword
                 ]);
             }
 
-            res.status(201).json({message: "User registered successfully"});
+            res.status(201).json({
+                data: { email },
+                message: "Created OTP"
+            });
         }
     });
 
@@ -102,7 +105,10 @@ router.post("/login", async (req, res) => {
                 return res.status(400).json({message: "Invalid email or password"});
             }
 
-            const token = jwt.sign({id: user.id, email: user.email}, process.env.JWT_SECRET, {expiresIn: "1h"});
+            const token = jwt.sign({
+                id: user.id,
+                email: user.email,
+            }, process.env.JWT_SECRET, {expiresIn: "1h"});
 
             res.cookie("token", token, {
                 httpOnly: true,

@@ -86,10 +86,7 @@ async function signup(event) {
             throw new Error(data.message || "Signup failed. Please try again.");
         }
 
-        // Set the token as a cookie
-        document.cookie = `token=${data.token}; path=/; secure=${location.protocol === 'https:'}; HttpOnly`;
-
-        window.location.href = "/login"; // Redirect to homepage
+        window.location.href = `/auth/otp?email=${data.data.email}`;
     } catch (error) {
         console.log(error.message);
     }

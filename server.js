@@ -30,10 +30,12 @@ const mainRoutes = require("./routes/frontend/main");
 const dashboardRoutes = require("./routes/frontend/dashboard");
 const apiAuthRoutes = require("./routes/api/auth");
 const apiListingRoute = require("./routes/api/listing");
+const otpRoute = require("./routes/frontend/otp");
 
 // Frontend routes
 app.use("/", mainRoutes);
 app.use("/dashboard", dashboardRoutes);
+app.use("/auth/otp", otpRoute);
 
 // Backend routes
 app.use("/api", apiListingRoute);

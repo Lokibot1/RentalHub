@@ -1,0 +1,19 @@
+<link rel="stylesheet" href="/css/otp.css">
+
+<div class="container">
+    <h1>OTP Verification</h1>
+    <p>Enter the 6-digit code sent to your device</p>
+    <div id="timer">Time remaining: 5:00</div>
+    <div class="otp-input">
+        <input type="number" min="0" max="9" required>
+        <input type="number" min="0" max="9" required>
+        <input type="number" min="0" max="9" required>
+        <input type="number" min="0" max="9" required>
+        <input type="number" min="0" max="9" required>
+        <input type="number" min="0" max="9" required>
+    </div>
+    <button onclick="verifyOTP()">Verify</button>
+    <button id="resendButton" onclick="resendOTP()" disabled>Resend Code</button>
+</div>
+
+<script src="/js/otp.js"></script>

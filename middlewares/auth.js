@@ -10,7 +10,7 @@ function checkAuth(req, res, next) {
 
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
-    req.isAuthenticated = true;
+    req.isAuthenticated = req.user.otp_verified;
   } catch (err) {
     req.isAuthenticated = false;
     return res.redirect("/login");

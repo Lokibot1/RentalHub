@@ -3,9 +3,9 @@ USE rentalhub;
 
 -- Only for development
 # DROP TABLE IF EXISTS items;
+# DROP TABLE IF EXISTS users;
 # DROP TABLE IF EXISTS categories;
 # DROP TABLE IF EXISTS roles;
-# DROP TABLE IF EXISTS users;
 
 
 -- users
@@ -25,13 +25,33 @@ CREATE TABLE IF NOT EXISTS users
     image_file     VARCHAR(50),
     email          VARCHAR(100) NOT NULL UNIQUE,
     password       VARCHAR(255) NOT NULL,
+    otp            INT(6),
     created_at     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Note: (Only for development)
 -- Password is '1234567a'
 INSERT INTO users (role_id, first_name, last_name, contact_number, email, password)
-VALUES (1, 'Admin', 'Admin', '09123456789', 'admin@gmail.com', '$2a$10$Bru/3reMfMIXlu4uw9PQ..RDNyRPVZ49YeHlhveh4.PpsFTmBopjW');
+VALUES (1, 'Admin', 'Admin', '09123456789', 'admin@gmail.com',
+        '$2a$10$Bru/3reMfMIXlu4uw9PQ..RDNyRPVZ49YeHlhveh4.PpsFTmBopjW');
+
+-- items
+CREATE TABLE IF NOT EXISTS items
+(
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    name        VARCHAR(100) NOT NULL,
+    price       VARCHAR(100) NOT NULL,
+    description TEXT,
+    location    VARCHAR(255) NOT NULL,
+    file_path   VARCHAR(100) NOT NULL,
+    user_id     INT          NOT NULL,
+    category_id INT          NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
 
 -- roles
 CREATE TABLE IF NOT EXISTS roles
@@ -66,19 +86,3 @@ VALUES ('Events & Parties', 'events-and-parties'),
        ('Pets Accessories', 'pets-accessories');
 
 
--- items
-CREATE TABLE IF NOT EXISTS items
-(
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    name        VARCHAR(100) NOT NULL,
-    price       VARCHAR(100) NOT NULL,
-    description TEXT,
-    location    VARCHAR(255) NOT NULL,
-    file_path   VARCHAR(100) NOT NULL,
-    user_id     INT          NOT NULL,
-    category_id INT          NOT NULL,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES categories (id),
-    FOREIGN KEY (user_id) REFERENCES users (id)
-);
