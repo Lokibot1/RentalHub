@@ -296,7 +296,7 @@
                 const cellDate = new Date(displayedYear, displayedMonth, day);
                 cellDate.setHours(0, 0, 0, 0);
 
-                // ✅ FIX: Use locale date format to prevent timezone shift issues
+                //Use locale date format to prevent timezone shift issues
                 dateCell.dataset.date = cellDate.toLocaleDateString("en-CA");
 
                 if (cellDate < currentDate) {
@@ -316,7 +316,7 @@
         }
 
         function handleDateSelection(dateStr, cell) {
-            // ✅ FIX: Convert dataset string back to Date consistently
+            // Convert dataset string back to Date consistently
             const selectedDate = new Date(dateStr);
             selectedDate.setHours(0, 0, 0, 0);
 
