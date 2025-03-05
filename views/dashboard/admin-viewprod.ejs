@@ -1,0 +1,87 @@
+<link rel="stylesheet" href="/css/admin-viewprod.css" />
+
+<nav class="navbar">
+    <a href="/" class="logo">
+      <span class="rental">Rental</span><span class="hub">Hub</span>
+    </a>
+  </nav>
+
+  <!-- Main container for product view -->
+  <div class="view-product-container">
+    <!-- Left Section: Product Image + Details (Stacked) -->
+    <div class="left-section">
+      <!-- Product Image -->
+      <div class="product-image">
+        <img id="product-image" src="" alt="Product Image" />
+      </div>
+
+      <!-- Product Details -->
+      <div class="product-details">
+        <label>Name of product:</label>
+        <p id="product-name"></p>
+
+        <label>Price per day:</label>
+        <p id="product-price"></p>
+
+        <label>Item Description:</label>
+        <p id="product-description"></p>
+      </div>
+
+      <!-- Owner Info -->
+      <div class="owner-info" onclick="openForm()">
+        <h2>Posted by</h2>
+        <hr />
+        <div class="owner-details">
+          <div class="pfp">
+            <img id="owner-image" src="" alt="Owner Image" />
+          </div>
+          <div>
+            <strong id="owner-name">Loading...</strong><br />
+            <span id="owner-location">Loading...</span> <br />
+            <span id="owner-rating">⭐ Loading...</span>
+          </div>
+        </div>
+      </div>
+      <br />
+    </div>
+
+    <!-- Right Section: Pending -->
+    <div class="pendingposts">
+      <h3 class="h3pendingpost">Pending Post!!</h3>
+      <p class="p1pendingpost">
+        If approved, it will be published on the marketplace.
+      </p>
+      <p class="p2pendingpost">
+        If declined, it will not be posted, and the user may need to revise
+        and resubmit.
+      </p>
+      <div class="accept-or-declinebtns">
+        <button id="accept-btn">Accept</button>
+        <button id="decline-btn">Decline</button>
+      </div>
+    </div>
+
+    <!-- Confirmation Popup -->
+    <d iv id="overlay" class="overlay"></d>
+    <div id="confirm-popup" class="popup">
+      <div class="popup-content">
+        <p class="popup-text">Are you sure you want to</p>
+        <p class="popup-text2">
+          <span class="highlight">accept</span> this posting request?
+        </p>
+        <div class="popup-buttons">
+          <button id="confirm-yes" class="yes-btn">Yes</button>
+          <button id="confirm-no" class="no-btn">No</button>
+        </div>
+      </div>
+    </div>
+    <div id="success-popup" class="success-popup">
+      <p>
+        <strong>
+          Accepted Sucessfully! Item is now live in the marketplace!
+        </strong>
+      </p>
+    </div>
+  </div>
+
+  <script src="/js/admin.js"></script>

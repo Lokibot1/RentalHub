@@ -1,0 +1,59 @@
+<link rel="stylesheet" href="/css/admin.css" />
+
+    <!-- Logo -->
+    <nav class="navbar">
+      <a href="/" class="logo">
+        <span class="rental">Rental</span><span class="hub">Hub</span>
+      </a>
+    </nav>
+
+    <!--Body-->
+    <div class="main">
+      <!-- Side Bar -->
+      <div class="sidebar">
+        <ul>
+          <li><a href="/admin-dashboard">Admin Dashboard</a></li>
+          <li><a href="/manage-users">Manage User</a></li>
+          <li><a href="/manage-listigns" class="active">Manage Listings</a></li>
+          <li><a href="/transactions">Transaction</a></li>
+          <li><a href="/login" id="logout">Log Out</a></li>
+        </ul>
+      </div>
+
+      <!-- Logout Confirmation Modal -->
+      <div id="logout-modal" class="logout-modal">
+        <div class="logout-content">
+          <p>Are you sure you want to log out?</p>
+          <div class="logout-button-group">
+            <button id="confirm-logout" class="yes-btn">Yes</button>
+            <button id="cancel-logout" class="no-btn">No</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="content">
+        <h1>Welcome, Admin!</h1>
+        <div class="dashboard-cards">
+          <div class="card">
+            <p>Total User</p>
+            <span class="count" id="rents-count">0</span>
+          </div>
+          <div class="card">
+            <p>Total Listings</p>
+            <span class="count" id="pending-posts-count">0</span>
+          </div>
+          <div class="card">
+            <p>Total Reports</p>
+            <span class="count" id="rental-request-count">0</span>
+          </div>
+          <div class="card">
+            <p>Transactions</p>
+            <span class="count" id="item-posted-count">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="/js/admin.js"></script>
+</html>

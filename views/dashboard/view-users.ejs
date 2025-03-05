@@ -1,0 +1,201 @@
+<link rel="stylesheet" href="/css/admin.css" />
+
+    <!-- Logo -->
+    <nav class="navbar">
+      <a href="/" class="logo">
+        <span class="rental">Rental</span><span class="hub">Hub</span>
+      </a>
+    </nav>
+
+    <!--Body-->
+    <div class="main">
+      <!-- Side Bar -->
+      <div class="sidebar">
+        <ul>
+          <li><a href="/admin-dashboard">Admin Dashboard</a></li>
+          <li><a href="/manage-users">Manage User</a></li>
+          <li><a href="/manage-listigns" class="active">Manage Listings</a></li>
+          <li><a href="/transactions">Transaction</a></li>
+          <li><a href="/login" id="logout">Log Out</a></li>
+        </ul>
+      </div>
+
+      <!-- Logout Confirmation Modal -->
+      <div id="logout-modal" class="logout-modal">
+        <div class="logout-content">
+          <p>Are you sure you want to log out?</p>
+          <div class="logout-button-group">
+            <button id="confirm-logout" class="yes-btn">Yes</button>
+            <button id="cancel-logout" class="no-btn">No</button>
+          </div>
+        </div>
+      </div>      
+
+      <!-- Main Content -->
+      <div class="content">
+        <div class="header">
+          <h1>User Management</h1>
+          <div class="search-bar">
+            <input type="text" placeholder="Looking for...">
+            <button><img src="/images/search.png" /></button>
+          </div>
+        </div>
+      
+        <!--Tab Headings-->
+        <div class="tab">
+          <button class="tablinks active" onclick="openTab(event, 'UserList')">
+            User List
+          </button>
+          <button class="tablinks" onclick="openTab(event, 'ReportedAccounts')">
+            Reported Accounts
+          </button>
+          <button class="tablinks" onclick="openTab(event, 'BannedAccounts')">
+            Banned Accounts
+          </button>
+        </div>
+      
+        <!--Tab Content-->
+      
+        <!--User List-->
+        <div id="UserList" class="tab-content">
+          <div class="user-table">
+            <table>
+                <thead>
+                  <tr>
+                      <th>
+                        <a href="/manage-users#UserList">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </a>
+                    </th>
+                    <th>User Information</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>User Id</td>
+                    <td>#123</td>
+                  </tr>
+                  <tr>
+                      <td>User Name</td>
+                      <td>Firstname M. Lastname</td>
+                    </tr>
+                    <tr>
+                      <td>Email</td>
+                      <td>Email@gmail.com</td>
+                    </tr>
+                    <tr>
+                      <td>Contact Number</td>
+                      <td>+639999999999</td>
+                    </tr>
+                    <tr>
+                      <td>Account Status</td>
+                      <td>Active</td>
+                    </tr>
+                    <tr>
+                      <td>Total Listing</td>
+                      <td>123</td>
+                    </tr>
+                    <tr>
+                      <td>Ratings</td>
+                      <td>#123</td>
+                    </tr>
+                    <tr>
+                      <td>Report Received</td>
+                      <td>0</td>
+                    </tr>
+                    <tr>
+                      <td>Created Since</td>
+                      <td>Month Year</td>
+                    </tr>
+                </tbody>
+              </table>
+          </div>
+        </div>
+      
+        <!--Reported Accounts-->
+        <div id="ReportedAccounts" class="tab-content" style="display: none;">
+          <div class="user-table">
+            <table>
+              <thead>
+                <tr>
+                    <th>
+                        <a href="/manage-users#ReportedAccounts">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </a>
+                    </th>
+                    <th>All Complaints</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Name</td>
+                  <td>Reason</td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                  <td>Reason</td>
+                  </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      
+        <!--Banned Accounts-->
+        <div id="BannedAccounts" class="tab-content" style="display: none;">
+          <div class="user-table">
+            <table>
+                <thead>
+                  <tr>
+                      <th>
+                        <a href="/manage-users#BannedAccounts">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </a>
+                    </th>
+                    <th>Banned Account Information</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>User Id</td>
+                    <td>#123</td>
+                  </tr>
+                  <tr>
+                      <td>User Name</td>
+                      <td>Firstname M. Lastname</td>
+                    </tr>
+                    <tr>
+                      <td>Email</td>
+                      <td>Email@gmail.com</td>
+                    </tr>
+                    <tr>
+                      <td>Contact Number</td>
+                      <td>+639999999999</td>
+                    </tr>
+                    <tr>
+                      <td>Account Status</td>
+                      <td>Active</td>
+                    </tr>
+                    <tr>
+                      <td>Total Listing</td>
+                      <td>123</td>
+                    </tr>
+                    <tr>
+                      <td>Ratings</td>
+                      <td>#123</td>
+                    </tr>
+                    <tr>
+                      <td>Report Received</td>
+                      <td>0</td>
+                    </tr>
+                    <tr>
+                      <td>Created Since</td>
+                      <td>Month Year</td>
+                    </tr>
+                </tbody>
+              </table>          
+            </div>
+        </div>
+      </div>
+  </body>
+  <script src="/js/admin.js"></script>
+
