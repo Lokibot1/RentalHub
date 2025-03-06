@@ -7,7 +7,7 @@ MySQL.
 
 Before you begin, ensure you have met the following requirements:
 
-- You have installed Node.js and npm.
+- You have installed Node.js (latest LTS version recommended).
 - You have installed MySQL.
 - You have a MySQL database set up.
 
@@ -64,7 +64,7 @@ Before you begin, ensure you have met the following requirements:
       mkdir C:\uploads
     ```
 
-   To generate a `JWT_SECRET` key, run the commandfollowing:
+   To generate a `JWT_SECRET` key, run the command:
     ```sh
     node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
     ```
@@ -83,7 +83,7 @@ Before you begin, ensure you have met the following requirements:
     CREATE DATABASE IF NOT EXISTS rentalhub;
     ```
 
-2. Run the SQL queries in `configs/schema.sql` to create the tables and insert sample data.
+2. Run the SQL queries in `resource/schema.sql` to create the tables and insert sample data.
 
 ## Running the Project
 
@@ -116,21 +116,21 @@ git pull origin develop
 2. Create a new branch for your work:
 
 ```sh
-git checkout -b your-feature-branch
+git checkout -b your-new-branch
 ```
 
-Replace your-feature-branch with a descriptive name for your new branch. This ensures you are always working with the
-latest updates.
+Replace your-new-branch with a descriptive name. This ensures you are always working with the latest updates.
 
 ## Project Structure
 
 - [server.js](http://_vscodecontentref_/1): The main entry point of the application.
 - [package.json](http://_vscodecontentref_/2): Contains third party libraries.
 - [.env](http://_vscodecontentref_/3): Contains environment configs.
-- [configs/](http://_vscodecontentref_/4): Contains db configuration and schemas.
+- [configs/](http://_vscodecontentref_/4): Contains db and mail configuration.
 - [helpers/](http://_vscodecontentref_/5): Contains helper functions for the backend/frontend.
 - [middlewares/](http://_vscodecontentref_/6): Contains functions that processes requests and responses before passing
   control to the next function.
 - [public/](http://_vscodecontentref_/7): Contains static files such as CSS, JavaScript, and images.
+- [resource/](http://_vscodecontentref_/4): Contains schema.sql file.
 - [routes/](http://_vscodecontentref_/8): Contains route definitions for the application.
 - [views/](http://_vscodecontentref_/9): Contains HTML files (EJS Templating) for the frontend.
