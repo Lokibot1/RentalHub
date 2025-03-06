@@ -134,3 +134,19 @@ Replace your-new-branch with a descriptive name. This ensures you are always wor
 - [resource/](http://_vscodecontentref_/4): Contains schema.sql file.
 - [routes/](http://_vscodecontentref_/8): Contains route definitions for the application.
 - [views/](http://_vscodecontentref_/9): Contains HTML files (EJS Templating) for the frontend.
+
+## Dependencies
+
+The project uses the following dependencies, which are listed in the `package.json` file:
+
+- [bcryptjs](https://github.com/dcodeIO/bcrypt.js)
+- [cookie-parser](https://github.com/expressjs/cookie-parser)
+- [express](https://github.com/expressjs/express)
+- [ejs](https://github.com/mde/ejs)
+- [express-ejs-layouts](https://github.com/Soarez/express-ejs-layouts)
+- [joi](https://github.com/hapijs/joi)
+- [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken)
+- [mysql2](https://github.com/sidorares/node-mysql2)
+- [morgan](https://github.com/expressjs/morgan)
+- [multer](https://github.com/expressjs/multer)
+- [nodemailer](https://github.com/nodemailer/nodemailer)
