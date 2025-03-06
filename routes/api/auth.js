@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const {connection: db } = require("../../configs/db"); // Adjust the path as needed
+const {connection: db} = require("../../configs/db"); // Adjust the path as needed
 const Joi = require("joi");
 
 const router = express.Router();
@@ -22,9 +22,14 @@ const registerSchema = Joi.object({
         "string.email": "Enter a valid email address.",
         "string.empty": "Email is required."
     }),
-    password: Joi.string().pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/).required().messages({
-        "string.pattern.base": "Password must be at least 8 characters, include letters and numbers.",
-        "string.empty": "Password is required."
+    password: Joi.string()
+        .min(8)
+        .pattern(/^(?=.*[A-Za-z])(?=.*\d)/)
+        .required()
+        .messages({
+            "string.min": "Password must be at least 8 characters long.",
+            "string.pattern.base": "Password must include both letters and numbers.",
+            "string.empty": "Password is required."
     }),
     confirm_password: Joi.any().valid(Joi.ref('password')).required().messages({
         "any.only": "Password does not match!",
@@ -37,17 +42,17 @@ const registerSchema = Joi.object({
  * @route POST /api/auth/register
  */
 router.post("/register", async (req, res) => {
-    const { error } = registerSchema.validate(req.body, { abortEarly: false });
+    const {error} = registerSchema.validate(req.body, {abortEarly: false});
 
     if (error) {
         const errors = error.details.reduce((acc, curr) => {
             acc[curr.context.key] = curr.message;
             return acc;
         }, {});
-        return res.status(400).json({ errors });
+        return res.status(400).json({errors});
     }
 
-    const { first_name, last_name, contact_number, email, password } = req.body;
+    const {first_name, last_name, contact_number, email, password} = req.body;
 
     db.connect(async (err) => {
         if (err) {
@@ -78,7 +83,7 @@ router.post("/register", async (req, res) => {
             }
 
             res.status(201).json({
-                data: { email },
+                data: {email},
                 message: "Created OTP"
             });
         }
