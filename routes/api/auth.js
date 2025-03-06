@@ -2,44 +2,57 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const {connection: db } = require("../../configs/db"); // Adjust the path as needed
+const Joi = require("joi");
 
 const router = express.Router();
 
+// Register schema validation
+const registerSchema = Joi.object({
+    first_name: Joi.string().required().messages({
+        "string.empty": "First name is required."
+    }),
+    last_name: Joi.string().required().messages({
+        "string.empty": "Last name is required."
+    }),
+    contact_number: Joi.string().pattern(/^\d{10,12}$/).required().messages({
+        "string.pattern.base": "Contact number must be 10-12 digits.",
+        "string.empty": "Contact number is required."
+    }),
+    email: Joi.string().email().required().messages({
+        "string.email": "Enter a valid email address.",
+        "string.empty": "Email is required."
+    }),
+    password: Joi.string().pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/).required().messages({
+        "string.pattern.base": "Password must be at least 8 characters, include letters and numbers.",
+        "string.empty": "Password is required."
+    }),
+    confirm_password: Joi.any().valid(Joi.ref('password')).required().messages({
+        "any.only": "Password does not match!",
+        "any.required": "Confirm password is required."
+    })
+});
 
 /**
  * Register a new user
  * @route POST /api/auth/register
  */
 router.post("/register", async (req, res) => {
-    const {first_name, last_name, contact_number, email, password, confirm_password} = req.body
-    let errors = {}
+    const { error } = registerSchema.validate(req.body, { abortEarly: false });
 
-    // Validate email
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        errors.email = "Enter a valid email address."
+    if (error) {
+        const errors = error.details.reduce((acc, curr) => {
+            acc[curr.context.key] = curr.message;
+            return acc;
+        }, {});
+        return res.status(400).json({ errors });
     }
 
-    //  Validate Password Strength (8+ characters, at least one letter and number)
-    if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
-        errors.password = "Password must be at least 8 characters, include letters and numbers."
-    } else if (password !== confirm_password) {
-        errors.password = "Password does not match!"
-    }
-
-    // Validate contact number
-    if (!/^\d{10,12}$/.test(contact_number)) {
-        errors.contact_number = "Contact number must be 10-12 digits."
-    }
-
-    if (Object.keys(errors).length > 0) {
-        return res.status(400).json({errors})
-    }
+    const { first_name, last_name, contact_number, email, password } = req.body;
 
     db.connect(async (err) => {
         if (err) {
             console.error("Database connection failed:", err);
         } else {
-            // Check if user already exists
             const [existingUser] = await db.promise().query("SELECT * FROM users WHERE email = ?", [email]);
 
             if (existingUser.length > 0) {
@@ -70,7 +83,6 @@ router.post("/register", async (req, res) => {
             });
         }
     });
-
 });
 
 
@@ -139,7 +151,6 @@ router.post("/check-auth", (req, res) => {
         return res.json({isAuthenticated: false});
     }
 });
-
 
 
 module.exports = router;
