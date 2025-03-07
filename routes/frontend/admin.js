@@ -1,5 +1,5 @@
 const express = require("express");
-const { checkAuth } = require("../../middlewares/auth");
+const { checkAuth, checkAdmin } = require("../../middlewares/auth");
 
 const router = express.Router();
 
@@ -7,7 +7,7 @@ const router = express.Router();
  * Admin Page
  * @route GET /admin/dashboard
  */
-router.get("/dashboard", checkAuth, (req, res) => {
+router.get("/dashboard", checkAuth, checkAdmin, (req, res) => {
   res.render("admin/dashboard", {
     layout: "layouts/dashboard",
     title:  "Admin Dashboard",
@@ -19,7 +19,7 @@ router.get("/dashboard", checkAuth, (req, res) => {
  * Manager Users
  * @route GET /admin/manage-users
  */
-router.get("/manage-users", checkAuth, (req, res) => {
+router.get("/manage-users", checkAuth, checkAdmin, (req, res) => {
   res.render("admin/manage-users", {
     layout: "layouts/dashboard",
     title:  "Manage Users",
@@ -31,7 +31,7 @@ router.get("/manage-users", checkAuth, (req, res) => {
  * Manage Listings
  * @route GET /admin/manage-listings
  */
-router.get("/manage-listings", checkAuth, (req, res) => {
+router.get("/manage-listings", checkAuth, checkAdmin, (req, res) => {
   res.render("admin/manage-listings", {
     layout: "layouts/dashboard",
     title:  "Manage Listings",
@@ -43,7 +43,7 @@ router.get("/manage-listings", checkAuth, (req, res) => {
  * Transactions
  * @route GET /admin/transactions
  */
-router.get("/transactions", checkAuth, (req, res) => {
+router.get("/transactions", checkAuth, checkAdmin, (req, res) => {
   res.render("admin/transactions", {
     layout: "layouts/dashboard",
     title:  "Transactions",

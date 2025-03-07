@@ -32,12 +32,16 @@ const dashboardRoutes = require("./routes/frontend/dashboard");
 const apiAuthRoutes = require("./routes/api/auth");
 const apiListingRoute = require("./routes/api/listing");
 const otpRoute = require("./routes/frontend/otp");
+const forbiddenRoute = require("./routes/forbidden");
 
 // Frontend routes
 app.use("/", mainRoutes);
 app.use("/admin", adminRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/auth/otp", otpRoute);
+
+// 403 route
+app.use("/forbidden", forbiddenRoute);
 
 // Backend routes
 app.use("/api", apiListingRoute);

@@ -1,5 +1,5 @@
 const express = require("express");
-const { checkAuth } = require("../../middlewares/auth");
+const { checkAuth, checkUser } = require("../../middlewares/auth");
 
 const router = express.Router();
 
@@ -8,7 +8,7 @@ const router = express.Router();
  * Dashboard
  * @route GET /dashboard/listing
  */
-router.get("/listing", checkAuth, (req, res) => {
+router.get("/listing", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/listing", {
     layout: "layouts/dashboard",
     title: "Add New Listing",
@@ -21,7 +21,7 @@ router.get("/listing", checkAuth, (req, res) => {
  * User Dashboard
  * @route GET /dashboard/user-dashboard
  */
-router.get("/user-dashboard", checkAuth, (req, res) => {
+router.get("/user-dashboard", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/user-dashboard", {
     layout: "layouts/dashboard",
     title:  "User Dashboard",
@@ -33,7 +33,7 @@ router.get("/user-dashboard", checkAuth, (req, res) => {
  * Profile Page
  * @route GET /dashboard/profile
  */
-router.get("/profile", checkAuth, (req, res) => {
+router.get("/profile", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/profile", {
     layout: "layouts/dashboard",
     title:  "User Profile",
@@ -45,7 +45,7 @@ router.get("/profile", checkAuth, (req, res) => {
  * Rents Page
  * @route GET /dashboard/rents
  */
-router.get("/rents", checkAuth, (req, res) => {
+router.get("/rents", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/rents", {
     layout: "layouts/dashboard",
     title:  "My Rents",
@@ -57,7 +57,7 @@ router.get("/rents", checkAuth, (req, res) => {
  * My Listing Page
  * @route GET /dashboard/my-listing
  */
-router.get("/my-listing", checkAuth, (req, res) => {
+router.get("/my-listing", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/my-listing", {
     layout: "layouts/dashboard",
     title:  "My Listings",
@@ -69,7 +69,7 @@ router.get("/my-listing", checkAuth, (req, res) => {
  * Archives Page
  * @route GET /dashboard/archives
  */
-router.get("/archives", checkAuth, (req, res) => {
+router.get("/archives", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/archives", {
     layout: "layouts/dashboard",
     title:  "Archives",
@@ -80,7 +80,7 @@ router.get("/archives", checkAuth, (req, res) => {
  * View Product Page
  * @route GET /dashboard/view-product
  */
-router.get("/view-product", checkAuth, (req, res) => {
+router.get("/view-product", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/view-product", {
     layout: "layouts/dashboard",
     title:  "View Product",
@@ -92,70 +92,13 @@ router.get("/view-product", checkAuth, (req, res) => {
  * Setup Profile Pae
  * @route GET /dashboard/setup-profile
  */
-router.get("/setup-profile", checkAuth, (req, res) => {
+router.get("/setup-profile", checkAuth, checkUser, (req, res) => {
   // remove the otp from cookies
   res.clearCookie('otp');
-
 
   res.render("dashboard/setup-profile", {
     layout: "layouts/dashboard",
     title:  "Setup Profile",
-  });
-});
-
-
-/**
- * Admin Page
- * @route GET /dashboard/admin
- */
-router.get("/admin", checkAuth, (req, res) => {
-
-
-  res.render("dashboard/admin-dashboard", {
-    layout: "layouts/dashboard",
-    title:  "Admin",
-  });
-});
-
-
-/**
- * Manager Users
- * @route GET /dashboard/manage-users
- */
-router.get("/manage-users", checkAuth, (req, res) => {
-
-
-  res.render("dashboard/manage-users", {
-    layout: "layouts/dashboard",
-    title:  "Manage Users",
-  });
-});
-
-
-/**
- * Manage Listings
- * @route GET /dashboard/manage-listings
- */
-router.get("/manage-listings", checkAuth, (req, res) => {
-
-
-  res.render("dashboard/manage-listings", {
-    layout: "layouts/dashboard",
-    title:  "Manage Listings",
-  });
-});
-
-
-/**
- * Transactions
- * @route GET /dashboard/transactions
- */
-router.get("/transactions", checkAuth, (req, res) => {
-
-
-  res.render("dashboard/transactions", {
-    layout: "layouts/dashboard",
-    title:  "Transactions",
   });
 });
 

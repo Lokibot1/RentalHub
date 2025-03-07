@@ -104,7 +104,7 @@ router.post("/login", async (req, res) => {
             return res.status(500).json({message: "Internal server error"});
         }
 
-        const sql = "SELECT * FROM users WHERE email = ?";
+        const sql = "SELECT users.id AS id, email, password, roles.name AS role FROM users INNER JOIN roles ON users.role_id = roles.id WHERE email = ?";
         db.query(sql, [email], async (err, results) => {
             if (err) {
                 console.error("Query error:", err);
@@ -125,6 +125,7 @@ router.post("/login", async (req, res) => {
             const token = jwt.sign({
                 id: user.id,
                 email: user.email,
+                role: user.role,
             }, process.env.JWT_SECRET, {expiresIn: "1h"});
 
             res.cookie("token", token, {

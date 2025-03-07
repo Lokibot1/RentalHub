@@ -10,12 +10,26 @@ function checkAuth(req, res, next) {
 
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
-    req.isAuthenticated = req.user.otp_verified;
+    req.isAuthenticated = true;
   } catch (err) {
     req.isAuthenticated = false;
     return res.redirect("/login");
   }
 
+  next();
+}
+
+function checkAdmin(req, res, next) {
+  if (!req.isAuthenticated || req.user.role !== 'admin') {
+    return res.redirect("/forbidden");
+  }
+  next();
+}
+
+function checkUser(req, res, next) {
+  if (!req.isAuthenticated || req.user.role !== 'user') {
+    return res.redirect("/forbidden");
+  }
   next();
 }
 
@@ -39,5 +53,7 @@ function optionalAuth(req, res, next) {
 
 module.exports = {
   checkAuth,
+  checkAdmin,
+  checkUser,
   optionalAuth
 };
