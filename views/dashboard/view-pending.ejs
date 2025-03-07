@@ -1,0 +1,121 @@
+<link rel="stylesheet" href="/css/view-pending.css" />
+
+<!--Navigation Bar-->
+<nav>
+    <a href="/>
+      <div class="logo">
+        <h1>Rental <span> Hub</span></h1>
+      </div>
+    </a>
+    <ul>
+      <li><a href="/shopping">Shop</a></li>
+      <li>
+        <a href="/listing"
+          ><img src="/images/WhiteAdd.png" class="add-icon"
+        /></a>
+      </li>
+      <li>
+        <a href="/login">
+          <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="view-product-container">
+    <!-- Left Section: Product Info -->
+    <div class="left-section">
+      <div class="product-image">
+        <img id="product-image" src="" alt="Product Image" />
+      </div>
+
+      <div class="product-details">
+        <label>Name of Product:</label>
+        <p id="product-name"></p>
+
+        <label>Price per Day:</label>
+        <p id="product-price"></p>
+
+        <label>Item Description:</label>
+        <p id="product-description"></p>
+      </div>
+
+      <!-- Owner Info -->
+      <div class="owner-info">
+        <h2>Posted by</h2>
+        <hr />
+        <div class="owner-details">
+          <div class="pfp">
+            <img id="owner-image" src="" alt="Owner Image" />
+          </div>
+          <div>
+            <strong id="owner-name">Loading...</strong><br />
+            <span id="owner-location">Loading...</span><br />
+            <span id="owner-rating">⭐ Loading...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Section: Rental Options -->
+    <div class="right-section">
+      <div class="rental-options">
+        <h1>Pending Post!!</h1>
+        <p>
+          Your post is currently under review. It will be published once
+          approved.
+        </p>
+        <!-- Fix me: Modals  -->
+        <button id="cancel-btn">Cancel <br />Request</button>
+      </div>
+    </div>
+
+    <!--Confirmation Modal-->
+    <div id="overlay" class="overlay"></div>
+    <div id="cancel-Modal" class="modal">
+      <div class="modal-content">
+        <h3>
+          Are you sure you want to <span>cancel</span> the posting of this
+          item?
+        </h3>
+        <div class="modal-buttons">
+          <button class="btn-yes" id="confirmBan">Yes</button>
+          <button class="btn-no" id="cancelBtn">No</button>
+        </div>
+      </div>
+    </div>
+    <div id="banToast" class="toast"></div>
+  </div>
+</body>
+<script>
+  // Ban User
+  const cancelIcon = document.getElementById("cancel-btn");
+  const cancelModal = document.getElementById("cancel-Modal");
+  const cancelBtn = document.getElementById("cancelBtn");
+  const confirmBan = document.getElementById("confirmBan");
+  const banToast = document.getElementById("banToast");
+
+  cancelIcon.addEventListener("click", function (event) {
+    event.preventDefault();
+    cancelModal.style.display = "flex";
+  });
+  cancelBtn.addEventListener("click", function () {
+    cancelModal.style.display = "none";
+  });
+  window.addEventListener("click", function (event) {
+    if (event.target === cancelModal) {
+      cancelModal.style.display = "none";
+    }
+  });
+  function showBanToast(message) {
+    banToast.textContent = message;
+    banToast.classList.add("show");
+    setTimeout(() => {
+      banToast.classList.remove("show");
+    }, 3000);
+  }
+  confirmBan.addEventListener("click", function () {
+    showBanToast("Posting Cancelled Sucessfully!");
+    cancelModal.style.display = "none";
+  });
+</script>

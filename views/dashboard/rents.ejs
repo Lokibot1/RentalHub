@@ -7,33 +7,42 @@
     <!--Sidebar-->
     <%- include('../partials/sidebar.ejs'); %>
 
-    <!--Main Content-->
-    <div class="content">
-        <div class="tab">
-            <button class="tablinks active" onclick="openTab(event, 'Requests')">
+          <!--Main Content-->
+          <div class="content">
+            <div class="tab">
+              <button class="tablinks active" onclick="openTab(event, 'Requests')">
                 Requests
-            </button>
-            <button class="tablinks" onclick="openTab(event, 'Review')">
+              </button>
+              <button class="tablinks" onclick="openTab(event, 'Review')">
                 Review
-            </button>
-        </div>
-
-        <!--Tab Content-->
-        <div id="Requests" class="tab-content">
-            <!-- Rent Item Card -->
-            <div class="rent-card">
-                <p class="seller-name">Name Seller</p>
-                <div class="rent-item">
-                    <img src="/images/placeholder.png" alt="Product Image" class="product-image"/>
-                    <span class="product-name">Name ng Product</span>
-                </div>
-                <button class="cancel-btn">Cancel</button>
+              </button>
             </div>
-        </div>
-
-        <div id="Review" class="tab-content" style="display: none;">
-            <button class="cancel-btn">Cancel All</button>
-        </div>
+    
+            <!--Tab Content-->
+            <div id="Requests" class="tab-content"> 
+              <!-- Rent Item Card -->
+              <div class="rent-card">
+                  <p class="seller-name">Name Seller</p>
+                  <div class="rent-item">
+                      <img src="placeholder.png" alt="Product Image" class="product-image" />
+                      <span class="product-name">Name ng Product</span>
+                  </div>
+                  <button class="cancel-btn">Cancel</button>
+              </div>
+          </div>
+          
+          <div id="Review" class="tab-content" style="display: none;">
+            <div class="rentalItem">
+              <div class="rentalInfo">
+                <div class="renterDetails">
+                  <strong>Renter's Name</strong>
+                </div>
+                <div class="itemDetails">
+                  <h2 class="" style="white-space: normal">HAHAHAHAAHAHAH</h2>
+                </div>
+              </div>
+            </div>
+          </div>
 
     </div>
 </div>

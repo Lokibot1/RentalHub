@@ -9,8 +9,37 @@
 
     <!--Main Content-->
     <div class="content">
-        <button class="restore-btn">Restore All</button>
+        <button id="restore-btn" class="restore-btn">Restore All</button>
+        <div class="shoppingList">
+          <a href="/view-archive">
+            <div class="shoppingItem">
+              <img src="" alt="" class="itemImage" />
+              <hr />
+              <strong class="itemName">Name</strong>
+              <br />
+              <strong class="itemPrice">$123</strong>
+              <br />
+              <strong class="itemLocation">Jan lang</strong>
+            </div>
+          </a>
+        </div>
+      </div>
+    <!--Confirmation Modal-->
+    <div id="overlay" class="overlay"></div>
+    <div id="restore-Modal" class="modal">
+      <div class="modal-content">
+        <h3>
+          Are you sure you want to
+          <span style="color: #009959">restore</span> this item?
+        </h3>
+        <div class="modal-buttons">
+          <button class="btn-yes" id="confirmBan">Yes</button>
+          <button class="btn-no" id="cancelBtn">No</button>
+        </div>
+      </div>
     </div>
+    <div id="restoreToast" class="toast"></div>
+  </div>
 </div>
 
 <!--JAVASCRIPT-->
@@ -81,4 +110,33 @@
             console.error("Error restoring all listings:", error);
         }
     }
+    // Restore Posting
+      const restoreIcon = document.getElementById("restore-btn");
+      const restoreModal = document.getElementById("restore-Modal");
+      const confirmBan = document.getElementById("confirmBan");
+      const restoreToast = document.getElementById("restoreToast");
+
+      restoreIcon.addEventListener("click", function (event) {
+        event.preventDefault();
+        restoreModal.style.display = "flex";
+      });
+      cancelBtn.addEventListener("click", function () {
+        restoreModal.style.display = "none";
+      });
+      window.addEventListener("click", function (event) {
+        if (event.target === restoreModal) {
+          restoreModal.style.display = "none";
+        }
+      });
+      function showRestoreToast(message) {
+        restoreToast.textContent = message;
+        restoreToast.classList.add("show");
+        setTimeout(() => {
+          restoreToast.classList.remove("show");
+        }, 3000);
+      }
+      confirmBan.addEventListener("click", function () {
+        showRestoreToast("Restored Successfully!");
+        restoreModal.style.display = "none";
+      });
 </script>
