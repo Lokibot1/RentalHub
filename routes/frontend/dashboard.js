@@ -104,4 +104,60 @@ router.get("/setup-profile", checkAuth, (req, res) => {
 });
 
 
+/**
+ * Admin Page
+ * @route GET /dashboard/admin
+ */
+router.get("/admin", checkAuth, (req, res) => {
+
+
+  res.render("dashboard/admin-dashboard", {
+    layout: "layouts/dashboard",
+    title:  "Admin",
+  });
+});
+
+
+/**
+ * Manager Users
+ * @route GET /dashboard/manage-users
+ */
+router.get("/manage-users", checkAuth, (req, res) => {
+
+
+  res.render("dashboard/manage-users", {
+    layout: "layouts/dashboard",
+    title:  "Manage Users",
+  });
+});
+
+
+/**
+ * Manage Listings
+ * @route GET /dashboard/manage-listings
+ */
+router.get("/manage-listings", checkAuth, (req, res) => {
+
+
+  res.render("dashboard/manage-listings", {
+    layout: "layouts/dashboard",
+    title:  "Manage Listings",
+  });
+});
+
+
+/**
+ * Transactions
+ * @route GET /dashboard/transactions
+ */
+router.get("/transactions", checkAuth, (req, res) => {
+
+
+  res.render("dashboard/transactions", {
+    layout: "layouts/dashboard",
+    title:  "Transactions",
+  });
+});
+
+
 module.exports = router;

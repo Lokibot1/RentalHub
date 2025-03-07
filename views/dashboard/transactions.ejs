@@ -10,16 +10,7 @@
     <!--Body-->
     <div class="main">
       <!-- Side Bar -->
-      <div class="sidebar">
-        <ul>
-            <li><a href="/admin-dashboard">Admin Dashboard</a></li>
-            <li><a href="/manage-users">Manage User</a></li>
-            <li><a href="/manage-listigns" class="active">Manage Listings</a></li>
-            <li><a href="/transactions">Transaction</a></li>
-            <li><a href="/login" id="logout">Log Out</a></li>
-            </ul>
-        </ul>
-      </div>
+      <%- include('../partials/admin-sidebar-links.ejs'); %>
 
       <!-- Logout Confirmation Modal -->
       <div id="logout-modal" class="logout-modal">
