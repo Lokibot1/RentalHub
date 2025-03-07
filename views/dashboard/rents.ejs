@@ -7,134 +7,357 @@
     <!--Sidebar-->
     <%- include('../partials/sidebar.ejs'); %>
 
-          <!--Main Content-->
-          <div class="content">
-            <div class="tab">
-              <button class="tablinks active" onclick="openTab(event, 'Requests')">
-                Requests
-              </button>
-              <button class="tablinks" onclick="openTab(event, 'Review')">
-                Review
-              </button>
-            </div>
-    
-            <!--Tab Content-->
-            <div id="Requests" class="tab-content"> 
-              <!-- Rent Item Card -->
-              <div class="rent-card">
-                  <p class="seller-name">Name Seller</p>
-                  <div class="rent-item">
-                      <img src="placeholder.png" alt="Product Image" class="product-image" />
-                      <span class="product-name">Name ng Product</span>
-                  </div>
-                  <button class="cancel-btn">Cancel</button>
-              </div>
-          </div>
-          
-          <div id="Review" class="tab-content" style="display: none;">
+      <!--Main Content-->
+      <div class="content">
+        <div class="tab">
+          <button class="tablinks active" onclick="openTab(event, 'Requests')">
+            Requests
+          </button> <button class="tablinks" onclick="openTab(event, 'On Going')">
+            On Going
+          </button>
+          <button class="tablinks" onclick="openTab(event, 'Review')">
+            Review
+          </button>
+        </div>
+
+        <!--Tab Content-->
+        <div id="Requests" class="tab-content"> 
+          <div class="RentalList">
             <div class="rentalItem">
               <div class="rentalInfo">
                 <div class="renterDetails">
-                  <strong>Renter's Name</strong>
+                  <strong class="renterName">Renter's Name</strong>
                 </div>
                 <div class="itemDetails">
-                  <h2 class="" style="white-space: normal">HAHAHAHAAHAHAH</h2>
+                  <img src="" alt="" class="itemImage" />
+                  <h2 class="itemName">Items Name</h2>
                 </div>
               </div>
+              <div class="completeAction">
+                <button id="cancel-btn" class="cancel-btn">Cancel</button>
+              </div>
+            </div>
+            </div>
+      </div>
+
+       <!-- Confirmation Modal -->
+    <div id="cancel-modal" class="modal">
+      <div class="modal-content" style="width: 40%;">
+          <h3>Are you sure you want to cancel this request?</h3>
+          <div class="modal-buttons">
+              <button class="btn-yes" id="cancel-submit">Confirm</button>
+              <button class="btn-no" id="cancel-confirm">Cancel</button>
+          </div>
+      </div>
+    </div>
+
+    <!--FIXME:Toast Notification  DARKBG NOT WORKING-->
+     <div class="overlay" id="modal-overlay"></div>
+    <div id="cancelToast" class="toast">Request Cancelled Successfully!</div>
+
+          <!-- On Going Modal -->
+      <div id="On Going" class="tab-content"> 
+        <div class="RentalList">
+          <div class="rentalItem">
+            <div class="rentalInfo">
+              <div class="renterDetails">
+                <strong class="renterName">Renter's Name</strong>
+              </div>
+              <div class="itemDetails">
+                <img src="" alt="" class="itemImage" />
+                <h2 class="itemName">Items Name</h2>
+              </div>
+              <div class="rentalDurationContainer">
+                <strong class="rentalDuration">February 3-4, 2025</strong>
+                <strong>•</strong>
+                <strong class="MOD">Delivery</strong>
+              </div>
+            </div>
+            <div class="completeAction">
+              <button id="review-btn">Done</button>
             </div>
           </div>
-
+          </div>
     </div>
-</div>
 
-<!--JavaScript-->
-<script>
-    document.addEventListener("DOMContentLoaded", async function () {
+    <!-- Modal for Review -->
+    <div id="review-modal" class="modal">
+      <div class="modal-content" style="text-align: left">
+          <h2>Review Renter</h2>
+          <form id="review-form">
+              <label for="rating">Rating:</label>
+              <br />
+              <div class="stars">
+                  <span class="star2" data-value="1">★</span>
+                  <span class="star2" data-value="2">★</span>
+                  <span class="star2" data-value="3">★</span>
+                  <span class="star2" data-value="4">★</span>
+                  <span class="star2" data-value="5">★</span>
+              </div>
+              <br />
+              <label for="description">Describe Your Experience</label>
+              <br />
+              <textarea id="description" name="description" rows="4" cols="50"></textarea>
+              <br />
+              <button id="submit-rev" type="submit">Submit</button>
+              <button id="cancel-rev" type="button">Cancel</button>
+          </form>
+      </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal">
+      <div class="modal-content">
+          <h3>Are you sure you want to submit this review?</h3>
+          <div class="modal-buttons">
+              <button class="btn-yes" id="confirm-submit">Confirm</button>
+              <button class="btn-no" id="cancel-confirm">Cancel</button>
+          </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Review Submitted Successfully!</div>
+
+          <!-- Review Modal -->
+      <div id="Review" class="tab-content" style="display: none;">
+        <div class="rentalItem">
+          <div class="rentalInfo">
+            <div class="renterDetails">
+              <strong>Renter's Name</strong>
+            </div>
+            <div class="itemDetails">
+              <h2 class="" style="white-space: normal">HAHAHAHAAHAHAH</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    <!--JavaScript-->
+    <script>
+      document.addEventListener("DOMContentLoaded", async function () {
         await loadActiveTab(); // Auto load data for the active tab
 
-        // "Cancel All" BTN EVENT LISTENER
-        document.getElementById("cancel-all").addEventListener("click", async function () {
-            try {
-                const activeTab = document.querySelector(".tablinks.active").dataset.api; // Get active tab's API
-                const response = await fetch("/api/cancel-all", { //ready na to juls for api, adjust mo nalang if diff api gagamitin mo.
-                    method: "DELETE",                               //eto rin juls, adjust mo nalang din, pwede rin POST method if server restriced kase frontend
-                    headers: {"Content-Type": "application/json"},
-                });
+  // "Cancel All" BTN EVENT LISTENER
+      document.getElementById("cancel-all").addEventListener("click", async function () {
+        try {
+          const activeTab = document.querySelector(".tablinks.active").dataset.api; // Get active tab's API
+          const response = await fetch("/api/cancel-all", { //ready na to juls for api, adjust mo nalang if diff api gagamitin mo.
+            method: "DELETE",                               //eto rin juls, adjust mo nalang din, pwede rin POST method if server restriced kase frontend
+            headers: { "Content-Type": "application/json" },
+          });
 
-                if (response.ok) {
-                    alert("All rentals have been canceled.");
-                    await fetchRents(activeTab, activeTab === "/api/my-rents" ? "request-container" : "review-container"); // Refresh only the active tab
-                }
-            } catch (error) {
-                console.error("Error canceling all rentals:", error);
-            }
-        });
+          if (response.ok) {
+            alert("All rentals have been canceled.");
+            await fetchRents(activeTab, activeTab === "/api/my-rents" ? "request-container" : "review-container"); // Refresh only the active tab
+          }
+        } catch (error) {
+          console.error("Error canceling all rentals:", error);
+        }
+      });
     });
 
-    // LOAD ACTIVE TAB DATA AUTOMATICALLY
-    async function loadActiveTab() {
+      // LOAD ACTIVE TAB DATA AUTOMATICALLY
+      async function loadActiveTab() {
         const activeTab = document.querySelector(".tablinks.active")?.dataset.api || "/api/my-rents"; // Default to "my-rents"
         await fetchRents(activeTab, activeTab === "/api/my-rents" ? "request-container" : "review-container");
-    }
+      }
 
-    // FETCH RENTS FUNCTION
-    async function fetchRents(apiUrl, containerId) {
+      // FETCH RENTS FUNCTION
+      async function fetchRents(apiUrl, containerId) {
         try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-            const container = document.getElementById(containerId);
-            container.innerHTML = "";
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+          const container = document.getElementById(containerId);
+          container.innerHTML = "";
 
-            data.forEach((rent) => {
-                const rentCard = document.createElement("div");
-                rentCard.classList.add("rent-card");
-                rentCard.innerHTML = `
-        <p class="seller-name">${rent.seller}</p>
-        <div class="rent-item">
-          <img src="${rent.image || "/images/placeholder.png"}" alt="Product Image" class="product-image">
-          <span class="product-name">${rent.product}</span>
-        </div>
-        <button class="cancel-btn" onclick="cancelRent('${rent.id}', '${containerId}')">Cancel</button>
-      `;
-                container.appendChild(rentCard);
-            });
+          data.forEach((rent) => {
+            const rentCard = document.createElement("div");
+            rentCard.classList.add("rent-card");
+            rentCard.innerHTML = `
+              <p class="seller-name">${rent.seller}</p>
+              <div class="rent-item">
+                <img src="${rent.image || "placeholder.png"}" alt="Product Image" class="product-image">
+                <span class="product-name">${rent.product}</span>
+              </div>
+              <button class="cancel-btn" onclick="cancelRent('${rent.id}', '${containerId}')">Cancel</button>
+            `;
+            container.appendChild(rentCard);
+          });
         } catch (error) {
-            console.error(`Error fetching data from ${apiUrl}:`, error);
+          console.error(`Error fetching data from ${apiUrl}:`, error);
         }
-    }
+      }
 
-    // CANCEL RENT FUNCTION SA REVIEWS TAB
-    async function cancelRent(rentId, containerId) {
+      // CANCEL RENT FUNCTION SA REVIEWS TAB
+      async function cancelRent(rentId, containerId) {
         try {
-            const response = await fetch(`/api/cancel-rent/${rentId}`, {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-            });
-            if (response.ok) {
-                alert("Rental canceled successfully.");
-                await fetchRents(containerId === "request-container" ? "/api/my-rents" : "/api/my-reviews", containerId); //eto change api if diff api gagamitin mo
-            }
+          const response = await fetch(`/api/cancel-rent/${rentId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+          });
+          if (response.ok) {
+            alert("Rental canceled successfully.");
+            await fetchRents(containerId === "request-container" ? "/api/my-rents" : "/api/my-reviews", containerId); //eto change api if diff api gagamitin mo
+          }
         } catch (error) {
-            console.error("Error canceling rent:", error);
+          console.error("Error canceling rent:", error);
         }
-    }
+      }
 
-    // OPEN TAB FUNCTION
-    function openTab(evt, tabName, apiUrl) {
-        var i, tabs, buttons;
-        tabs = document.getElementsByClassName("tab-content");
-        for (i = 0; i < tabs.length; i++) {
+        // OPEN TAB FUNCTION
+        function openTab(evt, tabName, apiUrl) {
+          var i, tabs, buttons;
+          tabs = document.getElementsByClassName("tab-content");
+          for (i = 0; i < tabs.length; i++) {
             tabs[i].style.display = "none";
-        }
-        buttons = document.getElementsByClassName("tablinks");
-        for (i = 0; i < buttons.length; i++) {
+          }
+          buttons = document.getElementsByClassName("tablinks");
+          for (i = 0; i < buttons.length; i++) {
             buttons[i].classList.remove("active");
+          }
+          
+          document.getElementById(tabName).style.display = "block";
+          evt.currentTarget.classList.add("active");
+          evt.currentTarget.dataset.api = apiUrl; //STORE API ENDPOINT SA BUTTON
+          fetchRents(apiUrl, tabName === "request-container" ? "request-container" : "review-container");
         }
 
-        document.getElementById(tabName).style.display = "block";
-        evt.currentTarget.classList.add("active");
-        evt.currentTarget.dataset.api = apiUrl; //STORE API ENDPOINT SA BUTTON
-        fetchRents(apiUrl, tabName === "request-container" ? "request-container" : "review-container");
+        // Review Modal Functionality
+      const reviewBtn = document.getElementById("review-btn");
+      const reviewModal = document.getElementById("review-modal");
+      const confirmModal = document.getElementById("confirm-modal");
+      const submitRev = document.getElementById("submit-rev");
+      const confirmSubmit = document.getElementById("confirm-submit");
+      const cancelConfirm = document.getElementById("cancel-confirm");
+      const cancelRev = document.getElementById("cancel-rev");
+      const toast = document.getElementById("toast");
+
+      // Show review modal
+      reviewBtn.addEventListener("click", function () {
+          reviewModal.style.display = "flex";
+      });
+
+      // Hide review modal
+      cancelRev.addEventListener("click", function () {
+          reviewModal.style.display = "none";
+      });
+
+      // Star Rating System
+      const stars = document.querySelectorAll(".star2");
+      let selectedRating = 0;
+
+      stars.forEach((star) => {
+          star.addEventListener("click", function () {
+              selectedRating = parseInt(this.getAttribute("data-value")); // Store the selected rating
+              updateStars(selectedRating);
+          });
+
+          star.addEventListener("mouseover", function () {
+              updateStars(parseInt(this.getAttribute("data-value")));
+          });
+
+          star.addEventListener("mouseout", function () {
+              updateStars(selectedRating);
+          });
+      });
+
+      function updateStars(rating) {
+          stars.forEach((star, index) => {
+              star.classList.toggle("active", index < rating);
+          });
+      }
+
+      // Handle Review Submission
+      submitRev.addEventListener("click", function (event) {
+          event.preventDefault();
+
+          if (selectedRating === 0) {
+              showToast("Please select a star rating before submitting.", "error");
+              return;
+          }
+
+          confirmModal.style.display = "flex"; // Show confirmation modal
+      });
+
+      // Confirm submission
+      confirmSubmit.addEventListener("click", function () {
+          confirmModal.style.display = "none";
+          reviewModal.style.display = "none"; // Hide review modal
+          showToast("Review Submitted Successfully!");
+          selectedRating = 0; // Reset rating
+          updateStars(0);
+      });
+
+      // Cancel confirmation modal
+      cancelConfirm.addEventListener("click", function () {
+          confirmModal.style.display = "none";
+      });
+
+      // Hide modal when clicking outside
+      window.addEventListener("click", function (event) {
+          if (event.target === reviewModal) {
+              reviewModal.style.display = "block";
+          }
+          if (event.target === confirmModal) {
+              confirmModal.style.display = "none";
+          }
+      });
+
+      // Toast Notification Function
+      function showToast(message, type = "success") {
+          toast.innerText = message;
+          toast.classList.add("show");
+
+          // Apply different styles based on type
+          if (type === "error") {
+              toast.classList.add("error");
+          } else {
+              toast.classList.remove("error");
+          }
+
+          setTimeout(function () {
+              toast.classList.remove("show");
+          }, 3000);
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+    const cancelBtn = document.getElementById("cancel-btn");
+    const cancelModal = document.getElementById("cancel-modal");
+    const cancelSubmit = document.getElementById("cancel-submit");
+    const cancelConfirm = document.getElementById("cancel-confirm");
+    const cancelToast = document.getElementById("cancelToast");
+
+    // Show modal when cancel button is clicked
+    cancelBtn.addEventListener("click", function () {
+        cancelModal.style.display = "block";
+    });
+
+    // Hide modal when confirm is clicked and show toast notification
+    cancelSubmit.addEventListener("click", function () {
+        cancelModal.style.display = "none";
+        showToast();
+    });
+
+    // Hide modal when cancel button inside modal is clicked
+    cancelConfirm.addEventListener("click", function () {
+        cancelModal.style.display = "none";
+    });
+
+    // Function to show toast notification
+    function showToast() {
+        cancelToast.classList.add("show");
+        setTimeout(() => {
+            cancelToast.classList.remove("show");
+        }, 3000); // Hide after 3 seconds
     }
 
-</script>
+    // Close modal if user clicks outside of it
+    window.addEventListener("click", function (event) {
+        if (event.target === cancelModal) {
+            cancelModal.style.display = "none";
+        }
+    });
+});
+    </script>
