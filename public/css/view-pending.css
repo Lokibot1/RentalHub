@@ -344,3 +344,7 @@ nav button {
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
 }
+
+.overlay.active {
+  display: block;
+}
