@@ -17,8 +17,10 @@
         </li>
 
         <li id="auth-status">
-            <% if (isAuthenticated) { %>
-                <a href='/dashboard/profile'>Dashboard Profile</a>
+            <% if (isAuthenticated && role == 'admin') { %>
+                <a href='/admin/dashboard'>Admin Dashboard</a>
+            <% } else if (isAuthenticated && role == 'user') { %>
+                <a href='/dashboard/profile'>User Profile</a>
             <% } else { %>
                 <a href="/login">
                     <img

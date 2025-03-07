@@ -10,9 +10,11 @@ function checkAuth(req, res, next) {
 
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
+    req.role = req.user.role;
     req.isAuthenticated = true;
   } catch (err) {
     req.isAuthenticated = false;
+    req.role = null;
     return res.redirect("/login");
   }
 
@@ -43,8 +45,10 @@ function optionalAuth(req, res, next) {
 
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
+    req.role = req.user.role;
     req.isAuthenticated = true;
   } catch (err) {
+    req.role = null;
     req.isAuthenticated = false;
   }
 

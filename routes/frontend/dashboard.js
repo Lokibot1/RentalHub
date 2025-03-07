@@ -13,6 +13,7 @@ router.get("/listing", checkAuth, checkUser, (req, res) => {
     layout: "layouts/dashboard",
     title: "Add New Listing",
     isAuthenticated: req.isAuthenticated,
+    role: req.role,
   });
 });
 
@@ -25,6 +26,8 @@ router.get("/user-dashboard", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/user-dashboard", {
     layout: "layouts/dashboard",
     title:  "User Dashboard",
+    isAuthenticated: req.isAuthenticated,
+    role: req.role,
   });
 });
 
@@ -37,6 +40,8 @@ router.get("/profile", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/profile", {
     layout: "layouts/dashboard",
     title:  "User Profile",
+    isAuthenticated: req.isAuthenticated,
+    role: req.role,
   });
 });
 
@@ -49,6 +54,8 @@ router.get("/rents", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/rents", {
     layout: "layouts/dashboard",
     title:  "My Rents",
+    isAuthenticated: req.isAuthenticated,
+    role: req.role,
   });
 });
 
@@ -61,6 +68,8 @@ router.get("/my-listing", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/my-listing", {
     layout: "layouts/dashboard",
     title:  "My Listings",
+    isAuthenticated: req.isAuthenticated,
+    role: req.role,
   });
 });
 
@@ -73,6 +82,8 @@ router.get("/archives", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/archives", {
     layout: "layouts/dashboard",
     title:  "Archives",
+    isAuthenticated: req.isAuthenticated,
+    role: req.role,
   });
 });
 
@@ -84,6 +95,8 @@ router.get("/view-product", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/view-product", {
     layout: "layouts/dashboard",
     title:  "View Product",
+    isAuthenticated: req.isAuthenticated,
+    role: req.role,
   });
 });
 
@@ -99,6 +112,8 @@ router.get("/setup-profile", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/setup-profile", {
     layout: "layouts/dashboard",
     title:  "Setup Profile",
+    isAuthenticated: req.isAuthenticated,
+    role: req.role,
   });
 });
 

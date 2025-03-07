@@ -1,10 +1,28 @@
 <!-- Side Bar -->
 <div class="sidebar">
-    <ul>
-      <li><a href="/admin/dashboard">Admin Dashboard</a></li>
-      <li><a href="/admin/manage-users">Manage User</a></li>
-      <li><a href="/admin/manage-listings" class="active">Manage Listings</a></li>
-      <li><a href="/admin/transactions">Transaction</a></li>
-      <li><a href="/login" id="logout">Log Out</a></li>
-    </ul>
-  </div>
+  <ul>
+    <li><a id="admin-dashboard-link" href="/admin/dashboard">Admin Dashboard</a></li>
+    <li><a id="admin-manage-users-link" href="/admin/manage-users">Manage User</a></li>
+    <li><a id="admin-manage-listings-link" href="/admin/manage-listings">Manage Listings</a></li>
+    <li><a id="admin-transactions-link" href="/admin/transactions">Transaction</a></li>
+    <li><a href="/logout" id="logout">Log Out</a></li>
+  </ul>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const path = window.location.pathname;
+
+        const sidebarLinks = {
+            "/admin/dashboard": "admin-dashboard-link",
+            "/admin/manage-users": "admin-manage-users-link",
+            "/admin/manage-listings": "admin-manage-listings-link",
+            "/admin/transactions": "admin-transactions-link",
+        };
+
+        const activeLinkId = sidebarLinks[path];
+        if (activeLinkId) {
+            document.getElementById(activeLinkId).classList.add("active");
+        }
+    });
+</script>

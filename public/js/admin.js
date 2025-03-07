@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
   
     // Redirect when "Yes" is clicked
     confirmLogout.addEventListener("click", function () {
-      window.location.href = "/login.html"; // Adjust logout URL
+      window.location.href = "/logout"; // Adjust logout URL
     });
   
     // Close modal when "No" is clicked

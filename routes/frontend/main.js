@@ -14,6 +14,7 @@ router.get("/", optionalAuth, (req, res) => {
     layout: "layouts/main",
     title: "Main",
     isAuthenticated: req.isAuthenticated,
+    role: req.role,
   });
 });
 
