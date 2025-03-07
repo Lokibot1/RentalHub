@@ -1,15 +1,15 @@
 <link rel="stylesheet" href="/css/admin.css" />
 
 <nav class="navbar">
-    <a href="/" class="logo">
-      <span class="rental">Rental</span><span class="hub">Hub</span>
-    </a>
-  </nav>
+  <a href="/" class="logo">
+    <span class="rental">Rental</span><span class="hub">Hub</span>
+  </a>
+</nav>
 
   <!--Body-->
   <div class="main">
     <!-- Side Bar -->
-    <%- include('../partials/admin-sidebar-links.ejs'); %>
+    <%- include('../partials/admin/sidebar-links.ejs'); %>
 
     <!-- Logout Confirmation Modal -->
     <div id="logout-modal" class="logout-modal">
@@ -148,8 +148,6 @@
           </div>
       </div>
     </div>
-    <div id="restoreToast" class="toast">User Successfully Restored!</div>
+  <div id="restoreToast" class="toast">User Successfully Restored!</div>
 
-    
-</body>
 <script src="/js/admin.js"></script>

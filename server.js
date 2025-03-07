@@ -27,6 +27,7 @@ app.use("/uploads", express.static(process.env.STORAGE_PATH));
 
 // Import routes
 const mainRoutes = require("./routes/frontend/main");
+const adminRoutes = require("./routes/frontend/admin");
 const dashboardRoutes = require("./routes/frontend/dashboard");
 const apiAuthRoutes = require("./routes/api/auth");
 const apiListingRoute = require("./routes/api/listing");
@@ -34,6 +35,7 @@ const otpRoute = require("./routes/frontend/otp");
 
 // Frontend routes
 app.use("/", mainRoutes);
+app.use("/admin", adminRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/auth/otp", otpRoute);
 
