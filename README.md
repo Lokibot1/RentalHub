@@ -83,7 +83,11 @@ Before you begin, ensure you have met the following requirements:
     CREATE DATABASE IF NOT EXISTS rentalhub;
     ```
 
-2. Run the SQL queries in `resource/schema.sql` to create the tables and insert sample data.
+2. Run the migration script to create the tables and insert sample data:
+
+    ```sh
+    npm run db:migrate
+    ```
 
 ## Running the Project
 

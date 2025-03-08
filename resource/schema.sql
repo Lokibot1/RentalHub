@@ -1,4 +1,5 @@
 CREATE DATABASE IF NOT EXISTS rentalhub;
+
 USE rentalhub;
 
 -- Only for development
