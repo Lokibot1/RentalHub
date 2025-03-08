@@ -57,7 +57,7 @@ router.get("/signup", (req, res) => {
  * Shopping page
  * @route GET /shopping/:category
  */
-router.get("/shopping/:category", (req, res) => {
+router.get("/shopping/:category", optionalAuth, (req, res) => {
   res.render("main/shopping", {
     layout: "layouts/main",
     category: toTitleCase(req.params.category),
