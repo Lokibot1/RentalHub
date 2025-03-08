@@ -1,5 +1,5 @@
 const express = require("express");
-const { checkAuth, checkUser } = require("../../middlewares/auth");
+const { checkAuth, checkUser, optionalAuth } = require("../../middlewares/auth");
 
 const router = express.Router();
 
@@ -91,7 +91,7 @@ router.get("/archives", checkAuth, checkUser, (req, res) => {
  * View Product Page
  * @route GET /dashboard/view-product
  */
-router.get("/view-product", (req, res) => {
+router.get("/view-product", optionalAuth, (req, res) => {
   res.render("dashboard/view-product", {
     layout: "layouts/dashboard",
     title:  "View Product",
