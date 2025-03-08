@@ -91,7 +91,7 @@ router.get("/archives", checkAuth, checkUser, (req, res) => {
  * View Product Page
  * @route GET /dashboard/view-product
  */
-router.get("/view-product", checkAuth, checkUser, (req, res) => {
+router.get("/view-product", (req, res) => {
   res.render("dashboard/view-product", {
     layout: "layouts/dashboard",
     title:  "View Product",

@@ -90,28 +90,23 @@
     document.addEventListener("DOMContentLoaded", async function () {
         // Get the URL parameter after shopping/
         const category = window.location.pathname.split("/").pop();
-        console.log('start')
 
         const data = await fetch(`/api/listing/${getCategoryId(category)}`)
             .then((response) => response.json())
             .then((data) => {
-                // items = data.data;
                 return data.data
             })
 
         let shoppingList = ''
 
-            shoppingList = document.createElement("ul");
-            shoppingList.className = "shoppingList"; // For CSS
+        shoppingList = document.createElement("ul");
+        shoppingList.className = "shoppingList"; // For CSS
 
         data.forEach(item => {
-            console.log(item)
             let shoppingContainer = document.getElementById('shopping-container');
             if (!shoppingContainer) return;
 
-            // if (!shoppingList) {
-                shoppingContainer.appendChild(shoppingList);
-            // }
+            shoppingContainer.appendChild(shoppingList);
 
             let li = document.createElement("li");
             li.className = "shoppingItem"; // For CSS
@@ -137,12 +132,7 @@
 
             shoppingList.appendChild(li);
         });
-            // })
-            // .catch((error) => {
-            //     console.error("Error:", error);
-            // });
 
-        console.log('end')
     });
 
 

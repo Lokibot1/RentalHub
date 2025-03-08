@@ -53,7 +53,7 @@ router.post("/listing", checkAuth, upload.single('item_file'), async (req, res) 
  * Get all items/listing
  * @route POST /api/listing
  */
-router.get("/listing/:category_id", checkAuth, upload.single('item_file'), async (req, res) => {
+router.get("/listing/:category_id", upload.single('item_file'), async (req, res) => {
     // Get the category ID from the request
     const { category_id } = req.params;
 
