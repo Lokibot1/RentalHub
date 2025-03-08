@@ -22,13 +22,23 @@
                 /></a>
         </li>
         <li>
-            <a href="/dashboard/profile">
-                <img
-                        src="/images/blueProfile.png"
-                        alt="Profile"
-                        class="profile-icon"
-                />
-            </a>
+            <% if (isAuthenticated && role == 'admin') { %>
+                <a href='/admin/dashboard'>
+                    <img src="/images/blueProfile.png" alt="Profile" class="profile-icon" />
+                </a>
+            <% } else if (isAuthenticated && role == 'user') { %>
+                <a href='/dashboard/profile'>
+                    <img src="/images/blueProfile.png" alt="Profile" class="profile-icon" />
+                </a>
+            <% } else { %>
+                <a href="/login">
+                    <img
+                            src="/images/blueProfile.png"
+                            alt="Profile"
+                            class="profile-icon"
+                    />
+                </a>
+            <% } %>
         </li>
     </ul>
 </nav>

@@ -23,7 +23,7 @@ loginButton.addEventListener('click', async (event) => {
         // Set the token as a cookie
         document.cookie = `token=${data.token}; path=/; secure=${location.protocol === 'https:'}; HttpOnly`;
 
-        window.location.href = "/shopping/events-and-parties"; // Redirect to homepage
+        window.location.href = "/"; // Redirect to homepage
     } catch (error) {
         alert(error.message);
     }
