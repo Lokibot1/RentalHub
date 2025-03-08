@@ -8,7 +8,7 @@ const router = express.Router();
  * Dashboard
  * @route GET /dashboard/listing
  */
-router.get("/listing", checkAuth, checkUser, (req, res) => {
+router.get("/listing", checkAuth, (req, res) => {
   res.render("dashboard/listing", {
     layout: "layouts/dashboard",
     title: "Add New Listing",
