@@ -62,6 +62,8 @@ router.get("/shopping/:category", optionalAuth, (req, res) => {
     layout: "layouts/main",
     category: toTitleCase(req.params.category),
     title: toTitleCase(req.params.category),
+    isAuthenticated: req.isAuthenticated,
+    role: req.role,
   });
 });
 
