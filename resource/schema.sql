@@ -2,10 +2,10 @@ CREATE DATABASE IF NOT EXISTS rentalhub;
 USE rentalhub;
 
 -- Only for development
-# DROP TABLE IF EXISTS items;
-# DROP TABLE IF EXISTS users;
-# DROP TABLE IF EXISTS categories;
-# DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS items;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS users;
 
 
 -- users
@@ -35,37 +35,6 @@ INSERT INTO users (role_id, first_name, last_name, contact_number, email, passwo
 VALUES (1, 'Admin', 'Admin', '09123456789', 'admin@gmail.com',
         '$2a$10$Bru/3reMfMIXlu4uw9PQ..RDNyRPVZ49YeHlhveh4.PpsFTmBopjW');
 
--- items
-CREATE TABLE IF NOT EXISTS items
-(
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    name        VARCHAR(100) NOT NULL,
-    price       VARCHAR(100) NOT NULL,
-    description TEXT,
-    location    VARCHAR(255) NOT NULL,
-    file_path   VARCHAR(100) NOT NULL,
-    user_id     INT          NOT NULL,
-    category_id INT          NOT NULL,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES categories (id),
-    FOREIGN KEY (user_id) REFERENCES users (id)
-);
-
-
--- roles
-CREATE TABLE IF NOT EXISTS roles
-(
-    id         INT AUTO_INCREMENT PRIMARY KEY,
-    name       VARCHAR(10) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-INSERT INTO roles (name)
-VALUES ('admin'),
-       ('user');
-
-
 -- categories
 CREATE TABLE IF NOT EXISTS categories
 (
@@ -86,3 +55,32 @@ VALUES ('Events & Parties', 'events-and-parties'),
        ('Pets Accessories', 'pets-accessories');
 
 
+-- roles
+CREATE TABLE IF NOT EXISTS roles
+(
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    name       VARCHAR(10) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO roles (name)
+VALUES ('admin'),
+       ('user');
+
+
+-- items
+CREATE TABLE IF NOT EXISTS items
+(
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    name        VARCHAR(100) NOT NULL,
+    price       VARCHAR(100) NOT NULL,
+    description TEXT,
+    location    VARCHAR(255) NOT NULL,
+    file_path   VARCHAR(100) NOT NULL,
+    user_id     INT          NOT NULL,
+    category_id INT          NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);
