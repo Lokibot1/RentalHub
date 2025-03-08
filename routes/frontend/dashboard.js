@@ -105,7 +105,7 @@ router.get("/view-product", optionalAuth, (req, res) => {
  * Setup Profile Pae
  * @route GET /dashboard/setup-profile
  */
-router.get("/setup-profile", checkAuth, checkUser, (req, res) => {
+router.get("/setup-profile", checkAuth, (req, res) => {
   // remove the otp from cookies
   res.clearCookie('otp');
 
