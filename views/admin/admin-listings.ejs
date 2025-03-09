@@ -1,11 +1,26 @@
-<link rel="stylesheet" href="/css/archives.css"/>
+<link rel="stylesheet" href="/css/archives.css" />
 
-<!--Navigation Bar-->
-<%- include('../partials/header-navbar.ejs'); %>
+    <!--Navigation Bar-->
+    <nav>
+        <a href="/">
+          <div class="logo">
+            <h1>Rental<span>Hub</span></h1>
+          </div>
+        </a>
+        <ul>
+          <li><a href="/shopping">Shop</a></li>
+          <li>
+            <a href="/listing"
+              ><img src="../img/WhiteAdd.png" class="add-icon"
+            /></a>
+          </li>
+        </ul>
+      </nav>
 
-<div class="main">
-    <!--Sidebar-->
-    <%- include('../partials/sidebar.ejs'); %>
+      <!--Body-->
+    <div class="main">
+        <!-- Side Bar -->
+        <%- include('../partials/admin/sidebar-links.ejs'); %>
 
       <!--Main Content-->
       <div class="content">
@@ -25,11 +40,9 @@
           <button class="tablinks" onclick="openTab(event, 'OnTransactions')">
             On Transactions
           </button>
-          <button class="tablinks" onclick="openTab(event, 'Reviews')">
-            Rating
-          </button>
 
           <!--Tab Content-->
+
           <!--Pending Post-->
           <div id="PendingPosts" class="tab-content">
             <div class="shoppingList">
@@ -48,7 +61,7 @@
           </div>
 
           <!--Items Post-->
-          <div id="Items" class="tab-content" style="display: none">
+          <div id="Items" class="tab-content" style="display: none">s
             <div class="shoppingList">
               <a href="/dashboard/update-listing">
                 <div class="shoppingItem">
@@ -248,23 +261,6 @@
             <!-- FIXME: Toast Notification-->
              <div class="modalOverlay" id="modalOverlay"></div>
             <div id="toast" class="toast">Report Submitted Successfully!</div>
-
-          <!--Reviews-->
-          <div id="Reviews" class="tab-content" style="display: none">
-            <div class="rentalItem">
-              <div class="rentalInfo">
-                <div class="renterDetails">
-                  <strong>Renter's Name</strong>
-                </div>
-                <div class="itemDetails">
-                  <h2 class="" style="white-space: normal">HAHAHAHAAHAHAH</h2>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- JavaScript -->
     <script>
@@ -624,4 +620,4 @@
           }, 3000);
       }
 
-    </script>
+</script>
