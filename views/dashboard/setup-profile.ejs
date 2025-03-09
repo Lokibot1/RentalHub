@@ -4,11 +4,11 @@
 
 <nav class="navbar">
     <a href="/" class="logo">
-      <span class="rental">Rental</span><span class="hub">Hub</span>
+        <span class="rental">Rental</span><span class="hub">Hub</span>
     </a>
-  </nav>
+</nav>
 
-  <div class="page-wrapper">
+<div class="page-wrapper">
     <h3>Set Up Your Profile</h3>
     <div class="container">
         <div class="profile-upload">
@@ -17,7 +17,7 @@
             <input type="file" id="fileInput" accept="image/*" hidden>
             <button id="uploadButton" class="uploadButton">Upload Photos</button>
         </div>
-        
+
         <h2 class="Additional-Info">Additional Information</h2>
         <div class="name-inputs">
             <input type="text" class="MI-input" placeholder="Middle Name">
@@ -26,10 +26,10 @@
 
         <div class="contact-info">
             <label>Contact Information:</label>
-            <input type="text" class="full-input" placeholder="+63">
+            <!-- <input type="text" class="full-input" placeholder="+63"> -->
             <input type="text" class="full-input" placeholder="Social Media links">
         </div>
-        
+
         <div class="address-info">
             <label>Address:</label>
             <div class="address-row">
@@ -51,14 +51,126 @@
             </div>
             <input type="text" class="full-input" placeholder="House no. Street Name">
         </div>
-        
+
         <button class="submit-btn">SUBMIT</button>
     </div>
 </div>
 
 
 <script>
-//UPLOAD FILE FUNCTIONNNNN
+    document.addEventListener("DOMContentLoaded", async () => {
+        const regionDropdown = document.getElementById("regionDropdown");
+        const cityDropdown = document.getElementById("cityDropdown");
+        const barangayInput = document.getElementById("barangayInput");
+        const barangaySuggestions = document.getElementById("barangaySuggestions");
+        const addressForm = document.querySelector("form"); // Adjust selector as needed
+
+        let barangayList = [];
+
+        const fetchData = async (url) => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                console.error(`Error fetching data from ${url}:`, error);
+                return [];
+            }
+        };
+
+        const fetchRegions = async () => {
+            const regions = await fetchData("https://psgc.cloud/api/regions");
+            regionDropdown.innerHTML = `<option value="">Select Region</option>`;
+            regions.forEach(region => {
+                const option = document.createElement("option");
+                option.value = region.code;
+                option.textContent = region.name;
+                regionDropdown.appendChild(option);
+            });
+        };
+
+        const fetchCities = async (regionCode) => {
+            cityDropdown.innerHTML = `<option value="">Select City</option>`;
+            cityDropdown.disabled = true;
+            barangayInput.disabled = true;
+            barangayInput.value = "";
+            barangayList = [];
+            barangaySuggestions.style.display = "none";
+
+            if (!regionCode) return;
+
+            const cities = await fetchData(`https://psgc.cloud/api/regions/${regionCode}/cities`);
+            cities.forEach(city => {
+                const option = document.createElement("option");
+                option.value = city.code;
+                option.textContent = city.name;
+                cityDropdown.appendChild(option);
+            });
+            cityDropdown.disabled = false;
+        };
+
+        const fetchBarangays = async (cityCode) => {
+            barangayInput.value = "";
+            barangayList = [];
+            barangayInput.disabled = true;
+            barangaySuggestions.style.display = "none";
+
+            if (!cityCode) return;
+
+            barangayList = await fetchData(`https://psgc.cloud/api/cities/${cityCode}/barangays`);
+            barangayInput.disabled = false;
+        };
+
+        const showBarangaySuggestions = (query) => {
+            if (!query) {
+                barangaySuggestions.innerHTML = "";
+                barangaySuggestions.style.display = "none";
+                return;
+            }
+
+            const filteredBarangays = barangayList.filter(b => b.name.toLowerCase().includes(query.toLowerCase()));
+            barangaySuggestions.innerHTML = "";
+
+            if (filteredBarangays.length === 0) {
+                barangaySuggestions.style.display = "none";
+                return;
+            }
+
+            barangaySuggestions.style.display = "block";
+            filteredBarangays.slice(0, 10).forEach(b => {
+                const li = document.createElement("li");
+                li.textContent = b.name;
+                li.addEventListener("click", () => {
+                    barangayInput.value = b.name;
+                    barangayInput.dataset.code = b.code;
+                    barangaySuggestions.style.display = "none";
+                });
+                barangaySuggestions.appendChild(li);
+            });
+        };
+
+        regionDropdown.addEventListener("change", (event) => fetchCities(event.target.value));
+        cityDropdown.addEventListener("change", (event) => fetchBarangays(event.target.value));
+        barangayInput.addEventListener("input", (event) => showBarangaySuggestions(event.target.value));
+
+        document.addEventListener("click", (event) => {
+            if (!barangayInput.contains(event.target) && !barangaySuggestions.contains(event.target)) {
+                barangaySuggestions.style.display = "none";
+            }
+        });
+
+        if (addressForm) {
+            addressForm.addEventListener("submit", (event) => {
+                if (barangayInput.value && !barangayInput.dataset.code) {
+                    event.preventDefault();
+                    alert("Please select a barangay from the suggestions");
+                }
+            });
+        }
+
+        await fetchRegions();
+    });
+
     const fileInput = document.getElementById("fileInput");
     const profileImage = document.getElementById("profileImage");
     const uploadButton = document.getElementById("uploadButton");
@@ -69,7 +181,6 @@
         const file = event.target.files[0];
 
         if (file) {
-            // Get file type
             const fileType = file.type;
             const validTypes = ["image/jpeg", "image/png"];
 
@@ -87,255 +198,156 @@
         }
     });
 
-    //ADDRESS FUNCTIONS
-    document.addEventListener("DOMContentLoaded", async () => {
-        const regionDropdown = document.getElementById("regionDropdown");
-        const cityDropdown = document.getElementById("cityDropdown");
-        const barangayInput = document.getElementById("barangayInput");
-        const barangaySuggestions = document.getElementById("barangaySuggestions");
-
-        let barangayList = []; 
-
-       
-        async function fetchData(url) {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return await response.json();
-            } catch (error) {
-                console.error(`Error fetching data from ${url}:`, error);
-                return [];
-            }
-        }
-
-      
-        async function fetchRegions() {
-            const regions = await fetchData("https://psgc.cloud/api/regions");
-            
-            
-            regionDropdown.innerHTML = `<option value="">Select Region</option>`;
-            
-            regions.forEach(region => {
-                const option = document.createElement("option");
-                option.value = region.code;
-                option.textContent = region.name;
-                regionDropdown.appendChild(option);
-            });
-        }
-
-        
-        async function fetchCities(regionCode) {
-            cityDropdown.innerHTML = `<option value="">Select City</option>`;
-            cityDropdown.disabled = true;
-            barangayInput.disabled = true;
-            barangayInput.value = "";
-            barangayList = [];
-            barangaySuggestions.style.display = "none";
-
-            if (!regionCode) return;
-
-            const cities = await fetchData(`https://psgc.cloud/api/regions/${regionCode}/cities`);
-            
-            cities.forEach(city => {
-                const option = document.createElement("option");
-                option.value = city.code;
-                option.textContent = city.name;
-                cityDropdown.appendChild(option);
-            });
-            
-            cityDropdown.disabled = false;
-        }
-
-        // Fetch barangays based on selected city
-        async function fetchBarangays(cityCode) {
-            barangayInput.value = "";
-            barangayList = [];
-            barangayInput.disabled = true;
-            barangaySuggestions.style.display = "none";
-
-            if (!cityCode) return;
-
-            // Fetch barangays for the selected city
-            barangayList = await fetchData(`https://psgc.cloud/api/cities/${cityCode}/barangays`);
-            barangayInput.disabled = false;
-        }
-
-        // Display suggestions as user types
-        function showBarangaySuggestions(query) {
-            if (!query) {
-                barangaySuggestions.innerHTML = "";
-                barangaySuggestions.style.display = "none";
-                return;
-            }
-
-            const filteredBarangays = barangayList.filter(b => 
-                b.name.toLowerCase().includes(query.toLowerCase())
-            );
-
-            barangaySuggestions.innerHTML = "";
-            
-            if (filteredBarangays.length === 0) {
-                barangaySuggestions.style.display = "none";
-                return;
-            }
-
-            barangaySuggestions.style.display = "block";
-            filteredBarangays.slice(0, 10).forEach(b => { 
-                const li = document.createElement("li");
-                li.textContent = b.name;
-                li.addEventListener("click", () => {
-                    barangayInput.value = b.name;
-                    // Store the barangay code if needed
-                    barangayInput.dataset.code = b.code;
-                    barangaySuggestions.style.display = "none";
-                });
-                barangaySuggestions.appendChild(li);
-            });
-        }
-        regionDropdown.addEventListener("change", (event) => fetchCities(event.target.value));
-        cityDropdown.addEventListener("change", (event) => fetchBarangays(event.target.value));
-        barangayInput.addEventListener("input", (event) => showBarangaySuggestions(event.target.value));
-
-        document.addEventListener("click", (event) => {
-            if (!barangayInput.contains(event.target) && !barangaySuggestions.contains(event.target)) {
-                barangaySuggestions.style.display = "none";
-            }
-        });
-
-        const addressForm = document.querySelector("form"); // Adjust selector as needed
-        if (addressForm) {
-            addressForm.addEventListener("submit", (event) => {
-
-                if (barangayInput.value && !barangayInput.dataset.code) {
-                    event.preventDefault();
-                    alert("Please select a barangay from the suggestions");
-                }
-            });
-        }
-
-        await fetchRegions();
-    });
-
-//MODAL FUNCTIONNNNN
     const form = document.querySelector('.container');
     const middleName = document.querySelector('.MI-input');
     const suffix = document.querySelector('.suffix-input');
-    const phone = document.querySelector('.full-input[placeholder="+63"]');
+    // const phone = document.querySelector('.full-input[placeholder="+63"]');
     const socialMedia = document.querySelector('.full-input[placeholder="Social Media links"]');
-    const region = document.querySelector('.half-input[placeholder="Region"]');
-    const city = document.querySelector('.half-input[placeholder="City"]');
-    const barangay = document.querySelector('.half-input[placeholder="Barangay"]');
-    const postalCode = document.querySelector('.half-input[placeholder="Postal Code"]');
+
+    const region = document.getElementById('regionDropdown');
+    const city = document.getElementById('cityDropdown');
+    // Get the text of the selected option in the region dropdown
+    const selectedRegion = region.options[region.selectedIndex].text;
+
+    // Get the text of the selected option in the city dropdown
+    const selectedCity = city.options[city.selectedIndex].text;
+
+    const barangay = document.getElementById('barangayInput');
+    const postalCode = document.querySelector('.postalCode');
     const address = document.querySelector('.full-input[placeholder="House no. Street Name"]');
 
     const modalHTML = `
-            <div id="confirmModal" class="modal">
-                <div class="modal-content">
-                    <h2>Confirm Submission</h2>
-                    <p>Are you sure this is the final look?</p>
-                    <div class="modal-buttons">
-                        <button id="confirmYes" class="modal-btn yes-btn">Yes</button>
-                        <button id="confirmNo" class="modal-btn no-btn">No</button>
-                    </div>
+        <div id="confirmModal" class="modal">
+            <div class="modal-content">
+                <h2>Confirm Submission</h2>
+                <p>Are you sure this is the final look?</p>
+                <div class="modal-buttons">
+                    <button id="confirmYes" class="modal-btn yes-btn">Yes</button>
+                    <button id="confirmNo" class="modal-btn no-btn">No</button>
                 </div>
             </div>
-            `;
+        </div>
+    `;
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 
     const modal = document.getElementById('confirmModal');
-const confirmYes = document.getElementById('confirmYes');
-const confirmNo = document.getElementById('confirmNo');
+    const confirmYes = document.getElementById('confirmYes');
+    const confirmNo = document.getElementById('confirmNo');
 
-// Function to validate form
-function validateForm() {
-let isValid = true;
-let errorMessages = [];
+    function validateForm() {
+        let isValid = true;
+        let errorMessages = [];
 
-// Check if profile image is uploaded (not the default image)
-if (profileImage.src.includes('defaultimg.png')) {
-    errorMessages.push("Please upload a profile picture");
-    isValid = false;
-}
+        if (profileImage.src.includes('default.png')) {
+            errorMessages.push("Please upload a profile picture");
+            isValid = false;
+        }
 
-// Validate required fields
-if (!phone.value.trim()) {
-    errorMessages.push("Phone number is required");
-    isValid = false;
-}
+        /*
+        if (!phone.value.trim()) {
+            errorMessages.push("Phone number is required");
+            isValid = false;
+        }
+        */
 
-if (!region.value.trim()) {
-    errorMessages.push("Region is required");
-    isValid = false;
-}
+        if (!region) {
+            errorMessages.push("Region is required");
+            isValid = false;
+        }
 
-if (!city.value.trim()) {
-    errorMessages.push("City is required");
-    isValid = false;
-}
+        if (!city) {
+            errorMessages.push("City is required");
+            isValid = false;
+        }
 
-if (!barangay.value.trim()) {
-    errorMessages.push("Barangay is required");
-    isValid = false;
-}
+        if (!barangay.value.trim()) {
+            errorMessages.push("Barangay is required");
+            isValid = false;
+        }
 
-if (!address.value.trim()) {
-    errorMessages.push("Street address is required");
-    isValid = false;
-}
+        if (!address.value.trim()) {
+            errorMessages.push("Street address is required");
+            isValid = false;
+        }
 
-// Phone number format validation
-const phoneRegex = /^\+63[0-9]{10}$/;
-if (phone.value.trim() && !phoneRegex.test(phone.value.trim())) {
-    errorMessages.push("Invalid phone number format. Should start with +63 followed by 10 digits");
-    isValid = false;
-}
+        /*
+        const phoneRegex = /^\+63[0-9]{10}$/;
+        if (phone.value.trim() && !phoneRegex.test(phone.value.trim())) {
+            errorMessages.push("Invalid phone number format. Should start with +63 followed by 10 digits");
+            isValid = false;
+        }
+        */
 
-// Postal code validation (assuming 4 digits)
-if (postalCode.value.trim() && !/^\d{4}$/.test(postalCode.value.trim())) {
-    errorMessages.push("Postal code should be 4 digits");
-    isValid = false;
-}
+        if (postalCode.value.trim() && !/^\d{4}$/.test(postalCode.value.trim())) {
+            errorMessages.push("Postal code should be 4 digits");
+            isValid = false;
+        }
 
-if (!isValid) {
-    alert(errorMessages.join("\n"));
-}
+        if (!isValid) {
+            alert(errorMessages.join("\n"));
+        }
 
-return isValid;
-}
+        return isValid;
+    }
 
-// Add submit event listener
-document.querySelector('.submit-btn').addEventListener('click', function(e) {
-e.preventDefault();
+    function getFormValues() {
+        const fileInput = document.getElementById("fileInput");
+        const profileImageFilename = fileInput.files.length > 0 ? fileInput.files[0].name : '';
+    
+        return {
+            middleName: middleName.value.trim(),
+            suffix: suffix.value.trim(),
+            socialMedia: socialMedia.value.trim(),
+            region: regionDropdown.options[regionDropdown.selectedIndex].text,
+            city: cityDropdown.options[cityDropdown.selectedIndex].text,
+            barangay: barangay.value,
+            postalCode: postalCode.value.trim(),
+            address: address.value.trim(),
+            profileImage: profileImageFilename
+        };
+    }
 
-if (validateForm()) {
-    modal.style.display = "flex";
-}
-});
+    document.querySelector('.submit-btn').addEventListener('click', function (e) {
+        e.preventDefault();
 
-// Handle modal buttons
-confirmYes.addEventListener('click', function() {
-modal.style.display = "none";
-alert("Form submitted successfully!");
+        if (validateForm()) {
+            modal.style.display = "flex";
+        }
+    });
 
-// Redirect to user-dashboard.html
-window.location.href = "user-dashboard.html";
-});
+    confirmYes.addEventListener('click', function () {
+        modal.style.display = "none";
+        const formValues = getFormValues();
+        console.log("Form submitted with values:", formValues);
+        alert("Form submitted successfully!");
 
-confirmNo.addEventListener('click', function() {
-modal.style.display = "none";
-});
+        // Add code to submit form data to the server
+        fetch('/api/auth/setup-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formValues)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
 
+                // Redirect to another page
+                window.location.href = '/dashboard/user-dashboard';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
 
-// Close modal if clicked outside
-window.addEventListener('click', function(e) {
-if (e.target === modal) {
-    modal.style.display = "none";
-}
-});
+    confirmNo.addEventListener('click', function () {
+        modal.style.display = "none";
+    });
 
-
+    window.addEventListener('click', function (e) {
+        if (e.target === modal) {
+            modal.style.display = "none";
+        }
+    });
 </script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

@@ -56,7 +56,7 @@ router.get("/", async (req, res) => {
 
 /**
  * One-Time-Password Page
- * @route GET /auth/otp
+ * @route GET /auth/otp/verify
  */
 router.post("/verify", async (req, res) => {
     // Get OTP from the request body
@@ -71,19 +71,6 @@ router.post("/verify", async (req, res) => {
         if (user.length === 0) {
             return res.status(400).json({ message: "User account does not exist" });
         }
-
-        // Set the token to cookie
-        const token = jwt.sign({
-            id: user.id,
-            email: user.email,
-        }, process.env.JWT_SECRET, {expiresIn: "1h"});
-
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "Strict"
-        })
-
 
         return res.json({ verified: true });
     } else {
