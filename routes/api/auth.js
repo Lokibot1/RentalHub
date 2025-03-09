@@ -133,7 +133,11 @@ router.post("/login", async (req, res) => {
                 secure: process.env.NODE_ENV === "production",
                 sameSite: "Strict"
             });
-            res.json({message: "Login successful", token});
+
+            res.json({
+                message: "Login successful", 
+                token,
+            });
         });
     });
 });

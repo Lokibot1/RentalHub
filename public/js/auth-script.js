@@ -23,7 +23,12 @@ loginButton.addEventListener('click', async (event) => {
         // Set the token as a cookie
         document.cookie = `token=${data.token}; path=/; secure=${location.protocol === 'https:'}; HttpOnly`;
 
-        window.location.href = "/"; // Redirect to homepage
+        // Get the redirect URL from the query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectUrl = urlParams.get('redirect') || '/';
+
+        // Redirect to the specified URL or homepage
+        window.location.href = redirectUrl;
     } catch (error) {
         alert(error.message);
     }
