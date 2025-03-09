@@ -83,7 +83,8 @@ Before you begin, ensure you have met the following requirements:
     CREATE DATABASE IF NOT EXISTS rentalhub;
     ```
 
-2. Run the migration script to create the tables and insert sample data:
+2. Run the migration script to create the tables and insert sample data.
+    NOTE: This will remove all images you uploaded in the items table.
 
     ```sh
     npm run db:migrate
