@@ -115,7 +115,7 @@ router.get("/view-pending", optionalAuth, (req, res) => {
 
 
 /**
- * View Product Page
+ * Update Listing Page
  * @route GET /dashboard/update-listing
  */
 router.get("/update-listing", optionalAuth, (req, res) => {
