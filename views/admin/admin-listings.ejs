@@ -1,26 +1,12 @@
 <link rel="stylesheet" href="/css/archives.css" />
 
     <!--Navigation Bar-->
-    <nav>
-        <a href="/">
-          <div class="logo">
-            <h1>Rental<span>Hub</span></h1>
-          </div>
-        </a>
-        <ul>
-          <li><a href="/shopping:category">Shop</a></li>
-          <li>
-            <a href="/listing"
-              ><img src="/images/WhiteAdd.png" class="add-icon"
-            /></a>
-          </li>
-        </ul>
-      </nav>
+    <%- include('../partials/admin/navigation-bar.ejs'); %>
 
       <!--Body-->
     <div class="main">
-        <!-- Side Bar -->
-        <%- include('../partials/admin/sidebar-links.ejs'); %>
+      <!-- Side Bar -->
+      <%- include('../partials/admin/sidebar-links.ejs'); %>
 
       <!--Main Content-->
       <div class="content">

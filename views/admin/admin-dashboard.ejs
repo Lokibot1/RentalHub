@@ -1,73 +1,46 @@
 <link rel="stylesheet" href="/css/admin.css" />
 
-    <!--Navigation Bar-->
-    <nav>
-      <a href="/">
-        <div class="logo">
-          <h1>Rental<span>Hub</span></h1>
-        </div>
-      </a>
-      <ul>
-        <li><a href="/shopping">Shop</a></li>
-        <li>
-          <a href="/listing"
-            ><img src="/images/WhiteAdd.png" class="add-icon"
-          /></a>
-        </li>
-        <li>
-      </ul>
-    </nav>
+<!--Navigation Bar-->
+<%- include('../partials/admin/navigation-bar.ejs'); %>
 
-    <!--Body-->
-    <div class="main">
-      <!-- Side Bar -->
-      <div class="ad-sidebar">
-        <ul>
-          <li><a href='/admin/admin-dashboard' class="active">Admin Dashboard</a></li>
-          <li><a href='/admin/admin-profile'>Profile</a></li>
-          <li><a href= '/admin/admin-rents'>My Rents</a></li>
-          <li><a href='/admin/admin-listings'>My Listings</a></li>
-          <li><a href='/admin/manage-users'>Manage User</a></li>
-          <li><a href='/admin/manage-listings'>Manage Listings</a></li>
-          <li><a href='/admin/transactions'>Transaction</a></li>
-          <li><a href="/login" id="logout">Log Out</a></li>
-        </ul>
-      </div>
+<!--Body-->
+<div class="main">
+  <!-- Side Bar -->
+  <%- include('../partials/admin/sidebar-links.ejs'); %>
 
-      <!-- Logout Confirmation Modal -->
-      <div id="logout-modal" class="logout-modal">
-        <div class="logout-content">
-          <p>Are you sure you want to log out?</p>
-          <div class="logout-button-group">
-            <button id="confirm-logout" class="yes-btn">Yes</button>
-            <button id="cancel-logout" class="no-btn">No</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Main Content -->
-      <div class="content">
-        <h1>Welcome, Admin!</h1>
-        <div class="dashboard-cards">
-          <div class="card">
-            <p>Total User</p>
-            <span class="count" id="rents-count">0</span>
-          </div>
-          <div class="card">
-            <p>Total Listings</p>
-            <span class="count" id="pending-posts-count">0</span>
-          </div>
-          <div class="card">
-            <p>Total Reports</p>
-            <span class="count" id="rental-request-count">0</span>
-          </div>
-          <div class="card">
-            <p>Transactions</p>
-            <span class="count" id="item-posted-count">0</span>
-          </div>
-        </div>
+  <!-- Logout Confirmation Modal -->
+  <div id="logout-modal" class="logout-modal">
+    <div class="logout-content">
+      <p>Are you sure you want to log out?</p>
+      <div class="logout-button-group">
+        <button id="confirm-logout" class="yes-btn">Yes</button>
+        <button id="cancel-logout" class="no-btn">No</button>
       </div>
     </div>
-  </body>
-  <script src="/js/admin.js"></script>
-</html>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <h1>Welcome, Admin!</h1>
+    <div class="dashboard-cards">
+      <div class="card">
+        <p>Total User</p>
+        <span class="count" id="rents-count">0</span>
+      </div>
+      <div class="card">
+        <p>Total Listings</p>
+        <span class="count" id="pending-posts-count">0</span>
+      </div>
+      <div class="card">
+        <p>Total Reports</p>
+        <span class="count" id="rental-request-count">0</span>
+      </div>
+      <div class="card">
+        <p>Transactions</p>
+        <span class="count" id="item-posted-count">0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/admin.js"></script>
