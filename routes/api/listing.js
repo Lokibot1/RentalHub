@@ -51,14 +51,13 @@ router.post("/listing", checkAuth, upload.single('item_file'), async (req, res) 
 
 /**
  * Get all items/listing
- * @route POST /api/listing
+ * @route GET /api/listing/:category_id
  */
 router.get("/listing/:category_id", upload.single('item_file'), async (req, res) => {
     // Get the category ID from the request
     const { category_id } = req.params;
 
-    // Handle the received data and insert it into the database
-    const sql = "SELECT * FROM items where category_id = ?";
+    const sql = "SELECT * FROM items WHERE category_id = ? AND is_approved = 1";
     db.query(sql, [category_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);

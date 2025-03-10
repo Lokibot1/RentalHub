@@ -1,152 +1,162 @@
-<link rel="stylesheet" href="/css/admin.css" />
+<link rel="stylesheet" href="/css/admin.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <!--Navigation Bar-->
-    <%- include('../partials/admin/navigation-bar.ejs'); %>
-  
-      <!--Body-->
-      <div class="main">
-        <!-- Side Bar -->
-        <%- include('../partials/admin/sidebar-links.ejs'); %>
-  
-        <!-- Logout Confirmation Modal -->
-        <div id="logout-modal" class="logout-modal">
-          <div class="logout-content">
+<!--Navigation Bar-->
+<%- include('../partials/admin/navigation-bar.ejs'); %>
+
+<!--Body-->
+<div class="main">
+    <!-- Side Bar -->
+    <%- include('../partials/admin/sidebar-links.ejs'); %>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logout-modal" class="logout-modal">
+        <div class="logout-content">
             <p>Are you sure you want to log out?</p>
             <div class="logout-button-group">
-              <button id="confirm-logout" class="yes-btn">Yes</button>
-              <button id="cancel-logout" class="no-btn">No</button>
+                <button id="confirm-logout" class="yes-btn">Yes</button>
+                <button id="cancel-logout" class="no-btn">No</button>
             </div>
-          </div>
         </div>
-  
-        <!-- Main Content -->
-         <div class="content">
-          <div class="header">
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="header">
             <h1>Listing Management</h1>
             <div class="search-bar">
                 <input type="text" placeholder="Looking for...">
             </div>
-          </div>
-  
-            <!--Tab Headings-->
-          <div class="tab">
+        </div>
+
+        <!--Tab Headings-->
+        <div class="tab">
             <button class="tablinks active" onclick="openTab(event, 'PendingPosts')">
-              Pending Posts
+                Pending Posts
             </button>
             <button class="tablinks" onclick="openTab(event, 'AllListings')">
-              All Listings
+                All Listings
             </button>
             <button class="tablinks" onclick="openTab(event, 'DeclinedRequests')">
-              Declined Requests
+                Declined Requests
             </button>
             <button class="tablinks" onclick="openTab(event, 'UpdateRequests')">
-              Update Requests
+                Update Requests
             </button>
-  
+
             <!--Tab Content-->
-  
+
             <!--User List-->
             <div id="PendingPosts" class="tab-content">
-              <div class="user-table">
-                <table>
-                    <thead>
+                <div class="user-table">
+                    <table>
+                        <thead>
                         <tr>
                             <th>Owner</th>
                             <th>Item Name</th>
                             <th>Category</th>
                             <th>Action</th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+
+                        <tbody>
+                        <% if (pendingPosts.length > 0) { %>
+                            <% pendingPosts.forEach(function(item) { %>
+                                <tr>
+                                    <td id="owner"><%= item.owner %></td>
+                                    <td id="item-name"><%= item.item_name %></td>
+                                    <td id="category-name"><%= item.category_name %></td>
+                                    <td>
+                                        <a href="/admin/admin-view-product/<%= item.item_id %>">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="4">No pending posts available.</td>
+                            </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <!--All Listings-->
+            <div id="AllListings" class="tab-content" style="display: none">
+                <div class="user-table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Owner</th>
+                            <th>Item Name</th>
+                            <th>Category</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>First Name M. Last Name</td>
+                            <td>Item Name</td>
+                            <td>Category</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!--Declined-->
+            <div id="DeclinedRequests" class="tab-content" style="display: none">
+                <div class="user-table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Owner</th>
+                            <th>Item Name</th>
+                            <th>Category</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>First Name M. Last Name</td>
+                            <td>Item Name</td>
+                            <td>Category</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!--Update-->
+            <div id="UpdateRequests" class="tab-content" style="display: none">
+                <div class="user-table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Owner</th>
+                            <th>Item Name</th>
+                            <th>Category</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
                         <tr>
                             <td>First Name M. Last Name</td>
                             <td>Item Name</td>
                             <td>Category</td>
                             <td>
-                              <a href="/admin-viewprod">
-                              <i class="fa-solid fa-eye"></i>
-                              
+                                <a href="/admin/admin-view-product">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            </div>
-  
-            <!--All Listings-->
-            <div id="AllListings" class="tab-content" style="display: none">
-              <div class="user-table">
-                  <table>
-                      <thead>
-                          <tr>
-                              <th>Owner</th>
-                              <th>Item Name</th>
-                              <th>Category</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                              <td>First Name M. Last Name</td>
-                              <td>Item Name</td>
-                              <td>Category</td>
-                          </tr>
-                      </tbody>
-                  </table>
-                  </div>
-            </div>
-  
-            <!--Declined-->
-            <div id="DeclinedRequests" class="tab-content" style="display: none">
-              <div class="user-table">
-                  <table>
-                      <thead>
-                          <tr>
-                              <th>Owner</th>
-                              <th>Item Name</th>
-                              <th>Category</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          <tr>
-                              <td>First Name M. Last Name</td>
-                              <td>Item Name</td>
-                              <td>Category</td>
-                          </tr>
-                      </tbody>
-                  </table>
-            </div>
-          </div>
-
-          <!--Update-->
-          <div id="UpdateRequests" class="tab-content" style="display: none">
-            <div class="user-table">
-              <table>
-                <thead>
-                    <tr>
-                        <th>Owner</th>
-                        <th>Item Name</th>
-                        <th>Category</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>First Name M. Last Name</td>
-                        <td>Item Name</td>
-                        <td>Category</td>
-                        <td>
-                          <a href="/admin-viewprod">
-                          <i class="fa-solid fa-eye"></i>
-                          
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-          </div>
-        </div>
 
         </div>
-      </div>
-  
+    </div>
+
     <script src="/js/admin.js"></script>

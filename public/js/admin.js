@@ -25,11 +25,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
   
-  // Fetch dashboard counts from backend API
   document.addEventListener("DOMContentLoaded", async function () {
     try {
-      // Fetch data from backend API
-      const response = await fetch("/api/dashboard-counts"); // Adjust mo nalang tong API route Juls
+      // Fetch dashboard counts from backend API
+      const response = await fetch("/api/dashboard-counts");
       const data = await response.json();
   
       // Update counts dynamically
@@ -43,8 +42,15 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch (error) {
       console.error("Error fetching dashboard counts:", error);
     }
+
+    // Fetch all pending posts
+    const response = await fetch("/api/posts/pending");
+    const responseData = await response.json();
+
+    console.log('data', responseData.data)
   });
-  
+
+
   // Tabs Functionality
   function openTab(evt, tabName) {
     var tabs = document.getElementsByClassName("tab-content");
