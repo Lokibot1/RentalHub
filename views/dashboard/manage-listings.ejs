@@ -1,0 +1,154 @@
+<link rel="stylesheet" href="/css/admin.css" />
+
+    <!--Navigation Bar-->
+    <nav>
+      <a href="/">
+        <div class="logo">
+          <h1>Rental<span>Hub</span></h1>
+        </div>
+      </a>
+      <ul>
+        <li><a href="/shopping">Shop</a></li>
+        <li>
+          <a href="/listing"
+            ><img src="/images/WhiteAdd.png" class="add-icon"
+          /></a>
+        </li>
+        <li>
+          <a href="/login">
+            <img
+              src="/images/Icon1.png"
+              alt="Profile"
+              class="profile-icon"
+            />
+          </a>
+        </li>
+      </ul>
+    </nav>
+  
+      <!--Body-->
+      <div class="main">
+        <!-- Side Bar -->
+        <div class="ad-sidebar">
+          <ul>
+            <li><a href="/admin-dashboard">Admin Dashboard</a></li>
+            <li><a href="/admin-profile">Profile</a></li>
+            <li><a href= /admin-rents>My Rents</a></li>
+            <li><a href="/admin-listings">My Listings</a></li>
+            <li><a href="/manage-users">Manage User</a></li>
+            <li><a href="/manage-listings" class="active">Manage Listings</a></li>
+            <li><a href="/transactions">Transaction</a></li>
+            <li><a href="/login" id="logout">Log Out</a></li>
+          </ul>
+        </div>
+  
+        <!-- Logout Confirmation Modal -->
+        <div id="logout-modal" class="logout-modal">
+          <div class="logout-content">
+            <p>Are you sure you want to log out?</p>
+            <div class="logout-button-group">
+              <button id="confirm-logout" class="yes-btn">Yes</button>
+              <button id="cancel-logout" class="no-btn">No</button>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Main Content -->
+         <div class="content">
+          <div class="header">
+            <h1>Listing Management</h1>
+            <div class="search-bar">
+                <input type="text" placeholder="Looking for...">
+            </div>
+          </div>
+  
+            <!--Tab Headings-->
+          <div class="tab">
+            <button class="tablinks active" onclick="openTab(event, 'PendingPosts')">
+              Pending Posts
+            </button>
+            <button class="tablinks" onclick="openTab(event, 'AllListings')">
+              All Listings
+            </button>
+            <button class="tablinks" onclick="openTab(event, 'DeclinedRequests')">
+              Declined Requests
+            </button>
+  
+            <!--Tab Content-->
+  
+            <!--User List-->
+            <div id="PendingPosts" class="tab-content">
+              <div class="user-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Owner</th>
+                            <th>Item Name</th>
+                            <th>Category</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>First Name M. Last Name</td>
+                            <td>Item Name</td>
+                            <td>Category</td>
+                            <td>
+                              <a href="/admin-viewprod">
+                              <i class="fa-solid fa-eye"></i>
+                              
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+  
+            <!--All Listings-->
+            <div id="AllListings" class="tab-content" style="display: none">
+              <div class="user-table">
+                  <table>
+                      <thead>
+                          <tr>
+                              <th>Owner</th>
+                              <th>Item Name</th>
+                              <th>Category</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                              <td>First Name M. Last Name</td>
+                              <td>Item Name</td>
+                              <td>Category</td>
+                          </tr>
+                      </tbody>
+                  </table>
+                  </div>
+            </div>
+  
+            <!--Declined-->
+            <div id="DeclinedRequests" class="tab-content" style="display: none">
+              <div class="user-table">
+                  <table>
+                      <thead>
+                          <tr>
+                              <th>Owner</th>
+                              <th>Item Name</th>
+                              <th>Category</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                              <td>First Name M. Last Name</td>
+                              <td>Item Name</td>
+                              <td>Category</td>
+                          </tr>
+                      </tbody>
+                  </table>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+    </body>
+    <script src="/js/admin.js"></script>

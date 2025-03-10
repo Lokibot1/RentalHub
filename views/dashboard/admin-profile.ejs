@@ -1,14 +1,50 @@
-<link rel="stylesheet" href="/css/archives.css"/>
+<link rel="stylesheet" href="/css/archives.css">
 
-<!--Navigation Bar-->
-<%- include('../partials/header-navbar.ejs'); %>
+    <!--Navigation Bar-->
+    <nav>
+        <a href="/">
+          <div class="logo">
+            <h1>Rental<span>Hub</span></h1>
+          </div>
+        </a>
+        <ul>
+          <li><a href="/shopping">Shop</a></li>
+          <li>
+            <a href="/listing"
+              ><img src="/images/WhiteAdd.png" class="add-icon"
+            /></a>
+          </li>
+          <li>
+            <a href="/login">
+              <img
+                src="/images/Icon1.png"
+                alt="Profile"
+                class="profile-icon"
+              />
+            </a>
+          </li>
+        </ul>
+      </nav>
 
-<div class="main">
-    <!--Sidebar-->
-    <%- include('../partials/sidebar.ejs'); %>
+    <div class="main">
+        <!-- Side Bar -->
+        <div class="main">
+            <!-- Side Bar -->
+            <div class="ad-sidebar">
+              <ul>
+                <li><a href="/admin-dashboard">Admin Dashboard</a></li>
+                <li><a href="/admin-profile">Profile</a></li>
+                <li><a href= /admin-rents>My Rents</a></li>
+                <li><a href="/admin-listings">My Listings</a></li>
+                <li><a href="/manage-users">Manage User</a></li>
+                <li><a href="/manage-listings" class="active">Manage Listings</a></li>
+                <li><a href="/transactions">Transaction</a></li>
+                <li><a href="/login" id="logout">Log Out</a></li>
+              </ul>
+            </div>
 
-    <!--Main Content-->
-    <div class="content">
+               <!--Main Content-->
+      <div class="content">
 
         <div class="profile-header">
           <label for="profileImageInput">
@@ -64,7 +100,7 @@
         isEditing = !isEditing;
 
         if (isEditing) {
-          editBtn.innerHTML = '<img src="/images/save-btn.png" alt="Save">';
+          editBtn.innerHTML = '<img src="/img/save-btn.png" alt="Save">';
           email.disabled = false;
           address.disabled = false;
           contact.disabled = false;
@@ -74,7 +110,7 @@
           contact.classList.remove("disabled");
           socialMedia.classList.remove("disabled");
         } else {
-          editBtn.innerHTML = '<img src="/images/edit-btn.png" alt="Edit">';
+          editBtn.innerHTML = '<img src="/img/edit-btn.png" alt="Edit">';
           email.disabled = true;
           address.disabled = true;
           contact.disabled = true;
@@ -106,4 +142,3 @@
       });
     });
     </script>
-</div>

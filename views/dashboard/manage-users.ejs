@@ -1,0 +1,188 @@
+<link rel="stylesheet" href="/css/admin.css" />
+
+    <!--Navigation Bar-->
+    <nav>
+      <a href="/">
+        <div class="logo">
+          <h1>Rental<span>Hub</span></h1>
+        </div>
+      </a>
+      <ul>
+        <li><a href="/shopping">Shop</a></li>
+        <li>
+          <a href="/listing"
+            ><img src="/images/WhiteAdd.png" class="add-icon"
+          /></a>
+        </li>
+        <li>
+          <a href="/login">
+            <img
+              src="/images/Icon1.png"
+              alt="Profile"
+              class="profile-icon"
+            />
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+  <!--Body-->
+  <div class="main">
+    <!-- Side Bar -->
+    <div class="sidebar">
+      <div class="ad-sidebar">
+        <ul>
+          <li><a href="/admin-dashboard">Admin Dashboard</a></li>
+          <li><a href="/admin-profile">Profile</a></li>
+          <li><a href= /admin-rents>My Rents</a></li>
+          <li><a href="/admin-listings">My Listings</a></li>
+          <li><a href="/manage-users">Manage User</a></li>
+          <li><a href="/manage-listings" class="active">Manage Listings</a></li>
+          <li><a href="/transactions">Transaction</a></li>
+          <li><a href="/login" id="logout">Log Out</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logout-modal" class="logout-modal">
+      <div class="logout-content">
+        <p>Are you sure you want to log out?</p>
+        <div class="logout-button-group">
+          <button id="confirm-logout" class="yes-btn">Yes</button>
+          <button id="cancel-logout" class="no-btn">No</button>
+        </div>
+      </div>
+    </div>      
+
+    <!-- Main Content -->
+    <div class="content">
+      <div class="header">
+        <h1>User Management</h1>
+        <div class="search-bar">
+          <input type="text" placeholder="Looking for...">
+          <button><img src="/images/search.png" /></button>
+        </div>
+      </div>
+    
+      <!--Tab Headings-->
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'UserList')">
+          User List
+        </button>
+        <button class="tablinks" onclick="openTab(event, 'ReportedAccounts')">
+          Reported Accounts
+        </button>
+        <button class="tablinks" onclick="openTab(event, 'BannedAccounts')">
+          Banned Accounts
+        </button>
+      </div>
+    
+      <!--Tab Content-->
+    
+      <!--User List-->
+      <div id="UserList" class="tab-content">
+        <div class="user-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>First Name M. Last Name</td>
+                <td>
+                  <a href="/view-users#UserList">
+                    <i class="fa-solid fa-eye"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <!--Reported Accounts-->
+      <div id="ReportedAccounts" class="tab-content" style="display: none;">
+        <div class="user-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>First Name M. Last Name</td>
+                <td>
+                  <a href="/view-users#ReportedAccounts">
+                    <i class="fa-solid fa-eye"></i>
+                  </a>
+                  <a href="#" id="ban">
+                    <i class="fa-solid fa-ban"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <!--Banned Accounts-->
+      <div id="BannedAccounts" class="tab-content" style="display: none;">
+        <div class="user-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>First Name M. Last Name</td>
+                <td>
+                  <a href="/view-users#BannedAccounts">
+                    <i class="fa-solid fa-eye"></i>
+                  </a>
+                  <a href="#" id="restore">
+                    <i class="fa-solid fa-repeat"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!--Confirmation Modal-->
+    <div id="overlay" class="overlay"></div>
+    <div id="banModal" class="modal">
+      <div class="modal-content">
+          <h3>Are you sure you want to <span>ban</span> this Account?</h3>
+          <div class="modal-buttons">
+            <button class="btn-yes" id="confirmBan">Confirm</button>
+            <button class="btn-no" id="cancelBtn">Cancel</button>
+          </div>
+      </div>
+    </div>
+    <div id="banToast" class="toast">User Successfully Banned!</div>
+
+    <div id="restoreModal" class="modal">
+      <div class="modal-content">
+          <h3>Are you sure you want to <span>restore</span> this Account?</h3>
+          <div class="modal-buttons">
+            <button class="btn-yes" id="confirmRestore">Confirm</button>
+            <button class="btn-no" id="cancelRestore">Cancel</button>
+          </div>
+      </div>
+    </div>
+    <div id="restoreToast" class="toast">User Successfully Restored!</div>
+
+    
+</body>
+<script src="/js/admin.js"></script>
