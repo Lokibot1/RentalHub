@@ -4,11 +4,11 @@ const { checkAuth, checkAdmin } = require("../../middlewares/auth");
 const router = express.Router();
 
 /**
- * Admin Page
- * @route GET /admin/dashboard
+ * Admin Dashboard
+ * @route GET /admin/admin-dashboard
  */
-router.get("/dashboard", checkAuth, checkAdmin, (req, res) => {
-  res.render("admin/dashboard", {
+router.get("/admin-dashboard", checkAuth, checkAdmin, (req, res) => {
+  res.render("admin/admin-dashboard", {
     layout: "layouts/dashboard",
     title:  "Admin Dashboard",
     isAuthenticated: req.isAuthenticated,
@@ -16,6 +16,47 @@ router.get("/dashboard", checkAuth, checkAdmin, (req, res) => {
   });
 });
 
+
+/**
+ * Profile Page
+ * @route GET /admin/admin-profile
+ */
+router.get("/admin-profile", checkAuth, checkAdmin, (req, res) => {
+  res.render("admin/admin-profile", {
+    layout: "layouts/dashboard",
+    title:  "Admin Profile",
+    isAuthenticated: req.isAuthenticated,
+    role: req.role,
+  });
+});
+
+
+/**
+ * My Rents
+ * @route GET /admin/admin-rents
+ */
+router.get("/admin-rents", checkAuth, checkAdmin, (req, res) => {
+  res.render("admin/admin-rents", {
+    layout: "layouts/dashboard",
+    title:  "Manage Users",
+    isAuthenticated: req.isAuthenticated,
+    role: req.role,
+  });
+});
+
+
+/**
+ * My Rents
+ * @route GET /admin/admin-listing
+ */
+router.get("/admin-listings", checkAuth, checkAdmin, (req, res) => {
+  res.render("admin/admin-listings", {
+    layout: "layouts/dashboard",
+    title:  "My Listings",
+    isAuthenticated: req.isAuthenticated,
+    role: req.role,
+  });
+});
 
 /**
  * Manager Users
@@ -33,7 +74,7 @@ router.get("/manage-users", checkAuth, checkAdmin, (req, res) => {
 
 /**
  * Manage Listings
- * @route GET /admin/manage-listings
+ * @route GET /admin/manage-listing
  */
 router.get("/manage-listings", checkAuth, checkAdmin, (req, res) => {
   res.render("admin/manage-listings", {
@@ -57,6 +98,8 @@ router.get("/transactions", checkAuth, checkAdmin, (req, res) => {
     role: req.role,
   });
 });
+
+
 
 
 module.exports = router;

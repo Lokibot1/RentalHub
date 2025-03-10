@@ -100,9 +100,36 @@ router.get("/view-product", optionalAuth, (req, res) => {
   });
 });
 
+/**
+ * View Product Page
+ * @route GET /dashboard/view-pending
+ */
+router.get("/view-pending", optionalAuth, (req, res) => {
+  res.render("dashboard/view-pending", {
+    layout: "layouts/dashboard",
+    title:  "View Pending",
+    isAuthenticated: req.isAuthenticated,
+    role: req.role,
+  });
+});
+
 
 /**
- * Setup Profile Pae
+ * View Product Page
+ * @route GET /dashboard/update-listing
+ */
+router.get("/update-listing", optionalAuth, (req, res) => {
+  res.render("dashboard/update-listing", {
+    layout: "layouts/dashboard",
+    title:  "Update Listing",
+    isAuthenticated: req.isAuthenticated,
+    role: req.role,
+  });
+});
+
+
+/**
+ * Setup Profile Page
  * @route GET /dashboard/setup-profile
  */
 router.get("/setup-profile", checkAuth, (req, res) => {
@@ -116,6 +143,8 @@ router.get("/setup-profile", checkAuth, (req, res) => {
     role: req.role,
   });
 });
+
+
 
 
 module.exports = router;

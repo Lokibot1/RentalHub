@@ -1,15 +1,14 @@
-<link rel="stylesheet" href="/css/archives.css"/>
+<link rel="stylesheet" href="/css/archives.css">
 
-<!--Navigation Bar-->
-<%- include('../partials/header-navbar.ejs'); %>
+    <!--Navigation Bar-->
+    <%- include('../partials/admin/navigation-bar.ejs'); %>
 
-<div class="main">
-    <!--Sidebar-->
-    <%- include('../partials/sidebar.ejs'); %>
+    <div class="main">
+      <!-- Side Bar -->
+      <%- include('../partials/admin/sidebar-links.ejs'); %>
 
-    <!--Main Content-->
-    <div class="content">
-
+      <!--Main Content-->
+      <div class="content">
         <div class="profile-header">
           <label for="profileImageInput">
             <img src="profile-placeholder.png" alt="Profile Picture" class="profile-img" id="profilePicture" />
@@ -49,6 +48,17 @@
         </form>
       </div>
 
+            <!-- Logout Confirmation Modal -->
+            <div id="logout-modal" class="logout-modal">
+              <div class="logout-content">
+                <p>Are you sure you want to log out?</p>
+                <div class="logout-button-group">
+                  <button id="confirm-logout" class="yes-btn">Yes</button>
+                  <button id="cancel-logout" class="no-btn">No</button>
+                </div>
+              </div>
+            </div>
+
     <script>
       const editBtn = document.getElementById("editBtn");
       const profilePicture = document.getElementById("profilePicture");
@@ -64,7 +74,7 @@
         isEditing = !isEditing;
 
         if (isEditing) {
-          editBtn.innerHTML = '<img src="/images/save-btn.png" alt="Save">';
+          editBtn.innerHTML = '<img src="/img/save-btn.png" alt="Save">';
           email.disabled = false;
           address.disabled = false;
           contact.disabled = false;
@@ -74,7 +84,7 @@
           contact.classList.remove("disabled");
           socialMedia.classList.remove("disabled");
         } else {
-          editBtn.innerHTML = '<img src="/images/edit-btn.png" alt="Edit">';
+          editBtn.innerHTML = '<img src="/img/edit-btn.png" alt="Edit">';
           email.disabled = true;
           address.disabled = true;
           contact.disabled = true;
@@ -105,5 +115,31 @@
         }
       });
     });
-    </script>
-</div>
+
+    //logout
+document.addEventListener("DOMContentLoaded", function () {
+    const logoutLink = document.getElementById("logout");
+    const modal = document.getElementById("logout-modal");
+    const confirmLogout = document.getElementById("confirm-logout");
+    const cancelLogout = document.getElementById("cancel-logout");
+  
+    // Ensure modal starts hidden
+    modal.style.display = "none";
+  
+    // Show modal when logout is clicked
+    logoutLink.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevents default link behavior
+      modal.style.display = "flex"; // Show modal only on click
+    });
+  
+    // Redirect when "Yes" is clicked
+    confirmLogout.addEventListener("click", function () {
+      window.location.href = "/logout"; // Adjust logout URL
+    });
+  
+    // Close modal when "No" is clicked
+    cancelLogout.addEventListener("click", function () {
+      modal.style.display = "none"; // Hide modal
+    });
+  });
+</script>

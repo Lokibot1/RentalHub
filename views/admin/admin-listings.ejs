@@ -1,11 +1,12 @@
-<link rel="stylesheet" href="/css/archives.css"/>
+<link rel="stylesheet" href="/css/archives.css" />
 
-<!--Navigation Bar-->
-<%- include('../partials/header-navbar.ejs'); %>
+    <!--Navigation Bar-->
+    <%- include('../partials/admin/navigation-bar.ejs'); %>
 
-<div class="main">
-    <!--Sidebar-->
-    <%- include('../partials/sidebar.ejs'); %>
+      <!--Body-->
+    <div class="main">
+      <!-- Side Bar -->
+      <%- include('../partials/admin/sidebar-links.ejs'); %>
 
       <!--Main Content-->
       <div class="content">
@@ -25,11 +26,9 @@
           <button class="tablinks" onclick="openTab(event, 'OnTransactions')">
             On Transactions
           </button>
-          <button class="tablinks" onclick="openTab(event, 'Reviews')">
-            Rating
-          </button>
 
           <!--Tab Content-->
+
           <!--Pending Post-->
           <div id="PendingPosts" class="tab-content">
             <div class="shoppingList">
@@ -48,7 +47,7 @@
           </div>
 
           <!--Items Post-->
-          <div id="Items" class="tab-content" style="display: none">
+          <div id="Items" class="tab-content" style="display: none">s
             <div class="shoppingList">
               <a href="/dashboard/update-listing">
                 <div class="shoppingItem">
@@ -249,22 +248,16 @@
              <div class="modalOverlay" id="modalOverlay"></div>
             <div id="toast" class="toast">Report Submitted Successfully!</div>
 
-          <!--Reviews-->
-          <div id="Reviews" class="tab-content" style="display: none">
-            <div class="rentalItem">
-              <div class="rentalInfo">
-                <div class="renterDetails">
-                  <strong>Renter's Name</strong>
-                </div>
-                <div class="itemDetails">
-                  <h2 class="" style="white-space: normal">HAHAHAHAAHAHAH</h2>
-                </div>
-              </div>
-            </div>
+      <!-- Logout Confirmation Modal -->
+      <div id="logout-modal" class="logout-modal">
+        <div class="logout-content">
+          <p>Are you sure you want to log out?</p>
+          <div class="logout-button-group">
+            <button id="confirm-logout" class="yes-btn">Yes</button>
+            <button id="cancel-logout" class="no-btn">No</button>
           </div>
         </div>
       </div>
-    </div>
 
     <!-- JavaScript -->
     <script>
@@ -624,4 +617,31 @@
           }, 3000);
       }
 
-    </script>
+      //logout
+document.addEventListener("DOMContentLoaded", function () {
+    const logoutLink = document.getElementById("logout");
+    const modal = document.getElementById("logout-modal");
+    const confirmLogout = document.getElementById("confirm-logout");
+    const cancelLogout = document.getElementById("cancel-logout");
+  
+    // Ensure modal starts hidden
+    modal.style.display = "none";
+  
+    // Show modal when logout is clicked
+    logoutLink.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevents default link behavior
+      modal.style.display = "flex"; // Show modal only on click
+    });
+  
+    // Redirect when "Yes" is clicked
+    confirmLogout.addEventListener("click", function () {
+      window.location.href = "/logout"; // Adjust logout URL
+    });
+  
+    // Close modal when "No" is clicked
+    cancelLogout.addEventListener("click", function () {
+      modal.style.display = "none"; // Hide modal
+    });
+  });
+
+</script>

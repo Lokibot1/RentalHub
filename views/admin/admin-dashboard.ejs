@@ -1,0 +1,46 @@
+<link rel="stylesheet" href="/css/admin.css" />
+
+<!--Navigation Bar-->
+<%- include('../partials/admin/navigation-bar.ejs'); %>
+
+<!--Body-->
+<div class="main">
+  <!-- Side Bar -->
+  <%- include('../partials/admin/sidebar-links.ejs'); %>
+
+  <!-- Logout Confirmation Modal -->
+  <div id="logout-modal" class="logout-modal">
+    <div class="logout-content">
+      <p>Are you sure you want to log out?</p>
+      <div class="logout-button-group">
+        <button id="confirm-logout" class="yes-btn">Yes</button>
+        <button id="cancel-logout" class="no-btn">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <h1>Welcome, Admin!</h1>
+    <div class="dashboard-cards">
+      <div class="card">
+        <p>Total User</p>
+        <span class="count" id="rents-count">0</span>
+      </div>
+      <div class="card">
+        <p>Total Listings</p>
+        <span class="count" id="pending-posts-count">0</span>
+      </div>
+      <div class="card">
+        <p>Total Reports</p>
+        <span class="count" id="rental-request-count">0</span>
+      </div>
+      <div class="card">
+        <p>Transactions</p>
+        <span class="count" id="item-posted-count">0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/admin.js"></script>
