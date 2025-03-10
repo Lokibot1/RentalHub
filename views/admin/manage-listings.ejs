@@ -11,16 +11,28 @@
         <li><a href="/shopping">Shop</a></li>
         <li>
           <a href="/listing"
-            ><img src="../img/WhiteAdd.png" class="add-icon"
+            ><img src="/images/WhiteAdd.png" class="add-icon"
           /></a>
         </li>
+        <li>
       </ul>
     </nav>
   
       <!--Body-->
       <div class="main">
         <!-- Side Bar -->
-        <%- include('../partials/admin/sidebar-links.ejs'); %>
+        <div class="ad-sidebar">
+          <ul>
+            <li><a href='/admin/admin-dashboard'>Admin Dashboard</a></li>
+            <li><a href='/admin/admin-profile'>Profile</a></li>
+            <li><a href= '/admin/admin-rents' >My Rents</a></li>
+            <li><a href='/admin/admin-listings'>My Listings</a></li>
+            <li><a href='/admin/manage-users'>Manage User</a></li>
+            <li><a href='/admin/manage-listings' class="active">Manage Listings</a></li>
+            <li><a href='/admin/transactions'>Transaction</a></li>
+            <li><a href="/login" id="logout">Log Out</a></li>
+          </ul>
+        </div>
   
         <!-- Logout Confirmation Modal -->
         <div id="logout-modal" class="logout-modal">
@@ -130,4 +142,5 @@
         </div>
       </div>
   
-<script src="/js/admin.js"></script>
+    </body>
+    <script src="/js/admin.js"></script>

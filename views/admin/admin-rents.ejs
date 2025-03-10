@@ -1,26 +1,38 @@
-<link rel="stylesheet" href="/css/archives.css" />
+<link rel="stylesheet" href="/css/archives.css">
 
     <!--Navigation Bar-->
     <nav>
-        <a href="/">
-          <div class="logo">
-            <h1>Rental<span>Hub</span></h1>
-          </div>
-        </a>
-        <ul>
-          <li><a href="/shopping">Shop</a></li>
-          <li>
-            <a href="/listing"
-              ><img src="../img/WhiteAdd.png" class="add-icon"
-            /></a>
-          </li>
-        </ul>
-      </nav>
-
-    <!--Body-->
+      <a href="/">
+        <div class="logo">
+          <h1>Rental<span>Hub</span></h1>
+        </div>
+      </a>
+      <ul>
+        <li><a href="/shopping">Shop</a></li>
+        <li>
+          <a href="/listing"
+            ><img src="/images/WhiteAdd.png" class="add-icon"
+          /></a>
+        </li>
+        <li>
+      </ul>
+    </nav>
+    
+          <!--Body-->
     <div class="main">
         <!-- Side Bar -->
-        <%- include('../partials/admin/sidebar-links.ejs'); %>
+        <div class="ad-sidebar">
+          <ul>
+            <li><a href='/admin/admin-dashboard'>Admin Dashboard</a></li>
+            <li><a href='/admin/admin-profile'>Profile</a></li>
+            <li><a href= '/admin/admin-rents' class="active">My Rents</a></li>
+            <li><a href='/admin/admin-listings'>My Listings</a></li>
+            <li><a href='/admin/manage-users'>Manage User</a></li>
+            <li><a href='/admin/manage-listings'>Manage Listings</a></li>
+            <li><a href='/admin/transactions'>Transaction</a></li>
+            <li><a href="/login" id="logout">Log Out</a></li>
+          </ul>
+        </div>
 
       <!--Main Content-->
       <div class="content">
@@ -131,6 +143,16 @@
     <!-- Toast Notification -->
     <div id="toast" class="toast">Review Submitted Successfully!</div>
 
+      <!-- Logout Confirmation Modal -->
+      <div id="logout-modal" class="logout-modal">
+        <div class="logout-content">
+          <p>Are you sure you want to log out?</p>
+          <div class="logout-button-group">
+            <button id="confirm-logout" class="yes-btn">Yes</button>
+            <button id="cancel-logout" class="no-btn">No</button>
+          </div>
+        </div>
+      </div>
 
     <!--JavaScript-->
     <script>
@@ -358,4 +380,31 @@
         }
     });
 });
-</script>   
+
+//logout
+document.addEventListener("DOMContentLoaded", function () {
+    const logoutLink = document.getElementById("logout");
+    const modal = document.getElementById("logout-modal");
+    const confirmLogout = document.getElementById("confirm-logout");
+    const cancelLogout = document.getElementById("cancel-logout");
+  
+    // Ensure modal starts hidden
+    modal.style.display = "none";
+  
+    // Show modal when logout is clicked
+    logoutLink.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevents default link behavior
+      modal.style.display = "flex"; // Show modal only on click
+    });
+  
+    // Redirect when "Yes" is clicked
+    confirmLogout.addEventListener("click", function () {
+      window.location.href = "/logout"; // Adjust logout URL
+    });
+  
+    // Close modal when "No" is clicked
+    cancelLogout.addEventListener("click", function () {
+      modal.style.display = "none"; // Hide modal
+    });
+  });
+</script>

@@ -18,7 +18,7 @@
 
         <li id="auth-status">
             <% if (isAuthenticated && role == 'admin') { %>
-                <a href='/admin/dashboard'>Admin Dashboard</a>
+                <a href='/admin/admin-dashboard'>Admin Dashboard</a>
             <% } else if (isAuthenticated && role == 'user') { %>
                 <a href='/dashboard/profile'>User Profile</a>
             <% } else { %>
