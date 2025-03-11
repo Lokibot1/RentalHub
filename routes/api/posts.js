@@ -69,4 +69,24 @@ router.get("/pending/:item_id", async (req, res) => {
 });
 
 
+/**
+ * Approve item
+ * @route POST /api/posts/approve/item_id
+ */
+router.post("/approve/:item_id", async (req, res) => {
+    const { item_id } = req.params
+    const sql = "UPDATE items SET is_approved = 0 WHERE items.id = ?;";
+
+    db.query(sql, [item_id], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({success: false, message: "Update is_approved to true failed."});
+        }
+
+        res.status(200).json({
+            success: true,
+        });
+    });
+});
+
 module.exports = router;
