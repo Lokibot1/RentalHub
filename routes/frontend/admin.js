@@ -103,15 +103,32 @@ router.get("/manage-listings", checkAuth, checkAdmin, async (req, res) => {
 
 /**
  * View Product
- * @route GET /admin/admin-view-product
+ * @route GET /admin/admin-view-product/:item_id
  */
-router.get("/admin-view-product", checkAuth, checkAdmin, (req, res) => {
-    res.render("admin/admin-viewprod", {
-        layout: "layouts/dashboard",
-        title: "View Product",
-        isAuthenticated: req.isAuthenticated,
-        role: req.role,
-    });
+router.get("/admin-view-product/:item_id", checkAuth, checkAdmin, async (req, res) => {
+    const { item_id } = req.params
+
+    try {
+        const response = await fetch(`${process.env.BASE_URL}/api/posts/pending/${item_id}`); // Adjust the URL if necessary
+        const pendingPost = await response.json();
+
+        res.render("admin/admin-viewprod", {
+            layout: "layouts/dashboard",
+            title: "View Product",
+            pendingPost: pendingPost.data,
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+        });
+    } catch (error) {
+        console.error("Error fetching pending posts:", error);
+        res.render("admin/admin-viewprod", {
+            layout: "layouts/dashboard",
+            title: "View Product",
+            pendingPost: [],
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+        });
+    }
 });
 
 

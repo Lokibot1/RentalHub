@@ -12,19 +12,19 @@
     <div class="left-section">
       <!-- Product Image -->
       <div class="product-image">
-        <img id="product-image" src="" alt="Product Image" />
+        <img id="product-image" src="/uploads/<%= pendingPost.product_image %>" alt="Product Image" />
       </div>
 
       <!-- Product Details -->
       <div class="product-details">
         <label>Name of product:</label>
-        <p id="product-name"></p>
+        <p id="product-name"><%= pendingPost.product_name %></p>
 
         <label>Price per day:</label>
-        <p id="product-price"></p>
+        <p id="product-price"><%= pendingPost.product_price %></p>
 
         <label>Item Description:</label>
-        <p id="product-description"></p>
+        <p id="product-description"><%= pendingPost.product_description %></p>
       </div>
 
       <!-- Owner Info -->
@@ -33,11 +33,11 @@
         <hr />
         <div class="owner-details">
           <div class="pfp">
-            <img id="owner-image" src="" alt="Owner Image" />
+            <img id="owner-image" src="/uploads/<%= pendingPost.owner_image %>" alt="Owner Image" />
           </div>
           <div>
-            <strong id="owner-name">Loading...</strong><br />
-            <span id="owner-location">Loading...</span> <br />
+            <strong id="owner-name"><%= pendingPost.owner_name %></strong><br />
+            <span id="owner-location"><%= pendingPost.owner_location %></span> <br />
             <span id="owner-rating">⭐ Loading...</span>
           </div>
         </div>

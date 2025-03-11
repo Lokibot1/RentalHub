@@ -42,12 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch (error) {
       console.error("Error fetching dashboard counts:", error);
     }
-
-    // Fetch all pending posts
-    const response = await fetch("/api/posts/pending");
-    const responseData = await response.json();
-
-    console.log('data', responseData.data)
   });
 
 
@@ -101,8 +95,9 @@ document.addEventListener("DOMContentLoaded", function () {
   
     confirmYes.addEventListener("click", function () {
       confirmPopup.style.display = "none";
-  
       successPopup.style.display = "block";
+
+      // Update is_approved to 1
   
       setTimeout(function () {
         successPopup.style.display = "none";
