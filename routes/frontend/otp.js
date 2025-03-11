@@ -1,7 +1,5 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const {connection: db } = require("../../configs/db"); // Adjust the path as needed
-const { transporter, mailOptions } = require("../../configs/mail"); // Adjust the path as needed
 
 const router = express.Router();
 
@@ -19,32 +17,6 @@ router.get("/", async (req, res) => {
     if (user.length === 0) {
         return res.status(400).json({ message: "Email does not exist" });
     }
-
-    // Generate OTP
-    const otp = Math.floor(100000 + Math.random() * 900000);
-    console.log('otp generated:', otp)
-
-    // Update OTP in users table
-    const sql = "UPDATE users SET otp = ? WHERE email = ?";
-
-    // Insert user into database
-    await db.promise().query(sql, [otp, email]);
-
-    // Set the nodemailer options
-    mailOptions.to = email;
-    mailOptions.text = `Your OTP is ${otp}`;
-
-    // Send the email
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.log(error);
-            return res.status(500).json({ message: "Error sending email" });
-        }
-        console.log('Email sent: ' + info.response);
-    });
-
-    // Save OTP in cookies
-    res.cookie('otp', otp, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
 
     res.render("partials/otp", {
         layout: "layouts/main",

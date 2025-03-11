@@ -1,6 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { transporter, mailOptions } = require("../../configs/mail"); // Adjust the path as needed
 const { connection: db } = require("../../configs/db"); // Adjust the path as needed
 const Joi = require("joi");
 
@@ -86,6 +87,36 @@ router.post("/register", async (req, res) => {
 
                 // remove existing token
                 res.clearCookie("token");
+
+                let otp = ''
+
+                try {
+                    otp = Math.floor(100000 + Math.random() * 900000);
+                    console.log('OTP Generated:', otp);
+
+                    const updateOtpQuery = "UPDATE users SET otp = ? WHERE email = ?";
+                    const [result] = await db.promise().query(updateOtpQuery, [otp, email]);
+
+                    console.log('Update Result:', result);
+                } catch (error) {
+                    console.error('Error updating OTP:', error);
+                }
+
+                // Set the nodemailer options
+                mailOptions.to = email;
+                mailOptions.text = `Your OTP is ${otp}`;
+
+                // Send the email
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.log(error);
+                        return res.status(500).json({ message: "Error sending email" });
+                    }
+                    console.log('Email sent: ' + info.response);
+                });
+
+                // Save OTP in cookies
+                res.cookie('otp', otp, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
 
                 // Generate JWT token
                 const token = jwt.sign({
