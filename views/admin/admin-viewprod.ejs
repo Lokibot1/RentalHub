@@ -10,6 +10,9 @@
   <div class="view-product-container">
     <!-- Left Section: Product Image + Details (Stacked) -->
     <div class="left-section">
+      <!-- To grab the current item_id (only for js) -->
+      <input type="hidden" name="item_id" value="<%= pendingPost.product_id %>" />
+
       <!-- Product Image -->
       <div class="product-image">
         <img id="product-image" src="/uploads/<%= pendingPost.product_image %>" alt="Product Image" />

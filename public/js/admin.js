@@ -93,16 +93,36 @@ document.addEventListener("DOMContentLoaded", function () {
       overlay.style.display = "none";
     });
   
-    confirmYes.addEventListener("click", function () {
+    confirmYes.addEventListener("click", async function () {
       confirmPopup.style.display = "none";
       successPopup.style.display = "block";
 
       // Update is_approved to 1
-  
+      const itemId = document.querySelector("[name='item_id']").value
+
+      try {
+        const response = await fetch(`http://localhost:8000/api/posts/approve/${itemId}`, {
+          method: "POST",
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Approve failed. Please try again.");
+        }
+
+      } catch (error) {
+        alert(error.message);
+      }
+
       setTimeout(function () {
         successPopup.style.display = "none";
         overlay.style.display = "none";
+
+        window.location.href = "/admin/manage-listings";
       }, 3000);
+
+
     });
   });
   
