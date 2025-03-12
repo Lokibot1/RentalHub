@@ -27,6 +27,41 @@
         </div>
         <p id="password-error" class="error-message"></p>
 
+         <!-- Terms and Conditions Checkbox -->
+         <div class="terms-container">
+            <input type="checkbox" id="terms-checkbox" required class="terms-checkbox">
+            <label for="terms-checkbox" class="terms-label">I agree to the 
+                <span id="open-terms" class="terms-link">Terms and Conditions</span>
+            </label>
+        </div>
+        
+            <!-- Terms and Conditions Modal -->
+            <div id="modal-overlay" class="modal-overlay"></div>
+            <div id="terms-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <p class="termsandcondi">
+                        <h3>Terms and Conditions</h3>
+                        <p><strong>1. General Terms</strong><br>
+                        By registering on Rental Hub, you agree to follow these terms and conditions in order to guarantee a safe and dependable platform. These agreements are subject to change at any time by Rental Hub.</p>
+                        
+                        <p><strong>2. User Responsibilities</strong><br>
+                        Users must provide accurate and complete details, including first name, last name, email, and contact number. Any false or misleading information may result in account suspension or removal.</p>
+                        
+                        <p><strong>3. Verification Process</strong><br>
+                        Rental Hub may require additional verification steps to ensure the security of all users. Users must comply with verification requests to maintain access to the platform.</p>
+                        
+                        <p><strong>4. Privacy and Security</strong><br>
+                        Personal information submitted during sign-up will be used solely for account management and security purposes. Rental Hub implements measures to protect user data but is not responsible for unauthorized access due to user negligence.</p>
+                        
+                        <p><strong>5. Account Management</strong><br>
+                        Users are responsible for maintaining the security of their accounts. Any suspicious activity should be reported immediately. Rental Hub reserves the right to suspend or terminate accounts involved in fraudulent or harmful activities.</p>
+                        
+                        <p><strong>6. Acceptance of Terms</strong><br>
+                        By signing up on Rental Hub, users confirm that they have read, understood, and agreed to these terms. Non-compliance may result in restrictions or removal from the platform.</p>
+                </div>
+            </div>
+        
         <button type="submit" class="btn primary">CREATE</button>
     </form>
     <a href="/login">Already have an account?</a>
@@ -34,3 +69,37 @@
 
 
 <script src="/js/auth-script.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("terms-modal");
+    const openModal = document.getElementById("open-terms");
+    const closeModal = document.querySelector(".close-btn");
+    const overlay = document.getElementById("modal-overlay");
+
+    openModal.addEventListener("click", function () {
+        modal.style.display = "block";
+        overlay.style.display = "block";
+    });
+
+    closeModal.addEventListener("click", function () {
+        modal.style.display = "none";
+        overlay.style.display = "none";
+    });
+
+    overlay.addEventListener("click", function () {
+        modal.style.display = "none";
+        overlay.style.display = "none";
+    });
+});
+
+document.getElementById("signup-form").addEventListener("submit", function(event) {
+    var checkbox = document.getElementById("terms-checkbox");
+
+    if (!checkbox.checked) {
+        alert("You must agree to the Terms and Conditions before creating an account.");
+        event.preventDefault(); // Prevent form submission
+    }
+});
+
+</script>
