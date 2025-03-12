@@ -98,22 +98,23 @@ router.post("/register", async (req, res) => {
                     const [result] = await db.promise().query(updateOtpQuery, [otp, email]);
 
                     console.log('Update Result:', result);
+
+                    // Set the nodemailer options
+                    mailOptions.to = email;
+                    mailOptions.text = `Good Day from RentalHub! Thank you for registering. Your OTP is ${otp}`;
+
+                    // Send the email
+                    transporter.sendMail(mailOptions, (error, info) => {
+                        if (error) {
+                            console.log(error);
+                            return res.status(500).json({ message: "Error sending email" });
+                        }
+                        console.log('Email sent: ' + info.response);
+                    });
                 } catch (error) {
                     console.error('Error updating OTP:', error);
                 }
 
-                // Set the nodemailer options
-                mailOptions.to = email;
-                mailOptions.text = `Good Day from RentalHub! Thank you for registering. Your OTP is ${otp}`;
-
-                // Send the email
-                transporter.sendMail(mailOptions, (error, info) => {
-                    if (error) {
-                        console.log(error);
-                        return res.status(500).json({ message: "Error sending email" });
-                    }
-                    console.log('Email sent: ' + info.response);
-                });
 
                 // Save OTP in cookies
                 res.cookie('otp', otp, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
@@ -183,7 +184,7 @@ router.post("/setup-profile", async (req, res) => {
     }
 
     const { middleName, suffix, socialMedia, region, city, barangay, postalCode, address, profileImage } = req.body;
-    
+
     // get the current user id from the token cookie
     const token = req.cookies.token || '';
     const user = jwt.verify(token, process.env.JWT_SECRET);
