@@ -104,7 +104,7 @@ router.post("/register", async (req, res) => {
 
                 // Set the nodemailer options
                 mailOptions.to = email;
-                mailOptions.text = `Your OTP is ${otp}`;
+                mailOptions.text = `Good Day from RentalHub! Thank you for registering. Your OTP is ${otp}`;
 
                 // Send the email
                 transporter.sendMail(mailOptions, (error, info) => {

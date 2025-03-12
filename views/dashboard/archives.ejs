@@ -42,6 +42,17 @@
   </div>
 </div>
 
+  <!-- Logout Confirmation Modal -->
+  <div id="logout-modal" class="logout-modal">
+    <div class="logout-content">
+      <p>Are you sure you want to log out?</p>
+      <div class="logout-button-group">
+        <button id="confirm-logout" class="yes-btn">Yes</button>
+        <button id="cancel-logout" class="no-btn">No</button>
+      </div>
+    </div>
+  </div>
+
 <!--JAVASCRIPT-->
 <script>
     document.addEventListener("DOMContentLoaded", fetchArchivedListings);
@@ -139,4 +150,32 @@
         showRestoreToast("Restored Successfully!");
         restoreModal.style.display = "none";
       });
+      
+//logout
+document.addEventListener("DOMContentLoaded", function () {
+    const logoutLink = document.getElementById("logout");
+    const modal = document.getElementById("logout-modal");
+    const confirmLogout = document.getElementById("confirm-logout");
+    const cancelLogout = document.getElementById("cancel-logout");
+  
+    // Ensure modal starts hidden
+    modal.style.display = "none";
+  
+    // Show modal when logout is clicked
+    logoutLink.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevents default link behavior
+      modal.style.display = "flex"; // Show modal only on click
+    });
+  
+    // Redirect when "Yes" is clicked
+    confirmLogout.addEventListener("click", function () {
+      window.location.href = "/logout"; // Adjust logout URL
+    });
+  
+    // Close modal when "No" is clicked
+    cancelLogout.addEventListener("click", function () {
+      modal.style.display = "none"; // Hide modal
+    });
+  });
+
 </script>

@@ -10,6 +10,17 @@
     <!--Main Content-->
     <div class="content">
 
+      <!-- Logout Confirmation Modal -->
+      <div id="logout-modal" class="logout-modal">
+        <div class="logout-content">
+          <p>Are you sure you want to log out?</p>
+          <div class="logout-button-group">
+            <button id="confirm-logout" class="yes-btn">Yes</button>
+            <button id="cancel-logout" class="no-btn">No</button>
+          </div>
+        </div>
+      </div>      
+
         <div class="profile-header">
           <label for="profileImageInput">
             <img src="profile-placeholder.png" alt="Profile Picture" class="profile-img" id="profilePicture" />
@@ -17,8 +28,7 @@
           <input type="file" id="profileImageInput" accept="image/*" hidden />      
           <div class="profile-name">
             <h2 id="profileName">Name ni User</h2>
-            <p>Admin</p>
-            <i>Joined since Month Year</i>
+            <i>Joined since Month Year</i> <!--TODO: Fetch Created at-->
           </div>      
           <button id="editBtn" class="edit-btn">
             <img src="/images/edit-btn.png" alt="Edit" />
@@ -28,27 +38,28 @@
         <form class="profile-form">
           <div class="email">
             <label for="email">Email Address</label>
-            <input type="text" placeholder="Email Address" id="email" disabled />
+            <input type="text" placeholder="Email Address" id="email" disabled /> <!--TODO: Placeholder should be the registered email address-->
           </div>      
           <hr />      
           <div class="contact">
             <div>
               <label for="contact">Contact Number</label>
-              <input type="text" placeholder="Contact Number" id="contact" disabled />
+              <input type="text" placeholder="Contact Number" id="contact" disabled /><!--TODO: Placeholder should be the registered contact number-->
             </div>
             <div>
               <label for="socialMedia">Social Media</label>
-              <input type="text" placeholder="Social Media" id="socialMedia" disabled />
+              <input type="text" placeholder="Social Media" id="socialMedia" disabled /><!--TODO: -->
             </div>
           </div>      
           <hr />      
           <div class="address">
             <label for="address">Address</label>
-            <input type="text" placeholder="Address" id="address" disabled />
+            <input type="text" placeholder="Address" id="address" disabled /> <!--TODO: Placeholder should be the submitted address in set up profile-->
           </div>
         </form>
       </div>
-
+    </div>
+    
     <script>
       const editBtn = document.getElementById("editBtn");
       const profilePicture = document.getElementById("profilePicture");
@@ -105,5 +116,31 @@
         }
       });
     });
-    </script>
-</div>
+  
+    //logout
+document.addEventListener("DOMContentLoaded", function () {
+    const logoutLink = document.getElementById("logout");
+    const modal = document.getElementById("logout-modal");
+    const confirmLogout = document.getElementById("confirm-logout");
+    const cancelLogout = document.getElementById("cancel-logout");
+  
+    // Ensure modal starts hidden
+    modal.style.display = "none";
+  
+    // Show modal when logout is clicked
+    logoutLink.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevents default link behavior
+      modal.style.display = "flex"; // Show modal only on click
+    });
+  
+    // Redirect when "Yes" is clicked
+    confirmLogout.addEventListener("click", function () {
+      window.location.href = "/logout"; // Adjust logout URL
+    });
+  
+    // Close modal when "No" is clicked
+    cancelLogout.addEventListener("click", function () {
+      modal.style.display = "none"; // Hide modal
+    });
+  });
+</script>

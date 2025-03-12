@@ -290,6 +290,7 @@ document.addEventListener("DOMContentLoaded", function () {
     shoppingContainer.appendChild(shoppingList);
     document.body.appendChild(shoppingContainer);
 });
+
 //Listing(Posting)
 document.getElementById("listingForm").addEventListener("submit", function (e) {
     e.preventDefault();
