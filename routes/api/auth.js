@@ -46,101 +46,66 @@ router.post("/register", async (req, res) => {
     const { error } = registerSchema.validate(req.body, { abortEarly: false });
 
     if (error) {
-        const errors = error.details.reduce((acc, curr) => {
-            acc[curr.context.key] = curr.message;
-            return acc;
-        }, {});
-        return res.status(400).json({ errors });
+        return res.status(400).json({
+            errors: error.details.reduce((acc, curr) => {
+                acc[curr.context.key] = curr.message;
+                return acc;
+            }, {})
+        });
     }
 
     const { first_name, last_name, contact_number, email, password } = req.body;
 
-    db.connect(async (err) => {
-        if (err) {
-            console.error("Database connection failed:", err);
-        } else {
-            const [existingUser] = await db.promise().query("SELECT * FROM users WHERE email = ?", [email]);
+    try {
+        // Hash password before DB operations to reduce async bottlenecks
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-            if (existingUser.length > 0) {
-                return res.status(400).json({
-                    errors: {
-                        email: "Email already used. Please try another email."
-                    }
-                });
-            } else {
-                // Hash password
-                const hashedPassword = await bcrypt.hash(password, 10);
+        // Atomic Insert (Handles Duplicate Emails)
+        const insertQuery = `
+            INSERT INTO users (first_name, last_name, contact_number, email, password)
+            VALUES (?, ?, ?, ?, ?)
+        `;
+        const [result] = await db.promise().query(insertQuery, [
+            first_name, last_name, contact_number, email, hashedPassword
+        ]);
 
-                const sql = "INSERT INTO users (first_name, last_name, contact_number, email, password) VALUES (?, ?, ?, ?, ?)";
+        const userId = result.insertId;
 
-                // Insert user into database
-                const [result] = await db.promise().query(sql, [
-                    first_name,
-                    last_name,
-                    contact_number,
-                    email,
-                    hashedPassword
-                ]);
+        // Remove existing token and OTP
+        res.clearCookie("token");
+        res.clearCookie("otp");
 
-                // get the id, email, and role of the user after inserting and save to cookie
-                const userId = result.insertId;
+        // Generate OTP
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        await db.promise().query("UPDATE users SET otp = ? WHERE email = ?", [otp, email]);
 
-                // remove existing token
-                res.clearCookie("token");
+        // Set cookies safely
+        res.cookie('otp', otp, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
 
-                let otp = ''
+        // Generate JWT token
+        const token = jwt.sign({ id: userId, email, role: "user" }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "Strict" });
 
-                try {
-                    otp = Math.floor(100000 + Math.random() * 900000);
-                    console.log('OTP Generated:', otp);
+        // Send Email (Ensures It's Awaited)
+        mailOptions.to = email
+        mailOptions.text = `Good Day from RentalHub! Thank you for registering. Your OTP is ${otp}`
 
-                    const updateOtpQuery = "UPDATE users SET otp = ? WHERE email = ?";
-                    const [result] = await db.promise().query(updateOtpQuery, [otp, email]);
+        await transporter.sendMail(mailOptions);
 
-                    console.log('Update Result:', result);
-
-                    // Set the nodemailer options
-                    mailOptions.to = email;
-                    mailOptions.text = `Good Day from RentalHub! Thank you for registering. Your OTP is ${otp}`;
-
-                    // Send the email
-                    transporter.sendMail(mailOptions, (error, info) => {
-                        if (error) {
-                            console.log(error);
-                            return res.status(500).json({ message: "Error sending email" });
-                        }
-                        console.log('Email sent: ' + info.response);
-                    });
-                } catch (error) {
-                    console.error('Error updating OTP:', error);
-                }
-
-
-                // Save OTP in cookies
-                res.cookie('otp', otp, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
-
-                // Generate JWT token
-                const token = jwt.sign({
-                    id: userId,
-                    email: email,
-                    role: "user"
-                }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
-                res.cookie("token", token, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === "production",
-                    sameSite: "Strict"
-                });
-
-                res.status(201).json({
-                    data: { email },
-                    message: "User registered successfully",
-                    token
-                });
-            }
+        res.status(201).json({
+            data: { email },
+            message: "User registered successfully",
+            token
+        });
+    } catch (error) {
+        if (error.code === "ER_DUP_ENTRY") {
+            return res.status(400).json({ errors: { email: "Email already used." } });
         }
-    });
+        console.error("Error during registration:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
 });
+
 
 
 // Profile setup schema validation
