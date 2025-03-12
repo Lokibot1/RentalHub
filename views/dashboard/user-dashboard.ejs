@@ -1,54 +1,66 @@
-<link rel="stylesheet" href="/css/archives.css"/>
+<link rel="stylesheet" href="/css/archives.css" />
 
 <!--Navigation Bar-->
 <%- include('../partials/header-navbar.ejs'); %>
 
-<div class="main">
-    <!--Sidebar-->
-    <%- include('../partials/sidebar.ejs'); %>
+    <div class="main">
+        <!--Sidebar-->
+        <%- include('../partials/sidebar.ejs'); %>
 
-    <!--Main Content-->
-    <div class="content">
-        <div class="dashboard-cards">
-            <div class="card">
-                <p>Rents</p>
-                <span class="count" id="rents-count">0</span>
+            <!--Main Content-->
+            <div class="content">
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <p>Rents</p>
+                        <span class="count" id="rents-count">0</span>
+                    </div>
+                    <div class="card">
+                        <p>Pending Posts</p>
+                        <span class="count" id="pending-posts-count">0</span>
+                    </div>
+                    <div class="card">
+                        <p>Rental Request</p>
+                        <span class="count" id="rental-request-count">0</span>
+                    </div>
+                    <div class="card">
+                        <p>Item Posted</p>
+                        <span class="count" id="item-posted-count">0</span>
+                    </div>
+                </div>
             </div>
-            <div class="card">
-                <p>Pending Posts</p>
-                <span class="count" id="pending-posts-count">0</span>
+
+            <!-- Logout Confirmation Modal -->
+            <div id="logout-modal" class="logout-modal">
+                <div class="logout-content">
+                    <p>Are you sure you want to log out?</p>
+                    <div class="logout-button-group">
+                        <button id="confirm-logout" class="yes-btn">Yes</button>
+                        <button id="cancel-logout" class="no-btn">No</button>
+                    </div>
+                </div>
             </div>
-            <div class="card">
-                <p>Rental Request</p>
-                <span class="count" id="rental-request-count">0</span>
-            </div>
-            <div class="card">
-                <p>Item Posted</p>
-                <span class="count" id="item-posted-count">0</span>
-            </div>
-        </div>
     </div>
-</div>
 
-<!--JavaScript-->
-<script>
-    // Fetch dashboard counts from backend API
-    document.addEventListener("DOMContentLoaded", async function () {
-        try {
-            // Fetch data from backend API
-            const response = await fetch("/api/dashboard-counts"); // Adjust mo nalang tong API route Juls
-            const data = await response.json();
+    <!--JavaScript-->
+    <script>
+        // Fetch dashboard counts from backend API
+        document.addEventListener("DOMContentLoaded", async function () {
+            try {
+                // Fetch data from backend API
+                const response = await fetch("/api/dashboard-counts"); // Adjust mo nalang tong API route Juls
+                const data = await response.json();
 
-            // Update counts dynamically
-            document.getElementById("rents-count").textContent = data.rents || 0;
-            document.getElementById("pending-posts-count").textContent =
-                data.pendingPosts || 0;
-            document.getElementById("rental-request-count").textContent =
-                data.rentalRequests || 0;
-            document.getElementById("item-posted-count").textContent =
-                data.itemsPosted || 0;
-        } catch (error) {
-            console.error("Error fetching dashboard counts:", error);
-        }
-    });
-</script>
+                // Update counts dynamically
+                document.getElementById("rents-count").textContent = data.rents || 0;
+                document.getElementById("pending-posts-count").textContent =
+                    data.pendingPosts || 0;
+                document.getElementById("rental-request-count").textContent =
+                    data.rentalRequests || 0;
+                document.getElementById("item-posted-count").textContent =
+                    data.itemsPosted || 0;
+            } catch (error) {
+                console.error("Error fetching dashboard counts:", error);
+            }
+        });
+    </script>
+    <script src="/js/user.js"></script>
