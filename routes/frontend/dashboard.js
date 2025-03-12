@@ -25,7 +25,7 @@ router.get("/listing", checkAuth, (req, res) => {
 router.get("/user-dashboard", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/user-dashboard", {
     layout: "layouts/dashboard",
-    title:  "User Dashboard",
+    title: "User Dashboard",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
   });
@@ -39,7 +39,7 @@ router.get("/user-dashboard", checkAuth, checkUser, (req, res) => {
 router.get("/profile", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/profile", {
     layout: "layouts/dashboard",
-    title:  "User Profile",
+    title: "User Profile",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
   });
@@ -53,7 +53,7 @@ router.get("/profile", checkAuth, checkUser, (req, res) => {
 router.get("/rents", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/rents", {
     layout: "layouts/dashboard",
-    title:  "My Rents",
+    title: "My Rents",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
   });
@@ -64,13 +64,29 @@ router.get("/rents", checkAuth, checkUser, (req, res) => {
  * My Listing Page
  * @route GET /dashboard/my-listing
  */
-router.get("/my-listing", checkAuth, checkUser, (req, res) => {
-  res.render("dashboard/my-listing", {
-    layout: "layouts/dashboard",
-    title:  "My Listings",
-    isAuthenticated: req.isAuthenticated,
-    role: req.role,
-  });
+router.get("/my-listing", checkAuth, checkUser, async (req, res) => {
+  try {
+    const response = await fetch(`${process.env.BASE_URL}/api/user/posts/pending/${req.user.id}`);
+    const pendingPosts = await response.json();
+
+    res.render("dashboard/my-listing", {
+      layout: "layouts/dashboard",
+      title: "My Listings",
+      pendingPosts: pendingPosts.data, // Pass the retrieved pending posts
+      isAuthenticated: req.isAuthenticated,
+      role: req.role,
+    });
+  } catch (error) {
+    console.error("Error fetching pending posts:", error);
+
+    res.render("dashboard/my-listing", {
+      layout: "layouts/dashboard",
+      title: "My Listings",
+      pendingPosts: [],
+      isAuthenticated: req.isAuthenticated,
+      role: req.role,
+    });
+  }
 });
 
 
@@ -81,7 +97,7 @@ router.get("/my-listing", checkAuth, checkUser, (req, res) => {
 router.get("/archives", checkAuth, checkUser, (req, res) => {
   res.render("dashboard/archives", {
     layout: "layouts/dashboard",
-    title:  "Archives",
+    title: "Archives",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
   });
@@ -94,7 +110,7 @@ router.get("/archives", checkAuth, checkUser, (req, res) => {
 router.get("/view-product", optionalAuth, (req, res) => {
   res.render("dashboard/view-product", {
     layout: "layouts/dashboard",
-    title:  "View Product",
+    title: "View Product",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
   });
@@ -107,7 +123,7 @@ router.get("/view-product", optionalAuth, (req, res) => {
 router.get("/view-pending", optionalAuth, (req, res) => {
   res.render("dashboard/view-pending", {
     layout: "layouts/dashboard",
-    title:  "View Pending",
+    title: "View Pending",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
   });
@@ -121,7 +137,7 @@ router.get("/view-pending", optionalAuth, (req, res) => {
 router.get("/update-listing", optionalAuth, (req, res) => {
   res.render("dashboard/update-listing", {
     layout: "layouts/dashboard",
-    title:  "Update Listing",
+    title: "Update Listing",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
   });
@@ -138,7 +154,7 @@ router.get("/setup-profile", checkAuth, (req, res) => {
 
   res.render("dashboard/setup-profile", {
     layout: "layouts/dashboard",
-    title:  "Setup Profile",
+    title: "Setup Profile",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
   });

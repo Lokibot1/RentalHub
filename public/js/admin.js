@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const itemId = document.querySelector("[name='item_id']").value
 
       try {
-        const response = await fetch(`http://localhost:8000/api/posts/approve/${itemId}`, {
+        const response = await fetch(`http://localhost:8000/api/admin/posts/approve/${itemId}`, {
           method: "POST",
         });
 

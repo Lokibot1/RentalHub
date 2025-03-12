@@ -78,7 +78,7 @@ router.get("/manage-users", checkAuth, checkAdmin, (req, res) => {
  */
 router.get("/manage-listings", checkAuth, checkAdmin, async (req, res) => {
     try {
-        const response = await fetch(`${process.env.BASE_URL}/api/posts/pending`); // Adjust the URL if necessary
+        const response = await fetch(`${process.env.BASE_URL}/api/admin/posts/pending`);
         const pendingPosts = await response.json();
 
         res.render("admin/manage-listings", {
@@ -109,7 +109,7 @@ router.get("/admin-view-product/:item_id", checkAuth, checkAdmin, async (req, re
     const { item_id } = req.params
 
     try {
-        const response = await fetch(`${process.env.BASE_URL}/api/posts/pending/${item_id}`); // Adjust the URL if necessary
+        const response = await fetch(`${process.env.BASE_URL}/api/admin/posts/pending/${item_id}`); // Adjust the URL if necessary
         const pendingPost = await response.json();
 
         res.render("admin/admin-viewprod", {

@@ -1,19 +1,16 @@
-<link rel="stylesheet" href="/css/archives.css"/>
+<link rel="stylesheet" href="/css/archives.css" />
 
 <!--Navigation Bar-->
 <%- include('../partials/header-navbar.ejs'); %>
 
-<div class="main">
+  <div class="main">
     <!--Sidebar-->
     <%- include('../partials/sidebar.ejs'); %>
 
       <!--Main Content-->
       <div class="content">
         <div class="tab">
-          <button
-            class="tablinks active"
-            onclick="openTab(event, 'PendingPosts')"
-          >
+          <button class="tablinks active" onclick="openTab(event, 'PendingPosts')">
             Pending Posts
           </button>
           <button class="tablinks" onclick="openTab(event, 'Items')">
@@ -29,21 +26,35 @@
             Rating
           </button>
 
+          <!-- <pre><%= JSON.stringify(pendingPosts, null, 2) %></pre> -->
+
           <!--Tab Content-->
           <!--Pending Post-->
           <div id="PendingPosts" class="tab-content">
             <div class="shoppingList">
-              <a href="/dashboard/view-pending">
-                <div class="shoppingItem">
-                  <img src="" alt="" class="itemImage" />
-                  <hr />
-                  <strong class="itemName">Name</strong>
-                  <br />
-                  <strong class="itemPrice">$123</strong>
-                  <br />
-                  <strong class="itemLocation">jan lang</strong>
-                </div>
-              </a>
+
+              <% if (pendingPosts.length> 0) { %>
+                <% pendingPosts.forEach(function(item) { %>
+                  <a href="/dashboard/view-pending">
+                    <div class="shoppingItem">
+                      <img src="/uploads/<%= item.file_path %>" alt="" class="itemImage" />
+                      <hr />
+                      <strong class="itemName">
+                        <%= item.name %>
+                      </strong>
+                      <br />
+                      <strong class="itemPrice">$<%= item.price %></strong>
+                      <br />
+                      <strong class="itemLocation">
+                        <%= item.location %>
+                      </strong>
+                    </div>
+                  </a>
+                <% }); %>
+              <% } else { %>
+                <p>No pending posts available.</p>
+              <% } %>
+
             </div>
           </div>
 
@@ -53,7 +64,7 @@
               <a href="/dashboard/update-listing">
                 <div class="shoppingItem">
                   <img src="/images/trashcan.png" alt="Delete" class="itemDelete" onclick="showDeleteModal('123')" />
-                  <hr /> 
+                  <hr />
                   <img src="" alt="" class="itemImage" />
                   <hr />
                   <strong class="itemName"> Name </strong>
@@ -107,39 +118,40 @@
                 <div id="overlay" class="overlay"></div>
                 <div class="rentalAction">
                   <button id="accept-btn">✓</button>
-                  <button id="decline-btn">✗</button> 
+                  <button id="decline-btn">✗</button>
                 </div>
-                  <div id="confirmation-modal1" class="confirmation-modal1">
-                    <div class="confirmation-box1">
-                      <h2 class="accept-text2">Are you sure you want to <span class="accept-text1">accept</span> this request?</h2>
-                      <p class="note1">*Note: Remember to ask for Valid ID upon transaction*</p>
-                      <div class="button-container1">
-                        <button id="yes-btn1" class="yes-btn1">Yes</button>
-                        <button id="no-btn1" class="no-btn1">No</button>
-                      </div>
+                <div id="confirmation-modal1" class="confirmation-modal1">
+                  <div class="confirmation-box1">
+                    <h2 class="accept-text2">Are you sure you want to <span class="accept-text1">accept</span> this
+                      request?</h2>
+                    <p class="note1">*Note: Remember to ask for Valid ID upon transaction*</p>
+                    <div class="button-container1">
+                      <button id="yes-btn1" class="yes-btn1">Yes</button>
+                      <button id="no-btn1" class="no-btn1">No</button>
                     </div>
                   </div>
                 </div>
-                <div id="overlay" class="overlay"></div>
-                <div id="success-container1" class="success-container1">
+              </div>
+              <div id="overlay" class="overlay"></div>
+              <div id="success-container1" class="success-container1">
                 <div id="success-message1" class="success-message1">
                   <p>Request accepted successfully!</p>
                 </div>
               </div>
 
-                <!-- Decline Confirmation Modal -->
-                <div id="decline-confirmation-modal1" class="confirmation-modal1">
-                  <div class="confirmation-box1">
-                    <h2>Are you sure you want to <span class="decline-text1">decline</span> this request?</h2>
-                    <div class="button-container1">
-                      <button id="decline-yes-btn1" class="yes-btn1">Yes</button>
-                      <button id="decline-no-btn1" class="no-btn1">No</button>
-                    </div>
+              <!-- Decline Confirmation Modal -->
+              <div id="decline-confirmation-modal1" class="confirmation-modal1">
+                <div class="confirmation-box1">
+                  <h2>Are you sure you want to <span class="decline-text1">decline</span> this request?</h2>
+                  <div class="button-container1">
+                    <button id="decline-yes-btn1" class="yes-btn1">Yes</button>
+                    <button id="decline-no-btn1" class="no-btn1">No</button>
                   </div>
                 </div>
-                
-                <div id="overlay" class="overlay"></div>
-                <div id="decline-container1" class="decline-container1">
+              </div>
+
+              <div id="overlay" class="overlay"></div>
+              <div id="decline-container1" class="decline-container1">
                 <div id="decline-message1" class="decline-message1">
                   <p>Request declined successfully!</p>
                 </div>
@@ -148,288 +160,267 @@
           </div>
         </div>
 
-          <!--On Transactions-->
-          <div id="OnTransactions" class="tab-content" style="display: none">
-            <div class="RentalList">
-              <div class="rentalItem">
-                <div class="rentalInfo">
-                  <div class="renterDetails">
-                    <strong class="renterName">Renter's Name</strong>
-                  </div>
-                  <div class="itemDetails">
-                    <img src="" alt="" class="itemImage" />
-                    <h2 class="itemName">Items Name</h2>
-                  </div>
-                  <div class="rentalDurationContainer">
-                    <strong class="rentalDuration">February 3-4, 2025</strong>
-                    <strong>•</strong>
-                    <strong class="MOD">Delivery</strong>
-                  </div>
-                </div>
-                <div class="completeAction">
-                  <button id="report-btn">File a Report</button> <!--FIX ME: width problem, no submit requirements, no darkbg overlay-->
-                  <button id="review-btn">Done</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-            <!--Report Modal-->
-            <div id="modal-overlay" class="overlay"></div>
-            <div id="report-modal" class="modal">
-              <div class="modal-content" style="text-align: left">
-                <h2>Report Renter</h2>
-                <form id="report-form">
-                  <label>Reason:</label>
-                  <div>
-                    <input
-                      type="checkbox"
-                      id="duplicate"
-                      name="reason"
-                      value="duplicate"
-                    />
-                    <label for="duplicate">Duplicate</label>
-                  </div>
-                  <div>
-                    <input
-                      type="checkbox"
-                      id="inappropriate"
-                      name="reason"
-                      value="inappropriate"
-                    />
-                    <label for="inappropriate">Inappropriate</label>
-                  </div>
-                  <div>
-                    <input
-                      type="checkbox"
-                      id="fraudulent"
-                      name="reason"
-                      value="fraudulent"
-                    />
-                    <label for="fraudulent">Fraudulent</label>
-                  </div>
-                  <br />
-                  <label for="description">Describe What Happened</label>
-                  <br />
-                  <textarea
-                    id="description"
-                    name="description"
-                    rows="4"
-                    cols="50"
-                  ></textarea>
-                  <br />
-                  <button id="submit-rprt" type="submit">Submit</button>
-                  <button id="cancel-rprt" type="button">Cancel</button>
-                </form>
-              </div>
-            </div>
-
-            
-            <!-- Toast Notification -->
-            <div id="report-toast" class="toast">Report Submitted Successfully!</div>
-
-            <!-- Modal for Review  -->
-            <div id="review-modal" class="modal">
-              <div class="modal-content" style="text-align: left">
-                  <h2>Review Renter</h2>
-                  <form id="review-form">
-                      <label for="rating">Rating:</label>
-                      <br />
-                      <div class="stars">
-                          <span class="star2" data-value="1">★</span>
-                          <span class="star2" data-value="2">★</span>
-                          <span class="star2" data-value="3">★</span>
-                          <span class="star2" data-value="4">★</span>
-                          <span class="star2" data-value="5">★</span>
-                      </div>
-                      <br />
-                      <label for="description">Describe Your Experience</label>
-                      <br />
-                      <textarea id="description" name="description" rows="4" cols="50"></textarea>
-                      <br />
-                      <button id="submit-rev" type="submit">Submit</button>
-                      <button id="cancel-rev" type="button">Cancel</button>
-                  </form>
-              </div>
-            </div>
-
-            <!-- FIX ME: Report Confirmation Modal, NOT SHOWING  -->
-            <div id="confirm-modal" class="modal">
-              <div class="modal-content">
-                  <h3>Are you sure you want to submit this review?</h3>
-                  <div class="modal-buttons">
-                      <button class="btn-yes" id="confirm-submit">Confirm</button>
-                      <button class="btn-no" id="cancel-confirm">Cancel</button>
-                  </div>
-              </div>
-            </div>
-            <!-- FIXME: Toast Notification-->
-             <div class="modalOverlay" id="modalOverlay"></div>
-            <div id="toast" class="toast">Report Submitted Successfully!</div>
-
-          <!--Reviews-->
-          <div id="Reviews" class="tab-content" style="display: none">
+        <!--On Transactions-->
+        <div id="OnTransactions" class="tab-content" style="display: none">
+          <div class="RentalList">
             <div class="rentalItem">
               <div class="rentalInfo">
                 <div class="renterDetails">
-                  <strong>Renter's Name</strong>
+                  <strong class="renterName">Renter's Name</strong>
                 </div>
                 <div class="itemDetails">
-                  <h2 class="" style="white-space: normal">HAHAHAHAAHAHAH</h2>
+                  <img src="" alt="" class="itemImage" />
+                  <h2 class="itemName">Items Name</h2>
                 </div>
+                <div class="rentalDurationContainer">
+                  <strong class="rentalDuration">February 3-4, 2025</strong>
+                  <strong>•</strong>
+                  <strong class="MOD">Delivery</strong>
+                </div>
+              </div>
+              <div class="completeAction">
+                <button id="report-btn">File a Report</button>
+                <!--FIX ME: width problem, no submit requirements, no darkbg overlay-->
+                <button id="review-btn">Done</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--Report Modal-->
+        <div id="modal-overlay" class="overlay"></div>
+        <div id="report-modal" class="modal">
+          <div class="modal-content" style="text-align: left">
+            <h2>Report Renter</h2>
+            <form id="report-form">
+              <label>Reason:</label>
+              <div>
+                <input type="checkbox" id="duplicate" name="reason" value="duplicate" />
+                <label for="duplicate">Duplicate</label>
+              </div>
+              <div>
+                <input type="checkbox" id="inappropriate" name="reason" value="inappropriate" />
+                <label for="inappropriate">Inappropriate</label>
+              </div>
+              <div>
+                <input type="checkbox" id="fraudulent" name="reason" value="fraudulent" />
+                <label for="fraudulent">Fraudulent</label>
+              </div>
+              <br />
+              <label for="description">Describe What Happened</label>
+              <br />
+              <textarea id="description" name="description" rows="4" cols="50"></textarea>
+              <br />
+              <button id="submit-rprt" type="submit">Submit</button>
+              <button id="cancel-rprt" type="button">Cancel</button>
+            </form>
+          </div>
+        </div>
+
+
+        <!-- Toast Notification -->
+        <div id="report-toast" class="toast">Report Submitted Successfully!</div>
+
+        <!-- Modal for Review  -->
+        <div id="review-modal" class="modal">
+          <div class="modal-content" style="text-align: left">
+            <h2>Review Renter</h2>
+            <form id="review-form">
+              <label for="rating">Rating:</label>
+              <br />
+              <div class="stars">
+                <span class="star2" data-value="1">★</span>
+                <span class="star2" data-value="2">★</span>
+                <span class="star2" data-value="3">★</span>
+                <span class="star2" data-value="4">★</span>
+                <span class="star2" data-value="5">★</span>
+              </div>
+              <br />
+              <label for="description">Describe Your Experience</label>
+              <br />
+              <textarea id="description" name="description" rows="4" cols="50"></textarea>
+              <br />
+              <button id="submit-rev" type="submit">Submit</button>
+              <button id="cancel-rev" type="button">Cancel</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- FIX ME: Report Confirmation Modal, NOT SHOWING  -->
+        <div id="confirm-modal" class="modal">
+          <div class="modal-content">
+            <h3>Are you sure you want to submit this review?</h3>
+            <div class="modal-buttons">
+              <button class="btn-yes" id="confirm-submit">Confirm</button>
+              <button class="btn-no" id="cancel-confirm">Cancel</button>
+            </div>
+          </div>
+        </div>
+        <!-- FIXME: Toast Notification-->
+        <div class="modalOverlay" id="modalOverlay"></div>
+        <div id="toast" class="toast">Report Submitted Successfully!</div>
+
+        <!--Reviews-->
+        <div id="Reviews" class="tab-content" style="display: none">
+          <div class="rentalItem">
+            <div class="rentalInfo">
+              <div class="renterDetails">
+                <strong>Renter's Name</strong>
+              </div>
+              <div class="itemDetails">
+                <h2 class="" style="white-space: normal">HAHAHAHAAHAHAH</h2>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+  </div>
+  </div>
 
-    <!-- JavaScript -->
-    <script>
-      // OPEN TAB FUNCTION
-      function openTab(evt, tabName) {
-        var i, tabs, buttons;
-        tabs = document.getElementsByClassName("tab-content");
-        for (i = 0; i < tabs.length; i++) {
-          tabs[i].style.display = "none";
-        }
-        buttons = document.getElementsByClassName("tablinks");
-        for (i = 0; i < buttons.length; i++) {
-          buttons[i].classList.remove("active");
-        }
-        document.getElementById(tabName).style.display = "block";
-        evt.currentTarget.classList.add("active");
+  <!-- JavaScript -->
+  <script>
+    // OPEN TAB FUNCTION
+    function openTab(evt, tabName) {
+      var i, tabs, buttons;
+      tabs = document.getElementsByClassName("tab-content");
+      for (i = 0; i < tabs.length; i++) {
+        tabs[i].style.display = "none";
       }
+      buttons = document.getElementsByClassName("tablinks");
+      for (i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("active");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.classList.add("active");
+    }
 
-      // FETCH USER LISTINGS AND SORT THEM INTO TABS
-      async function fetchAndSortListings() {
-        try {
-          const response = await fetch("/api/user-listings"); // Fetch all user listings
-          const listings = await response.json();
+    // FETCH USER LISTINGS AND SORT THEM INTO TABS
+    async function fetchAndSortListings() {
+      try {
+        const response = await fetch("/api/user-listings"); // Fetch all user listings
+        const listings = await response.json();
 
-          // Containers for each tab
-          const pendingContainer = document.getElementById("PendingPosts");
-          const itemsContainer = document.getElementById("Items");
-          const rentalRequestsContainer =
-            document.getElementById("RentalRequests");
-          const transactionsContainer =
-            document.getElementById("OnTransactions");
-          const ratingContainer = document.getElementById("Reviews");
+        // Containers for each tab
+        const pendingContainer = document.getElementById("PendingPosts");
+        const itemsContainer = document.getElementById("Items");
+        const rentalRequestsContainer =
+          document.getElementById("RentalRequests");
+        const transactionsContainer =
+          document.getElementById("OnTransactions");
+        const ratingContainer = document.getElementById("Reviews");
 
-          // Clear previous data
-          pendingContainer.innerHTML = "";
-          itemsContainer.innerHTML = "";
-          rentalRequestsContainer.innerHTML = "";
-          transactionsContainer.innerHTML = "";
-          ratingContainer.innerHTML = "";
+        // Clear previous data
+        pendingContainer.innerHTML = "";
+        itemsContainer.innerHTML = "";
+        rentalRequestsContainer.innerHTML = "";
+        transactionsContainer.innerHTML = "";
+        ratingContainer.innerHTML = "";
 
-          if (listings.length === 0) {
-            pendingContainer.innerHTML = "<p>No listings available.</p>";
-            return;
-          }
+        if (listings.length === 0) {
+          pendingContainer.innerHTML = "<p>No listings available.</p>";
+          return;
+        }
 
-          listings.forEach((listing) => {
-            const listingCard = document.createElement("div");
-            listingCard.classList.add("listing-card");
-            listingCard.innerHTML = `
+        listings.forEach((listing) => {
+          const listingCard = document.createElement("div");
+          listingCard.classList.add("listing-card");
+          listingCard.innerHTML = `
           <p class="listing-title">${listing.title}</p>
           <div class="listing-item">
-            <img src="${
-              listing.image || "placeholder.png"
+            <img src="${listing.image || "placeholder.png"
             }" alt="Listing Image" class="listing-image">
             <span class="listing-name">${listing.name}</span>
           </div>
-          <button class="cancel-btn" onclick="cancelListing('${
-            listing.id
-          }')">Cancel</button>
+          <button class="cancel-btn" onclick="cancelListing('${listing.id
+            }')">Cancel</button>
         `;
 
-            switch (listing.status) {
-              case "pending":
-                pendingContainer.appendChild(listingCard);
-                break;
-              case "approved":
-                itemsContainer.appendChild(listingCard);
-                break;
-              case "rental_request":
-                rentalRequestsContainer.appendChild(listingCard);
-                break;
-              case "on_transaction":
-                transactionsContainer.appendChild(listingCard);
-                break;
-              case "completed":
-                ratingContainer.appendChild(listingCard);
-                break;
-            }
-          });
-        } catch (error) {
-          console.error("Error fetching listings:", error);
-        }
-      }
-
-      // CANCEL A SINGLE LISTING FUNCTION
-      async function cancelListing(listingId) {
-        try {
-          const response = await fetch(`/api/cancel-listing/${listingId}`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-          });
-          if (response.ok) {
-            alert("Listing canceled successfully.");
-            await fetchAndSortListings();
-          }
-        } catch (error) {
-          console.error("Error canceling listing:", error);
-        }
-      }
-
-      // CANCEL ALL LISTINGS FUNCTION
-      async function cancelAllListings() {
-        try {
-          const activeTab = document.querySelector(".tablinks.active").id;
-          let status = "";
-
-          switch (activeTab) {
-            case "PendingPosts":
-              status = "pending";
+          switch (listing.status) {
+            case "pending":
+              pendingContainer.appendChild(listingCard);
               break;
-            case "Items":
-              status = "approved";
+            case "approved":
+              itemsContainer.appendChild(listingCard);
               break;
-            case "RentalRequests":
-              status = "rental_request";
+            case "rental_request":
+              rentalRequestsContainer.appendChild(listingCard);
               break;
-            case "OnTransactions":
-              status = "on_transaction";
+            case "on_transaction":
+              transactionsContainer.appendChild(listingCard);
               break;
-            case "Reviews":
-              status = "completed";
+            case "completed":
+              ratingContainer.appendChild(listingCard);
               break;
           }
-
-          const response = await fetch(`/api/cancel-all/${status}`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-          });
-
-          if (response.ok) {
-            alert("All listings in this category have been canceled.");
-            await fetchAndSortListings();
-          }
-        } catch (error) {
-          console.error("Error canceling all listings:", error);
-        }
+        });
+      } catch (error) {
+        console.error("Error fetching listings:", error);
       }
+    }
 
-      // ADD EVENT LISTENER TO "CANCEL ALL" BUTTONS
-      document.querySelectorAll(".cancel-btn").forEach((btn) => {
-        btn.addEventListener("click", cancelAllListings);
-      });
-      //
+    // CANCEL A SINGLE LISTING FUNCTION
+    async function cancelListing(listingId) {
+      try {
+        const response = await fetch(`/api/cancel-listing/${listingId}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        });
+        if (response.ok) {
+          alert("Listing canceled successfully.");
+          await fetchAndSortListings();
+        }
+      } catch (error) {
+        console.error("Error canceling listing:", error);
+      }
+    }
 
-      //REPORT MODAL FIX ME: NO OVERLAY ON TOAST + NO CONDITIONS
-      document.addEventListener("DOMContentLoaded", function () {
-      const reportBtn = document.getElementById("report-btn"); 
+    // CANCEL ALL LISTINGS FUNCTION
+    async function cancelAllListings() {
+      try {
+        const activeTab = document.querySelector(".tablinks.active").id;
+        let status = "";
+
+        switch (activeTab) {
+          case "PendingPosts":
+            status = "pending";
+            break;
+          case "Items":
+            status = "approved";
+            break;
+          case "RentalRequests":
+            status = "rental_request";
+            break;
+          case "OnTransactions":
+            status = "on_transaction";
+            break;
+          case "Reviews":
+            status = "completed";
+            break;
+        }
+
+        const response = await fetch(`/api/cancel-all/${status}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (response.ok) {
+          alert("All listings in this category have been canceled.");
+          await fetchAndSortListings();
+        }
+      } catch (error) {
+        console.error("Error canceling all listings:", error);
+      }
+    }
+
+    // ADD EVENT LISTENER TO "CANCEL ALL" BUTTONS
+    document.querySelectorAll(".cancel-btn").forEach((btn) => {
+      btn.addEventListener("click", cancelAllListings);
+    });
+    //
+
+    //REPORT MODAL FIX ME: NO OVERLAY ON TOAST + NO CONDITIONS
+    document.addEventListener("DOMContentLoaded", function () {
+      const reportBtn = document.getElementById("report-btn");
       const reportModal = document.getElementById("report-modal");
       const modalOverlay = document.getElementById("modal-overlay");
       const submitRprt = document.getElementById("submit-rprt");
@@ -476,206 +467,206 @@
     });
 
 
-      // RENTAL REQUEST accept
-        const acceptBtn = document.getElementById('accept-btn');
-        const declineBtn = document.getElementById('decline-btn');
-        const confirmationModal = document.getElementById('confirmation-modal1');
-        const declineConfirmationModal = document.getElementById('decline-confirmation-modal1');
-        const overlay = document.getElementById('overlay');
-        const yesBtn = document.getElementById('yes-btn1');
-        const noBtn = document.getElementById('no-btn1');
-        const declineYesBtn = document.getElementById('decline-yes-btn1');
-        const declineNoBtn = document.getElementById('decline-no-btn1');
-        const successContainer = document.getElementById('success-container1');
-        const declineContainer = document.getElementById('decline-container1');
+    // RENTAL REQUEST accept
+    const acceptBtn = document.getElementById('accept-btn');
+    const declineBtn = document.getElementById('decline-btn');
+    const confirmationModal = document.getElementById('confirmation-modal1');
+    const declineConfirmationModal = document.getElementById('decline-confirmation-modal1');
+    const overlay = document.getElementById('overlay');
+    const yesBtn = document.getElementById('yes-btn1');
+    const noBtn = document.getElementById('no-btn1');
+    const declineYesBtn = document.getElementById('decline-yes-btn1');
+    const declineNoBtn = document.getElementById('decline-no-btn1');
+    const successContainer = document.getElementById('success-container1');
+    const declineContainer = document.getElementById('decline-container1');
 
-        // Accept functionality
-        acceptBtn.addEventListener('click', function() {
-            confirmationModal.style.display = 'block';
-            overlay.style.display = 'block';
-        });
-
-        noBtn.addEventListener('click', function() {
-            confirmationModal.style.display = 'none';
-            overlay.style.display = 'none';
-        });
-
-        yesBtn.addEventListener('click', function() {
-            confirmationModal.style.display = 'none';
-            overlay.style.display = 'block';
-            successContainer.style.display = 'block';
-
-            setTimeout(function() {
-                overlay.style.display = 'none';
-                successContainer.style.display = 'none';
-            }, 3000);
-        });
-
-        // Decline functionality
-        declineBtn.addEventListener('click', function() {
-            declineConfirmationModal.style.display = 'block';
-            overlay.style.display = 'block';
-        });
-
-        declineNoBtn.addEventListener('click', function() {
-            declineConfirmationModal.style.display = 'none';
-            overlay.style.display = 'none';
-        });
-
-        declineYesBtn.addEventListener('click', function() {
-            declineConfirmationModal.style.display = 'none'; 
-            overlay.style.display = 'block';
-            declineContainer.style.display = 'block';
-
-            setTimeout(function() {
-                overlay.style.display = 'none';
-                declineContainer.style.display = 'none';
-            }, 3000);
-        });
-
-        // Hide modal when clicking outside of it
-        window.addEventListener('click', function(event) {
-            if (event.target === overlay) {
-                confirmationModal.style.display = 'none';
-                declineConfirmationModal.style.display = 'none';
-                overlay.style.display = 'block';
-            }
-        });
-
-
-
-      // Review Modal Functionality FIX ME: WIDTH TOO WIDE, DARKBG OVERLAY NOT WORKING
-      const reviewBtn = document.getElementById("review-btn");
-      const reviewModal = document.getElementById("review-modal");
-      const confirmModal = document.getElementById("confirm-modal");
-      const submitRev = document.getElementById("submit-rev");
-      const confirmSubmit = document.getElementById("confirm-submit");
-      const cancelConfirm = document.getElementById("cancel-confirm");
-      const cancelRev = document.getElementById("cancel-rev");
-      const toast = document.getElementById("toast");
-
-      // Show review modal
-      reviewBtn.addEventListener("click", function () {
-          reviewModal.style.display = "flex";
-      });
-
-      // Hide review modal
-      cancelRev.addEventListener("click", function () {
-          reviewModal.style.display = "none";
-      });
-
-      // Star Rating System
-      const stars = document.querySelectorAll(".star2");
-      let selectedRating = 0;
-
-      stars.forEach((star) => {
-          star.addEventListener("click", function () {
-              selectedRating = parseInt(this.getAttribute("data-value")); // Store the selected rating
-              updateStars(selectedRating);
-          });
-
-          star.addEventListener("mouseover", function () {
-              updateStars(parseInt(this.getAttribute("data-value")));
-          });
-
-          star.addEventListener("mouseout", function () {
-              updateStars(selectedRating);
-          });
-      });
-
-      function updateStars(rating) {
-          stars.forEach((star, index) => {
-              star.classList.toggle("active", index < rating);
-          });
-      }
-
-      // Handle Review Submission
-      submitRev.addEventListener("click", function (event) {
-          event.preventDefault();
-
-          if (selectedRating === 0) {
-              showToast("Please select a star rating before submitting.", "error");
-              return;
-          }
-
-          confirmModal.style.display = "flex"; // Show confirmation modal
-      });
-
-      // Confirm submission
-      confirmSubmit.addEventListener("click", function () {
-          confirmModal.style.display = "none";
-          reviewModal.style.display = "none"; // Hide review modal
-          showToast("Review Submitted Successfully!");
-          selectedRating = 0; // Reset rating
-          updateStars(0);
-      });
-
-      // Cancel confirmation modal
-      cancelConfirm.addEventListener("click", function () {
-          confirmModal.style.display = "none";
-      });
-
-      // Hide modal when clicking outside
-      window.addEventListener("click", function (event) {
-          if (event.target === reviewModal) {
-              reviewModal.style.display = "block";
-          }
-          if (event.target === confirmModal) {
-              confirmModal.style.display = "none";
-          }
-      });
-
-      // Toast Notification Function
-      function showToast(message, type = "success") {
-          toast.innerText = message;
-          toast.classList.add("show");
-
-          // Apply different styles based on type
-          if (type === "error") {
-              toast.classList.add("error");
-          } else {
-              toast.classList.remove("error");
-          }
-
-          setTimeout(function () {
-              toast.classList.remove("show");
-          }, 3000);
-      }
-
-    document.addEventListener('DOMContentLoaded', function () {
-    const deleteButtons = document.querySelectorAll('.itemDelete');
-    const deleteModal = document.getElementById('deleteModal');
-    const successModal = document.getElementById('successModal');
-    const overlay = document.getElementById('overlay'); 
-    const confirmButton = document.getElementById('confirmDelete');
-    const cancelButton = document.getElementById('cancelDelete');
-    let currentItem = null; 
-
-    // Show delete confirmation modal
-    deleteButtons.forEach(button => {
-        button.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            currentItem = this.closest('.shoppingItem');
-
-            if (!currentItem) {
-                console.error("Error: Could not find the parent '.shoppingItem' element.");
-                return;
-            }
-
-            deleteModal.style.display = 'block';
-            overlay.style.display = 'block';
-        });
+    // Accept functionality
+    acceptBtn.addEventListener('click', function () {
+      confirmationModal.style.display = 'block';
+      overlay.style.display = 'block';
     });
 
-    // Confirm delete
-    confirmButton.addEventListener('click', function () {
+    noBtn.addEventListener('click', function () {
+      confirmationModal.style.display = 'none';
+      overlay.style.display = 'none';
+    });
+
+    yesBtn.addEventListener('click', function () {
+      confirmationModal.style.display = 'none';
+      overlay.style.display = 'block';
+      successContainer.style.display = 'block';
+
+      setTimeout(function () {
+        overlay.style.display = 'none';
+        successContainer.style.display = 'none';
+      }, 3000);
+    });
+
+    // Decline functionality
+    declineBtn.addEventListener('click', function () {
+      declineConfirmationModal.style.display = 'block';
+      overlay.style.display = 'block';
+    });
+
+    declineNoBtn.addEventListener('click', function () {
+      declineConfirmationModal.style.display = 'none';
+      overlay.style.display = 'none';
+    });
+
+    declineYesBtn.addEventListener('click', function () {
+      declineConfirmationModal.style.display = 'none';
+      overlay.style.display = 'block';
+      declineContainer.style.display = 'block';
+
+      setTimeout(function () {
+        overlay.style.display = 'none';
+        declineContainer.style.display = 'none';
+      }, 3000);
+    });
+
+    // Hide modal when clicking outside of it
+    window.addEventListener('click', function (event) {
+      if (event.target === overlay) {
+        confirmationModal.style.display = 'none';
+        declineConfirmationModal.style.display = 'none';
+        overlay.style.display = 'block';
+      }
+    });
+
+
+
+    // Review Modal Functionality FIX ME: WIDTH TOO WIDE, DARKBG OVERLAY NOT WORKING
+    const reviewBtn = document.getElementById("review-btn");
+    const reviewModal = document.getElementById("review-modal");
+    const confirmModal = document.getElementById("confirm-modal");
+    const submitRev = document.getElementById("submit-rev");
+    const confirmSubmit = document.getElementById("confirm-submit");
+    const cancelConfirm = document.getElementById("cancel-confirm");
+    const cancelRev = document.getElementById("cancel-rev");
+    const toast = document.getElementById("toast");
+
+    // Show review modal
+    reviewBtn.addEventListener("click", function () {
+      reviewModal.style.display = "flex";
+    });
+
+    // Hide review modal
+    cancelRev.addEventListener("click", function () {
+      reviewModal.style.display = "none";
+    });
+
+    // Star Rating System
+    const stars = document.querySelectorAll(".star2");
+    let selectedRating = 0;
+
+    stars.forEach((star) => {
+      star.addEventListener("click", function () {
+        selectedRating = parseInt(this.getAttribute("data-value")); // Store the selected rating
+        updateStars(selectedRating);
+      });
+
+      star.addEventListener("mouseover", function () {
+        updateStars(parseInt(this.getAttribute("data-value")));
+      });
+
+      star.addEventListener("mouseout", function () {
+        updateStars(selectedRating);
+      });
+    });
+
+    function updateStars(rating) {
+      stars.forEach((star, index) => {
+        star.classList.toggle("active", index < rating);
+      });
+    }
+
+    // Handle Review Submission
+    submitRev.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      if (selectedRating === 0) {
+        showToast("Please select a star rating before submitting.", "error");
+        return;
+      }
+
+      confirmModal.style.display = "flex"; // Show confirmation modal
+    });
+
+    // Confirm submission
+    confirmSubmit.addEventListener("click", function () {
+      confirmModal.style.display = "none";
+      reviewModal.style.display = "none"; // Hide review modal
+      showToast("Review Submitted Successfully!");
+      selectedRating = 0; // Reset rating
+      updateStars(0);
+    });
+
+    // Cancel confirmation modal
+    cancelConfirm.addEventListener("click", function () {
+      confirmModal.style.display = "none";
+    });
+
+    // Hide modal when clicking outside
+    window.addEventListener("click", function (event) {
+      if (event.target === reviewModal) {
+        reviewModal.style.display = "block";
+      }
+      if (event.target === confirmModal) {
+        confirmModal.style.display = "none";
+      }
+    });
+
+    // Toast Notification Function
+    function showToast(message, type = "success") {
+      toast.innerText = message;
+      toast.classList.add("show");
+
+      // Apply different styles based on type
+      if (type === "error") {
+        toast.classList.add("error");
+      } else {
+        toast.classList.remove("error");
+      }
+
+      setTimeout(function () {
+        toast.classList.remove("show");
+      }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const deleteButtons = document.querySelectorAll('.itemDelete');
+      const deleteModal = document.getElementById('deleteModal');
+      const successModal = document.getElementById('successModal');
+      const overlay = document.getElementById('overlay');
+      const confirmButton = document.getElementById('confirmDelete');
+      const cancelButton = document.getElementById('cancelDelete');
+      let currentItem = null;
+
+      // Show delete confirmation modal
+      deleteButtons.forEach(button => {
+        button.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          currentItem = this.closest('.shoppingItem');
+
+          if (!currentItem) {
+            console.error("Error: Could not find the parent '.shoppingItem' element.");
+            return;
+          }
+
+          deleteModal.style.display = 'block';
+          overlay.style.display = 'block';
+        });
+      });
+
+      // Confirm delete
+      confirmButton.addEventListener('click', function () {
         if (currentItem) {
-            currentItem.remove(); 
-            console.log("Item deleted successfully.");
+          currentItem.remove();
+          console.log("Item deleted successfully.");
         } else {
-            console.error("Error: No item selected for deletion.");
+          console.error("Error: No item selected for deletion.");
         }
 
         deleteModal.style.display = 'none';
@@ -683,25 +674,25 @@
         successModal.style.display = 'block';
 
         setTimeout(() => {
-            overlay.style.display = 'none';
-            successModal.style.display = 'none';
+          overlay.style.display = 'none';
+          successModal.style.display = 'none';
         }, 5000);
-    });
+      });
 
-    // Cancel delete
-    cancelButton.addEventListener('click', function () {
+      // Cancel delete
+      cancelButton.addEventListener('click', function () {
         deleteModal.style.display = 'none';
         overlay.style.display = 'none';
-    });
+      });
 
-    // Hide modals when clicking outside
-    window.addEventListener('click', function (event) {
+      // Hide modals when clicking outside
+      window.addEventListener('click', function (event) {
         if (event.target === overlay) {
-            deleteModal.style.display = 'none';
-            overlay.style.display = 'none';
-            successModal.style.display = 'none';
+          deleteModal.style.display = 'none';
+          overlay.style.display = 'none';
+          successModal.style.display = 'none';
         }
+      });
     });
-});
 
-    </script>
+  </script>
