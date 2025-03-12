@@ -52,6 +52,8 @@
             <div class="shoppingList">
               <a href="/dashboard/update-listing">
                 <div class="shoppingItem">
+                  <img src="/images/trashcan.png" alt="Delete" class="itemDelete" onclick="showDeleteModal('123')" />
+                  <hr /> 
                   <img src="" alt="" class="itemImage" />
                   <hr />
                   <strong class="itemName"> Name </strong>
@@ -61,6 +63,22 @@
                   <strong class="itemLocation">jan lang</strong>
                 </div>
               </a>
+            </div>
+          </div>
+
+          <div id="deleteModal" class="modal" style="display: none;">
+            <div class="modal-content">
+              <p><strong>Are you sure you want to <span style="color: #990000;">remove</span> this item?</strong></p>
+              <div class="modal-buttons">
+                <button id="confirmDelete" class="btn-yes">Yes</button>
+                <button id="cancelDelete" class="btn-no">No</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="successModal" class="modal" style="display: none;">
+            <div class="success-message1">
+              <p><strong>Item archived successfully!</strong></p>
             </div>
           </div>
 
@@ -623,5 +641,67 @@
               toast.classList.remove("show");
           }, 3000);
       }
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.itemDelete');
+    const deleteModal = document.getElementById('deleteModal');
+    const successModal = document.getElementById('successModal');
+    const overlay = document.getElementById('overlay'); 
+    const confirmButton = document.getElementById('confirmDelete');
+    const cancelButton = document.getElementById('cancelDelete');
+    let currentItem = null; 
+
+    // Show delete confirmation modal
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            currentItem = this.closest('.shoppingItem');
+
+            if (!currentItem) {
+                console.error("Error: Could not find the parent '.shoppingItem' element.");
+                return;
+            }
+
+            deleteModal.style.display = 'block';
+            overlay.style.display = 'block';
+        });
+    });
+
+    // Confirm delete
+    confirmButton.addEventListener('click', function () {
+        if (currentItem) {
+            currentItem.remove(); 
+            console.log("Item deleted successfully.");
+        } else {
+            console.error("Error: No item selected for deletion.");
+        }
+
+        deleteModal.style.display = 'none';
+        overlay.style.display = 'block';
+        successModal.style.display = 'block';
+
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            successModal.style.display = 'none';
+        }, 5000);
+    });
+
+    // Cancel delete
+    cancelButton.addEventListener('click', function () {
+        deleteModal.style.display = 'none';
+        overlay.style.display = 'none';
+    });
+
+    // Hide modals when clicking outside
+    window.addEventListener('click', function (event) {
+        if (event.target === overlay) {
+            deleteModal.style.display = 'none';
+            overlay.style.display = 'none';
+            successModal.style.display = 'none';
+        }
+    });
+});
 
     </script>

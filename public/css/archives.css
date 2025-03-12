@@ -57,6 +57,7 @@ span {
   text-shadow: -1px -1px 0 #f5f5f5, 1px -1px 0 #f5f5f5, -1px 1px 0 #f5f5f5,
     1px 1px 0 #f5f5f5;
 }
+.profile-icon,
 .add-icon {
   width: 35px;
   height: 35px;
@@ -416,6 +417,7 @@ nav button {
   align-items: center;
   overflow-x: hidden;
   transition: transform 0.3s ease-in-out;
+  position: relative;
 }
 .shoppingItem:hover {
   transform: scale(1.05);
@@ -424,6 +426,14 @@ nav button {
   border-radius: 50px 0px 50px 0px;
   width: 276px;
   height: 200px;
+}
+.itemDelete {
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  z-index: 10;
 }
 /*Item Name*/
 .shoppingItem strong {
@@ -480,6 +490,7 @@ nav button {
   border: none;
   border-radius: 20px;
   cursor: pointer;
+  font-weight: bold;
 }
 .btn-no {
   background-color: #800020;
@@ -763,7 +774,7 @@ nav button {
   font-size: 24px;
   color: #1a2b3c;
   margin: 0;
-  font-weight: 600;
+  font-weight: bold;
 }
 
 /* Review Stars */
