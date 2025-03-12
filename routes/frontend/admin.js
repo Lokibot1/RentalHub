@@ -1,5 +1,5 @@
 const express = require("express");
-const {checkAuth, checkAdmin} = require("../../middlewares/auth");
+const { checkAuth, checkAdmin } = require("../../middlewares/auth");
 
 const router = express.Router();
 
@@ -7,13 +7,30 @@ const router = express.Router();
  * Admin Dashboard
  * @route GET /admin/admin-dashboard
  */
-router.get("/admin-dashboard", checkAuth, checkAdmin, (req, res) => {
-    res.render("admin/admin-dashboard", {
-        layout: "layouts/dashboard",
-        title: "Admin Dashboard",
-        isAuthenticated: req.isAuthenticated,
-        role: req.role,
-    });
+router.get("/admin-dashboard", checkAuth, checkAdmin, async (req, res) => {
+    try {
+        const response = await fetch(`${process.env.BASE_URL}/api/admin/dashboard`);
+        const dashboard = await response.json();
+
+        console.log('dashboard data', dashboard.data)
+
+        res.render("admin/admin-dashboard", {
+            layout: "layouts/dashboard",
+            title: "Admin Dashboard",
+            dashboard: dashboard.data,
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+        });
+    } catch (error) {
+        console.error("Error fetching pending posts:", error);
+        res.render("admin/admin-dashboard", {
+            layout: "layouts/dashboard",
+            title: "Admin Dashboard",
+            dashboard: {},
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+        });
+    }
 });
 
 

@@ -32,6 +32,7 @@ const dashboardRoutes = require("./routes/frontend/dashboard");
 const apiAuthRoutes = require("./routes/api/auth");
 const apiListingRoute = require("./routes/api/listing");
 const apiAdminPostsRoute = require("./routes/api/admin/posts");
+const apiAdminDashboardRoute = require("./routes/api/admin/dashboard");
 const apiUserPostsRoute = require("./routes/api/user/posts");
 const otpRoute = require("./routes/frontend/otp");
 const forbiddenRoute = require("./routes/forbidden");
@@ -49,6 +50,7 @@ app.use("/forbidden", forbiddenRoute);
 app.use("/api", apiListingRoute);
 app.use("/api/auth", apiAuthRoutes);
 app.use("/api/admin/posts", apiAdminPostsRoute);
+app.use("/api/admin/dashboard", apiAdminDashboardRoute);
 app.use("/api/user/posts", apiUserPostsRoute);
 
 // Start server
