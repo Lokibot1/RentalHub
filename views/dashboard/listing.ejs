@@ -33,6 +33,14 @@
                     required
             ></textarea>
 
+            <input type="number"
+            id="itemQuantity"
+            name="item_quantity"
+            placeholder="Enter of Quantity of Item"
+            oninput="updatePreview()"
+            required
+            ></input>
+
             <input type="text"
                    name="location"
                    id="location"
@@ -98,6 +106,8 @@
             <label>Price per day: <span id="product-price"></span></label>
             <hr>
             <label>Item Description: <span id="product-description"></span></label>
+            <hr>
+            <label>No. of Item Quantity: <span id="item-quantity"></span></label>
         </div>
     </div>
 </div>
@@ -152,6 +162,7 @@
         document.getElementById("product-price").textContent = document.getElementById("itemPrice").value;
         document.getElementById("itemDescription").addEventListener("input", function () {
         document.getElementById("product-description").innerHTML = this.value.replace(/\n/g, "<br>");
+        document.getElementById("item-quantity").textContent = document.getElementById("itemQuantity").value;
         });
 
     }
@@ -176,5 +187,6 @@
     document.getElementById("itemPrice").addEventListener("input", updatePreview);
     document.getElementById("itemDescription").addEventListener("input", updatePreview);
     document.getElementById("img").addEventListener("change", previewImage);
+    document.getElementById("itemQuantity").addEventListener("input", updatePreview);
 </script>
 <script src="/js/get-category-name.js"></script>

@@ -50,6 +50,9 @@
             <label>Price per day:</label>
             <p id="product-price"></p>
 
+            <label>No. of Item Quantity:</label>
+            <p id="product-quantity"></p>
+
             <label>Item Description:</label>
             <p id="product-description"></p>
         </div>
@@ -130,10 +133,16 @@
                 <!-- Dates will be rendered here -->
             </div>
         </div>
+        <div class="quantity-container">
+            <strong>Qty</strong>
+            <button onclick="changeQuantity(-1)">-</button>
+            <input type="text" id="quantity" value="1" readonly>
+            <button onclick="changeQuantity(1)">+</button>
+        </div>
         <h3 class="mod">Mode of Payment</h3>
         <div class="delivery-options">
             <button id="meetup-btn">Meet Up</button>
-            <button id="delivery-btn">Delivery</button>
+            <button id="delivery-btn">Delivery</button> 
         </div>
 
         <% if (isAuthenticated && role === 'admin' || role === 'user') { %>
@@ -510,7 +519,7 @@
         });
 
         // Function to show confirmation modal
-        function showConfirmationModal(startDate, endDate, deliveryMethod) {
+        function showConfirmationModal(startDate, endDate, deliveryMethod,) {
             const modalOverlay = document.createElement("div");
             modalOverlay.className = "modal-overlay";
 
@@ -520,7 +529,25 @@
               <p>Confirm rental request for:<br>
               <strong>From:</strong> ${formatDate(startDate)}<br>
               <strong>To:</strong> ${formatDate(endDate)}<br>
-              <strong>Delivery Method:</strong> ${deliveryMethod}</p>
+              <strong>Payment Method:</strong> ${deliveryMethod}</p>
+                        <h3>Terms and Conditions</h3>
+                        <p><strong>1. General Terms</strong><br>
+                        By registering on Rental Hub, you agree to follow these terms and conditions in order to guarantee a safe and dependable platform. These agreements are subject to change at any time by Rental Hub.</p>
+                        
+                        <p><strong>2. User Responsibilities</strong><br>
+                        Users must provide accurate and complete details, including first name, last name, email, and contact number. Any false or misleading information may result in account suspension or removal.</p>
+                        
+                        <p><strong>3. Verification Process</strong><br>
+                        Rental Hub may require additional verification steps to ensure the security of all users. Users must comply with verification requests to maintain access to the platform.</p>
+                        
+                        <p><strong>4. Privacy and Security</strong><br>
+                        Personal information submitted during sign-up will be used solely for account management and security purposes. Rental Hub implements measures to protect user data but is not responsible for unauthorized access due to user negligence.</p>
+                        
+                        <p><strong>5. Account Management</strong><br>
+                        Users are responsible for maintaining the security of their accounts. Any suspicious activity should be reported immediately. Rental Hub reserves the right to suspend or terminate accounts involved in fraudulent or harmful activities.</p>
+                        
+                        <p><strong>6. Acceptance of Terms</strong><br>
+                        By signing up on Rental Hub, users confirm that they have read, understood, and agreed to these terms. Non-compliance may result in restrictions or removal from the platform.</p></p>
               <div class="modal-buttons">
                   <button id="confirm-btn">Yes</button>
                   <button id="cancel-btn">No</button>
@@ -546,6 +573,12 @@
             modal.style.padding = "20px";
             modal.style.borderRadius = "8px";
             modal.style.minWidth = "300px";
+            modal.style.Width = "80%";
+            modal.style.maxWidth = "400px";
+            modal.style.maxHeight = "80vh";
+            modal.style.overflowY = "auto";
+            modal.style.top = "50%";
+            modal.style.left = "50%";
 
             document
                 .getElementById("confirm-btn")
@@ -632,4 +665,17 @@
             });
         }
     });
+
+    //qty counter
+    function changeQuantity(amount) {
+        let qtyInput = document.getElementById("quantity");
+        let currentQty = parseInt(qtyInput.value);
+
+        let newQty = currentQty + amount;
+        if (newQty < 1) {
+            newQty = 1; 
+        }
+
+        qtyInput.value = newQty;
+    }
 </script>

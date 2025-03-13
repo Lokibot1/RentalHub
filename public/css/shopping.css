@@ -193,3 +193,12 @@
     margin: 10px 0;
   }
   
+  .item-price-quantity {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .item-quantity {
+    color:  #666666;
+    font-size: 15px;
+  }

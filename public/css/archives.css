@@ -983,3 +983,13 @@ nav button {
   background: #9b0c1c; /* Dark red */
   color: white;
 }
+
+.item-price-quantity {
+  display: flex;
+  justify-content: space-between;
+}
+
+.itemQuantity {
+  color:  #666666;
+  font-size: 17px ;
+}
