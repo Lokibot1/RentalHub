@@ -10,9 +10,9 @@ const router = express.Router();
  */
 router.get("/", async (req, res) => {
     const sql = `
-        SELECT COUNT(*) AS total_users
-        FROM users
-        WHERE role_id != 1;
+    SELECT 
+        (SELECT COUNT(*) FROM users WHERE role_id != 1) AS total_users,
+        (SELECT COUNT(*) FROM items WHERE is_approved = 1) AS total_listings;
     `;
     db.query(sql, (err, results) => {
         if (err) {
