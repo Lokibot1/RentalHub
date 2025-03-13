@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+/*
 document.addEventListener("DOMContentLoaded", async function () {
   try {
     // Fetch dashboard counts from backend API
@@ -43,7 +44,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.error("Error fetching dashboard counts:", error);
   }
 });
-
+*/
 
 // Tabs Functionality
 function openTab(evt, tabName) {

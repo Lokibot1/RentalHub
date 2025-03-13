@@ -95,13 +95,18 @@ router.get("/manage-users", checkAuth, checkAdmin, (req, res) => {
  */
 router.get("/manage-listings", checkAuth, checkAdmin, async (req, res) => {
     try {
-        const response = await fetch(`${process.env.BASE_URL}/api/admin/posts/pending`);
-        const pendingPosts = await response.json();
+        const pendingResponse = await fetch(`${process.env.BASE_URL}/api/admin/posts/pending`);
+        const pendingPosts = await pendingResponse.json();
+
+        const approvedResponse = await fetch(`${process.env.BASE_URL}/api/admin/posts`);
+        const approvedPosts = await approvedResponse.json();
+        console.log('approvedPosts', approvedPosts.data)
 
         res.render("admin/manage-listings", {
             layout: "layouts/dashboard",
             title: "Manage Listings",
             pendingPosts: pendingPosts.data, // Pass the retrieved pending posts
+            approvedPosts: approvedPosts.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
         });

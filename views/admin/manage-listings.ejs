@@ -97,12 +97,20 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>First Name M. Last Name</td>
-                            <td>Item Name</td>
-                            <td>Category</td>
-                            <td>(how many left or out of stock)</td>
-                        </tr>
+                        <% if (approvedPosts.length > 0) { %>
+                            <% approvedPosts.forEach(function(post) { %>
+                                <tr>
+                                    <td><%= post.item_owner %></td>
+                                    <td><%= post.item_name %></td>
+                                    <td><%= post.item_category %></td>
+                                    <td><%= post.item_availability %></td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="4">No available posts.</td>
+                            </tr>
+                        <% } %>
                         </tbody>
                     </table>
                 </div>
