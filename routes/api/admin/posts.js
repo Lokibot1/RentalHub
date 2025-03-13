@@ -42,18 +42,21 @@ router.get("/pending/:item_id", async (req, res) => {
     const { item_id } = req.params
 
     const sql = `
-        SELECT items.id                                       AS product_id,
-               items.name                                     AS product_name,
-               items.price                                    AS product_price,
-               items.description                              AS product_description,
-               items.file_path                                AS product_image,
-               users.profile_image                            AS owner_image,
-               CONCAT(users.first_name, ' ', users.last_name) AS owner_name,
-               items.location                                 AS owner_location
+        SELECT 
+            items.id                                       AS product_id,
+            items.name                                     AS product_name,
+            items.price                                    AS product_price,
+            items.description                              AS product_description,
+            items.file_path                                AS product_image,
+            users.profile_image                            AS owner_image,
+            CONCAT(users.first_name, ' ', users.last_name) AS owner_name,
+            items.location                                 AS owner_location,
+            inventory.stock_quantity                       AS item_quantity
         FROM items
-                 Join users ON items.user_id = users.id
+        JOIN users ON items.user_id = users.id
+        JOIN inventory ON inventory.item_id = items.id
         WHERE items.id = ?
-          AND is_approved = 0
+        AND is_approved = 0;
     `;
     db.query(sql, [item_id], (err, results) => {
         if (err) {

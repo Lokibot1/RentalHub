@@ -200,6 +200,9 @@
             document.getElementById("product-description").innerText =
                 selectedItem.description;
 
+            document.getElementById("product-quantity").innerText =
+                selectedItem.quantity;
+
             // Owner Info
             document.getElementById("owner-name").textContent =
                 selectedItem.name || "Unknown Owner";
@@ -213,41 +216,6 @@
 
     // Call function when page loads
     loadSelectedProduct()
-
-    /*
-    const API_URL = "http://localhost:5000/api/owner";
-
-    async function fetchOwnerDetails() {
-        try {
-            const response = await fetch(API_URL);
-            const data = await response.json();
-
-            if (false) {
-                document.getElementById("owner-name").textContent =
-                    selectedItem.name || "Unknown Owner";
-                document.getElementById("owner-location").textContent =
-                    selectedItem.location || "Unknown Location";
-                document.getElementById("owner-image").src =
-                    data.profile_picture || "default.png";
-
-                // Calculate and display average rating
-                const ratings = data.ratings || []; // Array of ratings
-                const averageRating =
-                    ratings.length > 0
-                        ? (
-                            ratings.reduce((sum, rating) => sum + rating, 0) /
-                            ratings.length
-                        ).toFixed(1)
-                        : "No Ratings";
-
-                document.getElementById("owner-rating").innerHTML =
-                    generateStars(averageRating);
-            }
-        } catch (error) {
-            console.error("Error fetching owner data:", error);
-        }
-    }
-    */
 
 
     // Function to convert rating number to stars
