@@ -81,13 +81,17 @@ router.get("/rents", checkAuth, checkUser, (req, res) => {
  */
 router.get("/my-listing", checkAuth, checkUser, async (req, res) => {
   try {
-    const response = await fetch(`${process.env.BASE_URL}/api/user/posts/pending/${req.user.id}`);
-    const pendingPosts = await response.json();
+    const pendingResponse = await fetch(`${process.env.BASE_URL}/api/user/posts/pending/${req.user.id}`);
+    const pendingPosts = await pendingResponse.json();
+
+    const approvedResponse = await fetch(`${process.env.BASE_URL}/api/user/posts/approve/${req.user.id}`);
+    const approvedPosts = await approvedResponse.json();
 
     res.render("user/my-listing", {
       layout: "layouts/user",
       title: "My Listings",
       pendingPosts: pendingPosts.data, // Pass the retrieved pending posts
+      approvedPosts: approvedPosts.data, // Pass the retrieved pending posts
       isAuthenticated: req.isAuthenticated,
       role: req.role,
     });
@@ -98,6 +102,7 @@ router.get("/my-listing", checkAuth, checkUser, async (req, res) => {
       layout: "layouts/user",
       title: "My Listings",
       pendingPosts: [],
+      approvedPosts: [],
       isAuthenticated: req.isAuthenticated,
       role: req.role,
     });
@@ -147,9 +152,9 @@ router.get("/view-pending", optionalAuth, (req, res) => {
 
 /**
  * Update Listing Page
- * @route GET /dashboard/update-listing
+ * @route GET /user/update-listing
  */
-router.get("/update-listing", optionalAuth, (req, res) => {
+router.get("/update-listing/:item_id", optionalAuth, (req, res) => {
   res.render("user/update-listing", {
     layout: "layouts/user",
     title: "Update Listing",

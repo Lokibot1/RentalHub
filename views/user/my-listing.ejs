@@ -9,16 +9,16 @@
 
       <!--Main Content-->
 
-        <!-- Logout Confirmation Modal -->
-        <div id="logout-modal" class="logout-modal">
-          <div class="logout-content">
-            <p>Are you sure you want to log out?</p>
-            <div class="logout-button-group">
-              <button id="confirm-logout" class="yes-btn">Yes</button>
-              <button id="cancel-logout" class="no-btn">No</button>
-            </div>
+      <!-- Logout Confirmation Modal -->
+      <div id="logout-modal" class="logout-modal">
+        <div class="logout-content">
+          <p>Are you sure you want to log out?</p>
+          <div class="logout-button-group">
+            <button id="confirm-logout" class="yes-btn">Yes</button>
+            <button id="cancel-logout" class="no-btn">No</button>
           </div>
         </div>
+      </div>
 
       <div class="content">
         <div class="tab">
@@ -47,23 +47,23 @@
 
               <% if (pendingPosts.length> 0) { %>
                 <% pendingPosts.forEach(function(item) { %>
-                  <a href="/dashboard/view-pending">
+                  <a href="/user/view-pending">
                     <div class="shoppingItem">
-                      <img src="/uploads/<%= item.file_path %>" alt="" class="itemImage" />
+                      <img src="/uploads/<%= item.product_image %>" alt="" class="itemImage" />
                       <hr />
                       <strong class="itemName">
-                        <%= item.name %>
+                        <%= item.product_name %>
                       </strong>
                       <br />
                       <div class="item-price-quantity">
-                      <strong class="itemPrice">$<%= item.price %></strong>
-                      <br />
-                      <strong>
-                        <p  class="itemQuantity">7 Left</p> <!--TO FIX: create to kase di q sya mahanap e hehehe-->
+                        <strong class="itemPrice">$<%= item.product_price %></strong>
+                        <br />
+                        <strong>
+                          <p class="itemQuantity"><%= item.product_quantity %> left</p>
                         </strong>
                       </div>
                       <strong class="itemLocation">
-                        <%= item.location %>
+                        <%= item.owner_location %>
                       </strong>
                     </div>
                   </a>
@@ -71,31 +71,39 @@
               <% } else { %>
                 <p>No pending posts available.</p>
               <% } %>
-
             </div>
           </div>
+
 
           <!--Items Post-->
           <div id="Items" class="tab-content" style="display: none">
             <div class="shoppingList">
-              <a href="/dashboard/update-listing">
-                <div class="shoppingItem">
-                  <img src="/images/trashcan.png" alt="Delete" class="itemDelete" onclick="showDeleteModal('123')" />
-                  <hr />
-                  <img src="" alt="" class="itemImage" />
-                  <hr />
-                  <strong class="itemName"> Name </strong>
-                  <br />
-                  <div class="item-price-quantity">
-                  <strong class="itemPrice">$123</strong>
-                  <br />
-                  <strong>
-                    <p  class="itemQuantity">7 Left</p> <!--TO FIX: create to kase di q sya mahanap e hehehe-->
-                  </strong>
-                </div>
-                  <strong class="itemLocation">jan lang</strong>
-                </div>
-              </a>
+
+              <% if (approvedPosts.length > 0) { %>
+                <% approvedPosts.forEach(function(item) { %>
+                  <a href="/user/update-listing/<%= item.item_id %>">
+                    <div class="shoppingItem">
+                      <img src="/images/trashcan.png" alt="Delete" class="itemDelete"
+                        onclick="showDeleteModal('<%= item.item_id %>')" />
+                      <hr />
+                      <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage" />
+                      <hr />
+                      <strong class="itemName"><%= item.item_name %></strong>
+                      <br />
+                      <div class="item-price-quantity">
+                        <strong class="itemPrice">$<%= item.item_price %></strong>
+                        <br />
+                        <strong>
+                          <p class="itemQuantity"><%= item.item_quantity %> left</p>
+                        </strong>
+                      </div>
+                      <strong class="itemLocation"><%= item.item_location %></strong>
+                    </div>
+                  </a>
+                  <% }); %>
+                <% } else { %>
+                  <p>No pending posts available.</p>
+                <% } %>
             </div>
           </div>
 
@@ -718,30 +726,30 @@
     });
 
     //logout
-document.addEventListener("DOMContentLoaded", function () {
-    const logoutLink = document.getElementById("logout");
-    const modal = document.getElementById("logout-modal");
-    const confirmLogout = document.getElementById("confirm-logout");
-    const cancelLogout = document.getElementById("cancel-logout");
-  
-    // Ensure modal starts hidden
-    modal.style.display = "none";
-  
-    // Show modal when logout is clicked
-    logoutLink.addEventListener("click", function (event) {
-      event.preventDefault(); // Prevents default link behavior
-      modal.style.display = "flex"; // Show modal only on click
+    document.addEventListener("DOMContentLoaded", function () {
+      const logoutLink = document.getElementById("logout");
+      const modal = document.getElementById("logout-modal");
+      const confirmLogout = document.getElementById("confirm-logout");
+      const cancelLogout = document.getElementById("cancel-logout");
+
+      // Ensure modal starts hidden
+      modal.style.display = "none";
+
+      // Show modal when logout is clicked
+      logoutLink.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevents default link behavior
+        modal.style.display = "flex"; // Show modal only on click
+      });
+
+      // Redirect when "Yes" is clicked
+      confirmLogout.addEventListener("click", function () {
+        window.location.href = "/logout"; // Adjust logout URL
+      });
+
+      // Close modal when "No" is clicked
+      cancelLogout.addEventListener("click", function () {
+        modal.style.display = "none"; // Hide modal
+      });
     });
-  
-    // Redirect when "Yes" is clicked
-    confirmLogout.addEventListener("click", function () {
-      window.location.href = "/logout"; // Adjust logout URL
-    });
-  
-    // Close modal when "No" is clicked
-    cancelLogout.addEventListener("click", function () {
-      modal.style.display = "none"; // Hide modal
-    });
-  });
 
   </script>
