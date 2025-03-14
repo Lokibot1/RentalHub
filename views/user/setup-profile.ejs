@@ -278,25 +278,11 @@
             isValid = false;
         }
 
+        if (!isValid) {
+            alert(errorMessages.join("\n"));
+        }
 
         return isValid;
-    }
-
-    function getFormValues() {
-        const fileInput = document.getElementById("fileInput");
-        const profileImageFilename = fileInput.files.length > 0 ? fileInput.files[0].name : '';
-
-        return {
-            middleName: middleName.value.trim(),
-            suffix: suffix.value.trim(),
-            socialMedia: socialMedia.value.trim(),
-            region: regionDropdown.options[regionDropdown.selectedIndex].text,
-            city: cityDropdown.options[cityDropdown.selectedIndex].text,
-            barangay: barangay.value,
-            postalCode: postalCode.value.trim(),
-            address: address.value.trim(),
-            profileImage: profileImageFilename
-        };
     }
 
     document.querySelector('#setup-profile-form').addEventListener('submit', async function (e) {
@@ -304,7 +290,6 @@
 
         if (validateForm()) {
             modal.style.display = "flex";
-
         }
     });
 
