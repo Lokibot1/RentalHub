@@ -75,7 +75,7 @@ function verifyOTP() {
                     if (data.verified) {
                         alert('OTP verified. Redirecting to dashboard/setup profile...');
 
-                        window.location.href = '/dashboard/setup-profile';
+                        window.location.href = '/user/setup-profile';
                     } else {
                         alert('Invalid OTP. Please try again.');
                     }

@@ -17,7 +17,7 @@
     <ul>
         <li><a href="/">Home</a></li>
         <li>
-            <a href="/dashboard/listing">
+            <a href="/user/listing">
                 <img src="/images/blueAdd.png" class="add-icon" />
             </a>
         </li>
@@ -27,7 +27,7 @@
                     <img src="/images/blueProfile.png" alt="Profile" class="profile-icon" />
                 </a>
             <% } else if (isAuthenticated && role == 'user') { %>
-                <a href='/dashboard/profile'>
+                <a href='/user/profile'>
                     <img src="/images/blueProfile.png" alt="Profile" class="profile-icon" />
                 </a>
             <% } else { %>

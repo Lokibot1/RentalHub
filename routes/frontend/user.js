@@ -6,11 +6,11 @@ const router = express.Router();
 
 /**
  * Dashboard
- * @route GET /dashboard/listing
+ * @route GET /user/listing
  */
 router.get("/listing", checkAuth, (req, res) => {
-  res.render("dashboard/listing", {
-    layout: "layouts/dashboard",
+  res.render("user/listing", {
+    layout: "layouts/user",
     title: "Add New Listing",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
@@ -20,11 +20,11 @@ router.get("/listing", checkAuth, (req, res) => {
 
 /**
  * User Dashboard
- * @route GET /dashboard/user-dashboard
+ * @route GET /user/user-dashboard
  */
 router.get("/user-dashboard", checkAuth, checkUser, (req, res) => {
-  res.render("dashboard/user-dashboard", {
-    layout: "layouts/dashboard",
+  res.render("user/user-dashboard", {
+    layout: "layouts/user",
     title: "User Dashboard",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
@@ -34,11 +34,11 @@ router.get("/user-dashboard", checkAuth, checkUser, (req, res) => {
 
 /**
  * Profile Page
- * @route GET /dashboard/profile
+ * @route GET /user/profile
  */
 router.get("/profile", checkAuth, checkUser, (req, res) => {
-  res.render("dashboard/profile", {
-    layout: "layouts/dashboard",
+  res.render("user/profile", {
+    layout: "layouts/user",
     title: "User Profile",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
@@ -48,11 +48,11 @@ router.get("/profile", checkAuth, checkUser, (req, res) => {
 
 /**
  * Rents Page
- * @route GET /dashboard/rents
+ * @route GET /user/rents
  */
 router.get("/rents", checkAuth, checkUser, (req, res) => {
-  res.render("dashboard/rents", {
-    layout: "layouts/dashboard",
+  res.render("user/rents", {
+    layout: "layouts/user",
     title: "My Rents",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
@@ -62,15 +62,15 @@ router.get("/rents", checkAuth, checkUser, (req, res) => {
 
 /**
  * My Listing Page
- * @route GET /dashboard/my-listing
+ * @route GET /user/my-listing
  */
 router.get("/my-listing", checkAuth, checkUser, async (req, res) => {
   try {
     const response = await fetch(`${process.env.BASE_URL}/api/user/posts/pending/${req.user.id}`);
     const pendingPosts = await response.json();
 
-    res.render("dashboard/my-listing", {
-      layout: "layouts/dashboard",
+    res.render("user/my-listing", {
+      layout: "layouts/user",
       title: "My Listings",
       pendingPosts: pendingPosts.data, // Pass the retrieved pending posts
       isAuthenticated: req.isAuthenticated,
@@ -79,8 +79,8 @@ router.get("/my-listing", checkAuth, checkUser, async (req, res) => {
   } catch (error) {
     console.error("Error fetching pending posts:", error);
 
-    res.render("dashboard/my-listing", {
-      layout: "layouts/dashboard",
+    res.render("user/my-listing", {
+      layout: "layouts/user",
       title: "My Listings",
       pendingPosts: [],
       isAuthenticated: req.isAuthenticated,
@@ -95,8 +95,8 @@ router.get("/my-listing", checkAuth, checkUser, async (req, res) => {
  * @route GET /dashboard/archives
  */
 router.get("/archives", checkAuth, checkUser, (req, res) => {
-  res.render("dashboard/archives", {
-    layout: "layouts/dashboard",
+  res.render("user/archives", {
+    layout: "layouts/user",
     title: "Archives",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
@@ -105,11 +105,11 @@ router.get("/archives", checkAuth, checkUser, (req, res) => {
 
 /**
  * View Product Page
- * @route GET /dashboard/view-product
+ * @route GET /user/view-product
  */
 router.get("/view-product", optionalAuth, (req, res) => {
-  res.render("dashboard/view-product", {
-    layout: "layouts/dashboard",
+  res.render("user/view-product", {
+    layout: "layouts/user",
     title: "View Product",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
@@ -118,11 +118,11 @@ router.get("/view-product", optionalAuth, (req, res) => {
 
 /**
  * View Product Page
- * @route GET /dashboard/view-pending
+ * @route GET /user/view-pending
  */
 router.get("/view-pending", optionalAuth, (req, res) => {
-  res.render("dashboard/view-pending", {
-    layout: "layouts/dashboard",
+  res.render("user/view-pending", {
+    layout: "layouts/user",
     title: "View Pending",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
@@ -135,8 +135,8 @@ router.get("/view-pending", optionalAuth, (req, res) => {
  * @route GET /dashboard/update-listing
  */
 router.get("/update-listing", optionalAuth, (req, res) => {
-  res.render("dashboard/update-listing", {
-    layout: "layouts/dashboard",
+  res.render("user/update-listing", {
+    layout: "layouts/user",
     title: "Update Listing",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
@@ -146,21 +146,19 @@ router.get("/update-listing", optionalAuth, (req, res) => {
 
 /**
  * Setup Profile Page
- * @route GET /dashboard/setup-profile
+ * @route GET /user/setup-profile
  */
 router.get("/setup-profile", checkAuth, (req, res) => {
   // remove the otp from cookies
   res.clearCookie('otp');
 
-  res.render("dashboard/setup-profile", {
-    layout: "layouts/dashboard",
+  res.render("user/setup-profile", {
+    layout: "layouts/user",
     title: "Setup Profile",
     isAuthenticated: req.isAuthenticated,
     role: req.role,
   });
 });
-
-
 
 
 module.exports = router;
