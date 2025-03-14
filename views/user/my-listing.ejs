@@ -47,7 +47,7 @@
 
               <% if (pendingPosts.length> 0) { %>
                 <% pendingPosts.forEach(function(item) { %>
-                  <a href="/user/view-pending">
+                  <a href="/user/view-pending/<%= item.product_id %>">
                     <div class="shoppingItem">
                       <img src="/uploads/<%= item.product_image %>" alt="" class="itemImage" />
                       <hr />

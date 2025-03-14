@@ -138,21 +138,40 @@ router.get("/view-product", optionalAuth, (req, res) => {
 
 /**
  * View Product Page
- * @route GET /user/view-pending
+ * @route GET /user/view-pending/:item_id
  */
-router.get("/view-pending", optionalAuth, (req, res) => {
-  res.render("user/view-pending", {
-    layout: "layouts/user",
-    title: "View Pending",
-    isAuthenticated: req.isAuthenticated,
-    role: req.role,
-  });
+router.get("/view-pending/:item_id", optionalAuth, async (req, res) => {
+  const { item_id } = req.params
+
+  try {
+    const response = await fetch(`${process.env.BASE_URL}/api/user/posts/pending-item/${item_id}`);
+    const pendingPost = await response.json();
+    console.log('pendingPost: ', pendingPost.data)
+
+    res.render("user/view-pending", {
+      layout: "layouts/user",
+      title: "View Pending",
+      pendingPost: pendingPost.data,
+      isAuthenticated: req.isAuthenticated,
+      role: req.role,
+    });
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.render("user/view-pending", {
+      layout: "layouts/user",
+      title: "View Pending",
+      pendingPost: {},
+      isAuthenticated: req.isAuthenticated,
+      role: req.role,
+    });
+  }
+
 });
 
 
 /**
  * Update Listing Page
- * @route GET /user/update-listing
+ * @route GET /user/update-listing/:item_id
  */
 router.get("/update-listing/:item_id", optionalAuth, (req, res) => {
   res.render("user/update-listing", {
