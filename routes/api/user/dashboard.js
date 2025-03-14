@@ -6,9 +6,9 @@ const router = express.Router();
 
 /**
  * Get dashboard data
- * @route POST /api/user/dashboard
+ * @route GET /api/user/dashboard
  */
-router.get("/dashboard", async (req, res) => {
+router.get("/", async (req, res) => {
     const sql = `
     SELECT 
         (SELECT COUNT(*) FROM items WHERE is_approved != 1) AS total_pending_posts,

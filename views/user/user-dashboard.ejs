@@ -7,6 +7,8 @@
         <!--Sidebar-->
         <%- include('../partials/user/sidebar.ejs'); %>
 
+          <!-- <pre><%= JSON.stringify(dashboard, null, 2) %></pre> -->
+
             <!--Main Content-->
             <div class="content">
                 <div class="dashboard-cards">
@@ -16,7 +18,7 @@
                     </div>
                     <div class="card">
                         <p>Pending Posts</p>
-                        <span class="count" id="pending-posts-count">0</span>
+                        <span class="count" id="pending-posts-count"><%= dashboard.total_pending_posts %></span>
                     </div>
                     <div class="card">
                         <p>Rental Request</p>
@@ -24,7 +26,7 @@
                     </div>
                     <div class="card">
                         <p>Item Posted</p>
-                        <span class="count" id="item-posted-count">0</span>
+                        <span class="count" id="item-posted-count"><%= dashboard.total_items_posted %></span>
                     </div>
                 </div>
             </div>
@@ -42,25 +44,4 @@
     </div>
 
     <!--JavaScript-->
-    <!-- <script>
-        // Fetch dashboard counts from backend API
-        document.addEventListener("DOMContentLoaded", async function () {
-            try {
-                // Fetch data from backend API
-                const response = await fetch("/api/dashboard-counts"); // Adjust mo nalang tong API route Juls
-                const data = await response.json();
-
-                // Update counts dynamically
-                document.getElementById("rents-count").textContent = data.rents || 0;
-                document.getElementById("pending-posts-count").textContent =
-                    data.pendingPosts || 0;
-                document.getElementById("rental-request-count").textContent =
-                    data.rentalRequests || 0;
-                document.getElementById("item-posted-count").textContent =
-                    data.itemsPosted || 0;
-            } catch (error) {
-                console.error("Error fetching dashboard counts:", error);
-            }
-        });
-    </script> -->
     <script src="/js/user.js"></script>

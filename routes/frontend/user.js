@@ -22,13 +22,28 @@ router.get("/listing", checkAuth, (req, res) => {
  * User Dashboard
  * @route GET /user/user-dashboard
  */
-router.get("/user-dashboard", checkAuth, checkUser, (req, res) => {
-  res.render("user/user-dashboard", {
-    layout: "layouts/user",
-    title: "User Dashboard",
-    isAuthenticated: req.isAuthenticated,
-    role: req.role,
-  });
+router.get("/user-dashboard", checkAuth, checkUser, async (req, res) => {
+  try {
+    const response = await fetch(`${process.env.BASE_URL}/api/user/dashboard`);
+    const dashboard = await response.json();
+
+    res.render("user/user-dashboard", {
+      layout: "layouts/user",
+      title: "User Dashboard",
+      dashboard: dashboard.data,
+      isAuthenticated: req.isAuthenticated,
+      role: req.role,
+    });
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.render("user/user-dashboard", {
+      layout: "layouts/user",
+      title: "User Dashboard",
+      dashboard: {},
+      isAuthenticated: req.isAuthenticated,
+      role: req.role,
+    });
+  }
 });
 
 
