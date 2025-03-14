@@ -10,49 +10,52 @@
 <div class="page-wrapper">
     <h3>Set Up Your Profile</h3>
     <div class="container">
-        <div class="profile-upload">
-            <img id="profileImage" src="/images/default.png" alt="Profile Picture">
-            <p>Upload a profile picture to help the community recognize who they're transacting with.</p>
-            <input type="file" id="fileInput" accept="image/*" hidden>
-            <button id="uploadButton" class="uploadButton">Upload Photos</button>
-        </div>
-
-        <h2 class="Additional-Info">Additional Information</h2>
-        <div class="name-inputs">
-            <input type="text" class="MI-input" placeholder="Middle Name">
-            <input type="text" class="suffix-input" placeholder="Suffix">
-        </div>
-
-        <div class="contact-info">
-            <label>Contact Information:</label>
-            <!-- <input type="text" class="full-input" placeholder="+63"> -->
-            <input type="text" class="full-input" placeholder="Social Media links">
-        </div>
-
-        <div class="address-info">
-            <label>Address:</label>
-            <div class="address-row">
-                <select id="regionDropdown" class="half-input">
-                    <option value="">Select Region</option>
-                </select>
-                <select id="cityDropdown" class="half-input" disabled>
-                    <option value="">Select City</option>
-                </select>
+        <form id="setup-profile-form">
+            <div class="profile-upload">
+                <img id="profileImage" src="/images/default.png" alt="Profile Picture">
+                <p>Upload a profile picture to help the community recognize who they're transacting with.</p>
+                <input type="file" id="fileInput" accept="image/*" hidden>
+                <button id="uploadButton" class="uploadButton">Upload Photos</button>
             </div>
-            <div class="address-row">
-                <div class="barangay-container half-width">
-                    <input type="text" class="barangay-input" id="barangayInput" placeholder="Search Barangay" disabled>
-                    <ul id="barangaySuggestions" class="suggestions-list"></ul>
-                </div>
-                <div class="postal-container half-width">
-                    <input type="text" class="postalCode" placeholder="Postal Code">
-                </div>
-            </div>
-            <input type="text" class="full-input" placeholder="House no. Street Name">
-        </div>
 
-        <button class="submit-btn">SUBMIT</button>
-        <a href="/dashboard/profile">Continue without updating</a>
+            <h2 class="Additional-Info">Additional Information</h2>
+            <div class="name-inputs">
+                <input name="middle_name" type="text" class="MI-input" placeholder="Middle Name">
+                <input name="suffix" type="text" class="suffix-input" placeholder="Suffix">
+            </div>
+
+            <div class="contact-info">
+                <label>Contact Information:</label>
+                <!-- <input type="text" class="full-input" placeholder="+63"> -->
+                <input name="social_media" type="text" class="full-input" placeholder="Social Media links">
+            </div>
+
+            <div class="address-info">
+                <label>Address:</label>
+                <div class="address-row">
+                    <select name="region" id="regionDropdown" class="half-input">
+                        <option value="">Select Region</option>
+                    </select>
+                    <select name="city" id="cityDropdown" class="half-input" disabled>
+                        <option value="">Select City</option>
+                    </select>
+                </div>
+                <div class="address-row">
+                    <div class="barangay-container half-width">
+                        <input name="barangay" type="text" class="barangay-input" id="barangayInput"
+                            placeholder="Search Barangay" disabled>
+                        <ul id="barangaySuggestions" class="suggestions-list"></ul>
+                    </div>
+                    <div class="postal-container half-width">
+                        <input name="postal_code" type="text" class="postalCode" placeholder="Postal Code">
+                    </div>
+                </div>
+                <input name="address" type="text" class="full-input" placeholder="House no. Street Name">
+            </div>
+
+            <button type="submit" class="submit-btn">SUBMIT</button>
+            <a href="/user/profile">Continue without updating</a>
+        </form>
     </div>
 </div>
 
@@ -175,28 +178,28 @@
     const profileImage = document.getElementById("profileImage");
     const uploadButton = document.getElementById("uploadButton");
 
-    uploadButton.addEventListener("click", () => fileInput.click());
+    // uploadButton.addEventListener("click", () => fileInput.click());
 
-    fileInput.addEventListener("change", function (event) {
-        const file = event.target.files[0];
+    // fileInput.addEventListener("change", function (event) {
+    //     const file = event.target.files[0];
 
-        if (file) {
-            const fileType = file.type;
-            const validTypes = ["image/jpeg", "image/png"];
+    //     if (file) {
+    //         const fileType = file.type;
+    //         const validTypes = ["image/jpeg", "image/png"];
 
-            if (!validTypes.includes(fileType)) {
-                alert("Invalid file type! Please upload a JPG or PNG image.");
-                fileInput.value = ""; // Reset file input
-                return;
-            }
+    //         if (!validTypes.includes(fileType)) {
+    //             alert("Invalid file type! Please upload a JPG or PNG image.");
+    //             fileInput.value = ""; // Reset file input
+    //             return;
+    //         }
 
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                profileImage.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
+    //         const reader = new FileReader();
+    //         reader.onload = function (e) {
+    //             profileImage.src = e.target.result;
+    //         };
+    //         reader.readAsDataURL(file);
+    //     }
+    // });
 
     const form = document.querySelector('.container');
     const middleName = document.querySelector('.MI-input');
@@ -238,10 +241,10 @@
         let isValid = true;
         let errorMessages = [];
 
-        if (profileImage.src.includes('default.png')) {
-            errorMessages.push("Please upload a profile picture");
-            isValid = false;
-        }
+        // if (profileImage.src.includes('default.png')) {
+        //     errorMessages.push("Please upload a profile picture");
+        //     isValid = false;
+        // }
 
         /*
         if (!phone.value.trim()) {
@@ -270,22 +273,11 @@
             isValid = false;
         }
 
-        /*
-        const phoneRegex = /^\+63[0-9]{10}$/;
-        if (phone.value.trim() && !phoneRegex.test(phone.value.trim())) {
-            errorMessages.push("Invalid phone number format. Should start with +63 followed by 10 digits");
-            isValid = false;
-        }
-        */
-
         if (postalCode.value.trim() && !/^\d{4}$/.test(postalCode.value.trim())) {
             errorMessages.push("Postal code should be 4 digits");
             isValid = false;
         }
 
-        if (!isValid) {
-            alert(errorMessages.join("\n"));
-        }
 
         return isValid;
     }
@@ -293,7 +285,7 @@
     function getFormValues() {
         const fileInput = document.getElementById("fileInput");
         const profileImageFilename = fileInput.files.length > 0 ? fileInput.files[0].name : '';
-    
+
         return {
             middleName: middleName.value.trim(),
             suffix: suffix.value.trim(),
@@ -307,36 +299,50 @@
         };
     }
 
-    document.querySelector('.submit-btn').addEventListener('click', function (e) {
+    document.querySelector('#setup-profile-form').addEventListener('submit', async function (e) {
         e.preventDefault();
 
         if (validateForm()) {
             modal.style.display = "flex";
+
         }
     });
 
-    confirmYes.addEventListener('click', function () {
+
+    confirmYes.addEventListener('click', async function () {
         modal.style.display = "none";
-        const formValues = getFormValues();
-        console.log("Form submitted with values:", formValues);
-        alert("Form submitted successfully!");
+        const form = document.querySelector("#setup-profile-form")
+        const formData = new FormData(form);
+        const formObject = {};  // Initialize an empty object to store form data
+
+        // Loop through the form data and build the object
+        for (let [key, value] of formData.entries()) {
+            // Check if the key corresponds to a select element
+            const selectElement = form.querySelector(`[name="${key}"]`);
+            if (selectElement && selectElement.tagName === 'SELECT') {
+                // Get the selected option's text content
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                formObject[key] = selectedOption.textContent;  // Use the text content for select elements
+            } else {
+                // For other form elements, use the value
+                formObject[key] = value;
+            }
+        }
 
         // Add code to submit form data to the server
-        fetch('/api/auth/setup-profile', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formValues)
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-
-                // Redirect to another page
-                window.location.href = '/dashboard/user-dashboard';
-            })
-            .catch((error) => {
-                console.error('Error:', error);
+        try {
+            const response = await fetch("http://localhost:8000/api/user/setup-profile", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formObject)
             });
+
+            const data = await response.json();
+
+            window.location.href = "/user/profile"; // Redirect to homepage
+        } catch (error) {
+            alert(error.message);
+        }
     });
 
     confirmNo.addEventListener('click', function () {
