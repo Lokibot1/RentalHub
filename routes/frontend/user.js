@@ -146,7 +146,6 @@ router.get("/view-pending/:item_id", optionalAuth, async (req, res) => {
   try {
     const response = await fetch(`${process.env.BASE_URL}/api/user/posts/pending-item/${item_id}`);
     const pendingPost = await response.json();
-    console.log('pendingPost: ', pendingPost.data)
 
     res.render("user/view-pending", {
       layout: "layouts/user",
