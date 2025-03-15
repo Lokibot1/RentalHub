@@ -17,9 +17,16 @@
     <ul>
         <li><a href="/">Home</a></li>
         <li>
-            <a href="/user/listing">
-                <img src="/images/blueAdd.png" class="add-icon" />
-            </a>
+            <% if (isAuthenticated && role == 'admin') { %>
+                <a href="/admin/listing">
+                    <img src="/images/blueAdd.png" class="add-icon" />
+                </a>
+            <% } else if (isAuthenticated && role == 'user') { %>
+                <a href="/user/listing">
+                    <img src="/images/blueAdd.png" class="add-icon" />
+                </a>
+            <% } else { %>
+            <% } %>
         </li>
         <li>
             <% if (isAuthenticated && role == 'admin') { %>
@@ -96,8 +103,6 @@
             .then((data) => {
                 return data.data
             })
-
-            console.log('item', data)
 
         let shoppingList = ''
 

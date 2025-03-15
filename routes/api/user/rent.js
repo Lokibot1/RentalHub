@@ -1,0 +1,98 @@
+const express = require("express");
+const {connection: db} = require("../../../configs/db");
+
+const router = express.Router();
+
+
+/**
+ * Rent item
+ * @route POST /api/user/rent
+ */
+router.post("/", async (req, res) => {
+    const {
+        renter_id,
+        id: item_id,
+        start_date,
+        end_date,
+        price,
+        rental_quantity,
+        mode_of_delivery
+    } = req.body
+
+    const total_price = parseFloat(price) * parseInt(rental_quantity, 10)
+
+    // console.log(
+    //     renter_id,
+    //     item_id,
+    //     start_date,
+    //     end_date,
+    //     price,
+    //     rental_quantity,
+    //     mode_of_delivery,
+    //     total_price
+    // )
+
+    const sql = `
+        INSERT INTO rental_transactions (
+            renter_id, item_id, start_date, end_date, total_price, rental_quantity, mode_of_delivery
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `
+
+    db.query(sql, [
+        renter_id,
+        item_id,
+        start_date, 
+        end_date,
+        total_price,
+        rental_quantity,
+        mode_of_delivery,
+    ], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({success: false, message: "Insert query failed."});
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Item rental transactions successfully saved!`
+        });
+    });
+});
+
+
+/**
+ * Get all approved items
+ * @route GET /api/user/posts/approve/:user_id
+ */
+router.get("/approve/:user_id", async (req, res) => {
+    const { user_id } = req.params
+
+    const sql = `
+        SELECT
+            items.id AS item_id,
+            items.name AS item_name,
+            items.price AS item_price,
+            items.location AS item_location,
+            items.file_path AS item_image,
+            inventory.stock_quantity AS item_quantity
+        FROM items
+        JOIN inventory ON inventory.item_id = items.id
+        WHERE is_approved = 1 AND user_id = ?
+    `;
+
+    db.query(sql, [user_id], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({success: false, message: "Query failed."});
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results
+        });
+    });
+});
+
+
+module.exports = router;

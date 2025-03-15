@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/css/view-product.css"/>
+<link rel="stylesheet" href="/css/view-product.css" />
 
 
 <!--Navigation Bar-->
@@ -11,35 +11,33 @@
     <ul>
         <li><a href="/shopping/events-and-parties">Shop</a></li>
         <li>
-            <a href="/dashboard/listing"
-            ><img src="/images/WhiteAdd.png" class="add-icon"
-                /></a>
+            <a href="/user/listing"><img src="/images/WhiteAdd.png" class="add-icon" /></a>
         </li>
         <li>
-            <% if (isAuthenticated && role == 'admin') { %>
-                <a href='/admin/dashboard'>
+            <% if (isAuthenticated && role=='admin' ) { %>
+                <a href='/admin/admin-dashboard'>
                     <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
                 </a>
-            <% } else if (isAuthenticated && role == 'user') { %>
-                <a href='/user/profile'>
-                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
-                </a>
-            <% } else { %>
-                <a href="/login">
-                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
-                </a>
-            <% } %>
+                <% } else if (isAuthenticated && role=='user' ) { %>
+                    <a href='/user/profile'>
+                        <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
+                    </a>
+                    <% } else { %>
+                        <a href="/login">
+                            <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
+                        </a>
+                        <% } %>
         </li>
     </ul>
 </nav>
-<br/><br/><br/><br/>
+<br /><br /><br /><br />
 <!-- Main container for product view -->
 <div class="view-product-container">
     <!-- Left Section: Product Image + Details (Stacked) -->
     <div class="left-section">
         <!-- Product Image -->
         <div class="product-image">
-            <img id="product-image" src="" alt="Product Image"/>
+            <img id="product-image" src="" alt="Product Image" />
         </div>
 
         <!-- Product Details -->
@@ -60,14 +58,14 @@
         <!-- Owner Info -->
         <div class="owner-info" onclick="openForm()">
             <h2>Posted by</h2>
-            <hr/>
+            <hr />
             <div class="owner-details">
                 <div class="pfp">
-                    <img id="owner-image" src="" alt="Owner Image"/>
+                    <img id="owner-image" src="" alt="Owner Image" />
                 </div>
                 <div>
-                    <strong id="owner-name">Loading...</strong><br/>
-                    <span id="owner-location">Loading...</span> <br/>
+                    <strong id="owner-name">Loading...</strong><br />
+                    <span id="owner-location">Loading...</span> <br />
                     <span id="owner-rating">⭐ Loading...</span>
                 </div>
             </div>
@@ -81,9 +79,9 @@
         <!--Profile Details-->
         <div class="side-profile">
             <div class="profile">
-                <img src="" alt=""/>
+                <img src="" alt="" />
             </div>
-            <hr/>
+            <hr />
             <h3>*Owner's Name*</h3>
             <p>*Contact Info*</p>
             <p>*Social Media Link*</p>
@@ -113,45 +111,47 @@
     </div>
     <!-- Right Section: Rental Options -->
     <div class="rental-options">
-        <h3 class="pickdate" id="pickdate">Pick Date</h3>
-        <div class="calendar">
-            <div class="month">
-                <a href="#" id="prev-month" class="nav">&lt;</a>
-                <div id="month-year">February 2025</div>
-                <a href="#" id="next-month" class="nav">&gt;</a>
+        <form id="rent-form">
+            <h3 class="pickdate" id="pickdate">Pick Date</h3>
+            <div class="calendar">
+                <div class="month">
+                    <a href="#" id="prev-month" class="nav">&lt;</a>
+                    <div id="month-year">February 2025</div>
+                    <a href="#" id="next-month" class="nav">&gt;</a>
+                </div>
+                <div class="days">
+                    <span>Sun</span>
+                    <span>Mon</span>
+                    <span>Tue</span>
+                    <span>Wed</span>
+                    <span>Thu</span>
+                    <span>Fri</span>
+                    <span>Sat</span>
+                </div>
+                <div id="dates-grid" class="dates">
+                    <!-- Dates will be rendered here -->
+                </div>
             </div>
-            <div class="days">
-                <span>Sun</span>
-                <span>Mon</span>
-                <span>Tue</span>
-                <span>Wed</span>
-                <span>Thu</span>
-                <span>Fri</span>
-                <span>Sat</span>
+            <div class="quantity-container">
+                <strong>Qty</strong>
+                <button type="button" onclick="changeQuantity(-1)">-</button>
+                <input type="text" id="quantity" name="rental_quantity" value="1" readonly>
+                <button type="button" onclick="changeQuantity(1)">+</button>
             </div>
-            <div id="dates-grid" class="dates">
-                <!-- Dates will be rendered here -->
+            <h3 class="mod">Mode of Payment</h3>
+            <div class="delivery-options">
+                <button type="button" id="meetup-btn">Meet Up</button>
+                <button type="button" id="delivery-btn">Delivery</button>
             </div>
-        </div>
-        <div class="quantity-container">
-            <strong>Qty</strong>
-            <button onclick="changeQuantity(-1)">-</button>
-            <input type="text" id="quantity" value="1" readonly>
-            <button onclick="changeQuantity(1)">+</button>
-        </div>
-        <h3 class="mod">Mode of Payment</h3>
-        <div class="delivery-options">
-            <button id="meetup-btn">Meet Up</button>
-            <button id="delivery-btn">Delivery</button> 
-        </div>
 
-        <% if (isAuthenticated && role === 'admin' || role === 'user') { %>
-            <button id="request-btn">Request</button>
-        <% } else { %>
-            <a href="/login?redirect=/dashboard/view-product" id="request-btn">
-                Request
-            </a>
-        <% } %>
+            <% if (isAuthenticated && role==='admin' || role==='user' ) { %>
+                <button type="submit" id="request-btn">Request</button>
+                <% } else { %>
+                    <a href="/login?redirect=/dashboard/view-product" id="request-btn">
+                        Request
+                    </a>
+                    <% } %>
+        </form>
     </div>
 </div>
 
@@ -437,19 +437,21 @@
 
         // Handle delivery method selection
         meetupBtn.addEventListener("click", function () {
-            selectedDeliveryMethod = "Meet Up";
+            selectedDeliveryMethod = "meetup";
             meetupBtn.classList.add("selected");
             deliveryBtn.classList.remove("selected");
         });
 
         deliveryBtn.addEventListener("click", function () {
-            selectedDeliveryMethod = "Delivery";
+            selectedDeliveryMethod = "delivery";
             deliveryBtn.classList.add("selected");
             meetupBtn.classList.remove("selected");
         });
 
         // ✅ Handle Request Button Click
-        requestBtn.addEventListener("click", function () {
+        requestBtn.addEventListener("click", function (event) {
+            event.preventDefault()
+
             // Get the selected dates from the calendar
             const selectedDates = document.querySelectorAll(".date-cell.selected");
             const instructionText = document.getElementById("instruction-text");
@@ -465,8 +467,8 @@
             // Get the actual dates
             const startDateStr = selectedDates[0].dataset.date;
             const endDateStr = selectedDates[1].dataset.date;
-            const startDate = new Date(startDateStr);
-            const endDate = new Date(endDateStr);
+            startDate = new Date(startDateStr);
+            endDate = new Date(endDateStr);
 
             // Check if dates are in proper order
             if (endDate < startDate) {
@@ -550,9 +552,61 @@
 
             document
                 .getElementById("confirm-btn")
-                .addEventListener("click", function () {
+                .addEventListener("click", async function () {
                     console.log("Rental confirmed!");
                     document.body.removeChild(modalOverlay);
+
+                    // Process the data here
+                    const rentForm = document.querySelector('#rent-form')
+                    const formData = new FormData(rentForm)
+                    let formObject = {};  // Initialize an empty object to store form data
+
+                    // Loop through the form data and build the object
+                    for (let [key, value] of formData.entries()) {
+                        // Check if the key corresponds to a select element
+                        const selectElement = rentForm.querySelector(`[name="${key}"]`);
+                        if (selectElement && selectElement.tagName === 'SELECT') {
+                            // Get the selected option's text content
+                            const selectedOption = selectElement.options[selectElement.selectedIndex];
+                            formObject[key] = selectedOption.textContent;  // Use the text content for select elements
+                        } else {
+                            // For other form elements, use the value
+                            formObject[key] = value;
+                        }
+                    }
+
+                    // Add data from current localStorage item
+                    const selectedItem = localStorage.getItem('selectedItem')
+
+                    startDate = new Date(startDate);
+                    const formattedStartDate = startDate.toISOString().split('T')[0];
+                    endDate = new Date(endDate);
+                    const formattedEndDate = endDate.toISOString().split('T')[0];
+
+                    formObject = {
+                        ...formObject,
+                        start_date: formattedStartDate,
+                        end_date: formattedEndDate,
+                        mode_of_delivery: selectedDeliveryMethod,
+                        ...JSON.parse(selectedItem),
+                        renter_id: "<%= renter_id %>"
+                    }
+
+                    try {
+                        const response = await fetch(`/api/user/rent`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(formObject)
+                        });
+                        if (response.ok) {
+                            alert("Requesting to rent item in-progress...");
+                        }
+                    } catch (error) {
+                        console.error("Error canceling rent:", error);
+                    }
+
+                    console.log('formObject:', formObject)
+
                     showSuccessMessage();
                 });
 
@@ -641,7 +695,7 @@
 
         let newQty = currentQty + amount;
         if (newQty < 1) {
-            newQty = 1; 
+            newQty = 1;
         }
 
         qtyInput.value = newQty;

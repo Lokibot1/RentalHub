@@ -4,6 +4,7 @@ USE rentalhub;
 
 -- Only for development
 DROP TABLE IF EXISTS inventory;
+DROP TABLE IF EXISTS rental_transactions;
 DROP TABLE IF EXISTS items;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS roles;
@@ -77,7 +78,7 @@ CREATE TABLE IF NOT EXISTS items
 (
     id          INT AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
-    price       VARCHAR(100) NOT NULL,
+    price       DECIMAL(10,2) NOT NULL,
     description TEXT,
     location    VARCHAR(255) NOT NULL,
     file_path   VARCHAR(100) NOT NULL,
@@ -99,5 +100,22 @@ CREATE TABLE inventory (
     item_id INT,
     stock_quantity INT DEFAULT 0,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (item_id) REFERENCES items(id)
+);
+
+
+CREATE TABLE rental_transactions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    renter_id INT NOT NULL,
+    item_id INT NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    total_price DECIMAL(10,2) NOT NULL,
+    rental_quantity INT NOT NULL DEFAULT 1,
+    mode_of_delivery ENUM('meetup', 'delivery') NOT NULL DEFAULT 'meetup',
+    status ENUM('pending', 'ongoing', 'completed', 'cancelled') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (renter_id) REFERENCES users(id),
     FOREIGN KEY (item_id) REFERENCES items(id)
 );

@@ -76,6 +76,19 @@ router.get("/admin-listings", checkAuth, checkAdmin, (req, res) => {
 });
 
 /**
+ * Page for adding new post
+ * @route GET /admin/listing
+ */
+router.get("/listing", checkAuth, checkAdmin, (req, res) => {
+    res.render("admin/listing", {
+        layout: "layouts/dashboard",
+        title: "Add New Listing",
+        isAuthenticated: req.isAuthenticated,
+        role: req.role,
+    });
+});
+
+/**
  * Manager Users
  * @route GET /admin/manage-users
  */

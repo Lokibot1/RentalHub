@@ -145,10 +145,14 @@ router.get("/archives", checkAuth, checkUser, (req, res) => {
  * @route GET /user/view-product
  */
 router.get("/view-product", optionalAuth, (req, res) => {
+  // Set the user_id
+  const renter_id = req.user.id
+
   res.render("user/view-product", {
     layout: "layouts/user",
     title: "View Product",
     isAuthenticated: req.isAuthenticated,
+    renter_id,
     role: req.role,
   });
 });
