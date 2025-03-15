@@ -10,11 +10,11 @@
 <div class="page-wrapper">
     <h3>Set Up Your Profile</h3>
     <div class="container">
-        <form id="setup-profile-form">
+        <form id="setup-profile-form" enctype="multipart/form-data">
             <div class="profile-upload">
                 <img id="profileImage" src="/images/default.png" alt="Profile Picture">
                 <p>Upload a profile picture to help the community recognize who they're transacting with.</p>
-                <input type="file" id="fileInput" accept="image/*" hidden>
+                <input type="file" name="profile_image" id="fileInput" accept="image/*" hidden>
                 <button id="uploadButton" class="uploadButton">Upload Photos</button>
             </div>
 
@@ -178,33 +178,32 @@
     const profileImage = document.getElementById("profileImage");
     const uploadButton = document.getElementById("uploadButton");
 
-    // uploadButton.addEventListener("click", () => fileInput.click());
+    uploadButton.addEventListener("click", () => fileInput.click());
 
-    // fileInput.addEventListener("change", function (event) {
-    //     const file = event.target.files[0];
+    fileInput.addEventListener("change", function (event) {
+        const file = event.target.files[0];
 
-    //     if (file) {
-    //         const fileType = file.type;
-    //         const validTypes = ["image/jpeg", "image/png"];
+        if (file) {
+            const fileType = file.type;
+            const validTypes = ["image/jpeg", "image/png"];
 
-    //         if (!validTypes.includes(fileType)) {
-    //             alert("Invalid file type! Please upload a JPG or PNG image.");
-    //             fileInput.value = ""; // Reset file input
-    //             return;
-    //         }
+            if (!validTypes.includes(fileType)) {
+                alert("Invalid file type! Please upload a JPG or PNG image.");
+                fileInput.value = ""; // Reset file input
+                return;
+            }
 
-    //         const reader = new FileReader();
-    //         reader.onload = function (e) {
-    //             profileImage.src = e.target.result;
-    //         };
-    //         reader.readAsDataURL(file);
-    //     }
-    // });
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                profileImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 
     const form = document.querySelector('.container');
     const middleName = document.querySelector('.MI-input');
     const suffix = document.querySelector('.suffix-input');
-    // const phone = document.querySelector('.full-input[placeholder="+63"]');
     const socialMedia = document.querySelector('.full-input[placeholder="Social Media links"]');
 
     const region = document.getElementById('regionDropdown');
@@ -241,10 +240,10 @@
         let isValid = true;
         let errorMessages = [];
 
-        // if (profileImage.src.includes('default.png')) {
-        //     errorMessages.push("Please upload a profile picture");
-        //     isValid = false;
-        // }
+        if (profileImage.src.includes('default.png')) {
+            errorMessages.push("Please upload a profile picture");
+            isValid = false;
+        }
 
         /*
         if (!phone.value.trim()) {
@@ -294,42 +293,30 @@
     });
 
 
-    confirmYes.addEventListener('click', async function () {
+    confirmYes.addEventListener("click", async function () {
         modal.style.display = "none";
-        const form = document.querySelector("#setup-profile-form")
-        const formData = new FormData(form);
-        const formObject = {};  // Initialize an empty object to store form data
-
-        // Loop through the form data and build the object
-        for (let [key, value] of formData.entries()) {
-            // Check if the key corresponds to a select element
-            const selectElement = form.querySelector(`[name="${key}"]`);
-            if (selectElement && selectElement.tagName === 'SELECT') {
-                // Get the selected option's text content
-                const selectedOption = selectElement.options[selectElement.selectedIndex];
-                formObject[key] = selectedOption.textContent;  // Use the text content for select elements
-            } else {
-                // For other form elements, use the value
-                formObject[key] = value;
-            }
-        }
-
-        // Add code to submit form data to the server
+        const setupProfileForm = document.querySelector("#setup-profile-form");
+        const formData = new FormData(setupProfileForm);
+    
+        // Convert select elements' values to text content (if needed)
+        setupProfileForm.querySelectorAll("select").forEach(select => {
+            const selectedOption = select.options[select.selectedIndex];
+            formData.set(select.name, selectedOption.textContent);
+        });
+    
+        // ✅ Send formData directly (multipart/form-data)
         try {
-            const response = await fetch("http://localhost:8000/api/user/profile/setup", {
+            await fetch("http://localhost:8000/api/user/profile/setup", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formObject)
+                body: formData, // No need for headers; browser sets it automatically
             });
-
-            const data = await response.json();
-
-            window.location.href = "/user/profile"; // Redirect to homepage
+    
+            window.location.href = "/user/profile"; // Redirect to user profile
         } catch (error) {
             alert(error.message);
         }
     });
-
+    
     confirmNo.addEventListener('click', function () {
         modal.style.display = "none";
     });

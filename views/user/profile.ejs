@@ -32,7 +32,7 @@
 
         <div class="profile-header">
           <label for="profileImageInput">
-            <img src="profile-placeholder.png" alt="Profile Picture" class="profile-img" id="profilePicture" />
+            <img src="/uploads/<%= userProfile.profile_image %>" alt="Profile Picture" class="profile-img" id="profilePicture" />
           </label>
           <input type="file" id="profileImageInput" accept="image/*" hidden />
           <div class="profile-name">
@@ -80,7 +80,7 @@
 
     let isEditing = false;
 
-    editBtn.addEventListener("click", function () {
+    editBtn.addEventListener("click", async function () {
       isEditing = !isEditing;
 
       if (isEditing) {
@@ -105,12 +105,24 @@
         socialMedia.classList.add("disabled");
 
         // Save the updated values (log lang muna sya for now, wala pa naman backend e hehe adjust nyo nalang san masstore)
+        try {
+            await fetch("http://localhost:8000/api/user/profile/setup", {
+                method: "POST",
+                body: formData, // No need for headers; browser sets it automatically
+            });
+    
+            window.location.href = "/user/profile"; // Redirect to user profile
+        } catch (error) {
+            alert(error.message);
+        }
+
         console.log("Updated Info:");
         console.log("Email:", email.value);
         console.log("Address:", address.value);
         console.log("Contact #:", contact.value);
         console.log("Social Media:", socialMedia.value);
       }
+
       profileImageInput.addEventListener("change", function () {
         const file = profileImageInput.files[0];
 

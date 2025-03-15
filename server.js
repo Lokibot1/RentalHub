@@ -34,8 +34,6 @@ const apiListingRoute = require("./routes/api/listing");
 const apiAdminPostsRoute = require("./routes/api/admin/posts");
 const apiAdminDashboardRoute = require("./routes/api/admin/dashboard");
 
-// User route
-const apiUserRoutes = require("./routes/api/user/index");
 
 // OTP route
 const otpRoute = require("./routes/frontend/otp");
@@ -57,7 +55,9 @@ app.use("/api", apiListingRoute);
 app.use("/api/auth", apiAuthRoutes);
 app.use("/api/admin/posts", apiAdminPostsRoute);
 app.use("/api/admin/dashboard", apiAdminDashboardRoute);
-app.use("/api/user", apiUserRoutes);
+
+// User route
+app.use("/api/user", require("./routes/api/user/index"));
 
 // Start server
 const PORT = process.env.PORT || 8000;

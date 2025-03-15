@@ -1,8 +1,83 @@
 const express = require("express");
 const { connection: db } = require("../../../configs/db");
 const jwt = require("jsonwebtoken");
+const multer = require('multer')
+const path = require('path')
+const fs = require('fs')
 
-const router = express.Router();
+const router = express.Router()
+const storagePath = process.env.STORAGE_PATH
+
+// Ensure the directory exists
+if (!fs.existsSync(storagePath)) {
+    fs.mkdirSync(storagePath, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, storagePath);
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
+
+/**
+ * Update profile after OTP verified
+ * @route POST /api/user/profile/setup
+ */
+router.post("/setup", upload.single('profile_image'), async (req, res) => {
+    const token = req.cookies.token || '';
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+    const { middle_name, suffix, social_media, region, city, barangay, address, postal_code } = req.body
+    const profile_image = req.file
+
+    console.log(req.body, req.file)
+
+    if (!profile_image) {
+        return res.status(400).json({ success: false, message: "File upload failed." });
+    }
+
+    const sql = `
+            UPDATE users 
+            SET 
+                middle_name = ?, 
+                suffix = ?,
+                social_media = ?, 
+                region = ?, 
+                city = ?, 
+                barangay = ?, 
+                address = ?, 
+                postal_code = ?, 
+                profile_image = ?
+            WHERE id = ?
+    `
+
+    db.query(sql, [
+        middle_name,
+        suffix,
+        social_media,
+        region,
+        city,
+        barangay,
+        address,
+        postal_code,
+        profile_image.filename,
+        user.id
+    ], (err) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({ success: false, message: "Update failed." });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Set-up profile updated!`
+        });
+    });
+});
 
 
 /**
@@ -40,41 +115,6 @@ router.get("/:user_id", async (req, res) => {
 });
 
 
-/**
- * Update profile after OTP verified
- * @route POST /api/user/profile/setup
- */
-router.post("/setup", async (req, res) => {
-    const token = req.cookies.token || '';
-    const user = jwt.verify(token, process.env.JWT_SECRET);
-    const { middle_name, suffix, social_media, region, city, barangay, address, postal_code } = req.body
-
-    const sql = `
-            UPDATE users 
-            SET 
-                middle_name = ?, 
-                suffix = ?,
-                social_media = ?, 
-                region = ?, 
-                city = ?, 
-                barangay = ?, 
-                address = ?, 
-                postal_code = ? 
-            WHERE id = ?
-    `
-
-    db.query(sql, [middle_name, suffix, social_media, region, city, barangay, address, postal_code, user.id], (err, results) => {
-        if (err) {
-            console.error("Database not connected", err);
-            return res.status(500).json({ success: false, message: "Update failed." });
-        }
-
-        res.status(200).json({
-            success: true,
-            message: `Set-up profile updated!`
-        });
-    });
-});
 
 
 
