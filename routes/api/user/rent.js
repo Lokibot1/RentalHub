@@ -5,6 +5,39 @@ const router = express.Router();
 
 
 /**
+ * Get rent items
+ * @route GET /api/user/rent/:user_id
+ */
+router.get("/:user_id", async (req, res) => {
+    const { user_id } = req.params
+
+    const sql = `
+        SELECT
+            items.id AS item_id,
+            CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
+            items.name AS item_name,
+            items.file_path AS item_image
+        FROM rental_transactions
+        JOIN users ON users.id = rental_transactions.renter_id
+        JOIN items ON items.id = rental_transactions.item_id
+        WHERE items.user_id = ?
+    `
+
+    db.query(sql, [user_id], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({ success: false, message: "Query failed." });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results
+        });
+    });
+});
+
+
+/**
  * Rent item
  * @route POST /api/user/rent
  */
@@ -55,41 +88,6 @@ router.post("/", async (req, res) => {
                 success: true,
                 message: "Item rental transaction saved and stock quantity updated!"
             });
-        });
-    });
-});
-
-
-
-/**
- * Get all approved items
- * @route GET /api/user/posts/approve/:user_id
- */
-router.get("/approve/:user_id", async (req, res) => {
-    const { user_id } = req.params
-
-    const sql = `
-        SELECT
-            items.id AS item_id,
-            items.name AS item_name,
-            items.price AS item_price,
-            items.location AS item_location,
-            items.file_path AS item_image,
-            inventory.stock_quantity AS item_quantity
-        FROM items
-        JOIN inventory ON inventory.item_id = items.id
-        WHERE is_approved = 1 AND user_id = ?
-    `;
-
-    db.query(sql, [user_id], (err, results) => {
-        if (err) {
-            console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Query failed."});
-        }
-
-        res.status(200).json({
-            success: true,
-            data: results
         });
     });
 });

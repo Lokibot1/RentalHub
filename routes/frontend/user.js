@@ -82,13 +82,30 @@ router.get("/profile", checkAuth, checkUser, async (req, res) => {
  * Rents Page
  * @route GET /user/rents
  */
-router.get("/rents", checkAuth, checkUser, (req, res) => {
-  res.render("user/rents", {
-    layout: "layouts/user",
-    title: "My Rents",
-    isAuthenticated: req.isAuthenticated,
-    role: req.role,
-  });
+router.get("/rents", checkAuth, checkUser, async (req, res) => {
+  // console.log('user', req.user)
+
+  try {
+    const response = await fetch(`${process.env.BASE_URL}/api/user/rent/${req.user.id}`);
+    const rents = await response.json();
+
+    res.render("user/rents", {
+      layout: "layouts/user",
+      title: "My Rents",
+      rentItems: rents.data,
+      isAuthenticated: req.isAuthenticated,
+      role: req.role,
+    });
+  } catch (error) {
+    console.error("Error fetching pending posts:", error);
+    res.render("user/rents", {
+      layout: "layouts/user",
+      title: "My Rents",
+      rentItems: [],
+      isAuthenticated: req.isAuthenticated,
+      role: req.role,
+    });
+  }
 });
 
 
