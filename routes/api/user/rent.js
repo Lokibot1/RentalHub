@@ -17,21 +17,21 @@ router.post("/", async (req, res) => {
         price,
         rental_quantity,
         mode_of_delivery
-    } = req.body
+    } = req.body;
 
-    const total_price = parseFloat(price) * parseInt(rental_quantity, 10)
+    const total_price = parseFloat(price) * parseInt(rental_quantity, 10);
 
     const insertSql = `
         INSERT INTO rental_transactions (
             renter_id, item_id, start_date, end_date, total_price, rental_quantity, mode_of_delivery
         )
         VALUES (?, ?, ?, ?, ?, ?, ?)
-    `
+    `;
 
     db.query(insertSql, [
         renter_id,
         item_id,
-        start_date, 
+        start_date,
         end_date,
         total_price,
         rental_quantity,
@@ -39,32 +39,26 @@ router.post("/", async (req, res) => {
     ], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Insert query failed."});
+            return res.status(500).json({ success: false, message: "Insert query failed." });
         }
 
-        res.status(200).json({
-            success: true,
-            message: `Item rental transactions successfully saved!`
-        });
-    });
+        const updateSql = "UPDATE inventory SET stock_quantity = stock_quantity - ? WHERE item_id = ?";
 
-    const updateSql = "UPDATE inventory SET stock_quantity = stock_quantity - ? WHERE item_id = ?"
+        db.query(updateSql, [rental_quantity, item_id], (err, results) => {
+            if (err) {
+                console.error("Database not connected", err);
+                return res.status(500).json({ success: false, message: "Update query failed." });
+            }
 
-    db.query(updateSql, [
-        rental_quantity,
-        item_id,
-    ], (err, results) => {
-        if (err) {
-            console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Update query failed."});
-        }
-
-        res.status(200).json({
-            success: true,
-            message: `Item successfully updated stock_quantity!`
+            // Send response only once after both queries are successful
+            res.status(200).json({
+                success: true,
+                message: "Item rental transaction saved and stock quantity updated!"
+            });
         });
     });
 });
+
 
 
 /**
