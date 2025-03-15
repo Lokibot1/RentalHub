@@ -21,25 +21,14 @@ router.post("/", async (req, res) => {
 
     const total_price = parseFloat(price) * parseInt(rental_quantity, 10)
 
-    // console.log(
-    //     renter_id,
-    //     item_id,
-    //     start_date,
-    //     end_date,
-    //     price,
-    //     rental_quantity,
-    //     mode_of_delivery,
-    //     total_price
-    // )
-
-    const sql = `
+    const insertSql = `
         INSERT INTO rental_transactions (
             renter_id, item_id, start_date, end_date, total_price, rental_quantity, mode_of_delivery
         )
         VALUES (?, ?, ?, ?, ?, ?, ?)
     `
 
-    db.query(sql, [
+    db.query(insertSql, [
         renter_id,
         item_id,
         start_date, 
@@ -56,6 +45,23 @@ router.post("/", async (req, res) => {
         res.status(200).json({
             success: true,
             message: `Item rental transactions successfully saved!`
+        });
+    });
+
+    const updateSql = "UPDATE inventory SET stock_quantity = stock_quantity - ? WHERE item_id = ?"
+
+    db.query(updateSql, [
+        rental_quantity,
+        item_id,
+    ], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({success: false, message: "Update query failed."});
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Item successfully updated stock_quantity!`
         });
     });
 });

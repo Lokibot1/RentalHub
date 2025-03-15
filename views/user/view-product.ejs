@@ -135,7 +135,7 @@
             <div class="quantity-container">
                 <strong>Qty</strong>
                 <button type="button" onclick="changeQuantity(-1)">-</button>
-                <input type="text" id="quantity" name="rental_quantity" value="1" readonly>
+                <input type="number" id="quantity" name="rental_quantity" value="1" min="1">
                 <button type="button" onclick="changeQuantity(1)">+</button>
             </div>
             <h3 class="mod">Mode of Payment</h3>
@@ -146,11 +146,11 @@
 
             <% if (isAuthenticated && role==='admin' || role==='user' ) { %>
                 <button type="submit" id="request-btn">Request</button>
-                <% } else { %>
-                    <a href="/login?redirect=/dashboard/view-product" id="request-btn">
-                        Request
-                    </a>
-                    <% } %>
+            <% } else { %>
+                <a href="/login?redirect=/dashboard/view-product" id="request-btn">
+                    Request
+                </a>
+            <% } %>
         </form>
     </div>
 </div>
@@ -202,6 +202,8 @@
 
             document.getElementById("product-quantity").innerText =
                 selectedItem.quantity;
+            document.querySelector("[name='rental_quantity']")
+                .setAttribute('max', selectedItem.quantity)
 
             // Owner Info
             document.getElementById("owner-name").textContent =
@@ -600,6 +602,9 @@
                         });
                         if (response.ok) {
                             alert("Requesting to rent item in-progress...");
+                            setTimeout(() => {
+                                window.location.reload
+                            }, 2000)
                         }
                     } catch (error) {
                         console.error("Error canceling rent:", error);
@@ -692,12 +697,17 @@
     function changeQuantity(amount) {
         let qtyInput = document.getElementById("quantity");
         let currentQty = parseInt(qtyInput.value);
+        let maxQty = parseInt(qtyInput.getAttribute("max")) || Infinity; // Get max value or set it to Infinity if not defined
 
         let newQty = currentQty + amount;
+
         if (newQty < 1) {
             newQty = 1;
+        } else if (newQty > maxQty) {
+            newQty = maxQty;
         }
 
         qtyInput.value = newQty;
     }
+
 </script>
