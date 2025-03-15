@@ -316,7 +316,7 @@
 
         // Add code to submit form data to the server
         try {
-            const response = await fetch("http://localhost:8000/api/user/setup-profile", {
+            const response = await fetch("http://localhost:8000/api/user/profile/setup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formObject)

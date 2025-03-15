@@ -51,13 +51,30 @@ router.get("/user-dashboard", checkAuth, checkUser, async (req, res) => {
  * Profile Page
  * @route GET /user/profile
  */
-router.get("/profile", checkAuth, checkUser, (req, res) => {
-  res.render("user/profile", {
-    layout: "layouts/user",
-    title: "User Profile",
-    isAuthenticated: req.isAuthenticated,
-    role: req.role,
-  });
+router.get("/profile", checkAuth, checkUser, async (req, res) => {
+  try {
+    const response = await fetch(`${process.env.BASE_URL}/api/user/profile/${req.user.id}`);
+    const userProfile = await response.json();
+
+    res.render("user/profile", {
+      layout: "layouts/user",
+      title: "User Profile",
+      userProfile: userProfile.data,
+      isAuthenticated: req.isAuthenticated,
+      role: req.role,
+    });
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.render("user/profile", {
+      layout: "layouts/user",
+      title: "User Profile",
+      userProfile: userProfile.data,
+      isAuthenticated: req.isAuthenticated,
+      role: req.role,
+    });
+  }
+
+
 });
 
 

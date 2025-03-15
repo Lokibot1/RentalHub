@@ -1,108 +1,117 @@
-<link rel="stylesheet" href="/css/archives.css"/>
+<link rel="stylesheet" href="/css/archives.css" />
 
 <!--Navigation Bar-->
 <%- include('../partials/user/header-navbar.ejs'); %>
 
-<div class="main">
+  <div class="main">
     <!--Sidebar-->
     <%- include('../partials/user/sidebar.ejs'); %>
 
-    <!--Main Content-->
-    <div class="content">
+      <!--Main Content-->
+      <div class="content">
 
-      <!-- Logout Confirmation Modal -->
-      <div id="logout-modal" class="logout-modal">
-        <div class="logout-content">
-          <p>Are you sure you want to log out?</p>
-          <div class="logout-button-group">
-            <button id="confirm-logout" class="yes-btn">Yes</button>
-            <button id="cancel-logout" class="no-btn">No</button>
+        <!-- Logout Confirmation Modal -->
+        <div id="logout-modal" class="logout-modal">
+          <div class="logout-content">
+            <p>Are you sure you want to log out?</p>
+            <div class="logout-button-group">
+              <button id="confirm-logout" class="yes-btn">Yes</button>
+              <button id="cancel-logout" class="no-btn">No</button>
+            </div>
           </div>
         </div>
-      </div>      
+
+        <!-- <pre><%= JSON.stringify(userProfile, null, 2) %></pre> -->
+        <% 
+          const date = new Date(userProfile.joined_date);
+          const formattedDate = new Intl.DateTimeFormat('en-US', { 
+            year: 'numeric', 
+            month: 'long'
+          }).format(date);
+        %>
 
         <div class="profile-header">
           <label for="profileImageInput">
             <img src="profile-placeholder.png" alt="Profile Picture" class="profile-img" id="profilePicture" />
           </label>
-          <input type="file" id="profileImageInput" accept="image/*" hidden />      
+          <input type="file" id="profileImageInput" accept="image/*" hidden />
           <div class="profile-name">
-            <h2 id="profileName">Name ni User</h2>
-            <i>Joined since Month Year</i> <!--TODO: Fetch Created at-->
-          </div>      
+            <h2 id="profileName"><%= userProfile.fullname %></h2>
+            <i>Joined since <%= formattedDate %></i>
+          </div>
           <button id="editBtn" class="edit-btn">
             <img src="/images/edit-btn.png" alt="Edit" />
           </button>
-        </div>  
-            
+        </div>
+
         <form class="profile-form">
           <div class="email">
             <label for="email">Email Address</label>
-            <input type="text" placeholder="Email Address" id="email" disabled /> <!--TODO: Placeholder should be the registered email address-->
-          </div>      
-          <hr />      
+            <input type="text" id="email" value="<%= userProfile.email %>" placeholder="Email Address" disabled />
+          </div>
+          <hr />
           <div class="contact">
             <div>
               <label for="contact">Contact Number</label>
-              <input type="text" placeholder="Contact Number" id="contact" disabled /><!--TODO: Placeholder should be the registered contact number-->
+              <input type="text" id="contact" value="<%= userProfile.contact_number %>" placeholder="Contact Number" disabled />
             </div>
             <div>
               <label for="socialMedia">Social Media</label>
-              <input type="text" placeholder="Social Media" id="socialMedia" disabled /><!--TODO: -->
+              <input type="text" id="socialMedia" value="<%= userProfile.social_media %>" placeholder="Social Media" disabled />
             </div>
-          </div>      
-          <hr />      
+          </div>
+          <hr />
           <div class="address">
             <label for="address">Address</label>
-            <input type="text" placeholder="Address" id="address" disabled /> <!--TODO: Placeholder should be the submitted address in set up profile-->
+            <input type="text" id="address" value="<%= userProfile.address %>"  placeholder="Address" disabled />
           </div>
         </form>
       </div>
-    </div>
-    
-    <script>
-      const editBtn = document.getElementById("editBtn");
-      const profilePicture = document.getElementById("profilePicture");
-      const profileName = document.getElementById("profileName");
-      const email = document.getElementById("email");
-      const address = document.getElementById("address");
-      const contact = document.getElementById("contact");
-      const socialMedia = document.getElementById("socialMedia");
+  </div>
 
-      let isEditing = false;
+  <script>
+    const editBtn = document.getElementById("editBtn");
+    const profilePicture = document.getElementById("profilePicture");
+    const profileName = document.getElementById("profileName");
+    const email = document.getElementById("email");
+    const address = document.getElementById("address");
+    const contact = document.getElementById("contact");
+    const socialMedia = document.getElementById("socialMedia");
 
-      editBtn.addEventListener("click", function () {
-        isEditing = !isEditing;
+    let isEditing = false;
 
-        if (isEditing) {
-          editBtn.innerHTML = '<img src="/images/save-btn.png" alt="Save">';
-          email.disabled = false;
-          address.disabled = false;
-          contact.disabled = false;
-          socialMedia.disabled = false;
-          email.classList.remove("disabled");
-          address.classList.remove("disabled");
-          contact.classList.remove("disabled");
-          socialMedia.classList.remove("disabled");
-        } else {
-          editBtn.innerHTML = '<img src="/images/edit-btn.png" alt="Edit">';
-          email.disabled = true;
-          address.disabled = true;
-          contact.disabled = true;
-          socialMedia.disabled = true;
-          email.classList.add("disabled");
-          address.classList.add("disabled");
-          contact.classList.add("disabled");
-          socialMedia.classList.add("disabled");
-          
-          // Save the updated values (log lang muna sya for now, wala pa naman backend e hehe adjust nyo nalang san masstore)
-          console.log("Updated Info:");
-          console.log("Email:", email.value);
-          console.log("Address:", address.value);
-          console.log("Contact #:", contact.value);
-          console.log("Social Media:", socialMedia.value);
-        }
-        profileImageInput.addEventListener("change", function () {
+    editBtn.addEventListener("click", function () {
+      isEditing = !isEditing;
+
+      if (isEditing) {
+        editBtn.innerHTML = '<img src="/images/save-btn.png" alt="Save">';
+        email.disabled = false;
+        address.disabled = false;
+        contact.disabled = false;
+        socialMedia.disabled = false;
+        email.classList.remove("disabled");
+        address.classList.remove("disabled");
+        contact.classList.remove("disabled");
+        socialMedia.classList.remove("disabled");
+      } else {
+        editBtn.innerHTML = '<img src="/images/edit-btn.png" alt="Edit">';
+        email.disabled = true;
+        address.disabled = true;
+        contact.disabled = true;
+        socialMedia.disabled = true;
+        email.classList.add("disabled");
+        address.classList.add("disabled");
+        contact.classList.add("disabled");
+        socialMedia.classList.add("disabled");
+
+        // Save the updated values (log lang muna sya for now, wala pa naman backend e hehe adjust nyo nalang san masstore)
+        console.log("Updated Info:");
+        console.log("Email:", email.value);
+        console.log("Address:", address.value);
+        console.log("Contact #:", contact.value);
+        console.log("Social Media:", socialMedia.value);
+      }
+      profileImageInput.addEventListener("change", function () {
         const file = profileImageInput.files[0];
 
         if (file) {
@@ -116,31 +125,31 @@
         }
       });
     });
-  
-//logout
-document.addEventListener("DOMContentLoaded", function () {
-    const logoutLink = document.getElementById("logout");
-    const modal = document.getElementById("logout-modal");
-    const confirmLogout = document.getElementById("confirm-logout");
-    const cancelLogout = document.getElementById("cancel-logout");
-  
-    // Ensure modal starts hidden
-    modal.style.display = "none";
-  
-    // Show modal when logout is clicked
-    logoutLink.addEventListener("click", function (event) {
-      event.preventDefault(); // Prevents default link behavior
-      modal.style.display = "flex"; // Show modal only on click
+
+    //logout
+    document.addEventListener("DOMContentLoaded", function () {
+      const logoutLink = document.getElementById("logout");
+      const modal = document.getElementById("logout-modal");
+      const confirmLogout = document.getElementById("confirm-logout");
+      const cancelLogout = document.getElementById("cancel-logout");
+
+      // Ensure modal starts hidden
+      modal.style.display = "none";
+
+      // Show modal when logout is clicked
+      logoutLink.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevents default link behavior
+        modal.style.display = "flex"; // Show modal only on click
+      });
+
+      // Redirect when "Yes" is clicked
+      confirmLogout.addEventListener("click", function () {
+        window.location.href = "/logout"; // Adjust logout URL
+      });
+
+      // Close modal when "No" is clicked
+      cancelLogout.addEventListener("click", function () {
+        modal.style.display = "none"; // Hide modal
+      });
     });
-  
-    // Redirect when "Yes" is clicked
-    confirmLogout.addEventListener("click", function () {
-      window.location.href = "/logout"; // Adjust logout URL
-    });
-  
-    // Close modal when "No" is clicked
-    cancelLogout.addEventListener("click", function () {
-      modal.style.display = "none"; // Hide modal
-    });
-  });
-</script>
+  </script>
