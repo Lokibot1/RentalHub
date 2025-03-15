@@ -119,3 +119,6 @@ CREATE TABLE rental_transactions (
     FOREIGN KEY (renter_id) REFERENCES users(id),
     FOREIGN KEY (item_id) REFERENCES items(id)
 );
+
+ALTER TABLE rental_transactions
+    ADD COLUMN is_approved TINYINT(1)   NOT NULL DEFAULT 0;

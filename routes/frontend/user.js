@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 /**
- * Dashboard
+ * User Listings
  * @route GET /user/listing
  */
 router.get("/listing", checkAuth, (req, res) => {
@@ -24,7 +24,7 @@ router.get("/listing", checkAuth, (req, res) => {
  */
 router.get("/user-dashboard", checkAuth, checkUser, async (req, res) => {
   try {
-    const response = await fetch(`${process.env.BASE_URL}/api/user/dashboard`);
+    const response = await fetch(`${process.env.BASE_URL}/api/user/dashboard/${req.user.id}`);
     const dashboard = await response.json();
 
     res.render("user/user-dashboard", {
@@ -83,8 +83,6 @@ router.get("/profile", checkAuth, checkUser, async (req, res) => {
  * @route GET /user/rents
  */
 router.get("/rents", checkAuth, checkUser, async (req, res) => {
-  // console.log('user', req.user)
-
   try {
     const response = await fetch(`${process.env.BASE_URL}/api/user/rent/${req.user.id}`);
     const rents = await response.json();
