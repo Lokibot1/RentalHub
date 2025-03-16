@@ -6,6 +6,7 @@ const router = express.Router();
 
 /**
  * User Listings
+ *
  * @route GET /user/listing
  */
 router.get("/listing", checkAuth, (req, res) => {
@@ -20,14 +21,15 @@ router.get("/listing", checkAuth, (req, res) => {
 
 /**
  * User Dashboard
- * @route GET /user/user-dashboard
+ *
+ * @route GET /user/dashboard
  */
-router.get("/user-dashboard", checkAuth, checkUser, async (req, res) => {
+router.get("/dashboard", checkAuth, checkUser, async (req, res) => {
   try {
     const response = await fetch(`${process.env.BASE_URL}/api/user/dashboard/${req.user.id}`);
     const dashboard = await response.json();
 
-    res.render("user/user-dashboard", {
+    res.render("user/dashboard", {
       layout: "layouts/user",
       title: "User Dashboard",
       dashboard: dashboard.data,
@@ -36,7 +38,7 @@ router.get("/user-dashboard", checkAuth, checkUser, async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching data:", error);
-    res.render("user/user-dashboard", {
+    res.render("user/dashboard", {
       layout: "layouts/user",
       title: "User Dashboard",
       dashboard: {},
@@ -79,10 +81,11 @@ router.get("/profile", checkAuth, checkUser, async (req, res) => {
 
 
 /**
- * Rents Page
- * @route GET /user/rents
+ * My Requests Page
+ *
+ * @route GET /user/my-requests
  */
-router.get("/rents", checkAuth, checkUser, async (req, res) => {
+router.get("/my-requests", checkAuth, checkUser, async (req, res) => {
   try {
     const rentRequestResponse = await fetch(`${process.env.BASE_URL}/api/user/rent/request/${req.user.id}`);
     const rentRequests = await rentRequestResponse.json();
@@ -90,7 +93,7 @@ router.get("/rents", checkAuth, checkUser, async (req, res) => {
     const ongoingRentResponse = await fetch(`${process.env.BASE_URL}/api/user/rent/ongoing/${req.user.id}`);
     const ongoingRentItems = await ongoingRentResponse.json();
 
-    res.render("user/rents", {
+    res.render("user/my-requests", {
       layout: "layouts/user",
       title: "My Rents",
       rentRequestItems: rentRequests.data,
@@ -100,7 +103,7 @@ router.get("/rents", checkAuth, checkUser, async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching pending posts:", error);
-    res.render("user/rents", {
+    res.render("user/my-requests", {
       layout: "layouts/user",
       title: "My Rents",
       rentRequestItems: [],
@@ -113,10 +116,11 @@ router.get("/rents", checkAuth, checkUser, async (req, res) => {
 
 
 /**
- * My Listing Page
- * @route GET /user/my-listing
+ * My Items Page
+ *
+ * @route GET /user/my-items
  */
-router.get("/my-listing", checkAuth, checkUser, async (req, res) => {
+router.get("/my-items", checkAuth, checkUser, async (req, res) => {
   try {
     const pendingResponse = await fetch(`${process.env.BASE_URL}/api/user/posts/pending/${req.user.id}`);
     const pendingPosts = await pendingResponse.json();
@@ -130,9 +134,9 @@ router.get("/my-listing", checkAuth, checkUser, async (req, res) => {
     const ongoingTransactionResponse = await fetch(`${process.env.BASE_URL}/api/user/listings/ongoing-transactions/${req.user.id}`);
     const ongoingTransactions = await ongoingTransactionResponse.json();
 
-    res.render("user/my-listing", {
+    res.render("user/my-items", {
       layout: "layouts/user",
-      title: "My Listings",
+      title: "My Items",
       pendingPosts: pendingPosts.data,
       approvedPosts: approvedPosts.data,
       rentalRequests: rentalRequests.data,
@@ -143,9 +147,9 @@ router.get("/my-listing", checkAuth, checkUser, async (req, res) => {
   } catch (error) {
     console.error("Error fetching pending posts:", error);
 
-    res.render("user/my-listing", {
+    res.render("user/my-items", {
       layout: "layouts/user",
-      title: "My Listings",
+      title: "My Items",
       pendingPosts: [],
       approvedPosts: [],
       rentalRequests: [],
@@ -159,7 +163,8 @@ router.get("/my-listing", checkAuth, checkUser, async (req, res) => {
 
 /**
  * Archives Page
- * @route GET /dashboard/archives
+ *
+ * @route GET /user/archives
  */
 router.get("/archives", checkAuth, checkUser, (req, res) => {
   res.render("user/archives", {

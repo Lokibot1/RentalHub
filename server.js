@@ -28,7 +28,6 @@ app.use("/uploads", express.static(process.env.STORAGE_PATH));
 // Import routes
 const mainRoutes = require("./routes/frontend/main");
 const adminRoutes = require("./routes/frontend/admin");
-const userRoutes = require("./routes/frontend/user");
 const apiAuthRoutes = require("./routes/api/auth");
 const apiListingRoute = require("./routes/api/listing");
 const apiAdminPostsRoute = require("./routes/api/admin/posts");
@@ -44,7 +43,7 @@ const forbiddenRoute = require("./routes/forbidden");
 // Frontend routes
 app.use("/", mainRoutes);
 app.use("/admin", adminRoutes);
-app.use("/user", userRoutes);
+app.use("/user", require("./routes/frontend/user"));
 app.use("/auth/otp", otpRoute);
 
 // 403 route
