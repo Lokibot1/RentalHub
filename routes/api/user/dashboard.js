@@ -6,6 +6,7 @@ const router = express.Router();
 
 /**
  * Get dashboard data
+ *
  * @route GET /api/user/dashboard/:user_id
  */
 router.get("/:user_id", async (req, res) => {

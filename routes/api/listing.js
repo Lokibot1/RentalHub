@@ -94,21 +94,24 @@ router.get("/listing/:category_id", upload.single('item_file'), async (req, res)
     const { category_id } = req.params;
 
     const sql = `
-        SELECT 
-            items.*, 
-            inventory.stock_quantity AS quantity
+        SELECT
+            items.*,
+            inventory.stock_quantity AS quantity,
+            profile_image
         FROM items
-        JOIN inventory ON inventory.item_id = items.id
-        WHERE items.category_id = ? 
-            AND items.is_approved = 1
-    `;
+                 JOIN inventory ON inventory.item_id = items.id
+                 JOIN users ON users.id = items.user_id
+        WHERE items.category_id = ?
+          AND items.is_approved = 1
+    `
+
     db.query(sql, [category_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
             return res.status(500).json({ success: false, message: "Failed to add item." });
         }
 
-        const filteredResults = results.map(({ id, name, price, description, location, quantity, file_path }) => {
+        const filteredResults = results.map(({ id, name, price, description, location, quantity, file_path, profile_image }) => {
             return {
                 id,
                 name,
@@ -116,7 +119,8 @@ router.get("/listing/:category_id", upload.single('item_file'), async (req, res)
                 description,
                 location,
                 quantity,
-                image: `/uploads/${file_path}`
+                image: `/uploads/${file_path}`,
+                profile_image
             }
         });
 

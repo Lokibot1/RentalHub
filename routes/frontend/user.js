@@ -51,6 +51,7 @@ router.get("/dashboard", checkAuth, checkUser, async (req, res) => {
 
 /**
  * Profile Page
+ *
  * @route GET /user/profile
  */
 router.get("/profile", checkAuth, checkUser, async (req, res) => {
@@ -176,6 +177,7 @@ router.get("/archives", checkAuth, checkUser, (req, res) => {
 
 /**
  * View Product Page
+ *
  * @route GET /user/view-product
  */
 router.get("/view-product", optionalAuth, (req, res) => {
@@ -193,7 +195,8 @@ router.get("/view-product", optionalAuth, (req, res) => {
 
 
 /**
- * View Product Page
+ * View Pending Item
+ *
  * @route GET /user/view-pending/:item_id
  */
 router.get("/view-pending/:item_id", optionalAuth, async (req, res) => {
@@ -225,6 +228,7 @@ router.get("/view-pending/:item_id", optionalAuth, async (req, res) => {
 
 /**
  * Update Listing Page
+ *
  * @route GET /user/update-listing/:item_id
  */
 router.get("/update-listing/:item_id", optionalAuth, (req, res) => {
@@ -239,6 +243,7 @@ router.get("/update-listing/:item_id", optionalAuth, (req, res) => {
 
 /**
  * Setup Profile Page
+ *
  * @route GET /user/setup-profile
  */
 router.get("/setup-profile", checkAuth, (req, res) => {

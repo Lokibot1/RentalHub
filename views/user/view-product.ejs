@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/css/view-product.css" />
+<link rel="stylesheet" href="/css/view-product.css"/>
 
 
 <!--Navigation Bar-->
@@ -11,33 +11,33 @@
     <ul>
         <li><a href="/shopping/events-and-parties">Shop</a></li>
         <li>
-            <a href="/user/listing"><img src="/images/WhiteAdd.png" class="add-icon" /></a>
+            <a href="/user/listing"><img src="/images/WhiteAdd.png" class="add-icon"/></a>
         </li>
         <li>
-            <% if (isAuthenticated && role=='admin' ) { %>
+            <% if (isAuthenticated && role == 'admin' ) { %>
                 <a href='/admin/admin-dashboard'>
-                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
+                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
                 </a>
-                <% } else if (isAuthenticated && role=='user' ) { %>
-                    <a href='/user/profile'>
-                        <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
-                    </a>
-                    <% } else { %>
-                        <a href="/login">
-                            <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
-                        </a>
-                        <% } %>
+            <% } else if (isAuthenticated && role == 'user' ) { %>
+                <a href='/user/profile'>
+                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
+                </a>
+            <% } else { %>
+                <a href="/login">
+                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
+                </a>
+            <% } %>
         </li>
     </ul>
 </nav>
-<br /><br /><br /><br />
+<br/><br/><br/><br/>
 <!-- Main container for product view -->
 <div class="view-product-container">
     <!-- Left Section: Product Image + Details (Stacked) -->
     <div class="left-section">
         <!-- Product Image -->
         <div class="product-image">
-            <img id="product-image" src="" alt="Product Image" />
+            <img id="product-image" src="" alt="Product Image"/>
         </div>
 
         <!-- Product Details -->
@@ -58,14 +58,14 @@
         <!-- Owner Info -->
         <div class="owner-info" onclick="openForm()">
             <h2>Posted by</h2>
-            <hr />
+            <hr/>
             <div class="owner-details">
                 <div class="pfp">
-                    <img id="owner-image" src="" alt="Owner Image" />
+                    <img id="owner-image" src="" alt="Owner Image"/>
                 </div>
                 <div>
-                    <strong id="owner-name">Loading...</strong><br />
-                    <span id="owner-location">Loading...</span> <br />
+                    <strong id="owner-name">Loading...</strong><br/>
+                    <span id="owner-location">Loading...</span> <br/>
                     <span id="owner-rating">⭐ Loading...</span>
                 </div>
             </div>
@@ -79,13 +79,13 @@
         <!--Profile Details-->
         <div class="side-profile">
             <div class="profile">
-                <img src="" alt="" />
+                <img id="profile-image" src="" alt=""/>
             </div>
-            <hr />
-            <h3>*Owner's Name*</h3>
-            <p>*Contact Info*</p>
-            <p>*Social Media Link*</p>
-            <p>*Location*</p>
+            <hr/>
+            <h3 id="owners-fullname">*Owner's Name*</h3>
+            <p id="contact-number">*Contact Info*</p>
+            <p id="social-media">*Social Media Link*</p>
+            <p id="location">*Location*</p>
             <p>*Rating*</p>
         </div>
 
@@ -144,7 +144,7 @@
                 <button type="button" id="delivery-btn">Delivery</button>
             </div>
 
-            <% if (isAuthenticated && role==='admin' || role==='user' ) { %>
+            <% if (isAuthenticated && role === 'admin' || role === 'user' ) { %>
                 <button type="submit" id="request-btn">Request</button>
             <% } else { %>
                 <a href="/login?redirect=/dashboard/view-product" id="request-btn">
@@ -159,7 +159,18 @@
     let selectedItem = null;
 
     // Open Form (Show overlay & form)
-    function openForm() {
+    async function openForm() {
+        const item = JSON.parse(localStorage.getItem("selectedItem"))
+        const response = await fetch(`http://localhost:8000/api/user/view-product/posted-by/${item.id}`)
+        const data = await response.json()
+        const { id, profile_image, owner, contact_number, social_media, location } = data.data
+
+        document.querySelector('#profile-image').src = `/uploads/${profile_image}`
+        document.querySelector('#owners-fullname').textContent = owner
+        document.querySelector('#contact-number').textContent = contact_number
+        document.querySelector('#social-media').textContent = social_media
+        document.querySelector('#location').textContent = location
+
         document.getElementById("myForm").style.display = "flex";
     }
 
@@ -208,6 +219,9 @@
             // Owner Info
             document.getElementById("owner-name").textContent =
                 selectedItem.name || "Unknown Owner";
+
+            document.querySelector('#owner-image').src = `/uploads/${selectedItem.profile_image}`
+
             document.getElementById("owner-location").textContent =
                 selectedItem.location || "Unknown Location";
         } else {
@@ -226,9 +240,6 @@
         let stars = "⭐".repeat(Math.floor(rating)); // Full stars
         return stars + ` (${rating})`; // Show the average rating value
     }
-
-    // Call function when page loads
-    // fetchOwnerDetails();
 
     //CALENDRRRRRRRRRRRRRRRRRRRRRRRRRRRR
     //calendar functionssssss
@@ -597,7 +608,7 @@
                     try {
                         const response = await fetch(`/api/user/my-requests`, {
                             method: "POST",
-                            headers: { "Content-Type": "application/json" },
+                            headers: {"Content-Type": "application/json"},
                             body: JSON.stringify(formObject)
                         });
                         if (response.ok) {
