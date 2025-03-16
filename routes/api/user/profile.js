@@ -26,15 +26,13 @@ const upload = multer({ storage: storage });
 
 /**
  * Update profile after OTP verified
- * @route POST /api/user/profile/setup
+ * @route PATCH /api/user/profile/setup
  */
-router.post("/setup", upload.single('profile_image'), async (req, res) => {
+router.patch("/setup", upload.single('profile_image'), async (req, res) => {
     const token = req.cookies.token || '';
     const user = jwt.verify(token, process.env.JWT_SECRET);
     const { middle_name, suffix, social_media, region, city, barangay, address, postal_code } = req.body
     const profile_image = req.file
-
-    console.log(req.body, req.file)
 
     if (!profile_image) {
         return res.status(400).json({ success: false, message: "File upload failed." });
@@ -75,6 +73,45 @@ router.post("/setup", upload.single('profile_image'), async (req, res) => {
         res.status(200).json({
             success: true,
             message: `Set-up profile updated!`
+        });
+    });
+});
+
+/**
+ * Update profile inside user dashboard
+ * 
+ * @route PATCH /api/user/profile/update
+ */
+router.patch("/update", async (req, res) => {
+    const token = req.cookies.token || '';
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+    const { email, contact_number, social_media, address } = req.body
+
+    const sql = `
+            UPDATE users 
+            SET 
+                email = ?, 
+                contact_number = ?, 
+                social_media = ?, 
+                address = ?
+            WHERE id = ?
+    `
+
+    db.query(sql, [
+        email,
+        contact_number,
+        social_media,
+        address,
+        user.id
+    ], (err) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({ success: false, message: "Update failed." });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Profile updated!`
         });
     });
 });

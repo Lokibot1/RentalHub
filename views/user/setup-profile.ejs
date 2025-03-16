@@ -307,7 +307,7 @@
         // ✅ Send formData directly (multipart/form-data)
         try {
             await fetch("http://localhost:8000/api/user/profile/setup", {
-                method: "POST",
+                method: "PATCH",
                 body: formData, // No need for headers; browser sets it automatically
             });
     

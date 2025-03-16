@@ -22,50 +22,50 @@
         </div>
 
         <!-- <pre><%= JSON.stringify(userProfile, null, 2) %></pre> -->
-        <% 
-          const date = new Date(userProfile.joined_date);
-          const formattedDate = new Intl.DateTimeFormat('en-US', { 
-            year: 'numeric', 
-            month: 'long'
-          }).format(date);
-        %>
+        <% const date=new Date(userProfile.joined_date); const formattedDate=new Intl.DateTimeFormat('en-US', {
+          year: 'numeric' , month: 'long' }).format(date); %>
 
-        <div class="profile-header">
-          <label for="profileImageInput">
-            <img src="/uploads/<%= userProfile.profile_image %>" alt="Profile Picture" class="profile-img" id="profilePicture" />
-          </label>
-          <input type="file" id="profileImageInput" accept="image/*" hidden />
-          <div class="profile-name">
-            <h2 id="profileName"><%= userProfile.fullname %></h2>
-            <i>Joined since <%= formattedDate %></i>
+          <div class="profile-header">
+            <label for="profileImageInput">
+              <img src="/uploads/<%= userProfile.profile_image %>" alt="Profile Picture" class="profile-img"
+                id="profilePicture" />
+            </label>
+            <input type="file" id="profileImageInput" accept="image/*" hidden />
+            <div class="profile-name">
+              <h2 id="profileName">
+                <%= userProfile.fullname %>
+              </h2>
+              <i>Joined since <%= formattedDate %></i>
+            </div>
+            <button id="editBtn" class="edit-btn">
+              <img src="/images/edit-btn.png" alt="Edit" />
+            </button>
           </div>
-          <button id="editBtn" class="edit-btn">
-            <img src="/images/edit-btn.png" alt="Edit" />
-          </button>
-        </div>
 
-        <form class="profile-form">
-          <div class="email">
-            <label for="email">Email Address</label>
-            <input type="text" id="email" value="<%= userProfile.email %>" placeholder="Email Address" disabled />
-          </div>
-          <hr />
-          <div class="contact">
-            <div>
-              <label for="contact">Contact Number</label>
-              <input type="text" id="contact" value="<%= userProfile.contact_number %>" placeholder="Contact Number" disabled />
+          <form class="profile-form">
+            <div class="email">
+              <label for="email">Email Address</label>
+              <input type="text" id="email" value="<%= userProfile.email %>" placeholder="Email Address" disabled />
             </div>
-            <div>
-              <label for="socialMedia">Social Media</label>
-              <input type="text" id="socialMedia" value="<%= userProfile.social_media %>" placeholder="Social Media" disabled />
+            <hr />
+            <div class="contact">
+              <div>
+                <label for="contact">Contact Number</label>
+                <input type="text" id="contact" value="<%= userProfile.contact_number %>" placeholder="Contact Number"
+                  disabled />
+              </div>
+              <div>
+                <label for="socialMedia">Social Media</label>
+                <input type="text" id="socialMedia" value="<%= userProfile.social_media %>" placeholder="Social Media"
+                  disabled />
+              </div>
             </div>
-          </div>
-          <hr />
-          <div class="address">
-            <label for="address">Address</label>
-            <input type="text" id="address" value="<%= userProfile.address %>"  placeholder="Address" disabled />
-          </div>
-        </form>
+            <hr />
+            <div class="address">
+              <label for="address">Address</label>
+              <input type="text" id="address" value="<%= userProfile.address %>" placeholder="Address" disabled />
+            </div>
+          </form>
       </div>
   </div>
 
@@ -104,18 +104,26 @@
         contact.classList.add("disabled");
         socialMedia.classList.add("disabled");
 
-        // Save the updated values (log lang muna sya for now, wala pa naman backend e hehe adjust nyo nalang san masstore)
         try {
-            await fetch("http://localhost:8000/api/user/profile/setup", {
-                method: "POST",
-                body: formData, // No need for headers; browser sets it automatically
-            });
-    
-            window.location.href = "/user/profile"; // Redirect to user profile
+          await fetch("http://localhost:8000/api/user/profile/update", {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json", // Add this
+            },
+            body: JSON.stringify({
+              email: email.value,
+              contact_number: contact.value,
+              social_media: socialMedia.value,
+              address: address.value,
+            }),
+          });
+
+          //window.location.href = "/user/profile"; // Redirect to user profile
         } catch (error) {
-            alert(error.message);
+          alert(error.message);
         }
 
+        // Save the updated values (log lang muna sya for now, wala pa naman backend e hehe adjust nyo nalang san masstore)
         console.log("Updated Info:");
         console.log("Email:", email.value);
         console.log("Address:", address.value);
