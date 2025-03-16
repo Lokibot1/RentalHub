@@ -8,18 +8,6 @@
     <%- include('../partials/user/sidebar.ejs'); %>
 
       <!--Main Content-->
-
-      <!-- Logout Confirmation Modal -->
-      <div id="logout-modal" class="logout-modal">
-        <div class="logout-content">
-          <p>Are you sure you want to log out?</p>
-          <div class="logout-button-group">
-            <button id="confirm-logout" class="yes-btn">Yes</button>
-            <button id="cancel-logout" class="no-btn">No</button>
-          </div>
-        </div>
-      </div>
-
       <div class="content">
         <div class="tab">
           <button class="tablinks active" onclick="openTab(event, 'PendingPosts')">
@@ -129,14 +117,14 @@
               <%
                 function formatDateRange(startDate, endDate) {
                   const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                  
+
                   const start = new Date(startDate).toLocaleDateString('en-US', options);
                   const end = new Date(endDate).toLocaleDateString('en-US', options);
-                  
+
                   return `${start} - ${end}`;
                 }
               %>
-              
+
               <% if (rentalRequests.length > 0) { %>
                 <% rentalRequests.forEach(function(item) { %>
               <div class="rentalItem" style="margin-bottom: 10px;">
@@ -844,14 +832,4 @@ function addRentalItem(renterName, location, itemName, rentalDuration, modeOfDel
         modal.style.display = "none"; // Hide modal
       });
     });
-
-    // Workaround
-    document.addEventListener("click", function(event) {
-      const button = event.target.closest("button[data-index]");
-      if (button) {
-          console.log(button.getAttribute("data-index"));
-          // confirmationModal.style.display = 'block';
-      }
-    });
-  
   </script>
