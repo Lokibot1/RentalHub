@@ -30,8 +30,6 @@ const mainRoutes = require("./routes/frontend/main");
 const adminRoutes = require("./routes/frontend/admin");
 const apiAuthRoutes = require("./routes/api/auth");
 const apiListingRoute = require("./routes/api/listing");
-const apiAdminPostsRoute = require("./routes/api/admin/posts");
-const apiAdminDashboardRoute = require("./routes/api/admin/dashboard");
 
 
 // OTP route
@@ -52,10 +50,11 @@ app.use("/forbidden", forbiddenRoute);
 // Backend routes
 app.use("/api", apiListingRoute);
 app.use("/api/auth", apiAuthRoutes);
-app.use("/api/admin/posts", apiAdminPostsRoute);
-app.use("/api/admin/dashboard", apiAdminDashboardRoute);
 
-// User route
+// Backend Admin route
+app.use("/api/admin", require("./routes/api/admin/index"));
+
+// Backend User route
 app.use("/api/user", require("./routes/api/user/index"));
 
 // Start server

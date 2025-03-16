@@ -1,103 +1,74 @@
-<link rel="stylesheet" href="/css/admin.css" />
+<link rel="stylesheet" href="/css/admin.css"/>
 
 <!--Navigation Bar-->
 <%- include('../partials/admin/navigation-bar.ejs'); %>
 
 <!--Body-->
 <div class="main">
-  <!-- Side Bar -->
-  <%- include('../partials/admin/sidebar-links.ejs'); %>
+    <!-- Side Bar -->
+    <%- include('../partials/admin/sidebar-links.ejs'); %>
 
-  <!-- Logout Confirmation Modal -->
-  <div id="logout-modal" class="logout-modal">
-    <div class="logout-content">
-      <p>Are you sure you want to log out?</p>
-      <div class="logout-button-group">
-        <button id="confirm-logout" class="yes-btn">Yes</button>
-        <button id="cancel-logout" class="no-btn">No</button>
-      </div>
+    <!-- Logout Confirmation Modal -->
+    <div id="logout-modal" class="logout-modal">
+        <div class="logout-content">
+            <p>Are you sure you want to log out?</p>
+            <div class="logout-button-group">
+                <button id="confirm-logout" class="yes-btn">Yes</button>
+                <button id="cancel-logout" class="no-btn">No</button>
+            </div>
+        </div>
     </div>
-  </div>      
 
-  <!-- Main Content -->
-  <div class="content">
-  <div class="transaction-container">
-    <div class="header">
-      <h2>Transactions</h2>
-      <div class="search-bar">
-          <input type="text" placeholder="Looking for...">
-      </div>
+    <!-- Main Content -->
+    <div class="content">
+        <div class="transaction-container">
+
+            <div class="header">
+                <h2>Transactions</h2>
+                <div class="search-bar">
+                    <input type="text" placeholder="Looking for...">
+                </div>
+            </div>
+
+            <%
+            function formatDateRange(startDate, endDate) {
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+
+                const start = new Date(startDate).toLocaleDateString('en-US', options);
+                const end = new Date(endDate).toLocaleDateString('en-US', options);
+
+                return `${start} - ${end}`;
+            }
+            %>
+
+            <table class="transaction-table">
+                <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Item Name</th>
+                    <th>Renter</th>
+                    <th>Owner</th>
+                    <th>Rental Period</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% if (transactions.length > 0) { %>
+                    <% transactions.forEach(function(item) { %>
+                        <tr>
+                            <td><%= item.transaction_id %></td>
+                            <td><%= item.item_name %></td>
+                            <td><%= item.renter %></td>
+                            <td><%= item.owner %></td>
+                            <td><%= formatDateRange(item.start_date, item.end_date) %></td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <p>No transactions available.</p>
+                <% } %>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <table class="transaction-table">
-      <thead>
-        <tr>
-          <th>Transaction ID</th>
-          <th>Item Name</th>
-          <th>Renter</th>
-          <th>Owner</th>
-          <th>Rental Period</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>TI-000001</td>
-          <td>Laptop ni Brian</td>
-          <td>email@gmail.com</td>
-          <td>email@gmail.com</td>
-          <td>Feb 1 - 14, 2025</td>
-        </tr>
-        <tr>
-          <td>TI-000001</td>
-          <td>Laptop ni Brian</td>
-          <td>email@gmail.com</td>
-          <td>email@gmail.com</td>
-          <td>Feb 1 - 14, 2025</td>
-        </tr>
-        <tr>
-          <td>TI-000001</td>
-          <td>Laptop ni Brian</td>
-          <td>email@gmail.com</td>
-          <td>email@gmail.com</td>
-          <td>Feb 1 - 14, 2025</td>
-        </tr>
-        <tr>
-          <td>TI-000001</td>
-          <td>Laptop ni Brian</td>
-          <td>email@gmail.com</td>
-          <td>email@gmail.com</td>
-          <td>Feb 1 - 14, 2025</td>
-        </tr>
-        <tr>
-          <td>TI-000001</td>
-          <td>Laptop ni Brian</td>
-          <td>email@gmail.com</td>
-          <td>email@gmail.com</td>
-          <td>Feb 1 - 14, 2025</td>
-        </tr>
-        <tr>
-          <td>TI-000001</td>
-          <td>Laptop ni Brian</td>
-          <td>email@gmail.com</td>
-          <td>email@gmail.com</td>
-          <td>Feb 1 - 14, 2025</td>
-        </tr>
-        <tr>
-          <td>TI-000001</td>
-          <td>Laptop ni Brian</td>
-          <td>email@gmail.com</td>
-          <td>email@gmail.com</td>
-          <td>Feb 1 - 14, 2025</td>
-        </tr>
-        <tr>
-          <td>TI-000001</td>
-          <td>Laptop ni Brian</td>
-          <td>email@gmail.com</td>
-          <td>email@gmail.com</td>
-          <td>Feb 1 - 14, 2025</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
 </div>
 
 <script src="/js/admin.js"></script>

@@ -169,16 +169,33 @@ router.get("/admin-view-product/:item_id", checkAuth, checkAdmin, async (req, re
 
 /**
  * Transactions
+ *
  * @route GET /admin/transactions
  */
-router.get("/transactions", checkAuth, checkAdmin, (req, res) => {
-    res.render("admin/transactions", {
-        layout: "layouts/dashboard",
-        title: "Transactions",
-        isAuthenticated: req.isAuthenticated,
-        role: req.role,
-    });
-});
+router.get("/transactions", checkAuth, checkAdmin, async (req, res) => {
+    try {
+        const response = await fetch(`${process.env.BASE_URL}/api/admin/transactions`);
+        const transactions = await response.json();
+
+        res.render("admin/transactions", {
+            layout: "layouts/dashboard",
+            title: "Transactions",
+            transactions: transactions.data,
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+        });
+    } catch (error) {
+        console.error("Error fetching data:", error);
+
+        res.render("admin/transactions", {
+            layout: "layouts/dashboard",
+            title: "Transactions",
+            transactions: [],
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+        });
+    }
+})
 
 
 module.exports = router;
