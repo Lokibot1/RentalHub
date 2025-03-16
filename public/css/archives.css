@@ -632,7 +632,7 @@ nav button {
   justify-content: center;
   cursor: pointer;
 }
-.accept-btn,
+.accept-btn, #accept-btn, #decline-btn,
 .decline-btn {
   border: none;
   border-radius: 50%;
@@ -647,16 +647,16 @@ nav button {
   transition: transform 0.3s ease-in-out;
 }
 
-.accept-btn {
+.accept-btn, #accept-btn {
   background-color: #009959;
   color: white;
 }
-.decline-btn {
+.decline-btn, #decline-btn {
   background-color: #800020;
   color: white;
 }
-.accept-btn:hover,
-.decline-btn:hover {
+.accept-btn:hover, #accept-btn:hover, 
+.decline-btn:hover, #decline-btn:hover {
   transform: scale(1.2);
 }
 .close-Modal {
