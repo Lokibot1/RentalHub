@@ -38,8 +38,6 @@
             Rating
           </button>
 
-          <!-- <pre><%= JSON.stringify(pendingPosts, null, 2) %></pre> -->
-
           <!--Tab Content-->
           <!--Pending Post-->
           <div id="PendingPosts" class="tab-content">
@@ -75,7 +73,7 @@
           </div>
 
 
-          <!--Items Post-->
+          <!-- Items Posted -->
           <div id="Items" class="tab-content" style="display: none">
             <div class="shoppingList">
 
@@ -123,49 +121,74 @@
             </div>
           </div>
 
-          <!--Request Items-->
+
+          <!-- Rental Requests -->
           <div id="RentalRequests" class="tab-content" style="display: none">
             <div class="RentalList">
-              <div class="rentalItem">
+
+            <!-- <pre><%= JSON.stringify(rentalRequests, null, 2) %></pre> -->
+              <%
+                function formatDateRange(startDate, endDate) {
+                  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                  
+                  const start = new Date(startDate).toLocaleDateString('en-US', options);
+                  const end = new Date(endDate).toLocaleDateString('en-US', options);
+                  
+                  return `${start} - ${end}`;
+                }
+              %>
+              
+              <% if (rentalRequests.length > 0) { %>
+                <% rentalRequests.forEach(function(item) { %>
+              <div class="rentalItem" style="margin-bottom: 10px;">
                 <div class="rentalInfo">
                   <div class="renterDetails">
-                    <strong class="renterName">Renter's Name</strong>
+                    <strong class="renterName"><%= item.renters_name  %></strong>
                     <strong>•</strong>
-                    <strong class="renterLocation">Location</strong>
+                    <strong class="renterLocation"><%= item.item_location %></strong>
                   </div>
                   <div class="itemDetails">
-                    <img src="" alt="" class="itemImage" />
-                    <h2 class="itemName">Items Name</h2>
+                    <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage" />
+                    <h2 class="itemName"><%= item.item_name %></h2>
                   </div>
                   <div class="rentalDurationContainer">
-                    <strong class="rentalDuration">February 3-4, 2025</strong>
+                    <strong class="rentalDuration"><%= formatDateRange(item.start_date, item.end_date) %></strong>
                     <strong>•</strong>
-                    <strong class="MOD">Delivery</strong>
+                    <strong class="MOD"><%= item.mode_of_delivery %></strong>
                   </div>
-                </div>
+                  </div>
 
                 <!-- Dark Background Overlay -->
                 <div id="overlay" class="overlay"></div>
                 <div class="rentalAction">
-                  <button id="accept-btn">✓</button>
-                  <button id="decline-btn">✗</button>
-                </div>
-                <div id="confirmation-modal1" class="confirmation-modal1">
-                  <div class="confirmation-box1">
-                    <h2 class="accept-text2">Are you sure you want to <span class="accept-text1">accept</span> this
-                      request?</h2>
-                    <p class="note1">*Note: Remember to ask for Valid ID upon transaction*</p>
-                    <div class="button-container1">
-                      <button id="yes-btn1" class="yes-btn1">Yes</button>
-                      <button id="no-btn1" class="no-btn1">No</button>
-                    </div>
-                  </div>
+                  <button class="accept-btn" data-id="accept-btn-<%= item.rent_transaction_id %>">✓</button>
+                  <button class="decline-btn" data-id="decline-btn-<%= item.rent_transaction_id %>">✗</button>
                 </div>
               </div>
+
+                  <% }); %>
+                <% } else { %>
+                  <p>No rental requests available.</p>
+                <% } %>
+
+
               <div id="overlay" class="overlay"></div>
               <div id="success-container1" class="success-container1">
                 <div id="success-message1" class="success-message1">
                   <p>Request accepted successfully!</p>
+                </div>
+              </div>
+
+              <!-- Accept Confirmation Modal -->
+              <div id="confirmation-modal1" class="confirmation-modal1">
+                <div class="confirmation-box1">
+                  <h2 class="accept-text2">Are you sure you want to <span class="accept-text1">accept</span> this
+                    request?</h2>
+                  <p class="note1">*Note: Remember to ask for Valid ID upon transaction*</p>
+                  <div class="button-container1">
+                    <button id="yes-btn1" class="yes-btn1">Yes</button>
+                    <button id="no-btn1" class="no-btn1">No</button>
+                  </div>
                 </div>
               </div>
 
@@ -497,71 +520,134 @@
     });
 
 
-    // RENTAL REQUEST accept
-    const acceptBtn = document.getElementById('accept-btn');
-    const declineBtn = document.getElementById('decline-btn');
-    const confirmationModal = document.getElementById('confirmation-modal1');
-    const declineConfirmationModal = document.getElementById('decline-confirmation-modal1');
-    const overlay = document.getElementById('overlay');
-    const yesBtn = document.getElementById('yes-btn1');
-    const noBtn = document.getElementById('no-btn1');
-    const declineYesBtn = document.getElementById('decline-yes-btn1');
-    const declineNoBtn = document.getElementById('decline-no-btn1');
-    const successContainer = document.getElementById('success-container1');
-    const declineContainer = document.getElementById('decline-container1');
+    class RentalRequest {
+  constructor(id) {
+    this.id = id;
+    this.acceptBtn = document.querySelector(`[data-id="accept-btn-${id}"]`);
+    this.declineBtn = document.querySelector(`[data-id="decline-btn-${id}"]`);
+    this.confirmationModal = document.getElementById("confirmation-modal1");
+    this.declineConfirmationModal = document.getElementById("decline-confirmation-modal1");
+    this.overlay = document.getElementById("overlay");
+    this.successContainer = document.getElementById("success-container1");
+    this.declineContainer = document.getElementById("decline-container1");
 
-    // Accept functionality
-    acceptBtn.addEventListener('click', function () {
-      confirmationModal.style.display = 'block';
-      overlay.style.display = 'block';
-    });
+    // Getting the current data-id
+    this.dataId = 0
 
-    noBtn.addEventListener('click', function () {
-      confirmationModal.style.display = 'none';
-      overlay.style.display = 'none';
-    });
+    this.addEventListeners();
+  }
 
-    yesBtn.addEventListener('click', function () {
-      confirmationModal.style.display = 'none';
-      overlay.style.display = 'block';
-      successContainer.style.display = 'block';
+  addEventListeners() {
+    if (this.acceptBtn) {
+      this.acceptBtn.addEventListener("click", (event) => {
+        this.dataId = event.target.getAttribute('data-id').replace("accept-btn-", ""); 
+        this.showModal("accept");
+      })
+    }
 
-      setTimeout(function () {
-        overlay.style.display = 'none';
-        successContainer.style.display = 'none';
-      }, 3000);
-    });
+    if (this.declineBtn) {
+      this.declineBtn.addEventListener("click", () => {
+        this.dataId = event.target.getAttribute('data-id').replace("decline-btn-", ""); 
+        this.showModal("decline")
+      });
+    }
+  }
 
-    // Decline functionality
-    declineBtn.addEventListener('click', function () {
-      declineConfirmationModal.style.display = 'block';
-      overlay.style.display = 'block';
-    });
+  showModal(action) {
+    this.overlay.style.display = "block";
 
-    declineNoBtn.addEventListener('click', function () {
-      declineConfirmationModal.style.display = 'none';
-      overlay.style.display = 'none';
-    });
+    if (action === "accept") {
+      this.confirmationModal.style.display = "block";
 
-    declineYesBtn.addEventListener('click', function () {
-      declineConfirmationModal.style.display = 'none';
-      overlay.style.display = 'block';
-      declineContainer.style.display = 'block';
+      document.getElementById("yes-btn1").onclick = () => this.confirmAccept();
+      document.getElementById("no-btn1").onclick = () => this.hideModals();
+    } else if (action === "decline") {
+      this.declineConfirmationModal.style.display = "block";
 
-      setTimeout(function () {
-        overlay.style.display = 'none';
-        declineContainer.style.display = 'none';
-      }, 3000);
-    });
+      document.getElementById("decline-yes-btn1").onclick = () => this.confirmDecline();
+      document.getElementById("decline-no-btn1").onclick = () => this.hideModals();
+    }
+  }
 
-    // Hide modal when clicking outside of it
-    window.addEventListener('click', function (event) {
-      if (event.target === overlay) {
-        confirmationModal.style.display = 'none';
-        declineConfirmationModal.style.display = 'none';
-        overlay.style.display = 'block';
-      }
-    });
+  async confirmAccept() {
+    try {
+      await fetch(`http://localhost:8000/api/user/listings/rental-requests/approved`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rental_transaction_id: this.dataId }),
+      });
+    } catch (error) {
+      alert(error.message);
+    }
+    this.confirmationModal.style.display = "none";
+    this.successContainer.style.display = "block";
+
+    setTimeout(() => {
+      this.overlay.style.display = "none";
+      this.successContainer.style.display = "none";
+
+      window.location.reload()
+    }, 3000);
+  }
+
+  confirmDecline() {
+    this.declineConfirmationModal.style.display = "none";
+    this.declineContainer.style.display = "block";
+
+    setTimeout(() => {
+      this.overlay.style.display = "none";
+      this.declineContainer.style.display = "none";
+    }, 3000);
+  }
+
+  hideModals() {
+    this.confirmationModal.style.display = "none";
+    this.declineConfirmationModal.style.display = "none";
+    this.overlay.style.display = "none";
+  }
+}
+
+// Initialize rental requests for existing items
+document.querySelectorAll(".accept-btn, .decline-btn").forEach((button) => {
+  const id = button.dataset.id.split("-").pop(); // Extracts the unique ID from data-id
+  new RentalRequest(id);
+});
+
+// Function to dynamically add a new rental request
+let rentalItemCount = 1;
+function addRentalItem(renterName, location, itemName, rentalDuration, modeOfDelivery) {
+  rentalItemCount++;
+
+  const rentalItem = document.createElement("div");
+  rentalItem.classList.add("rentalItem");
+  rentalItem.innerHTML = `
+    <div class="rentalInfo">
+      <div class="renterDetails">
+        <strong class="renterName">${renterName}</strong>
+        <strong>•</strong>
+        <strong class="renterLocation">${location}</strong>
+      </div>
+      <div class="itemDetails">
+        <img src="" alt="" class="itemImage" />
+        <h2 class="itemName">${itemName}</h2>
+      </div>
+      <div class="rentalDurationContainer">
+        <strong class="rentalDuration">${rentalDuration}</strong>
+        <strong>•</strong>
+        <strong class="MOD">${modeOfDelivery}</strong>
+      </div>
+    </div>
+
+    <div class="rentalAction">
+      <button class="accept-btn" data-id="accept-btn-${rentalItemCount}">✓</button>
+      <button class="decline-btn" data-id="decline-btn-${rentalItemCount}">✗</button>
+    </div>
+  `;
+
+  document.getElementById("rentalContainer").appendChild(rentalItem);
+  new RentalRequest(rentalItemCount); 
+}
+
 
 
 
@@ -752,4 +838,13 @@
       });
     });
 
+    // Workaround
+    document.addEventListener("click", function(event) {
+      const button = event.target.closest("button[data-index]");
+      if (button) {
+          console.log(button.getAttribute("data-index"));
+          // confirmationModal.style.display = 'block';
+      }
+    });
+  
   </script>
