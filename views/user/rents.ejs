@@ -35,16 +35,20 @@
         <!--Tab Content-->
         <div id="Requests" class="tab-content">
           <div class="RentalList">
-            <% if (rentItems.length> 0) { %>
-              <% rentItems.forEach(function(item) { %>
+            <% if (rentRequestItems.length> 0) { %>
+              <% rentRequestItems.forEach(function(item) { %>
                 <div class="rentalItem">
                   <div class="rentalInfo">
                     <div class="renterDetails">
-                      <strong class="renterName"><%= item.renters_name %></strong>
+                      <strong class="renterName">
+                        <%= item.renters_name %>
+                      </strong>
                     </div>
                     <div class="itemDetails">
                       <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage" />
-                      <h2 class="itemName"><%= item.item_name %></h2>
+                      <h2 class="itemName">
+                        <%= item.item_name %>
+                      </h2>
                     </div>
                   </div>
                   <div class="completeAction">
@@ -73,28 +77,55 @@
         <div class="overlay" id="modal-overlay"></div>
         <div id="cancelToast" class="toast">Request Cancelled Successfully!</div>
 
+        <!-- <pre><%= JSON.stringify(ongoingRentItems, null, 2) %></pre> -->
         <!-- On Going Modal -->
         <div id="On Going" class="tab-content">
           <div class="RentalList">
-            <div class="rentalItem">
-              <div class="rentalInfo">
-                <div class="renterDetails">
-                  <strong class="renterName">Renter's Name</strong>
-                </div>
-                <div class="itemDetails">
-                  <img src="" alt="" class="itemImage" />
-                  <h2 class="itemName">Items Name</h2>
-                </div>
-                <div class="rentalDurationContainer">
-                  <strong class="rentalDuration">February 3-4, 2025</strong>
-                  <strong>•</strong>
-                  <strong class="MOD">Delivery</strong>
-                </div>
-              </div>
-              <div class="completeAction">
-                <button id="review-btn">Done</button>
-              </div>
-            </div>
+            <%
+              function formatDateRange(startDate, endDate) {
+                const options = {
+                  year: 'numeric' , month: 'long' ,
+                  day: 'numeric'
+                };
+                const start = new Date(startDate).toLocaleDateString('en-US', options);
+                const end=new Date(endDate).toLocaleDateString('en-US', options);
+                return `${start} - ${end}`;
+              }
+            %>
+
+              <% if (ongoingRentItems.length> 0) { %>
+                <% ongoingRentItems.forEach(function(item) { %>
+                  <div class="rentalItem">
+                    <div class="rentalInfo">
+                      <div class="renterDetails">
+                        <strong class="renterName">
+                          <%= item.renters_name %>
+                        </strong>
+                      </div>
+                      <div class="itemDetails">
+                        <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage" />
+                        <h2 class="itemName">
+                          <%= item.item_name %>
+                        </h2>
+                      </div>
+                      <div class="rentalDurationContainer">
+                        <strong class="rentalDuration">
+                          <%= formatDateRange(item.start_date, item.end_date) %>
+                        </strong>
+                        <strong>•</strong>
+                        <strong class="MOD">
+                          <%= item.mode_of_delivery %>
+                        </strong>
+                      </div>
+                    </div>
+                    <div class="completeAction">
+                      <button id="review-btn">Done</button>
+                    </div>
+                  </div>
+                <% }); %>
+              <% } else { %>
+                <p>No ongoing rents available.</p>
+              <% } %>
           </div>
         </div>
 

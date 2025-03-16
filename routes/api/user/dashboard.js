@@ -10,12 +10,14 @@ const router = express.Router();
  */
 router.get("/:user_id", async (req, res) => {
     const { user_id } = req.params
+    console.log(user_id)
 
     const sql = `
     SELECT 
         users.id AS user_id,
         (SELECT COUNT(*) FROM items WHERE items.user_id = users.id AND is_approved != 1) AS total_pending_posts,
         (SELECT COUNT(*) FROM items WHERE items.user_id = users.id AND is_approved = 1) AS total_items_posted,
+        (SELECT COUNT(*) FROM rental_transactions WHERE is_approved = 1) AS total_items_rented,
         (SELECT COUNT(*) FROM rental_transactions WHERE rental_transactions.item_id IN 
             (SELECT id FROM items WHERE items.user_id = users.id)
         ) AS total_items_rent_request

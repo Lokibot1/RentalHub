@@ -84,13 +84,17 @@ router.get("/profile", checkAuth, checkUser, async (req, res) => {
  */
 router.get("/rents", checkAuth, checkUser, async (req, res) => {
   try {
-    const response = await fetch(`${process.env.BASE_URL}/api/user/rent/${req.user.id}`);
-    const rents = await response.json();
+    const rentRequestResponse = await fetch(`${process.env.BASE_URL}/api/user/rent/request/${req.user.id}`);
+    const rentRequests = await rentRequestResponse.json();
+
+    const ongoingRentResponse = await fetch(`${process.env.BASE_URL}/api/user/rent/ongoing/${req.user.id}`);
+    const ongoingRentItems = await ongoingRentResponse.json();
 
     res.render("user/rents", {
       layout: "layouts/user",
       title: "My Rents",
-      rentItems: rents.data,
+      rentRequestItems: rentRequests.data,
+      ongoingRentItems: ongoingRentItems.data,
       isAuthenticated: req.isAuthenticated,
       role: req.role,
     });
@@ -99,7 +103,8 @@ router.get("/rents", checkAuth, checkUser, async (req, res) => {
     res.render("user/rents", {
       layout: "layouts/user",
       title: "My Rents",
-      rentItems: [],
+      rentRequestItems: [],
+      ongoingRentItems: [],
       isAuthenticated: req.isAuthenticated,
       role: req.role,
     });
