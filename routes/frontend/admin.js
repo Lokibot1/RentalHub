@@ -92,13 +92,30 @@ router.get("/listing", checkAuth, checkAdmin, (req, res) => {
  * Manager Users
  * @route GET /admin/manage-users
  */
-router.get("/manage-users", checkAuth, checkAdmin, (req, res) => {
-    res.render("admin/manage-users", {
-        layout: "layouts/dashboard",
-        title: "Manage Users",
-        isAuthenticated: req.isAuthenticated,
-        role: req.role,
-    });
+router.get("/manage-users", checkAuth, checkAdmin, async (req, res) => {
+    try {
+        const response = await fetch(`${process.env.BASE_URL}/api/admin/manage-users`);
+        const users = await response.json();
+
+
+        res.render("admin/manage-users", {
+            layout: "layouts/dashboard",
+            title: "Manage Users",
+            users: users.data,
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+        });
+    } catch (error) {
+        console.error("Error fetching pending posts:", error);
+
+        res.render("admin/manage-users", {
+            layout: "layouts/dashboard",
+            title: "Manage Users",
+            users: [],
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+        });
+    }
 });
 
 
