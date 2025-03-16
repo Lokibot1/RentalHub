@@ -13,14 +13,16 @@ router.get("/:user_id", async (req, res) => {
 
     const sql = `
         SELECT
-            items.id AS item_id,
+            rental_transactions.id AS id,
             CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
-            items.name AS item_name,
-            items.file_path AS item_image
+            items.file_path AS item_image,
+            items.name AS item_name
         FROM rental_transactions
         JOIN users ON users.id = rental_transactions.renter_id
         JOIN items ON items.id = rental_transactions.item_id
-        WHERE items.user_id = ?
+        WHERE
+            rental_transactions.is_approved = 0
+            AND rental_transactions.renter_id = ?;
     `
 
     db.query(sql, [user_id], (err, results) => {
