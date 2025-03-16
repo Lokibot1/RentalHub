@@ -14,16 +14,16 @@
             Pending Posts
           </button>
           <button class="tablinks" onclick="openTab(event, 'Items')">
-            Items
+            Posted Items
           </button>
           <button class="tablinks" onclick="openTab(event, 'RentalRequests')">
             Rental Requests
           </button>
           <button class="tablinks" onclick="openTab(event, 'OnTransactions')">
-            On Transactions
+            On Going Transactions
           </button>
           <button class="tablinks" onclick="openTab(event, 'Reviews')">
-            Rating
+            Reviews
           </button>
 
           <!--Tab Content-->
@@ -55,7 +55,7 @@
                   </a>
                 <% }); %>
               <% } else { %>
-                <p>No pending posts available.</p>
+                <p>No Pending Posts available.</p>
               <% } %>
             </div>
           </div>
@@ -88,14 +88,14 @@
                   </a>
                   <% }); %>
                 <% } else { %>
-                  <p>No pending posts available.</p>
+                  <p>No Posted Items available.</p>
                 <% } %>
             </div>
           </div>
 
           <div id="deleteModal" class="modal" style="display: none;">
             <div class="modal-content">
-              <p><strong>Are you sure you want to <span style="color: #990000;">remove</span> this item?</strong></p>
+              <p><strong>Are you sure you want to <span style="color: #990000;">archive</span> this item?</strong></p>
               <div class="modal-buttons">
                 <button id="confirmDelete" class="btn-yes">Yes</button>
                 <button id="cancelDelete" class="btn-no">No</button>
@@ -155,7 +155,7 @@
 
                   <% }); %>
                 <% } else { %>
-                  <p>No rental requests available.</p>
+                  <p>No Rental Requests available.</p>
                 <% } %>
 
 
@@ -230,7 +230,7 @@
             </div>
             <% }); %>
             <% } else { %>
-              <p>No rental requests available.</p>
+              <p>No On Going Transactions available.</p>
             <% } %>
           </div>
         </div>
