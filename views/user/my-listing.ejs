@@ -126,7 +126,6 @@
           <div id="RentalRequests" class="tab-content" style="display: none">
             <div class="RentalList">
 
-            <!-- <pre><%= JSON.stringify(rentalRequests, null, 2) %></pre> -->
               <%
                 function formatDateRange(startDate, endDate) {
                   const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -213,22 +212,26 @@
           </div>
         </div>
 
-        <!--On Transactions-->
+
+        <!-- Ongoing Transactions -->
         <div id="OnTransactions" class="tab-content" style="display: none">
           <div class="RentalList">
+
+            <% if (ongoingTransactions.length > 0) { %>
+              <% ongoingTransactions.forEach(function(item) { %>
             <div class="rentalItem">
               <div class="rentalInfo">
                 <div class="renterDetails">
-                  <strong class="renterName">Renter's Name</strong>
+                  <strong class="renterName"><%= item.renters_name %></strong>
                 </div>
                 <div class="itemDetails">
-                  <img src="" alt="" class="itemImage" />
-                  <h2 class="itemName">Items Name</h2>
+                  <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage" />
+                  <h2 class="itemName"><%= item.item_name %></h2>
                 </div>
                 <div class="rentalDurationContainer">
-                  <strong class="rentalDuration">February 3-4, 2025</strong>
+                  <strong class="rentalDuration"><%= formatDateRange(item.start_date, item.end_date) %></strong>
                   <strong>•</strong>
-                  <strong class="MOD">Delivery</strong>
+                  <strong class="MOD"><%= item.mode_of_delivery %></strong>
                 </div>
               </div>
               <div class="completeAction">
@@ -237,6 +240,10 @@
                 <button id="review-btn">Done</button>
               </div>
             </div>
+            <% }); %>
+            <% } else { %>
+              <p>No rental requests available.</p>
+            <% } %>
           </div>
         </div>
 

@@ -127,12 +127,16 @@ router.get("/my-listing", checkAuth, checkUser, async (req, res) => {
     const rentalRequestResponse = await fetch(`${process.env.BASE_URL}/api/user/listings/rental-requests/${req.user.id}`);
     const rentalRequests = await rentalRequestResponse.json();
 
+    const ongoingTransactionResponse = await fetch(`${process.env.BASE_URL}/api/user/listings/ongoing-transactions/${req.user.id}`);
+    const ongoingTransactions = await ongoingTransactionResponse.json();
+
     res.render("user/my-listing", {
       layout: "layouts/user",
       title: "My Listings",
       pendingPosts: pendingPosts.data,
       approvedPosts: approvedPosts.data,
       rentalRequests: rentalRequests.data,
+      ongoingTransactions: ongoingTransactions.data,
       isAuthenticated: req.isAuthenticated,
       role: req.role,
     });
@@ -145,6 +149,7 @@ router.get("/my-listing", checkAuth, checkUser, async (req, res) => {
       pendingPosts: [],
       approvedPosts: [],
       rentalRequests: [],
+      ongoingTransactions: [],
       isAuthenticated: req.isAuthenticated,
       role: req.role,
     });
@@ -165,6 +170,7 @@ router.get("/archives", checkAuth, checkUser, (req, res) => {
   });
 });
 
+
 /**
  * View Product Page
  * @route GET /user/view-product
@@ -181,6 +187,7 @@ router.get("/view-product", optionalAuth, (req, res) => {
     role: req.role,
   });
 });
+
 
 /**
  * View Product Page
