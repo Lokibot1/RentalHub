@@ -38,8 +38,6 @@
             Rating
           </button>
 
-          <!-- <pre><%= JSON.stringify(pendingPosts, null, 2) %></pre> -->
-
           <!--Tab Content-->
           <!--Pending Post-->
           <div id="PendingPosts" class="tab-content">
@@ -75,7 +73,7 @@
           </div>
 
 
-          <!--Items Post-->
+          <!-- Items Posted -->
           <div id="Items" class="tab-content" style="display: none">
             <div class="shoppingList">
 
@@ -123,32 +121,61 @@
             </div>
           </div>
 
-          <!--Request Items-->
+
+          <!-- Rental Requests -->
           <div id="RentalRequests" class="tab-content" style="display: none">
             <div class="RentalList">
-              <div class="rentalItem">
+
+            <!-- <pre><%= JSON.stringify(rentalRequests, null, 2) %></pre> -->
+              <%
+                function formatDateRange(startDate, endDate) {
+                  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                  
+                  const start = new Date(startDate).toLocaleDateString('en-US', options);
+                  const end = new Date(endDate).toLocaleDateString('en-US', options);
+                  
+                  return `${start} - ${end}`;
+                }
+              %>
+              
+              <% if (rentalRequests.length > 0) { %>
+                <% rentalRequests.forEach(function(item) { %>
+              <div class="rentalItem" style="margin-bottom: 10px;">
                 <div class="rentalInfo">
                   <div class="renterDetails">
-                    <strong class="renterName">Renter's Name</strong>
+                    <strong class="renterName"><%= item.renters_name  %></strong>
                     <strong>•</strong>
-                    <strong class="renterLocation">Location</strong>
+                    <strong class="renterLocation"><%= item.item_location %></strong>
                   </div>
                   <div class="itemDetails">
-                    <img src="" alt="" class="itemImage" />
-                    <h2 class="itemName">Items Name</h2>
+                    <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage" />
+                    <h2 class="itemName"><%= item.item_name %></h2>
                   </div>
                   <div class="rentalDurationContainer">
-                    <strong class="rentalDuration">February 3-4, 2025</strong>
+                    <strong class="rentalDuration"><%= formatDateRange(item.start_date, item.end_date) %></strong>
                     <strong>•</strong>
-                    <strong class="MOD">Delivery</strong>
+                    <strong class="MOD"><%= item.mode_of_delivery %></strong>
                   </div>
                   </div>
 
                 <!-- Dark Background Overlay -->
                 <div id="overlay" class="overlay"></div>
                 <div class="rentalAction">
-                  <button class="accept-btn" data-id="accept-btn-1">✓</button>
-                  <button class="decline-btn" data-id="decline-btn-1">✗</button>
+                  <button class="accept-btn" data-id="accept-btn-<%= item.rent_transaction_id %>">✓</button>
+                  <button class="decline-btn" data-id="decline-btn-<%= item.rent_transaction_id %>">✗</button>
+                </div>
+              </div>
+
+                  <% }); %>
+                <% } else { %>
+                  <p>No rental requests available.</p>
+                <% } %>
+
+
+              <div id="overlay" class="overlay"></div>
+              <div id="success-container1" class="success-container1">
+                <div id="success-message1" class="success-message1">
+                  <p>Request accepted successfully!</p>
                 </div>
               </div>
 
@@ -162,13 +189,6 @@
                     <button id="yes-btn1" class="yes-btn1">Yes</button>
                     <button id="no-btn1" class="no-btn1">No</button>
                   </div>
-                </div>
-              </div>
-
-              <div id="overlay" class="overlay"></div>
-              <div id="success-container1" class="success-container1">
-                <div id="success-message1" class="success-message1">
-                  <p>Request accepted successfully!</p>
                 </div>
               </div>
 
@@ -511,15 +531,25 @@
     this.successContainer = document.getElementById("success-container1");
     this.declineContainer = document.getElementById("decline-container1");
 
+    // Getting the current data-id
+    this.dataId = 0
+
     this.addEventListeners();
   }
 
   addEventListeners() {
     if (this.acceptBtn) {
-      this.acceptBtn.addEventListener("click", () => this.showModal("accept"));
+      this.acceptBtn.addEventListener("click", (event) => {
+        this.dataId = event.target.getAttribute('data-id').replace("accept-btn-", ""); 
+        this.showModal("accept");
+      })
     }
+
     if (this.declineBtn) {
-      this.declineBtn.addEventListener("click", () => this.showModal("decline"));
+      this.declineBtn.addEventListener("click", () => {
+        this.dataId = event.target.getAttribute('data-id').replace("decline-btn-", ""); 
+        this.showModal("decline")
+      });
     }
   }
 
@@ -539,13 +569,24 @@
     }
   }
 
-  confirmAccept() {
+  async confirmAccept() {
+    try {
+      await fetch(`http://localhost:8000/api/user/listings/rental-requests/approved`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rental_transaction_id: this.dataId }),
+      });
+    } catch (error) {
+      alert(error.message);
+    }
     this.confirmationModal.style.display = "none";
     this.successContainer.style.display = "block";
 
     setTimeout(() => {
       this.overlay.style.display = "none";
       this.successContainer.style.display = "none";
+
+      window.location.reload()
     }, 3000);
   }
 
@@ -797,4 +838,13 @@ function addRentalItem(renterName, location, itemName, rentalDuration, modeOfDel
       });
     });
 
+    // Workaround
+    document.addEventListener("click", function(event) {
+      const button = event.target.closest("button[data-index]");
+      if (button) {
+          console.log(button.getAttribute("data-index"));
+          // confirmationModal.style.display = 'block';
+      }
+    });
+  
   </script>

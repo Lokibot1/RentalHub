@@ -13,7 +13,7 @@ router.get("/rental-requests/:user_id", async (req, res) => {
 
     const sql = `
         SELECT
-            items.id AS item_id,
+            rental_transactions.id AS rent_transaction_id,
             CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
             items.location AS item_location,
             items.file_path AS item_image,
@@ -36,6 +36,33 @@ router.get("/rental-requests/:user_id", async (req, res) => {
         res.status(200).json({
             success: true,
             data: results
+        });
+    });
+});
+
+
+/**
+ * Update rental request to approved
+ * @route PATCH /api/user/listings/rental-requests/approved
+ */
+router.patch("/rental-requests/approved", async (req, res) => {
+    const { rental_transaction_id } = req.body
+
+    const sql = `
+        UPDATE rental_transactions
+        SET is_approved = 1
+        WHERE rental_transactions.id = ?
+    `
+
+    db.query(sql, [rental_transaction_id], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({ success: false, message: "Update failed." });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Successfully updated.'
         });
     });
 });

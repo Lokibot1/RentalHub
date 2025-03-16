@@ -119,11 +119,15 @@ router.get("/my-listing", checkAuth, checkUser, async (req, res) => {
     const approvedResponse = await fetch(`${process.env.BASE_URL}/api/user/posts/approve/${req.user.id}`);
     const approvedPosts = await approvedResponse.json();
 
+    const rentalRequestResponse = await fetch(`${process.env.BASE_URL}/api/user/listings/rental-requests/${req.user.id}`);
+    const rentalRequests = await rentalRequestResponse.json();
+
     res.render("user/my-listing", {
       layout: "layouts/user",
       title: "My Listings",
-      pendingPosts: pendingPosts.data, // Pass the retrieved pending posts
-      approvedPosts: approvedPosts.data, // Pass the retrieved pending posts
+      pendingPosts: pendingPosts.data,
+      approvedPosts: approvedPosts.data,
+      rentalRequests: rentalRequests.data,
       isAuthenticated: req.isAuthenticated,
       role: req.role,
     });
@@ -135,6 +139,7 @@ router.get("/my-listing", checkAuth, checkUser, async (req, res) => {
       title: "My Listings",
       pendingPosts: [],
       approvedPosts: [],
+      rentalRequests: [],
       isAuthenticated: req.isAuthenticated,
       role: req.role,
     });

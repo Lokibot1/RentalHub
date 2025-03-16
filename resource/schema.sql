@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS users
     last_name      VARCHAR(50)  NOT NULL,
     suffix         VARCHAR(10),
     contact_number VARCHAR(20)  NOT NULL,
-    social_media   VARCHAR(20),
+    social_media   VARCHAR(100),
     region         VARCHAR(100),
     city           VARCHAR(100),
     barangay       VARCHAR(100),
