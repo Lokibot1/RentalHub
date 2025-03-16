@@ -18,13 +18,11 @@ router.get("/:user_id", async (req, res) => {
         (SELECT COUNT(*) FROM items WHERE items.user_id = users.id AND is_approved != 1) AS total_pending_posts,
         (SELECT COUNT(*) FROM items WHERE items.user_id = users.id AND is_approved = 1) AS total_items_posted,
         (SELECT COUNT(*) FROM rental_transactions WHERE is_approved = 1) AS total_items_rented,
-        (SELECT COUNT(*) FROM rental_transactions WHERE rental_transactions.item_id IN 
-            (SELECT id FROM items WHERE items.user_id = users.id)
-        ) AS total_items_rent_request
+        (SELECT COUNT(*) FROM rental_transactions WHERE is_approved = 0 AND users.id = ?) AS total_items_rent_request
         FROM users
         WHERE users.id = ?
     `;
-    db.query(sql, [user_id], (err, results) => {
+    db.query(sql, [user_id, user_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
             return res.status(500).json({ success: false, message: "Query failed." });
