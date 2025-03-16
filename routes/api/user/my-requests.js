@@ -7,23 +7,21 @@ const router = express.Router();
 /**
  * Get rent request items
  * 
- * @route GET /api/user/rent/request/:user_id
+ * @route GET /api/user/my-requests/requests/:user_id
  */
-router.get("/request/:user_id", async (req, res) => {
+router.get("/requests/:user_id", async (req, res) => {
     const { user_id } = req.params
 
     const sql = `
-        SELECT
-            rental_transactions.id AS id,
-            CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
-            items.file_path AS item_image,
-            items.name AS item_name
+        SELECT rental_transactions.id                         AS id,
+               CONCAT(users.first_name, ' ', users.last_name) AS owner_name,
+               items.file_path                                AS item_image,
+               items.name                                     AS item_name
         FROM rental_transactions
-        JOIN users ON users.id = rental_transactions.renter_id
-        JOIN items ON items.id = rental_transactions.item_id
-        WHERE
-            rental_transactions.is_approved = 0
-            AND rental_transactions.renter_id = ?;
+                 JOIN items ON items.id = rental_transactions.item_id
+                 JOIN users ON users.id = items.user_id
+        WHERE rental_transactions.is_approved = 0
+          AND rental_transactions.renter_id = ?
     `
 
     db.query(sql, [user_id], (err, results) => {
@@ -43,26 +41,24 @@ router.get("/request/:user_id", async (req, res) => {
 /**
  * Get ongoing rent items
  * 
- * @route GET /api/user/rent/ongoing/:user_id
+ * @route GET /api/user/my-requests/ongoing/:user_id
  */
 router.get("/ongoing/:user_id", async (req, res) => {
     const { user_id } = req.params
 
     const sql = `
-        SELECT
-            rental_transactions.id AS id,
-            CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
-            items.file_path AS item_image,
-            items.name AS item_name,
-            rental_transactions.start_date AS start_date,
-            rental_transactions.end_date AS end_date,
-            mode_of_delivery
+        SELECT rental_transactions.id                         AS id,
+               CONCAT(users.first_name, ' ', users.last_name) AS owner_name,
+               items.file_path                                AS item_image,
+               items.name                                     AS item_name,
+               start_date,
+               end_date,
+               mode_of_delivery
         FROM rental_transactions
-        JOIN users ON users.id = rental_transactions.renter_id
-        JOIN items ON items.id = rental_transactions.item_id
-        WHERE
-            rental_transactions.is_approved = 1
-            AND rental_transactions.renter_id = ?;
+                 JOIN items ON items.id = rental_transactions.item_id
+                 JOIN users ON users.id = items.user_id
+        WHERE rental_transactions.is_approved = 1
+          AND rental_transactions.renter_id = ?
     `
 
     db.query(sql, [user_id], (err, results) => {
@@ -81,7 +77,7 @@ router.get("/ongoing/:user_id", async (req, res) => {
 
 /**
  * Rent item
- * @route POST /api/user/rent
+ * @route POST /api/user/my-requests
  */
 router.post("/", async (req, res) => {
     const {

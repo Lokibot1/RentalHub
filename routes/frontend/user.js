@@ -75,8 +75,6 @@ router.get("/profile", checkAuth, checkUser, async (req, res) => {
       role: req.role,
     });
   }
-
-
 });
 
 
@@ -87,10 +85,10 @@ router.get("/profile", checkAuth, checkUser, async (req, res) => {
  */
 router.get("/my-requests", checkAuth, checkUser, async (req, res) => {
   try {
-    const rentRequestResponse = await fetch(`${process.env.BASE_URL}/api/user/rent/request/${req.user.id}`);
+    const rentRequestResponse = await fetch(`${process.env.BASE_URL}/api/user/my-requests/requests/${req.user.id}`);
     const rentRequests = await rentRequestResponse.json();
 
-    const ongoingRentResponse = await fetch(`${process.env.BASE_URL}/api/user/rent/ongoing/${req.user.id}`);
+    const ongoingRentResponse = await fetch(`${process.env.BASE_URL}/api/user/my-requests/ongoing/${req.user.id}`);
     const ongoingRentItems = await ongoingRentResponse.json();
 
     res.render("user/my-requests", {
@@ -222,7 +220,6 @@ router.get("/view-pending/:item_id", optionalAuth, async (req, res) => {
       role: req.role,
     });
   }
-
 });
 
 

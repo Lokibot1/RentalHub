@@ -6,7 +6,7 @@ const router = express.Router();
 router.use("/posts", require("./posts"));
 router.use("/profile", require("./profile"));
 router.use("/dashboard", require("./dashboard"));
-router.use("/rent", require("./rent"));
+router.use("/my-requests", require("./my-requests"));
 router.use("/listings", require("./listings"));
 
 
