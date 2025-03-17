@@ -5,15 +5,23 @@ const router = express.Router();
 
 
 /**
- * Get transactions data
+ * Get posted items - automatic approved
  *
- * @route GET /api/admin/manage-users
+ * @route GET /api/admin/my-items/posted-items
  */
-router.get("/", async (req, res) => {
+router.get("/posted-items", async (req, res) => {
     const sql = `
-        SELECT CONCAT(users.first_name, ' ', users.last_name) AS fullname
-        FROM users
-        WHERE users.role_id != 1
+        SELECT
+            items.id AS item_id,
+            items.file_path AS item_image,
+            name,
+            price,
+            stock_quantity,
+            location
+        FROM items
+                 JOIN users ON items.user_id = users.id
+                 JOIN inventory ON items.id = inventory.item_id
+        WHERE users.role_id = 1 AND items.is_approved = 1
     `
 
     db.query(sql, (err, results) => {

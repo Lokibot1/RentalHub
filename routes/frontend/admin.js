@@ -64,7 +64,9 @@ router.get("/admin-profile", checkAuth, checkAdmin, async (req, res) => {
 
 
 /**
+ * TODO: Refactor this one
  * My Rents
+ *
  * @route GET /admin/admin-rents
  */
 router.get("/admin-rents", checkAuth, checkAdmin, (req, res) => {
@@ -78,20 +80,40 @@ router.get("/admin-rents", checkAuth, checkAdmin, (req, res) => {
 
 
 /**
- * My Rents
- * @route GET /admin/admin-listing
+ * My Items
+ *
+ * @route GET /admin/my-items
  */
-router.get("/admin-listings", checkAuth, checkAdmin, (req, res) => {
-    res.render("admin/admin-listings", {
-        layout: "layouts/dashboard",
-        title: "My Listings",
-        isAuthenticated: req.isAuthenticated,
-        role: req.role,
-    });
+router.get("/my-items", checkAuth, checkAdmin, async (req, res) => {
+    try {
+        const response = await fetch(`${process.env.BASE_URL}/api/admin/my-items/posted-items`);
+        const adminItems = await response.json();
+
+        res.render("admin/my-items", {
+            layout: "layouts/dashboard",
+            title: "Admin - My Items",
+            adminItems: adminItems.data,
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+        });
+    } catch (error) {
+        console.error("Error fetching pending posts:", error);
+
+        res.render("admin/my-items", {
+            layout: "layouts/dashboard",
+            title: "Admin - My Items",
+            adminItems: [],
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+        });
+    }
 });
 
+
 /**
+ * TODO: Refactor this to add item
  * Page for adding new post
+ *
  * @route GET /admin/listing
  */
 router.get("/listing", checkAuth, checkAdmin, (req, res) => {

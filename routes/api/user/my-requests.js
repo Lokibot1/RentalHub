@@ -37,6 +37,7 @@ router.get("/requests/:user_id", async (req, res) => {
     });
 });
 
+
 /**
  * Cancel (delete) a rent request
  * 
@@ -105,6 +106,7 @@ router.get("/ongoing/:user_id", async (req, res) => {
 
 /**
  * Rent item
+ *
  * @route POST /api/user/my-requests
  */
 router.post("/", async (req, res) => {
