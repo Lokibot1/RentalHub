@@ -37,4 +37,37 @@ router.get("/", async (req, res) => {
 });
 
 
+
+/**
+ * Update Profile
+ * 
+ * @route PATCH /api/admin/profile/update
+ */
+router.patch("/update", async (req, res) => {
+    const {email, contact_number, social_media, address} = req.body
+
+    const sql = `
+            UPDATE users 
+            SET 
+                email = ?, 
+                contact_number = ?,
+                social_media = ?, 
+                address = ? 
+            WHERE role_id = 1
+    `
+
+    db.query(sql, [email, contact_number, social_media, address], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({ success: false, message: "Update failed." });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Admin profile updated!`
+        });
+    });
+});
+
+
 module.exports = router;
