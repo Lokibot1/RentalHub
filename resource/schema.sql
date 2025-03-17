@@ -36,9 +36,9 @@ CREATE TABLE IF NOT EXISTS users
 
 -- Note: (Only for development)
 -- Password is '1234567a'
-INSERT INTO users (role_id, first_name, last_name, contact_number, email, password)
+INSERT INTO users (role_id, first_name, last_name, contact_number, email, password, social_media, address)
 VALUES (1, 'Admin', 'Admin', '09123456789', 'admin@gmail.com',
-        '$2a$10$Bru/3reMfMIXlu4uw9PQ..RDNyRPVZ49YeHlhveh4.PpsFTmBopjW');
+        '$2a$10$Bru/3reMfMIXlu4uw9PQ..RDNyRPVZ49YeHlhveh4.PpsFTmBopjW', 'admin@rentalhub.com', 'Rental Hub Compound');
 
 -- categories
 CREATE TABLE IF NOT EXISTS categories

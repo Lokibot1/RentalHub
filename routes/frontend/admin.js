@@ -38,13 +38,28 @@ router.get("/admin-dashboard", checkAuth, checkAdmin, async (req, res) => {
  * Profile Page
  * @route GET /admin/admin-profile
  */
-router.get("/admin-profile", checkAuth, checkAdmin, (req, res) => {
-    res.render("admin/admin-profile", {
-        layout: "layouts/dashboard",
-        title: "Admin Profile",
-        isAuthenticated: req.isAuthenticated,
-        role: req.role,
-    });
+router.get("/admin-profile", checkAuth, checkAdmin, async (req, res) => {
+    try {
+        const response = await fetch(`${process.env.BASE_URL}/api/admin/profile`);
+        const adminProfile = await response.json();
+    
+        res.render("admin/admin-profile", {
+            layout: "layouts/dashboard",
+            title: "Admin Profile",
+            adminProfile: adminProfile.data,
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        res.render("admin/admin-profile", {
+            layout: "layouts/dashboard",
+            title: "Admin Profile",
+            adminProfile: [],
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+        });
+      }
 });
 
 

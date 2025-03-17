@@ -7,6 +7,7 @@ router.use("/posts", require("./posts"));
 router.use("/dashboard", require("./dashboard"));
 router.use("/manage-users", require("./manage-users"));
 router.use("/transactions", require("./transactions"));
+router.use("/profile", require("./profile"));
 
 
 module.exports = router;
