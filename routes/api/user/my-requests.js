@@ -37,6 +37,34 @@ router.get("/requests/:user_id", async (req, res) => {
     });
 });
 
+/**
+ * Cancel (delete) a rent request
+ * 
+ * @route DELETE /api/user/my-requests/cancel/:request_id
+ */
+router.delete("/cancel/:request_id", (req, res) => {
+    const { request_id } = req.params;
+    
+    const deleteSql = `
+        DELETE FROM rental_transactions 
+        WHERE id = ?
+    `;
+    
+    db.query(deleteSql, [request_id], (err, results) => {
+        if (err) {
+            console.error("Database error during deletion:", err);
+            return res.status(500).json({ 
+                success: false, 
+                message: "Failed to delete the request." 
+            });
+        }
+        
+        return res.status(200).json({ 
+            success: true, 
+            message: "Request successfully canceled." 
+        });
+    });
+});
 
 /**
  * Get ongoing rent items
