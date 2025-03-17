@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 /**
- * Get posted items - automatic approved
+ * Get posted items
  *
  * @route GET /api/admin/my-items/posted-items
  */

@@ -33,9 +33,16 @@ const upload = multer({ storage: storage });
 router.post("/listing", checkAuth, upload.single('item_file'), async (req, res) => {
     const { item_name, item_price, item_description, item_quantity, location, categories } = req.body;
     const item_file = req.file; // Access the uploaded file
+    let isApproved = false
 
     if (!item_file) {
         return res.status(400).json({ success: false, message: "File upload failed." });
+    }
+
+    if (req.user.role === 'admin') {
+        isApproved = true
+    } else {
+        isApproved = false
     }
 
     // Begin transaction
@@ -46,8 +53,8 @@ router.post("/listing", checkAuth, upload.single('item_file'), async (req, res) 
         }
 
         // Insert item into `items` table
-        const insertItemSql = "INSERT INTO items (name, price, description, location, file_path, category_id, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        db.query(insertItemSql, [item_name, item_price, item_description, location, item_file.filename, categories, req.user.id], (err, result) => {
+        const insertItemSql = "INSERT INTO items (name, price, description, location, file_path, category_id, user_id, is_approved) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        db.query(insertItemSql, [item_name, item_price, item_description, location, item_file.filename, categories, req.user.id, isApproved], (err, result) => {
             if (err) {
                 console.error("Item insertion failed:", err);
                 return db.rollback(() => {
