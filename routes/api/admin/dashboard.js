@@ -12,7 +12,8 @@ router.get("/", async (req, res) => {
     const sql = `
     SELECT 
         (SELECT COUNT(*) FROM users WHERE role_id != 1) AS total_users,
-        (SELECT COUNT(*) FROM items WHERE is_approved = 1) AS total_listings;
+        (SELECT COUNT(*) FROM items WHERE is_approved = 1) AS total_listings,
+        (SELECT COUNT(*) FROM rental_transactions WHERE is_approved = 1) AS total_transactions;
     `;
     db.query(sql, (err, results) => {
         if (err) {
