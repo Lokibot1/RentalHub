@@ -72,4 +72,41 @@ router.get("/rental-requests", async (req, res) => {
         });
     });
 });
+
+
+/**
+ * Get ongoing transactions
+ *
+ * @route GET /api/admin/my-items/ongoing-transactions
+ */
+router.get("/ongoing-transactions", async (req, res) => {
+    const sql = `
+        SELECT
+            items.id AS id,
+            CONCAT(renter.first_name, ' ', renter.last_name) AS renters_name,
+            items.file_path AS item_image,
+            items.name AS item_name,
+            start_date,
+            end_date,
+            mode_of_delivery
+        FROM items
+                 JOIN rental_transactions ON items.id = rental_transactions.item_id
+                 JOIN users AS renter ON rental_transactions.renter_id = renter.id
+        WHERE items.user_id = 1 AND rental_transactions.is_approved = 1
+    `
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({ success: false, message: "Query failed." });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results
+        });
+    });
+});
+
+
 module.exports = router;

@@ -32,23 +32,23 @@
             <!--Pending Post-->
             <div id="PendingPosts" class="tab-content">
                 <div class="shoppingList">
-                    <a href="/dashboard/view-pending">
-                        <div class="shoppingItem">
-                            <img src="" alt="" class="itemImage"/>
-                            <hr/>
-                            <strong class="itemName">Name</strong>
-                            <br/>
-                            <div class="item-price-quantity">
-                                <strong class="itemPrice">$123</strong>
-                                <br/>
-                                <strong>
-                                    <p class="itemQuantity">7 Left</p>
-                                    <!--TO FIX: create to kase di q sya mahanap e hehehe-->
-                                </strong>
-                            </div>
-                            <strong class="itemLocation">jan lang</strong>
-                        </div>
-                    </a>
+<!--                    <a href="/dashboard/view-pending">-->
+<!--                        <div class="shoppingItem">-->
+<!--                            <img src="" alt="" class="itemImage"/>-->
+<!--                            <hr/>-->
+<!--                            <strong class="itemName">Name</strong>-->
+<!--                            <br/>-->
+<!--                            <div class="item-price-quantity">-->
+<!--                                <strong class="itemPrice">$123</strong>-->
+<!--                                <br/>-->
+<!--                                <strong>-->
+<!--                                    <p class="itemQuantity">7 Left</p>-->
+<!--                                    &lt;!&ndash;TO FIX: create to kase di q sya mahanap e hehehe&ndash;&gt;-->
+<!--                                </strong>-->
+<!--                            </div>-->
+<!--                            <strong class="itemLocation">jan lang</strong>-->
+<!--                        </div>-->
+<!--                    </a>-->
                 </div>
             </div>
 
@@ -86,19 +86,20 @@
                 </div>
             </div>
 
+            <%
+            function formatDateRange(startDate, endDate) {
+                const options = {year: 'numeric', month: 'long', day: 'numeric'};
+
+                const start = new Date(startDate).toLocaleDateString('en-US', options);
+                const end = new Date(endDate).toLocaleDateString('en-US', options);
+
+                return `${start} - ${end}`;
+            }
+            %>
+
             <!--Request Items-->
             <div id="RentalRequests" class="tab-content" style="display: none">
                 <div class="RentalList">
-                    <%
-                    function formatDateRange(startDate, endDate) {
-                        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-
-                        const start = new Date(startDate).toLocaleDateString('en-US', options);
-                        const end = new Date(endDate).toLocaleDateString('en-US', options);
-
-                        return `${start} - ${end}`;
-                    }
-                    %>
 
                     <% if (adminRentalRequests.length > 0) { %>
                         <% adminRentalRequests.forEach(function(item) { %>
@@ -142,6 +143,7 @@
                     <% } else { %>
                         <p>No rental requests available.</p>
                     <% } %>
+
                     <div id="overlay" class="overlay"></div>
                     <div id="success-container1" class="success-container1">
                         <div id="success-message1" class="success-message1">
@@ -173,27 +175,34 @@
         <!--On Transactions-->
         <div id="OnTransactions" class="tab-content" style="display: none">
             <div class="RentalList">
-                <div class="rentalItem">
-                    <div class="rentalInfo">
-                        <div class="renterDetails">
-                            <strong class="renterName">Renter's Name</strong>
+
+                <% if (adminOngoingTransactions.length > 0) { %>
+                    <% adminOngoingTransactions.forEach(function(item) { %>
+                        <div class="rentalItem">
+                            <div class="rentalInfo">
+                                <div class="renterDetails">
+                                    <strong class="renterName"><%= item.renters_name %></strong>
+                                </div>
+                                <div class="itemDetails">
+                                    <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
+                                    <h2 class="itemName"><%= item.item_name %></h2>
+                                </div>
+                                <div class="rentalDurationContainer">
+                                    <strong class="rentalDuration"><%= formatDateRange(item.start_date, item.end_date) %></strong>
+                                    <strong>•</strong>
+                                    <strong class="MOD"><%= item.mode_of_delivery %></strong>
+                                </div>
+                            </div>
+                            <div class="completeAction">
+                                <button id="report-btn">File a Report</button>
+                                <!--FIX ME: width problem, no submit requirements, no darkbg overlay-->
+                                <button id="review-btn">Done</button>
+                            </div>
                         </div>
-                        <div class="itemDetails">
-                            <img src="" alt="" class="itemImage"/>
-                            <h2 class="itemName">Items Name</h2>
-                        </div>
-                        <div class="rentalDurationContainer">
-                            <strong class="rentalDuration">February 3-4, 2025</strong>
-                            <strong>•</strong>
-                            <strong class="MOD">Delivery</strong>
-                        </div>
-                    </div>
-                    <div class="completeAction">
-                        <button id="report-btn">File a Report</button>
-                        <!--FIX ME: width problem, no submit requirements, no darkbg overlay-->
-                        <button id="review-btn">Done</button>
-                    </div>
-                </div>
+                    <% }); %>
+                <% } else { %>
+                    <p>No ongoing transactions available.</p>
+                <% } %>
             </div>
         </div>
 
