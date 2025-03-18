@@ -44,6 +44,8 @@ Before you begin, ensure you have met the following requirements:
     # Application
     PORT=8000
 
+    BASE_URL=http://localhost:8000
+
     # Database
     DB_HOST=localhost
     DB_USER=root
