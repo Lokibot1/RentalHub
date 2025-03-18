@@ -89,10 +89,14 @@ router.get("/my-items", checkAuth, checkAdmin, async (req, res) => {
         const response = await fetch(`${process.env.BASE_URL}/api/admin/my-items/posted-items`);
         const adminItems = await response.json();
 
+        const responseRentalRequests = await fetch(`${process.env.BASE_URL}/api/admin/my-items/rental-requests`);
+        const adminRentalRequests = await responseRentalRequests.json();
+
         res.render("admin/my-items", {
             layout: "layouts/dashboard",
             title: "Admin - My Items",
             adminItems: adminItems.data,
+            adminRentalRequests: adminRentalRequests.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
         });
@@ -103,6 +107,7 @@ router.get("/my-items", checkAuth, checkAdmin, async (req, res) => {
             layout: "layouts/dashboard",
             title: "Admin - My Items",
             adminItems: [],
+            adminRentalRequests: [],
             isAuthenticated: req.isAuthenticated,
             role: req.role,
         });

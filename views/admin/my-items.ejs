@@ -89,42 +89,59 @@
             <!--Request Items-->
             <div id="RentalRequests" class="tab-content" style="display: none">
                 <div class="RentalList">
-                    <div class="rentalItem">
-                        <div class="rentalInfo">
-                            <div class="renterDetails">
-                                <strong class="renterName">Renter's Name</strong>
-                                <strong>•</strong>
-                                <strong class="renterLocation">Location</strong>
-                            </div>
-                            <div class="itemDetails">
-                                <img src="" alt="" class="itemImage"/>
-                                <h2 class="itemName">Items Name</h2>
-                            </div>
-                            <div class="rentalDurationContainer">
-                                <strong class="rentalDuration">February 3-4, 2025</strong>
-                                <strong>•</strong>
-                                <strong class="MOD">Delivery</strong>
-                            </div>
-                        </div>
+                    <%
+                    function formatDateRange(startDate, endDate) {
+                        const options = { year: 'numeric', month: 'long', day: 'numeric' };
 
-                        <!-- Dark Background Overlay -->
-                        <div id="overlay" class="overlay"></div>
-                        <div class="rentalAction">
-                            <button id="accept-btn">✓</button>
-                            <button id="decline-btn">✗</button>
-                        </div>
-                        <div id="confirmation-modal1" class="confirmation-modal1">
-                            <div class="confirmation-box1">
-                                <h2 class="accept-text2">Are you sure you want to <span
-                                            class="accept-text1">accept</span> this request?</h2>
-                                <p class="note1">*Note: Remember to ask for Valid ID upon transaction*</p>
-                                <div class="button-container1">
-                                    <button id="yes-btn1" class="yes-btn1">Yes</button>
-                                    <button id="no-btn1" class="no-btn1">No</button>
+                        const start = new Date(startDate).toLocaleDateString('en-US', options);
+                        const end = new Date(endDate).toLocaleDateString('en-US', options);
+
+                        return `${start} - ${end}`;
+                    }
+                    %>
+
+                    <% if (adminRentalRequests.length > 0) { %>
+                        <% adminRentalRequests.forEach(function(item) { %>
+                            <div class="rentalItem">
+                                <div class="rentalInfo">
+                                    <div class="renterDetails">
+                                        <strong class="renterName"><%= item.renters_name %></strong>
+                                        <strong>•</strong>
+                                        <strong class="renterLocation"><%= item.location %></strong>
+                                    </div>
+                                    <div class="itemDetails">
+                                        <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
+                                        <h2 class="itemName"><%= item.item_name %></h2>
+                                    </div>
+                                    <div class="rentalDurationContainer">
+                                        <strong class="rentalDuration"><%= formatDateRange(item.start_date, item.end_date) %></strong>
+                                        <strong>•</strong>
+                                        <strong class="MOD"><%= item.mode_of_delivery %></strong>
+                                    </div>
+                                </div>
+
+                                <!-- Dark Background Overlay -->
+                                <div id="overlay" class="overlay"></div>
+                                <div class="rentalAction">
+                                    <button id="accept-btn">✓</button>
+                                    <button id="decline-btn">✗</button>
+                                </div>
+                                <div id="confirmation-modal1" class="confirmation-modal1">
+                                    <div class="confirmation-box1">
+                                        <h2 class="accept-text2">Are you sure you want to <span
+                                                    class="accept-text1">accept</span> this request?</h2>
+                                        <p class="note1">*Note: Remember to ask for Valid ID upon transaction*</p>
+                                        <div class="button-container1">
+                                            <button id="yes-btn1" class="yes-btn1">Yes</button>
+                                            <button id="no-btn1" class="no-btn1">No</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p>No rental requests available.</p>
+                    <% } %>
                     <div id="overlay" class="overlay"></div>
                     <div id="success-container1" class="success-container1">
                         <div id="success-message1" class="success-message1">

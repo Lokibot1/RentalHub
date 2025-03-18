@@ -39,11 +39,7 @@ router.post("/listing", checkAuth, upload.single('item_file'), async (req, res) 
         return res.status(400).json({ success: false, message: "File upload failed." });
     }
 
-    if (req.user.role === 'admin') {
-        isApproved = true
-    } else {
-        isApproved = false
-    }
+    isApproved = req.user.role === 'admin';
 
     // Begin transaction
     db.beginTransaction((err) => {
