@@ -67,15 +67,33 @@ router.get("/admin-profile", checkAuth, checkAdmin, async (req, res) => {
  * TODO: Refactor this one
  * My Rents
  *
- * @route GET /admin/admin-rents
+ * @route GET /admin/my-rents
  */
-router.get("/admin-rents", checkAuth, checkAdmin, (req, res) => {
-    res.render("admin/admin-rents", {
-        layout: "layouts/dashboard",
-        title: "Manage Users",
-        isAuthenticated: req.isAuthenticated,
-        role: req.role,
-    });
+router.get("/admin-rents", checkAuth, checkAdmin, async (req, res) => {
+    try {
+        const rentRequestResponse = await fetch(`${process.env.BASE_URL}/api/admin/my-rents/requests/${req.user.id}`);
+        const rentRequests = await rentRequestResponse.json();
+    
+        const ongoingRentResponse = await fetch(`${process.env.BASE_URL}/api/user/my-requests/ongoing/${req.user.id}`);
+        const ongoingRentItems = await ongoingRentResponse.json();
+    
+        res.render("admin/admin-rents", {
+            layout: "layouts/dashboard",
+            title: "My Request",
+            rentRequestItems: rentRequests.data,
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+        });
+      } catch (error) {
+        console.error("Error fetching pending posts:", error);
+        res.render("admin/admint-rents", {
+            layout: "layouts/dashboard",
+            title: "My Request",
+            rentRequestItems: [],
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+        });
+      }
 });
 
 
