@@ -1,5 +1,5 @@
 <!-- Place here your css styles -->
-<link rel="stylesheet" href="/css/shopping.css"/>
+<link rel="stylesheet" href="/css/shopping.css" />
 
 <!-- Body -->
 
@@ -11,41 +11,37 @@
         </div>
     </a>
     <div class="search-bar">
-        <input type="text" placeholder="Search"/>
-        <button><img src="/images/search.png"/></button>
+        <input type="text" placeholder="Search" />
+        <button><img src="/images/search.png" /></button>
     </div>
     <ul>
         <li><a href="/">Home</a></li>
         <li>
-            <% if (isAuthenticated && role == 'admin') { %>
+            <% if (isAuthenticated && role=='admin' ) { %>
                 <a href="/admin/listing">
                     <img src="/images/blueAdd.png" class="add-icon" />
                 </a>
-            <% } else if (isAuthenticated && role == 'user') { %>
-                <a href="/user/listing">
-                    <img src="/images/blueAdd.png" class="add-icon" />
-                </a>
-            <% } else { %>
-            <% } %>
+                <% } else if (isAuthenticated && role=='user' ) { %>
+                    <a href="/user/listing">
+                        <img src="/images/blueAdd.png" class="add-icon" />
+                    </a>
+                    <% } else { %>
+                        <% } %>
         </li>
         <li>
-            <% if (isAuthenticated && role == 'admin') { %>
+            <% if (isAuthenticated && role=='admin' ) { %>
                 <a href='/admin/admin-dashboard'>
                     <img src="/images/blueProfile.png" alt="Profile" class="profile-icon" />
                 </a>
-            <% } else if (isAuthenticated && role == 'user') { %>
-                <a href='/user/profile'>
-                    <img src="/images/blueProfile.png" alt="Profile" class="profile-icon" />
-                </a>
-            <% } else { %>
-                <a href="/login">
-                    <img
-                            src="/images/blueProfile.png"
-                            alt="Profile"
-                            class="profile-icon"
-                    />
-                </a>
-            <% } %>
+                <% } else if (isAuthenticated && role=='user' ) { %>
+                    <a href='/user/profile'>
+                        <img src="/images/blueProfile.png" alt="Profile" class="profile-icon" />
+                    </a>
+                    <% } else { %>
+                        <a href="/login">
+                            <img src="/images/blueProfile.png" alt="Profile" class="profile-icon" />
+                        </a>
+                        <% } %>
         </li>
     </ul>
 </nav>
@@ -109,32 +105,72 @@
         shoppingList = document.createElement("ul");
         shoppingList.className = "shoppingList"; // For CSS
 
+        // data.forEach(item => {
+        //     let shoppingContainer = document.getElementById('shopping-container');
+        //     if (!shoppingContainer) return;
+
+        //     shoppingContainer.appendChild(shoppingList);
+
+        //     let li = document.createElement("li");
+        //     li.className = "shoppingItem"; // For CSS
+        //     li.innerHTML = `
+        //       <img src="${item.image}" alt="Item Image" class="itemImage">
+        //       <br>
+        //       <hr>
+        //       <strong>${item.name}</strong>
+        //       <br>
+        //       <br>
+        //       <div class="item-price-quantity">
+        //       <strong>₱ ${item.price} per day</strong>
+        //       <br>
+        //       <p class="item-quantity"> ${item.quantity} left</p>
+        //       </div>
+        //       <br>
+        //       📍: ${item.location}
+        //       <br>
+        //     `;
+
+
+        //     // Make the item clickable
+        //     li.addEventListener("click", function () {
+        //         localStorage.setItem("selectedItem", JSON.stringify(item));
+        //         window.location.href = "/user/view-product";
+        //     });
+
+        //     shoppingList.appendChild(li);
+        // });
+
         data.forEach(item => {
+            if (item.quantity <= 0) {
+                return; // Skip the item if quantity is 0 or less
+            }
+
             let shoppingContainer = document.getElementById('shopping-container');
             if (!shoppingContainer) return;
+
+            let shoppingList = document.createElement("ul");
+            shoppingList.className = "shoppingList"; // For CSS
 
             shoppingContainer.appendChild(shoppingList);
 
             let li = document.createElement("li");
             li.className = "shoppingItem"; // For CSS
             li.innerHTML = `
-              <img src="${item.image}" alt="Item Image" class="itemImage">
-              <br>
-              <hr>
-              <strong>${item.name}</strong>
-              <br>
-              <br>
-              <div class="item-price-quantity">
-              <strong>₱ ${item.price} per day</strong>
-              <br>
-              <p class="item-quantity"> ${item.quantity} left</p>
-              </div>
-              <br>
-              📍: ${item.location}
-              <br>
-            `;
-
-
+        <img src="${item.image}" alt="Item Image" class="itemImage">
+        <br>
+        <hr>
+        <strong>${item.name}</strong>
+        <br>
+        <br>
+        <div class="item-price-quantity">
+        <strong>₱ ${item.price} per day</strong>
+        <br>
+        <p class="item-quantity"> ${item.quantity} left</p>
+        </div>
+        <br>
+        📍: ${item.location}
+        <br>
+    `;
             // Make the item clickable
             li.addEventListener("click", function () {
                 localStorage.setItem("selectedItem", JSON.stringify(item));
@@ -143,6 +179,7 @@
 
             shoppingList.appendChild(li);
         });
+
 
     });
 
