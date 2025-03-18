@@ -182,7 +182,10 @@ router.get("/archives", checkAuth, checkUser, (req, res) => {
  */
 router.get("/view-product", optionalAuth, (req, res) => {
   // Set the user_id
-  const renter_id = req.user.id
+  let renter_id = ''
+  if (req.user !== undefined) {
+    renter_id = req.user.id
+  }
 
   res.render("user/view-product", {
     layout: "layouts/user",

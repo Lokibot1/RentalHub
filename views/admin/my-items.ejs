@@ -32,23 +32,23 @@
             <!--Pending Post-->
             <div id="PendingPosts" class="tab-content">
                 <div class="shoppingList">
-<!--                    <a href="/dashboard/view-pending">-->
-<!--                        <div class="shoppingItem">-->
-<!--                            <img src="" alt="" class="itemImage"/>-->
-<!--                            <hr/>-->
-<!--                            <strong class="itemName">Name</strong>-->
-<!--                            <br/>-->
-<!--                            <div class="item-price-quantity">-->
-<!--                                <strong class="itemPrice">$123</strong>-->
-<!--                                <br/>-->
-<!--                                <strong>-->
-<!--                                    <p class="itemQuantity">7 Left</p>-->
-<!--                                    &lt;!&ndash;TO FIX: create to kase di q sya mahanap e hehehe&ndash;&gt;-->
-<!--                                </strong>-->
-<!--                            </div>-->
-<!--                            <strong class="itemLocation">jan lang</strong>-->
-<!--                        </div>-->
-<!--                    </a>-->
+                    <!--                    <a href="/dashboard/view-pending">-->
+                    <!--                        <div class="shoppingItem">-->
+                    <!--                            <img src="" alt="" class="itemImage"/>-->
+                    <!--                            <hr/>-->
+                    <!--                            <strong class="itemName">Name</strong>-->
+                    <!--                            <br/>-->
+                    <!--                            <div class="item-price-quantity">-->
+                    <!--                                <strong class="itemPrice">$123</strong>-->
+                    <!--                                <br/>-->
+                    <!--                                <strong>-->
+                    <!--                                    <p class="itemQuantity">7 Left</p>-->
+                    <!--                                    &lt;!&ndash;TO FIX: create to kase di q sya mahanap e hehehe&ndash;&gt;-->
+                    <!--                                </strong>-->
+                    <!--                            </div>-->
+                    <!--                            <strong class="itemLocation">jan lang</strong>-->
+                    <!--                        </div>-->
+                    <!--                    </a>-->
                 </div>
             </div>
 
@@ -124,8 +124,12 @@
                                 <!-- Dark Background Overlay -->
                                 <div id="overlay" class="overlay"></div>
                                 <div class="rentalAction">
-                                    <button class="accept-btn" data-id="accept-btn-<%= item.rental_transaction_id %>">✓</button>
-                                    <button class="decline-btn" data-id="decline-btn-<%= item.rental_transaction_id %>">✗</button>
+                                    <button class="accept-btn" data-id="accept-btn-<%= item.rental_transaction_id %>">
+                                        ✓
+                                    </button>
+                                    <button class="decline-btn" data-id="decline-btn-<%= item.rental_transaction_id %>">
+                                        ✗
+                                    </button>
                                 </div>
                                 <div id="confirmation-modal1" class="confirmation-modal1">
                                     <div class="confirmation-box1">
@@ -145,30 +149,30 @@
                     <% } %>
                 </div>
             </div>
-                    <div id="overlay" class="overlay"></div>
-                    <div id="success-container1" class="success-container1">
-                        <div id="success-message1" class="success-message1">
-                            <p>Request accepted successfully!</p>
-                        </div>
-                    </div>
+            <div id="overlay" class="overlay"></div>
+            <div id="success-container1" class="success-container1">
+                <div id="success-message1" class="success-message1">
+                    <p>Request accepted successfully!</p>
+                </div>
+            </div>
 
-                    <!-- Decline Confirmation Modal -->
-                    <div id="decline-confirmation-modal1" class="confirmation-modal1">
-                        <div class="confirmation-box1">
-                            <h2>Are you sure you want to <span class="decline-text1">decline</span> this request?</h2>
-                            <div class="button-container1">
-                                <button id="decline-yes-btn1" class="yes-btn1">Yes</button>
-                                <button id="decline-no-btn1" class="no-btn1">No</button>
-                            </div>
-                        </div>
+            <!-- Decline Confirmation Modal -->
+            <div id="decline-confirmation-modal1" class="confirmation-modal1">
+                <div class="confirmation-box1">
+                    <h2>Are you sure you want to <span class="decline-text1">decline</span> this request?</h2>
+                    <div class="button-container1">
+                        <button id="decline-yes-btn1" class="yes-btn1">Yes</button>
+                        <button id="decline-no-btn1" class="no-btn1">No</button>
                     </div>
+                </div>
+            </div>
 
-                    <div id="overlay" class="overlay"></div>
-                    <div id="decline-container1" class="decline-container1">
-                        <div id="decline-message1" class="decline-message1">
-                            <p>Request declined successfully!</p>
-                        </div>
-                    </div>
+            <div id="overlay" class="overlay"></div>
+            <div id="decline-container1" class="decline-container1">
+                <div id="decline-message1" class="decline-message1">
+                    <p>Request declined successfully!</p>
+                </div>
+            </div>
         </div>
 
         <!--On Transactions-->
@@ -309,434 +313,437 @@
             </div>
         </div> -->
 
-        <!-- JavaScript -->
-        <script>
-            // OPEN TAB FUNCTION
-            function openTab(evt, tabName) {
-                var i, tabs, buttons;
-                tabs = document.getElementsByClassName("tab-content");
-                for (i = 0; i < tabs.length; i++) {
-                    tabs[i].style.display = "none";
-                }
-                buttons = document.getElementsByClassName("tablinks");
-                for (i = 0; i < buttons.length; i++) {
-                    buttons[i].classList.remove("active");
-                }
-                document.getElementById(tabName).style.display = "block";
-                evt.currentTarget.classList.add("active");
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    // OPEN TAB FUNCTION
+    function openTab(evt, tabName) {
+        var i, tabs, buttons;
+        tabs = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabs.length; i++) {
+            tabs[i].style.display = "none";
+        }
+        buttons = document.getElementsByClassName("tablinks");
+        for (i = 0; i < buttons.length; i++) {
+            buttons[i].classList.remove("active");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.classList.add("active");
+    }
+
+    // FETCH USER LISTINGS AND SORT THEM INTO TABS
+    async function fetchAndSortListings() {
+        try {
+            const response = await fetch("/api/user-listings"); // Fetch all user listings
+            const listings = await response.json();
+
+            // Containers for each tab
+            const pendingContainer = document.getElementById("PendingPosts");
+            const itemsContainer = document.getElementById("Items");
+            const rentalRequestsContainer =
+                document.getElementById("RentalRequests");
+            const transactionsContainer =
+                document.getElementById("OnTransactions");
+            const ratingContainer = document.getElementById("Reviews");
+
+            // Clear previous data
+            pendingContainer.innerHTML = "";
+            itemsContainer.innerHTML = "";
+            rentalRequestsContainer.innerHTML = "";
+            transactionsContainer.innerHTML = "";
+            ratingContainer.innerHTML = "";
+
+            if (listings.length === 0) {
+                pendingContainer.innerHTML = "<p>No listings available.</p>";
+                return;
             }
 
-            // FETCH USER LISTINGS AND SORT THEM INTO TABS
-            async function fetchAndSortListings() {
-                try {
-                    const response = await fetch("/api/user-listings"); // Fetch all user listings
-                    const listings = await response.json();
-
-                    // Containers for each tab
-                    const pendingContainer = document.getElementById("PendingPosts");
-                    const itemsContainer = document.getElementById("Items");
-                    const rentalRequestsContainer =
-                        document.getElementById("RentalRequests");
-                    const transactionsContainer =
-                        document.getElementById("OnTransactions");
-                    const ratingContainer = document.getElementById("Reviews");
-
-                    // Clear previous data
-                    pendingContainer.innerHTML = "";
-                    itemsContainer.innerHTML = "";
-                    rentalRequestsContainer.innerHTML = "";
-                    transactionsContainer.innerHTML = "";
-                    ratingContainer.innerHTML = "";
-
-                    if (listings.length === 0) {
-                        pendingContainer.innerHTML = "<p>No listings available.</p>";
-                        return;
-                    }
-
-                    listings.forEach((listing) => {
-                        const listingCard = document.createElement("div");
-                        listingCard.classList.add("listing-card");
-                        listingCard.innerHTML = `
+            listings.forEach((listing) => {
+                const listingCard = document.createElement("div");
+                listingCard.classList.add("listing-card");
+                listingCard.innerHTML = `
           <p class="listing-title">${listing.title}</p>
           <div class="listing-item">
             <img src="${
-                            listing.image || "placeholder.png"
-                        }" alt="Listing Image" class="listing-image">
+                    listing.image || "placeholder.png"
+                }" alt="Listing Image" class="listing-image">
             <span class="listing-name">${listing.name}</span>
           </div>
           <button class="cancel-btn" onclick="cancelListing('${
-                            listing.id
-                        }')">Cancel</button>
+                    listing.id
+                }')">Cancel</button>
         `;
 
-                        switch (listing.status) {
-                            case "pending":
-                                pendingContainer.appendChild(listingCard);
-                                break;
-                            case "approved":
-                                itemsContainer.appendChild(listingCard);
-                                break;
-                            case "rental_request":
-                                rentalRequestsContainer.appendChild(listingCard);
-                                break;
-                            case "on_transaction":
-                                transactionsContainer.appendChild(listingCard);
-                                break;
-                            case "completed":
-                                ratingContainer.appendChild(listingCard);
-                                break;
-                        }
-                    });
-                } catch (error) {
-                    console.error("Error fetching listings:", error);
+                switch (listing.status) {
+                    case "pending":
+                        pendingContainer.appendChild(listingCard);
+                        break;
+                    case "approved":
+                        itemsContainer.appendChild(listingCard);
+                        break;
+                    case "rental_request":
+                        rentalRequestsContainer.appendChild(listingCard);
+                        break;
+                    case "on_transaction":
+                        transactionsContainer.appendChild(listingCard);
+                        break;
+                    case "completed":
+                        ratingContainer.appendChild(listingCard);
+                        break;
                 }
+            });
+        } catch (error) {
+            console.error("Error fetching listings:", error);
+        }
+    }
+
+    // CANCEL A SINGLE LISTING FUNCTION
+    async function cancelListing(listingId) {
+        try {
+            const response = await fetch(`/api/cancel-listing/${listingId}`, {
+                method: "DELETE",
+                headers: {"Content-Type": "application/json"},
+            });
+            if (response.ok) {
+                alert("Listing canceled successfully.");
+                await fetchAndSortListings();
+            }
+        } catch (error) {
+            console.error("Error canceling listing:", error);
+        }
+    }
+
+    // CANCEL ALL LISTINGS FUNCTION
+    async function cancelAllListings() {
+        try {
+            const activeTab = document.querySelector(".tablinks.active").id;
+            let status = "";
+
+            switch (activeTab) {
+                case "PendingPosts":
+                    status = "pending";
+                    break;
+                case "Items":
+                    status = "approved";
+                    break;
+                case "RentalRequests":
+                    status = "rental_request";
+                    break;
+                case "OnTransactions":
+                    status = "on_transaction";
+                    break;
+                case "Reviews":
+                    status = "completed";
+                    break;
             }
 
-            // CANCEL A SINGLE LISTING FUNCTION
-            async function cancelListing(listingId) {
-                try {
-                    const response = await fetch(`/api/cancel-listing/${listingId}`, {
-                        method: "DELETE",
-                        headers: {"Content-Type": "application/json"},
-                    });
-                    if (response.ok) {
-                        alert("Listing canceled successfully.");
-                        await fetchAndSortListings();
-                    }
-                } catch (error) {
-                    console.error("Error canceling listing:", error);
-                }
+            const response = await fetch(`/api/cancel-all/${status}`, {
+                method: "DELETE",
+                headers: {"Content-Type": "application/json"},
+            });
+
+            if (response.ok) {
+                alert("All listings in this category have been canceled.");
+                await fetchAndSortListings();
             }
-
-            // CANCEL ALL LISTINGS FUNCTION
-            async function cancelAllListings() {
-                try {
-                    const activeTab = document.querySelector(".tablinks.active").id;
-                    let status = "";
-
-                    switch (activeTab) {
-                        case "PendingPosts":
-                            status = "pending";
-                            break;
-                        case "Items":
-                            status = "approved";
-                            break;
-                        case "RentalRequests":
-                            status = "rental_request";
-                            break;
-                        case "OnTransactions":
-                            status = "on_transaction";
-                            break;
-                        case "Reviews":
-                            status = "completed";
-                            break;
-                    }
-
-                    const response = await fetch(`/api/cancel-all/${status}`, {
-                        method: "DELETE",
-                        headers: {"Content-Type": "application/json"},
-                    });
-
-                    if (response.ok) {
-                        alert("All listings in this category have been canceled.");
-                        await fetchAndSortListings();
-                    }
-                } catch (error) {
-                    console.error("Error canceling all listings:", error);
-                }
-            }
-
-            // ADD EVENT LISTENER TO "CANCEL ALL" BUTTONS
-            document.querySelectorAll(".cancel-btn").forEach((btn) => {
-                btn.addEventListener("click", cancelAllListings);
-            });
-            //
-
-            //REPORT MODAL FIX ME: NO OVERLAY ON TOAST + NO CONDITIONS
-            document.addEventListener("DOMContentLoaded", function () {
-                const reportBtn = document.getElementById("report-btn");
-                const reportModal = document.getElementById("report-modal");
-                const modalOverlay = document.getElementById("modal-overlay");
-                const submitRprt = document.getElementById("submit-rprt");
-                const cancelRprt = document.getElementById("cancel-rprt");
-                const toast = document.getElementById("report-toast");
-
-                // Function to show modal
-                function showModal() {
-                    reportModal.style.display = "block";
-                    modalOverlay.style.display = "block";
-                }
-
-                // Function to hide modal
-                function hideModal() {
-                    reportModal.style.display = "none";
-                    modalOverlay.style.display = "none";
-                }
-
-                // Function to show toast notification
-                function showToast() {
-                    toast.classList.add("show");
-                    setTimeout(() => {
-                        toast.classList.remove("show");
-                    }, 3000); // Hide toast after 3 seconds
-                }
-
-                // Event listener for report button
-                if (reportBtn) {
-                    reportBtn.addEventListener("click", showModal);
-                }
-
-                // Event listener for cancel button
-                cancelRprt.addEventListener("click", hideModal);
-
-                // Event listener for submit button
-                submitRprt.addEventListener("click", function (event) {
-                    event.preventDefault(); // Prevent form submission
-                    hideModal();
-                    showToast();
-                });
-
-                // Close modal when clicking outside
-                modalOverlay.addEventListener("click", hideModal);
-            });
-
-
-            // RENTAL REQUEST accept
-            class RentalRequest {
-  constructor(id) {
-    this.id = id;
-    this.acceptBtn = document.querySelector(`[data-id="accept-btn-${id}"]`);
-    this.declineBtn = document.querySelector(`[data-id="decline-btn-${id}"]`);
-    this.confirmationModal = document.getElementById("confirmation-modal1");
-    this.declineConfirmationModal = document.getElementById("decline-confirmation-modal1");
-    this.overlay = document.getElementById("overlay");
-    this.successContainer = document.getElementById("success-container1");
-    this.declineContainer = document.getElementById("decline-container1");
-
-    // Store the transaction ID
-    this.dataId = id;
-
-    this.addEventListeners();
-  }
-
-  addEventListeners() {
-    if (this.acceptBtn) {
-      this.acceptBtn.addEventListener("click", () => {
-        this.showModal("accept");
-      });
+        } catch (error) {
+            console.error("Error canceling all listings:", error);
+        }
     }
 
-    if (this.declineBtn) {
-      this.declineBtn.addEventListener("click", () => {
-        this.showModal("decline");
-      });
-    }
-  }
+    // ADD EVENT LISTENER TO "CANCEL ALL" BUTTONS
+    document.querySelectorAll(".cancel-btn").forEach((btn) => {
+        btn.addEventListener("click", cancelAllListings);
+    });
+    //
 
-  showModal(action) {
-    this.overlay.style.display = "block";
+    //REPORT MODAL FIX ME: NO OVERLAY ON TOAST + NO CONDITIONS
+    document.addEventListener("DOMContentLoaded", function () {
+        const reportBtn = document.getElementById("report-btn");
+        const reportModal = document.getElementById("report-modal");
+        const modalOverlay = document.getElementById("modal-overlay");
+        const submitRprt = document.getElementById("submit-rprt");
+        const cancelRprt = document.getElementById("cancel-rprt");
+        const toast = document.getElementById("report-toast");
 
-    if (action === "accept") {
-      this.confirmationModal.style.display = "block";
+        // Function to show modal
+        function showModal() {
+            reportModal.style.display = "block";
+            modalOverlay.style.display = "block";
+        }
 
-      document.getElementById("yes-btn1").onclick = () => this.confirmAccept();
-      document.getElementById("no-btn1").onclick = () => this.hideModals();
-    } else if (action === "decline") {
-      this.declineConfirmationModal.style.display = "block";
+        // Function to hide modal
+        function hideModal() {
+            reportModal.style.display = "none";
+            modalOverlay.style.display = "none";
+        }
 
-      document.getElementById("decline-yes-btn1").onclick = () => this.confirmDecline();
-      document.getElementById("decline-no-btn1").onclick = () => this.hideModals();
-    }
-  }
+        // Function to show toast notification
+        function showToast() {
+            toast.classList.add("show");
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 3000); // Hide toast after 3 seconds
+        }
 
-  async confirmAccept() {
-    try {
-      await fetch(`${window.location.origin}/api/admin/listings/rental-requests/approved`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rental_transaction_id: this.dataId }),
-      });
-    } catch (error) {
-      console.error("Error accepting request:", error);
-      alert("An error occurred while accepting the request.");
-    }
-    
-    this.confirmationModal.style.display = "none";
-    this.successContainer.style.display = "block";
+        // Event listener for report button
+        if (reportBtn) {
+            reportBtn.addEventListener("click", showModal);
+        }
 
-    setTimeout(() => {
-      this.overlay.style.display = "none";
-      this.successContainer.style.display = "none";
+        // Event listener for cancel button
+        cancelRprt.addEventListener("click", hideModal);
 
-      window.location.reload();
-    }, 3000);
-  }
+        // Event listener for submit button
+        submitRprt.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent form submission
+            hideModal();
+            showToast();
+        });
 
-  async confirmDecline() {
-    try {
-      await fetch(`${window.location.origin}/api/admin/listings/rental-requests/declined`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rental_transaction_id: this.dataId }),
-      });
-    } catch (error) {
-      console.error("Error declining request:", error);
-      alert("An error occurred while declining the request.");
-    }
-    
-    this.declineConfirmationModal.style.display = "none";
-    this.declineContainer.style.display = "block";
-
-    setTimeout(() => {
-      this.overlay.style.display = "none";
-      this.declineContainer.style.display = "none";
-      
-      window.location.reload();
-    }, 3000);
-  }
-
-  hideModals() {
-    this.confirmationModal.style.display = "none";
-    this.declineConfirmationModal.style.display = "none";
-    this.overlay.style.display = "none";
-  }
-}
-
-// Initialize rental requests for existing items
-document.addEventListener("DOMContentLoaded", function() {
-  // Initialize existing accept buttons
-  document.querySelectorAll(".accept-btn").forEach((button) => {
-    const id = button.getAttribute("data-id").replace("accept-btn-", "");
-    new RentalRequest(id);
-  });
-
-  // No need to initialize decline buttons separately as they're handled by the same RentalRequest instance
-});
+        // Close modal when clicking outside
+        modalOverlay.addEventListener("click", hideModal);
+    });
 
 
-            // Review Modal Functionality FIX ME: WIDTH TOO WIDE, DARKBG OVERLAY NOT WORKING
-            const reviewBtn = document.getElementById("review-btn");
-            const reviewModal = document.getElementById("review-modal");
-            const confirmModal = document.getElementById("confirm-modal");
-            const submitRev = document.getElementById("submit-rev");
-            const confirmSubmit = document.getElementById("confirm-submit");
-            const cancelConfirm = document.getElementById("cancel-confirm");
-            const cancelRev = document.getElementById("cancel-rev");
-            const toast = document.getElementById("toast");
+    // RENTAL REQUEST accept
+    class RentalRequest {
+        constructor(id) {
+            this.id = id;
+            this.acceptBtn = document.querySelector(`[data-id="accept-btn-${id}"]`);
+            this.declineBtn = document.querySelector(`[data-id="decline-btn-${id}"]`);
+            this.confirmationModal = document.getElementById("confirmation-modal1");
+            this.declineConfirmationModal = document.getElementById("decline-confirmation-modal1");
+            this.overlay = document.getElementById("overlay");
+            this.successContainer = document.getElementById("success-container1");
+            this.declineContainer = document.getElementById("decline-container1");
 
-            // Show review modal
-            reviewBtn.addEventListener("click", function () {
-                reviewModal.style.display = "flex";
-            });
+            // Store the transaction ID
+            this.dataId = id;
 
-            // Hide review modal
-            cancelRev.addEventListener("click", function () {
-                reviewModal.style.display = "none";
-            });
+            this.addEventListeners();
+        }
 
-            // Star Rating System
-            const stars = document.querySelectorAll(".star2");
-            let selectedRating = 0;
-
-            stars.forEach((star) => {
-                star.addEventListener("click", function () {
-                    selectedRating = parseInt(this.getAttribute("data-value")); // Store the selected rating
-                    updateStars(selectedRating);
-                });
-
-                star.addEventListener("mouseover", function () {
-                    updateStars(parseInt(this.getAttribute("data-value")));
-                });
-
-                star.addEventListener("mouseout", function () {
-                    updateStars(selectedRating);
-                });
-            });
-
-            function updateStars(rating) {
-                stars.forEach((star, index) => {
-                    star.classList.toggle("active", index < rating);
+        addEventListeners() {
+            if (this.acceptBtn) {
+                this.acceptBtn.addEventListener("click", () => {
+                    this.showModal("accept");
                 });
             }
 
-            // Handle Review Submission
-            submitRev.addEventListener("click", function (event) {
-                event.preventDefault();
+            if (this.declineBtn) {
+                this.declineBtn.addEventListener("click", () => {
+                    this.showModal("decline");
+                });
+            }
+        }
 
-                if (selectedRating === 0) {
-                    showToast("Please select a star rating before submitting.", "error");
-                    return;
-                }
+        showModal(action) {
+            this.overlay.style.display = "block";
 
-                confirmModal.style.display = "flex"; // Show confirmation modal
-            });
+            if (action === "accept") {
+                this.confirmationModal.style.display = "block";
 
-            // Confirm submission
-            confirmSubmit.addEventListener("click", function () {
-                confirmModal.style.display = "none";
-                reviewModal.style.display = "none"; // Hide review modal
-                showToast("Review Submitted Successfully!");
-                selectedRating = 0; // Reset rating
-                updateStars(0);
-            });
+                document.getElementById("yes-btn1").onclick = () => this.confirmAccept();
+                document.getElementById("no-btn1").onclick = () => this.hideModals();
+            } else if (action === "decline") {
+                this.declineConfirmationModal.style.display = "block";
 
-            // Cancel confirmation modal
-            cancelConfirm.addEventListener("click", function () {
-                confirmModal.style.display = "none";
-            });
+                document.getElementById("decline-yes-btn1").onclick = () => this.confirmDecline();
+                document.getElementById("decline-no-btn1").onclick = () => this.hideModals();
+            }
+        }
 
-            // Hide modal when clicking outside
-            window.addEventListener("click", function (event) {
-                if (event.target === reviewModal) {
-                    reviewModal.style.display = "block";
-                }
-                if (event.target === confirmModal) {
-                    confirmModal.style.display = "none";
-                }
-            });
-
-            // Toast Notification Function
-            function showToast(message, type = "success") {
-                toast.innerText = message;
-                toast.classList.add("show");
-
-                // Apply different styles based on type
-                if (type === "error") {
-                    toast.classList.add("error");
-                } else {
-                    toast.classList.remove("error");
-                }
-
-                setTimeout(function () {
-                    toast.classList.remove("show");
-                }, 3000);
+        async confirmAccept() {
+            try {
+                await fetch(`${window.location.origin}/api/admin/listings/rental-requests/approved`, {
+                    method: "PATCH",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({rental_transaction_id: this.dataId}),
+                });
+            } catch (error) {
+                console.error("Error accepting request:", error);
+                alert("An error occurred while accepting the request.");
             }
 
-            //logout
-            document.addEventListener("DOMContentLoaded", function () {
-                const logoutLink = document.getElementById("logout");
-                const modal = document.getElementById("logout-modal");
-                const confirmLogout = document.getElementById("confirm-logout");
-                const cancelLogout = document.getElementById("cancel-logout");
+            this.confirmationModal.style.display = "none";
+            this.successContainer.style.display = "block";
 
-                // Ensure modal starts hidden
-                modal.style.display = "none";
+            setTimeout(() => {
+                this.overlay.style.display = "none";
+                this.successContainer.style.display = "none";
 
-                // Show modal when logout is clicked
-                logoutLink.addEventListener("click", function (event) {
-                    event.preventDefault(); // Prevents default link behavior
-                    modal.style.display = "flex"; // Show modal only on click
+                window.location.reload();
+            }, 3000);
+        }
+
+        async confirmDecline() {
+            try {
+                await fetch(`${window.location.origin}/api/admin/listings/rental-requests/declined`, {
+                    method: "PATCH",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({rental_transaction_id: this.dataId}),
                 });
+            } catch (error) {
+                console.error("Error declining request:", error);
+                alert("An error occurred while declining the request.");
+            }
 
-                // Redirect when "Yes" is clicked
-                confirmLogout.addEventListener("click", function () {
-                    window.location.href = "/logout"; // Adjust logout URL
-                });
+            this.declineConfirmationModal.style.display = "none";
+            this.declineContainer.style.display = "block";
 
-                // Close modal when "No" is clicked
-                cancelLogout.addEventListener("click", function () {
-                    modal.style.display = "none"; // Hide modal
-                });
-            });
+            setTimeout(() => {
+                this.overlay.style.display = "none";
+                this.declineContainer.style.display = "none";
 
-        </script>
+                window.location.reload();
+            }, 3000);
+        }
+
+        hideModals() {
+            this.confirmationModal.style.display = "none";
+            this.declineConfirmationModal.style.display = "none";
+            this.overlay.style.display = "none";
+        }
+    }
+
+    // Initialize rental requests for existing items
+    document.addEventListener("DOMContentLoaded", function () {
+        // Initialize existing accept buttons
+        document.querySelectorAll(".accept-btn").forEach((button) => {
+            const id = button.getAttribute("data-id").replace("accept-btn-", "");
+            new RentalRequest(id);
+        });
+
+        // No need to initialize decline buttons separately as they're handled by the same RentalRequest instance
+    });
+
+
+    // Review Modal Functionality FIX ME: WIDTH TOO WIDE, DARKBG OVERLAY NOT WORKING
+    const reviewBtn = document.getElementById("review-btn");
+    const reviewModal = document.getElementById("review-modal");
+    const confirmModal = document.getElementById("confirm-modal");
+    const submitRev = document.getElementById("submit-rev");
+    const confirmSubmit = document.getElementById("confirm-submit");
+    const cancelConfirm = document.getElementById("cancel-confirm");
+    const cancelRev = document.getElementById("cancel-rev");
+    const toast = document.getElementById("toast");
+
+    // Show review modal
+    reviewBtn.addEventListener("click", function () {
+        reviewModal.style.display = "flex";
+    });
+
+    // Hide review modal
+    cancelRev.addEventListener("click", function () {
+        reviewModal.style.display = "none";
+    });
+
+    // Star Rating System
+    const stars = document.querySelectorAll(".star2");
+    let selectedRating = 0;
+
+    stars.forEach((star) => {
+        star.addEventListener("click", function () {
+            selectedRating = parseInt(this.getAttribute("data-value")); // Store the selected rating
+            updateStars(selectedRating);
+        });
+
+        star.addEventListener("mouseover", function () {
+            updateStars(parseInt(this.getAttribute("data-value")));
+        });
+
+        star.addEventListener("mouseout", function () {
+            updateStars(selectedRating);
+        });
+    });
+
+    function updateStars(rating) {
+        stars.forEach((star, index) => {
+            star.classList.toggle("active", index < rating);
+        });
+    }
+
+    // Handle Review Submission
+    submitRev.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        if (selectedRating === 0) {
+            showToast("Please select a star rating before submitting.", "error");
+            return;
+        }
+
+        confirmModal.style.display = "flex"; // Show confirmation modal
+    });
+
+    // Confirm submission
+    confirmSubmit.addEventListener("click", function () {
+        confirmModal.style.display = "none";
+        reviewModal.style.display = "none"; // Hide review modal
+        showToast("Review Submitted Successfully!");
+        selectedRating = 0; // Reset rating
+        updateStars(0);
+    });
+
+    // Cancel confirmation modal
+    cancelConfirm.addEventListener("click", function () {
+        confirmModal.style.display = "none";
+    });
+
+    // Hide modal when clicking outside
+    window.addEventListener("click", function (event) {
+        if (event.target === reviewModal) {
+            reviewModal.style.display = "block";
+        }
+        if (event.target === confirmModal) {
+            confirmModal.style.display = "none";
+        }
+    });
+
+    // Toast Notification Function
+    function showToast(message, type = "success") {
+        toast.innerText = message;
+        toast.classList.add("show");
+
+        // Apply different styles based on type
+        if (type === "error") {
+            toast.classList.add("error");
+        } else {
+            toast.classList.remove("error");
+        }
+
+        setTimeout(function () {
+            toast.classList.remove("show");
+        }, 3000);
+    }
+
+    //logout
+    document.addEventListener("DOMContentLoaded", function () {
+        const logoutLink = document.getElementById("logout");
+        const modal = document.getElementById("logout-modal");
+        const confirmLogout = document.getElementById("confirm-logout");
+        const cancelLogout = document.getElementById("cancel-logout");
+
+        // Ensure modal starts hidden
+        modal.style.display = "none";
+
+        // Show modal when logout is clicked
+        logoutLink.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevents default link behavior
+            modal.style.display = "flex"; // Show modal only on click
+        });
+
+        // Redirect when "Yes" is clicked
+        confirmLogout.addEventListener("click", function () {
+            window.location.href = "/logout"; // Adjust logout URL
+        });
+
+        // Close modal when "No" is clicked
+        cancelLogout.addEventListener("click", function () {
+            modal.style.display = "none"; // Hide modal
+        });
+    });
+
+</script>
