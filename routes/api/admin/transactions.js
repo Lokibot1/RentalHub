@@ -22,6 +22,7 @@ router.get("/", async (req, res) => {
                  JOIN items ON items.id = rental_transactions.item_id
                  JOIN users AS renter ON renter.id = rental_transactions.renter_id  -- Getting renter details
                  JOIN users AS owner ON owner.id = items.user_id  -- Getting owner details
+        WHERE rental_transactions.is_approved = 1
     `
 
     db.query(sql, (err, results) => {
