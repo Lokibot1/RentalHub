@@ -71,8 +71,8 @@ router.delete("/cancel/:request_id", (req, res) => {
  * 
  * @route GET /api/admin/my-rents/ongoing/:role_id
  */
-router.get("/ongoing/:role_id", async (req, res) => {
-    const { role_id } = req.params
+router.get("/ongoing/:user_id", async (req, res) => {
+    const { user_id } = req.params
 
     const sql = `
         SELECT rental_transactions.id                         AS id,
@@ -84,12 +84,12 @@ router.get("/ongoing/:role_id", async (req, res) => {
                mode_of_delivery
         FROM rental_transactions
                  JOIN items ON items.id = rental_transactions.item_id
-                 JOIN users ON role.id = items.role_id
+                 JOIN users ON users.id = items.user_id
         WHERE rental_transactions.is_approved = 1
           AND rental_transactions.renter_id = ?
     `
 
-    db.query(sql, [role_id], (err, results) => {
+    db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
             return res.status(500).json({ success: false, message: "Query failed." });

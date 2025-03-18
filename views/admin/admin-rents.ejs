@@ -38,7 +38,7 @@
                         </strong>
                       </div>
                       <div class="itemDetails">
-                        <img src="" alt="" class="itemImage" />
+                        <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage" />
                         <h2 class="itemName">
                           <%= item.item_name %>
                         </h2>
@@ -74,25 +74,38 @@
           <!-- On Going Modal -->
           <div id="On Going" class="tab-content">
             <div class="RentalList">
-              <div class="rentalItem">
-                <div class="rentalInfo">
-                  <div class="renterDetails">
-                    <strong class="renterName">Renter's Name</strong>
+
+              <% if (ongoingRentItems.length> 0) { %>
+                <% ongoingRentItems.forEach(function(item) { %>
+                  <div class="rentalItem">
+                    <div class="rentalInfo">
+                      <div class="renterDetails">
+                        <strong class="renterName">
+                          <%= item.owner_name %>
+                        </strong>
+                      </div>
+                      <div class="itemDetails">
+                        <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage" />
+                        <h2 class="itemName">Items Name</h2>
+                      </div>
+                      <div class="rentalDurationContainer">
+                        <strong class="rentalDuration">
+                          <%= formatDateRange(item.start_date, item.end_date) %>
+                        </strong>
+                        <strong>•</strong>
+                        <strong class="MOD">
+                          <%= item.mode_of_delivery %>
+                        </strong>
+                      </div>
+                    </div>
+                    <div class="completeAction">
+                      <button id="review-btn">Done</button>
+                    </div>
                   </div>
-                  <div class="itemDetails">
-                    <img src="" alt="" class="itemImage" />
-                    <h2 class="itemName">Items Name</h2>
-                  </div>
-                  <div class="rentalDurationContainer">
-                    <strong class="rentalDuration">February 3-4, 2025</strong>
-                    <strong>•</strong>
-                    <strong class="MOD">Delivery</strong>
-                  </div>
-                </div>
-                <div class="completeAction">
-                  <button id="review-btn">Done</button>
-                </div>
-              </div>
+                  <% }); %>
+                    <% } else { %>
+                      <p>No pending requests available.</p>
+                      <% } %>
             </div>
           </div>
 
@@ -136,7 +149,7 @@
           <div id="toast" class="toast">Review Submitted Successfully!</div>
 
           <!-- Logout Confirmation Modal -->
-          <div id="logout-modal" class="logout-modal">
+          <!-- <div id="logout-modal" class="logout-modal">
             <div class="logout-content">
               <p>Are you sure you want to log out?</p>
               <div class="logout-button-group">
@@ -144,7 +157,7 @@
                 <button id="cancel-logout" class="no-btn">No</button>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <!--JavaScript-->
           <script>

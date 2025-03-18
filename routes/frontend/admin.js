@@ -74,13 +74,14 @@ router.get("/admin-rents", checkAuth, checkAdmin, async (req, res) => {
         const rentRequestResponse = await fetch(`${process.env.BASE_URL}/api/admin/my-rents/requests/${req.user.id}`);
         const rentRequests = await rentRequestResponse.json();
     
-        const ongoingRentResponse = await fetch(`${process.env.BASE_URL}/api/user/my-requests/ongoing/${req.user.id}`);
+        const ongoingRentResponse = await fetch(`${process.env.BASE_URL}/api/admin/my-rents/ongoing/${req.user.id}`);
         const ongoingRentItems = await ongoingRentResponse.json();
     
         res.render("admin/admin-rents", {
             layout: "layouts/dashboard",
             title: "My Request",
             rentRequestItems: rentRequests.data,
+            ongoingRentItems: ongoingRentItems.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
         });
@@ -90,6 +91,7 @@ router.get("/admin-rents", checkAuth, checkAdmin, async (req, res) => {
             layout: "layouts/dashboard",
             title: "My Request",
             rentRequestItems: [],
+            ongoingRentItems: [],
             isAuthenticated: req.isAuthenticated,
             role: req.role,
         });
