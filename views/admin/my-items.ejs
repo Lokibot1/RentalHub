@@ -124,8 +124,8 @@
                                 <!-- Dark Background Overlay -->
                                 <div id="overlay" class="overlay"></div>
                                 <div class="rentalAction">
-                                    <button id="accept-btn">✓</button>
-                                    <button id="decline-btn">✗</button>
+                                    <button class="accept-btn" data-id="accept-btn-<%= item.rental_transaction_id %>">✓</button>
+                                    <button class="decline-btn" data-id="decline-btn-<%= item.rental_transaction_id %>">✗</button>
                                 </div>
                                 <div id="confirmation-modal1" class="confirmation-modal1">
                                     <div class="confirmation-box1">
@@ -143,7 +143,8 @@
                     <% } else { %>
                         <p>No rental requests available.</p>
                     <% } %>
-
+                </div>
+            </div>
                     <div id="overlay" class="overlay"></div>
                     <div id="success-container1" class="success-container1">
                         <div id="success-message1" class="success-message1">
@@ -168,8 +169,6 @@
                             <p>Request declined successfully!</p>
                         </div>
                     </div>
-                </div>
-            </div>
         </div>
 
         <!--On Transactions-->
@@ -503,70 +502,116 @@
 
 
             // RENTAL REQUEST accept
-            const acceptBtn = document.getElementById('accept-btn');
-            const declineBtn = document.getElementById('decline-btn');
-            const confirmationModal = document.getElementById('confirmation-modal1');
-            const declineConfirmationModal = document.getElementById('decline-confirmation-modal1');
-            const overlay = document.getElementById('overlay');
-            const yesBtn = document.getElementById('yes-btn1');
-            const noBtn = document.getElementById('no-btn1');
-            const declineYesBtn = document.getElementById('decline-yes-btn1');
-            const declineNoBtn = document.getElementById('decline-no-btn1');
-            const successContainer = document.getElementById('success-container1');
-            const declineContainer = document.getElementById('decline-container1');
+            class RentalRequest {
+  constructor(id) {
+    this.id = id;
+    this.acceptBtn = document.querySelector(`[data-id="accept-btn-${id}"]`);
+    this.declineBtn = document.querySelector(`[data-id="decline-btn-${id}"]`);
+    this.confirmationModal = document.getElementById("confirmation-modal1");
+    this.declineConfirmationModal = document.getElementById("decline-confirmation-modal1");
+    this.overlay = document.getElementById("overlay");
+    this.successContainer = document.getElementById("success-container1");
+    this.declineContainer = document.getElementById("decline-container1");
 
-            // Accept functionality
-            acceptBtn.addEventListener('click', function () {
-                confirmationModal.style.display = 'block';
-                overlay.style.display = 'block';
-            });
+    // Store the transaction ID
+    this.dataId = id;
 
-            noBtn.addEventListener('click', function () {
-                confirmationModal.style.display = 'none';
-                overlay.style.display = 'none';
-            });
+    this.addEventListeners();
+  }
 
-            yesBtn.addEventListener('click', function () {
-                confirmationModal.style.display = 'none';
-                overlay.style.display = 'block';
-                successContainer.style.display = 'block';
+  addEventListeners() {
+    if (this.acceptBtn) {
+      this.acceptBtn.addEventListener("click", () => {
+        this.showModal("accept");
+      });
+    }
 
-                setTimeout(function () {
-                    overlay.style.display = 'none';
-                    successContainer.style.display = 'none';
-                }, 3000);
-            });
+    if (this.declineBtn) {
+      this.declineBtn.addEventListener("click", () => {
+        this.showModal("decline");
+      });
+    }
+  }
 
-            // Decline functionality
-            declineBtn.addEventListener('click', function () {
-                declineConfirmationModal.style.display = 'block';
-                overlay.style.display = 'block';
-            });
+  showModal(action) {
+    this.overlay.style.display = "block";
 
-            declineNoBtn.addEventListener('click', function () {
-                declineConfirmationModal.style.display = 'none';
-                overlay.style.display = 'none';
-            });
+    if (action === "accept") {
+      this.confirmationModal.style.display = "block";
 
-            declineYesBtn.addEventListener('click', function () {
-                declineConfirmationModal.style.display = 'none';
-                overlay.style.display = 'block';
-                declineContainer.style.display = 'block';
+      document.getElementById("yes-btn1").onclick = () => this.confirmAccept();
+      document.getElementById("no-btn1").onclick = () => this.hideModals();
+    } else if (action === "decline") {
+      this.declineConfirmationModal.style.display = "block";
 
-                setTimeout(function () {
-                    overlay.style.display = 'none';
-                    declineContainer.style.display = 'none';
-                }, 3000);
-            });
+      document.getElementById("decline-yes-btn1").onclick = () => this.confirmDecline();
+      document.getElementById("decline-no-btn1").onclick = () => this.hideModals();
+    }
+  }
 
-            // Hide modal when clicking outside of it
-            window.addEventListener('click', function (event) {
-                if (event.target === overlay) {
-                    confirmationModal.style.display = 'none';
-                    declineConfirmationModal.style.display = 'none';
-                    overlay.style.display = 'block';
-                }
-            });
+  async confirmAccept() {
+    try {
+      await fetch(`${window.location.origin}/api/admin/listings/rental-requests/approved`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rental_transaction_id: this.dataId }),
+      });
+    } catch (error) {
+      console.error("Error accepting request:", error);
+      alert("An error occurred while accepting the request.");
+    }
+    
+    this.confirmationModal.style.display = "none";
+    this.successContainer.style.display = "block";
+
+    setTimeout(() => {
+      this.overlay.style.display = "none";
+      this.successContainer.style.display = "none";
+
+      window.location.reload();
+    }, 3000);
+  }
+
+  async confirmDecline() {
+    try {
+      await fetch(`${window.location.origin}/api/admin/listings/rental-requests/declined`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rental_transaction_id: this.dataId }),
+      });
+    } catch (error) {
+      console.error("Error declining request:", error);
+      alert("An error occurred while declining the request.");
+    }
+    
+    this.declineConfirmationModal.style.display = "none";
+    this.declineContainer.style.display = "block";
+
+    setTimeout(() => {
+      this.overlay.style.display = "none";
+      this.declineContainer.style.display = "none";
+      
+      window.location.reload();
+    }, 3000);
+  }
+
+  hideModals() {
+    this.confirmationModal.style.display = "none";
+    this.declineConfirmationModal.style.display = "none";
+    this.overlay.style.display = "none";
+  }
+}
+
+// Initialize rental requests for existing items
+document.addEventListener("DOMContentLoaded", function() {
+  // Initialize existing accept buttons
+  document.querySelectorAll(".accept-btn").forEach((button) => {
+    const id = button.getAttribute("data-id").replace("accept-btn-", "");
+    new RentalRequest(id);
+  });
+
+  // No need to initialize decline buttons separately as they're handled by the same RentalRequest instance
+});
 
 
             // Review Modal Functionality FIX ME: WIDTH TOO WIDE, DARKBG OVERLAY NOT WORKING
