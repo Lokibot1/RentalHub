@@ -43,31 +43,61 @@ router.get("/rental-requests/:user_id", async (req, res) => {
 
 
 /**
- * Update rental request to approved
+ * Update rental request to approved and update stock quantity
  *
  * @route PATCH /api/user/listings/rental-requests/approved
  */
-router.patch("/rental-requests/approved", async (req, res) => {
-    const { rental_transaction_id } = req.body
+router.patch("/rental-requests/approved", (req, res) => {
+    const { rental_transaction_id } = req.body;
+    if (!rental_transaction_id) {
+        return res.status(400).json({ success: false, message: "Missing rental_transaction_id" });
+    }
 
-    const sql = `
-        UPDATE rental_transactions
-        SET is_approved = 1
-        WHERE rental_transactions.id = ?
-    `
+    db.beginTransaction((err) => {
+        if (err) return res.status(500).json({ success: false, message: "Transaction initiation failed." });
 
-    db.query(sql, [rental_transaction_id], (err, results) => {
-        if (err) {
-            console.error("Database not connected", err);
-            return res.status(500).json({ success: false, message: "Update failed." });
-        }
+        // Get item_id and rental_quantity
+        const selectSql = `SELECT item_id, rental_quantity FROM rental_transactions WHERE id = ? FOR UPDATE`;
+        db.query(selectSql, [rental_transaction_id], (err, results) => {
+            if (err || results.length === 0) {
+                return rollback(res, "Transaction details not found.");
+            }
 
-        res.status(200).json({
-            success: true,
-            message: 'Successfully updated.'
+            const { item_id, rental_quantity } = results[0];
+
+            // Approve rental request
+            const updateTransactionSql = `UPDATE rental_transactions SET is_approved = 1 WHERE id = ?`;
+            db.query(updateTransactionSql, [rental_transaction_id], (err) => {
+                if (err) return rollback(res, "Failed to update rental transaction.");
+
+                // Update inventory stock
+                const updateInventorySql = `
+                    UPDATE inventory SET stock_quantity = stock_quantity - ? 
+                    WHERE item_id = ? AND stock_quantity >= ?
+                `;
+                db.query(updateInventorySql, [rental_quantity, item_id, rental_quantity], (err, results) => {
+                    if (err || results.affectedRows === 0) {
+                        return rollback(res, "Insufficient stock or update failed.");
+                    }
+
+                    db.commit((err) => {
+                        if (err) return res.status(500).json({ success: false, message: "Commit failed." });
+
+                        res.status(200).json({
+                            success: true,
+                            message: 'Rental request approved, stock updated.'
+                        });
+                    });
+                });
+            });
         });
     });
 });
+
+// Helper function to rollback transaction
+function rollback(res, message) {
+    db.rollback(() => res.status(400).json({ success: false, message }));
+}
 
 
 /**

@@ -143,19 +143,10 @@ router.post("/", async (req, res) => {
             return res.status(500).json({ success: false, message: "Insert query failed." });
         }
 
-        const updateSql = "UPDATE inventory SET stock_quantity = stock_quantity - ? WHERE item_id = ?";
-
-        db.query(updateSql, [rental_quantity, item_id], (err, results) => {
-            if (err) {
-                console.error("Database not connected", err);
-                return res.status(500).json({ success: false, message: "Update query failed." });
-            }
-
-            // Send response only once after both queries are successful
-            res.status(200).json({
-                success: true,
-                message: "Item rental transaction saved and stock quantity updated!"
-            });
+        // Send response only once after both queries are successful
+        res.status(200).json({
+            success: true,
+            message: "Item rental transaction saved"
         });
     });
 });
