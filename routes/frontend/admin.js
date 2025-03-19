@@ -235,7 +235,7 @@ router.get("/admin-view-product/:item_id", checkAuth, checkAdmin, async (req, re
     const { item_id } = req.params
 
     try {
-        const response = await fetch(`${process.env.BASE_URL}/api/admin/posts/pending/${item_id}`); // Adjust the URL if necessary
+        const response = await fetch(`${process.env.BASE_URL}/api/admin/manage-listings/pending/${item_id}`); // Adjust the URL if necessary
         const pendingPost = await response.json();
 
         res.render("admin/admin-viewprod", {
