@@ -127,10 +127,10 @@ router.get("/my-items", checkAuth, checkUser, async (req, res) => {
     const approvedResponse = await fetch(`${process.env.BASE_URL}/api/user/posts/approve/${req.user.id}`);
     const approvedPosts = await approvedResponse.json();
 
-    const rentalRequestResponse = await fetch(`${process.env.BASE_URL}/api/user/listings/rental-requests/${req.user.id}`);
+    const rentalRequestResponse = await fetch(`${process.env.BASE_URL}/api/user/my-items/rental-requests/${req.user.id}`);
     const rentalRequests = await rentalRequestResponse.json();
 
-    const ongoingTransactionResponse = await fetch(`${process.env.BASE_URL}/api/user/listings/ongoing-transactions/${req.user.id}`);
+    const ongoingTransactionResponse = await fetch(`${process.env.BASE_URL}/api/user/my-items/ongoing-transactions/${req.user.id}`);
     const ongoingTransactions = await ongoingTransactionResponse.json();
 
     res.render("user/my-items", {

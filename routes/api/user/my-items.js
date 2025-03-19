@@ -7,54 +7,27 @@ const router = express.Router();
 /**
  * Get rental requests
  *
- * @route GET /api/user/listings/rental-requests/:user_id
+ * @route GET /api/user/my-listings/rental-requests/:user_id
  */
 router.get("/rental-requests/:user_id", async (req, res) => {
     const { user_id } = req.params
 
-    // const sql = `
-    //     SELECT
-    //         rental_transactions.id AS rent_transaction_id,
-    //         CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
-    //         items.location AS item_location,
-    //         items.file_path AS item_image,
-    //         items.name AS item_name,
-    //         rental_transactions.start_date AS start_date,
-    //         rental_transactions.end_date AS end_date,
-    //         rental_transactions.mode_of_delivery AS mode_of_delivery
-    //     FROM rental_transactions
-    //     JOIN users ON users.id = rental_transactions.renter_id
-    //     JOIN items ON items.id = rental_transactions.item_id
-    //     WHERE rental_transactions.is_approved = 0 AND items.user_id = ?
-    // `
-
-    // db.query(sql, [user_id], (err, results) => {
-    //     if (err) {
-    //         console.error("Database not connected", err);
-    //         return res.status(500).json({ success: false, message: "Query failed." });
-    //     }
-
-    //     res.status(200).json({
-    //         success: true,
-    //         data: results
-    //     });
-    // });
-
     const sql = `
-        SELECT
-            rental_transactions.id AS rent_transaction_id,
-            CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
-            items.location AS item_location,
-            items.file_path AS item_image,
-            items.name AS item_name,
-            rental_transactions.start_date AS start_date,
-            rental_transactions.end_date AS end_date,
-            rental_transactions.mode_of_delivery AS mode_of_delivery
+        SELECT rental_transactions.id                         AS rent_transaction_id,
+               CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
+               items.location                                 AS item_location,
+               items.file_path                                AS item_image,
+               items.name                                     AS item_name,
+               rental_transactions.start_date                 AS start_date,
+               rental_transactions.end_date                   AS end_date,
+               rental_transactions.mode_of_delivery           AS mode_of_delivery
         FROM rental_transactions
-        JOIN users ON users.id = rental_transactions.renter_id
-        JOIN items ON items.id = rental_transactions.item_id
-        WHERE rental_transactions.is_approved = 0 AND items.user_id = ? -- Only include pending requests
-    `;
+                 JOIN users ON users.id = rental_transactions.renter_id
+                 JOIN items ON items.id = rental_transactions.item_id
+        WHERE rental_transactions.is_approved = 0
+          AND rental_transactions.status != 'declined'
+          AND items.user_id = ?
+    `
 
     db.query(sql, [user_id], (err, results) => {
         if (err) {
@@ -76,7 +49,7 @@ router.get("/rental-requests/:user_id", async (req, res) => {
 /**
  * Update rental request to approved and update stock quantity
  *
- * @route PATCH /api/user/listings/rental-requests/approved
+ * @route PATCH /api/user/my-listings/rental-requests/approved
  */
 router.patch("/rental-requests/approved", (req, res) => {
     const { rental_transaction_id } = req.body;
@@ -129,7 +102,7 @@ router.patch("/rental-requests/approved", (req, res) => {
 /**
  * Decline rental request and keep the item in the "Rental Requests" tab
  *
- * @route PATCH /api/user/listings/rental-requests/declined
+ * @route PATCH /api/user/my-items/rental-requests/declined
  */
 router.patch("/rental-requests/declined", (req, res) => {
     const { rental_transaction_id } = req.body;
@@ -174,7 +147,7 @@ function rollback(res, message) {
 /**
  * Get ongoing transactions
  *
- * @route GET /api/user/listings/ongoing-transactions/:user_id
+ * @route GET /api/user/my-items/ongoing-transactions/:user_id
  */
 router.get("/ongoing-transactions/:user_id", async (req, res) => {
     const { user_id } = req.params

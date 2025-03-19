@@ -581,7 +581,7 @@
 
         async confirmAccept() {
             try {
-                await fetch(`http://localhost:8000/api/user/listings/rental-requests/approved`, {
+                await fetch(`http://localhost:8000/api/user/my-items/rental-requests/approved`, {
                     method: "PATCH",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({rental_transaction_id: this.dataId}),
@@ -672,7 +672,7 @@
 
         // When the user clicks "Yes", decline the request
         yesButton.addEventListener('click', async () => {
-            const response = await fetch('/api/user/listings/rental-requests/declined', {
+            const response = await fetch('/api/user/my-items/rental-requests/declined', {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
