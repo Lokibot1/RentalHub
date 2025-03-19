@@ -184,7 +184,7 @@
                     </div>
 
                     <!-- Decline Confirmation Modal -->
-                    <div id="decline-confirmation-modal1" class="confirmation-modal1">
+                    <!-- <div id="decline-confirmation-modal1" class="confirmation-modal1">
                         <div class="confirmation-box1">
                             <h2>Are you sure you want to <span class="decline-text1">decline</span> this request?</h2>
                             <div class="button-container1">
@@ -192,7 +192,7 @@
                                 <button id="decline-no-btn1" class="no-btn1">No</button>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div id="overlay" class="overlay"></div>
                     <div id="decline-container1" class="decline-container1">
@@ -203,6 +203,17 @@
                 </div>
             </div>
         </div>
+
+        <!-- Decline Confirmation Modal -->
+<div id="decline-confirmation-modal1" class="confirmation-modal1">
+    <div class="confirmation-box1">
+        <h2>Are you sure you want to <span class="decline-text1">decline</span> this request?</h2>
+        <div class="button-container1">
+            <button id="decline-yes-btn1" class="yes-btn1">Yes</button>
+            <button id="decline-no-btn1" class="no-btn1">No</button>
+        </div>
+    </div>
+</div>
 
 
         <!-- Ongoing Transactions -->
@@ -647,6 +658,58 @@
         document.getElementById("rentalContainer").appendChild(rentalItem);
         new RentalRequest(rentalItemCount);
     }
+
+    document.querySelectorAll('.decline-btn').forEach(button => {
+    button.addEventListener('click', async (event) => {
+        const rentalTransactionId = event.target.dataset.id.split('-').pop();
+
+        // Show the decline confirmation modal
+        const modal = document.getElementById('decline-confirmation-modal1');
+        modal.style.display = 'block';
+
+        const yesButton = document.getElementById('decline-yes-btn1');
+        const noButton = document.getElementById('decline-no-btn1');
+
+        // When the user clicks "Yes", decline the request
+        yesButton.addEventListener('click', async () => {
+            const response = await fetch('/api/user/listings/rental-requests/declined', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ rental_transaction_id: rentalTransactionId })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Find and remove the rental item from the DOM
+                const rentalItem = event.target.closest('.rentalItem');
+                if (rentalItem) {
+                    rentalItem.remove(); // Remove the item from the DOM
+                }
+
+                // Check if there are any remaining rental requests
+                const rentalItems = document.querySelectorAll('.rentalItem');
+                if (rentalItems.length === 0) {
+                    // If no rental requests remain, display the "No Rental Requests available." message
+                    const rentalList = document.querySelector('.RentalList');
+                    rentalList.innerHTML = '<p>No Rental Requests available.</p>';
+                }
+            } else {
+                alert('Failed to decline the rental request.');
+            }
+
+            // Close the modal
+            modal.style.display = 'none';
+        });
+
+        // When the user clicks "No", simply close the modal without doing anything
+        noButton.addEventListener('click', () => {
+            modal.style.display = 'none'; // Close the modal
+        });
+    });
+});
 
 
     // Review Modal Functionality FIX ME: WIDTH TOO WIDE, DARKBG OVERLAY NOT WORKING
