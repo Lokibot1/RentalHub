@@ -135,6 +135,49 @@ router.patch("/rental-requests/approved", (req, res) => {
     });
 });
 
+
+/**
+ * Decline rental request and keep the item in the "Rental Requests" tab
+ *
+ * @route PATCH /api/admin/my-items/rental-requests/declined
+ */
+router.patch("/rental-requests/declined", (req, res) => {
+    const { rental_transaction_id } = req.body;
+    if (!rental_transaction_id) {
+        return res.status(400).json({ success: false, message: "Missing rental_transaction_id" });
+    }
+
+    db.beginTransaction((err) => {
+        if (err) return res.status(500).json({ success: false, message: "Transaction initiation failed." });
+
+        // Update rental transaction to declined status (is_approved = -1)
+        const updateTransactionSql = `
+            UPDATE rental_transactions
+            SET is_approved = 0, status = 'declined'
+            WHERE id = ?
+        `
+
+        db.query(updateTransactionSql, [rental_transaction_id], (err) => {
+            if (err) return rollback(res, "Failed to decline rental transaction.");
+
+            db.commit((err) => {
+                if (err) return res.status(500).json({ success: false, message: "Declined failed." });
+
+                res.status(200).json({
+                    success: true,
+                    message: 'Rental request declined.'
+                });
+            });
+        });
+    });
+});
+
+
+// Helper function to rollback transaction
+function rollback(res, message) {
+    db.rollback(() => res.status(400).json({ success: false, message }));
+}
+
 /**
  * Get ongoing transactions
  *

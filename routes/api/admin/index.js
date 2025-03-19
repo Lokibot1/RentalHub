@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 // Route Prefix: /api/admin
-router.use("/posts", require("./posts"));
+router.use("/manage-listings", require("./manage-listings"));
 router.use("/dashboard", require("./dashboard"));
 router.use("/my-rents", require("./my-rents"));
 router.use("/my-items", require("./my-items"));

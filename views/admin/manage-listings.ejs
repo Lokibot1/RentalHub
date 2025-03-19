@@ -128,11 +128,19 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>First Name M. Last Name</td>
-                            <td>Item Name</td>
-                            <td>Category</td>
-                        </tr>
+                        <% if (declinedRequests.length > 0) { %>
+                            <% declinedRequests.forEach(function(item) { %>
+                                <tr>
+                                    <td><%= item.owner %></td>
+                                    <td><%= item.item_name %></td>
+                                    <td><%= item.category_name %></td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="4">No available declined requests.</td>
+                            </tr>
+                        <% } %>
                         </tbody>
                     </table>
                 </div>

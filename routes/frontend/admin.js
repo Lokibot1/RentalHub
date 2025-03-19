@@ -112,6 +112,8 @@ router.get("/my-items", checkAuth, checkAdmin, async (req, res) => {
         const responseRentalRequests = await fetch(`${process.env.BASE_URL}/api/admin/my-items/rental-requests`);
         const adminRentalRequests = await responseRentalRequests.json();
 
+        console.log('adminRentalRequests:', adminRentalRequests)
+
         const responseOngoingTransactions = await fetch(`${process.env.BASE_URL}/api/admin/my-items/ongoing-transactions`);
         const adminOngoingTransactions = await responseOngoingTransactions.json();
 
@@ -192,18 +194,21 @@ router.get("/manage-users", checkAuth, checkAdmin, async (req, res) => {
  */
 router.get("/manage-listings", checkAuth, checkAdmin, async (req, res) => {
     try {
-        const pendingResponse = await fetch(`${process.env.BASE_URL}/api/admin/posts/pending`);
+        const pendingResponse = await fetch(`${process.env.BASE_URL}/api/admin/manage-listings/pending`);
         const pendingPosts = await pendingResponse.json();
 
-        const approvedResponse = await fetch(`${process.env.BASE_URL}/api/admin/posts`);
+        const approvedResponse = await fetch(`${process.env.BASE_URL}/api/admin/manage-listings`);
         const approvedPosts = await approvedResponse.json();
-        console.log('approvedPosts', approvedPosts.data)
+
+        const declinedRequestResponse = await fetch(`${process.env.BASE_URL}/api/admin/manage-listings/declined-requests`);
+        const declinedRequests = await declinedRequestResponse.json();
 
         res.render("admin/manage-listings", {
             layout: "layouts/dashboard",
             title: "Manage Listings",
             pendingPosts: pendingPosts.data, // Pass the retrieved pending posts
             approvedPosts: approvedPosts.data,
+            declinedRequests: declinedRequests.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
         });
@@ -213,6 +218,8 @@ router.get("/manage-listings", checkAuth, checkAdmin, async (req, res) => {
             layout: "layouts/dashboard",
             title: "Manage Listings",
             pendingPosts: [],
+            approvedPosts: [],
+            declinedRequests: [],
             isAuthenticated: req.isAuthenticated,
             role: req.role,
         });

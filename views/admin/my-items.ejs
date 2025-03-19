@@ -32,23 +32,6 @@
             <!--Pending Post-->
             <div id="PendingPosts" class="tab-content">
                 <div class="shoppingList">
-                    <!--                    <a href="/dashboard/view-pending">-->
-                    <!--                        <div class="shoppingItem">-->
-                    <!--                            <img src="" alt="" class="itemImage"/>-->
-                    <!--                            <hr/>-->
-                    <!--                            <strong class="itemName">Name</strong>-->
-                    <!--                            <br/>-->
-                    <!--                            <div class="item-price-quantity">-->
-                    <!--                                <strong class="itemPrice">$123</strong>-->
-                    <!--                                <br/>-->
-                    <!--                                <strong>-->
-                    <!--                                    <p class="itemQuantity">7 Left</p>-->
-                    <!--                                    &lt;!&ndash;TO FIX: create to kase di q sya mahanap e hehehe&ndash;&gt;-->
-                    <!--                                </strong>-->
-                    <!--                            </div>-->
-                    <!--                            <strong class="itemLocation">jan lang</strong>-->
-                    <!--                        </div>-->
-                    <!--                    </a>-->
                 </div>
             </div>
 
@@ -108,7 +91,7 @@
                                     <div class="renterDetails">
                                         <strong class="renterName"><%= item.renters_name %></strong>
                                         <strong>•</strong>
-                                        <strong class="renterLocation"><%= item.location %></strong>
+                                        <strong class="renterLocation"><%= item.item_location %></strong>
                                     </div>
                                     <div class="itemDetails">
                                         <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>

@@ -5,7 +5,8 @@ const router = express.Router();
 
 /**
  * Get all pending items
- * @route POST /api/admin/posts/pending
+ *
+ * @route POST /api/admin/manage-listings/pending
  */
 router.get("/pending", async (req, res) => {
     const sql = `
@@ -35,7 +36,8 @@ router.get("/pending", async (req, res) => {
 
 /**
  * View pending items
- * @route GET /api/admin/posts/pending/:item_id
+ *
+ * @route GET /api/admin/manage-listings/pending/:item_id
  */
 router.get("/pending/:item_id", async (req, res) => {
     const { item_id } = req.params
@@ -73,7 +75,8 @@ router.get("/pending/:item_id", async (req, res) => {
 
 /**
  * Approve item
- * @route POST /api/admin/posts/approve/item_id
+ *
+ * @route POST /api/admin/manage-listings/approve/item_id
  */
 router.post("/approve/:item_id", async (req, res) => {
     const { item_id } = req.params
@@ -95,7 +98,8 @@ router.post("/approve/:item_id", async (req, res) => {
 
 /**
  * View all approved items
- * @route GET /api/admin/posts
+ *
+ * @route GET /api/admin/manage-listings
  */
 router.get("/", async (req, res) => {
     const sql = `
@@ -125,5 +129,36 @@ router.get("/", async (req, res) => {
 });
 
 
+/**
+ * View all declined requests
+ *
+ * @route GET /api/admin/manage-listings/declined-requests
+ */
+router.get("/declined-requests", async (req, res) => {
+    const sql = `
+        SELECT items.id                                       AS item_id,
+               CONCAT(users.first_name, ' ', users.last_name) AS owner,
+               items.name                                     AS item_name,
+               categories.name                                AS category_name
+        FROM rental_transactions
+                 JOIN items ON rental_transactions.item_id = items.id
+                 JOIN users ON users.id = items.user_id
+                 JOIN categories ON items.category_id = categories.id
+        WHERE status = 'declined'
+          AND rental_transactions.is_approved = 0
+    `
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({success: false, message: "Query failed."});
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results,
+        });
+    });
+});
 
 module.exports = router;
