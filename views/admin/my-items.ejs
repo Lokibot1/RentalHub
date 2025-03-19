@@ -124,10 +124,10 @@
                                 <!-- Dark Background Overlay -->
                                 <div id="overlay" class="overlay"></div>
                                 <div class="rentalAction">
-                                    <button class="accept-btn" data-id="accept-btn-<%= item.rental_transaction_id %>">
+                                    <button class="accept-btn" data-id="accept-btn-<%= item.rent_transaction_id %>">
                                         ✓
                                     </button>
-                                    <button class="decline-btn" data-id="decline-btn-<%= item.rental_transaction_id %>">
+                                    <button class="decline-btn" data-id="decline-btn-<%= item.rent_transaction_id %>">
                                         ✗
                                     </button>
                                 </div>
@@ -558,7 +558,7 @@
 
         async confirmAccept() {
             try {
-                await fetch(`${window.location.origin}/api/admin/listings/rental-requests/approved`, {
+                await fetch(`${window.location.origin}/api/admin/my-items/rental-requests/approved`, {
                     method: "PATCH",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({rental_transaction_id: this.dataId}),
@@ -581,7 +581,7 @@
 
         async confirmDecline() {
             try {
-                await fetch(`${window.location.origin}/api/admin/listings/rental-requests/declined`, {
+                await fetch(`${window.location.origin}/api/admin/my-items/rental-requests/declined`, {
                     method: "PATCH",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({rental_transaction_id: this.dataId}),

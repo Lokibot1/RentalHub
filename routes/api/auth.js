@@ -224,7 +224,7 @@ router.post("/login", async (req, res) => {
                 id: user.id,
                 email: user.email,
                 role: user.role,
-            }, process.env.JWT_SECRET, { expiresIn: "1h" });
+            }, process.env.JWT_SECRET, { expiresIn: "2h" });
 
             res.cookie("token", token, {
                 httpOnly: true,
