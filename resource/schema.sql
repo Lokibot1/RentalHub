@@ -115,7 +115,7 @@ CREATE TABLE rental_transactions (
     total_price DECIMAL(10,2) NOT NULL,
     rental_quantity INT NOT NULL DEFAULT 1,
     mode_of_delivery ENUM('meetup', 'delivery') NOT NULL DEFAULT 'meetup',
-    status ENUM('pending', 'ongoing', 'completed', 'cancelled') DEFAULT 'pending',
+    status ENUM('pending', 'ongoing', 'completed', 'cancelled', 'declined') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (renter_id) REFERENCES users(id),

@@ -141,12 +141,17 @@ router.patch("/rental-requests/declined", (req, res) => {
         if (err) return res.status(500).json({ success: false, message: "Transaction initiation failed." });
 
         // Update rental transaction to declined status (is_approved = -1)
-        const updateTransactionSql = `UPDATE rental_transactions SET is_approved = -1 WHERE id = ?`;
+        const updateTransactionSql = `
+            UPDATE rental_transactions
+            SET is_approved = 0, status = 'declined'
+            WHERE id = ?
+        `
+
         db.query(updateTransactionSql, [rental_transaction_id], (err) => {
             if (err) return rollback(res, "Failed to decline rental transaction.");
 
             db.commit((err) => {
-                if (err) return res.status(500).json({ success: false, message: "Commit failed." });
+                if (err) return res.status(500).json({ success: false, message: "Declined failed." });
 
                 res.status(200).json({
                     success: true,
@@ -175,18 +180,19 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
     const { user_id } = req.params
 
     const sql = `
-        SELECT
-            rental_transactions.id AS rent_transaction_id,
-            CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
-            items.file_path AS item_image,
-            items.name AS item_name,
-            rental_transactions.start_date AS start_date,
-            rental_transactions.end_date AS end_date,
-            rental_transactions.mode_of_delivery AS mode_of_delivery
+        SELECT rental_transactions.id                         AS rent_transaction_id,
+               CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
+               items.file_path                                AS item_image,
+               items.name                                     AS item_name,
+               rental_transactions.start_date                 AS start_date,
+               rental_transactions.end_date                   AS end_date,
+               rental_transactions.mode_of_delivery           AS mode_of_delivery
         FROM rental_transactions
-        JOIN users ON users.id = rental_transactions.renter_id
-        JOIN items ON items.id = rental_transactions.item_id
-        WHERE rental_transactions.is_approved = 1 AND items.user_id = ?
+                 JOIN users ON users.id = rental_transactions.renter_id
+                 JOIN items ON items.id = rental_transactions.item_id
+        WHERE rental_transactions.is_approved = 1
+          AND status != 'declined'
+          AND items.user_id = ?
     `
 
     db.query(sql, [user_id], (err, results) => {
