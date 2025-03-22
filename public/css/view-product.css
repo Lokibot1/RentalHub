@@ -607,3 +607,33 @@ nav button {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
+#confirm-btn {
+    background-color: #009959;
+    color: white;
+    border: none;
+    padding: 8px 40px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#confirm-btn:hover {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+#cancel-btn {
+    background-color: #800020;
+    color: white;
+    border: none;
+    padding: 8px 40px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#cancel-btn:hover {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}

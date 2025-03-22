@@ -512,6 +512,7 @@ nav button {
 }
 
 /*Confirm Message*/
+.review-toast,
 .toast {
   visibility: hidden;
   min-width: 250px;

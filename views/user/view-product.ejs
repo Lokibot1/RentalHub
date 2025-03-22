@@ -509,10 +509,10 @@
             const modal = document.createElement("div");
             modal.className = "modal";
             modal.innerHTML = `
-              <p>Confirm rental request for:<br>
+              <p><strong>Confirm rental request for: </strong><br>
               <strong>From:</strong> ${formatDate(startDate)}<br>
               <strong>To:</strong> ${formatDate(endDate)}<br>
-              <strong>Payment Method:</strong> ${deliveryMethod}</p>
+              <strong>Payment Method:</strong> ${deliveryMethod}</p><br>
                         <h3>Terms and Condition</h3>
                         <div class="terms-and-conditions">
     <p>
@@ -604,7 +604,7 @@
 
             modal.style.backgroundColor = "white";
             modal.style.padding = "20px";
-            modal.style.borderRadius = "25px";
+            modal.style.borderRadius = "15px";
             modal.style.minWidth = "300px";
             modal.style.Width = "80%";
             modal.style.maxWidth = "400px";
@@ -612,7 +612,11 @@
             modal.style.overflowY = "auto";
             modal.style.top = "50%";
             modal.style.left = "50%";
-
+            modal.style.textAlign = "justify";
+            modal.querySelector(".modal-buttons").style.display = "flex";
+            modal.querySelector(".modal-buttons").style.justifyContent = "center";
+            h3 = modal.querySelector("h3");
+            h3.style.textAlign = "center";
             
 
             document
