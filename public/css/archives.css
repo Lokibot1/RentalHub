@@ -612,7 +612,8 @@ nav button {
   gap: 80px;
   margin: 10px 80px 10px;
 }
-#report-btn {
+#report-btn,
+.report-btn {
   all: unset;
   color: #800020;
   font-weight: 900;
@@ -620,7 +621,8 @@ nav button {
   cursor: pointer;
 }
 
-#review-btn {
+#review-btn,
+.review-btn {
   color: #1b2e3d;
   border: 3px solid #1b2e3d;
   border-radius: 30px;

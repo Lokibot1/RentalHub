@@ -136,8 +136,6 @@ router.patch("/rental-requests/declined", (req, res) => {
 });
 
 
-
-
 // Helper function to rollback transaction
 function rollback(res, message) {
     db.rollback(() => res.status(400).json({ success: false, message }));
@@ -159,12 +157,14 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
                items.name                                     AS item_name,
                rental_transactions.start_date                 AS start_date,
                rental_transactions.end_date                   AS end_date,
-               rental_transactions.mode_of_delivery           AS mode_of_delivery
+               rental_transactions.mode_of_delivery           AS mode_of_delivery,
+               rental_transactions.rental_quantity            AS rental_quantity,
+               status
         FROM rental_transactions
                  JOIN users ON users.id = rental_transactions.renter_id
                  JOIN items ON items.id = rental_transactions.item_id
         WHERE rental_transactions.is_approved = 1
-          AND status != 'declined'
+          AND status = 'ongoing'
           AND items.user_id = ?
     `
 
@@ -180,5 +180,56 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
         })
     })
 })
+
+
+/**
+ * Return ongoing items to shop including their quantity
+ *
+ * @route PATCH /api/user/my-items/return-items/:rent_transaction_id
+ */
+router.patch("/return-items/:rent_transaction_id", async (req, res) => {
+    const { rent_transaction_id } = req.params;
+
+    db.beginTransaction((err) => {
+        if (err) return res.status(500).json({ success: false, message: "Transaction initiation failed." });
+
+        // Get item_id and rental_quantity
+        const selectSql = `SELECT item_id, rental_quantity FROM rental_transactions WHERE id = ? FOR UPDATE`;
+        db.query(selectSql, [rent_transaction_id], (err, results) => {
+            if (err || results.length === 0) {
+                return rollback(res, "Transaction details not found.");
+            }
+
+            const { item_id, rental_quantity } = results[0];
+
+            // Delete transaction
+            const deleteRentalTransactionById = `DELETE FROM rental_transactions WHERE id = ?`;
+            db.query(deleteRentalTransactionById, [rent_transaction_id], (err) => {
+                if (err) return rollback(res, "Failed to delete rental transaction.");
+
+                // Update inventory stock
+                const updateInventorySql = `
+                    UPDATE inventory SET stock_quantity = stock_quantity + ?
+                    WHERE item_id = ?
+                `
+
+                db.query(updateInventorySql, [rental_quantity, item_id], (err, results) => {
+                    if (err || results.affectedRows === 0) {
+                        return rollback(res, "Failed to update inventory.");
+                    }
+
+                    db.commit((err) => {
+                        if (err) return res.status(500).json({ success: false, message: "Commit failed." });
+
+                        res.status(200).json({
+                            success: true,
+                            message: 'Items returned and stock updated.'
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
 
 module.exports = router

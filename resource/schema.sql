@@ -77,50 +77,46 @@ VALUES ('admin'),
 CREATE TABLE IF NOT EXISTS items
 (
     id          INT AUTO_INCREMENT PRIMARY KEY,
-    name        VARCHAR(100) NOT NULL,
-    price       DECIMAL(10,2) NOT NULL,
+    name        VARCHAR(100)   NOT NULL,
+    price       DECIMAL(10, 2) NOT NULL,
     description TEXT,
-    location    VARCHAR(255) NOT NULL,
-    file_path   VARCHAR(100) NOT NULL,
-    user_id     INT          NOT NULL,
-    category_id INT          NOT NULL,
-    is_approved TINYINT(1)   NOT NULL DEFAULT 0,
-    created_at  TIMESTAMP             DEFAULT CURRENT_TIMESTAMP,
-    updated_at  TIMESTAMP             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    location    VARCHAR(255)   NOT NULL,
+    file_path   VARCHAR(100)   NOT NULL,
+    user_id     INT            NOT NULL,
+    category_id INT            NOT NULL,
+    is_archived TINYINT(1)     NOT NULL DEFAULT 0,
+    is_approved TINYINT(1)     NOT NULL DEFAULT 0,
+    created_at  TIMESTAMP               DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories (id),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
-ALTER TABLE items
-    MODIFY updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
-ALTER TABLE items
-    ADD COLUMN is_archived TINYINT(1) NOT NULL DEFAULT 0;
 
-
-CREATE TABLE inventory (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    item_id INT,
-    stock_quantity INT DEFAULT 0,
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (item_id) REFERENCES items(id)
+CREATE TABLE inventory
+(
+    id             INT PRIMARY KEY AUTO_INCREMENT,
+    item_id        INT,
+    stock_quantity INT       DEFAULT 0,
+    last_updated   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (item_id) REFERENCES items (id)
 );
 
 
-CREATE TABLE rental_transactions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    renter_id INT NOT NULL,
-    item_id INT NOT NULL,
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
-    total_price DECIMAL(10,2) NOT NULL,
-    rental_quantity INT NOT NULL DEFAULT 1,
-    mode_of_delivery ENUM('meetup', 'delivery') NOT NULL DEFAULT 'meetup',
-    status ENUM('pending', 'ongoing', 'completed', 'cancelled', 'declined') DEFAULT 'pending',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (renter_id) REFERENCES users(id),
-    FOREIGN KEY (item_id) REFERENCES items(id)
+CREATE TABLE rental_transactions
+(
+    id               INT AUTO_INCREMENT PRIMARY KEY,
+    renter_id        INT                         NOT NULL,
+    item_id          INT                         NOT NULL,
+    start_date       DATE                        NOT NULL,
+    end_date         DATE                        NOT NULL,
+    total_price      DECIMAL(10, 2)              NOT NULL,
+    rental_quantity  INT                         NOT NULL                 DEFAULT 1,
+    mode_of_delivery ENUM ('meetup', 'delivery') NOT NULL                 DEFAULT 'meetup',
+    status           ENUM ('pending', 'ongoing', 'cancelled', 'declined') DEFAULT 'available',
+    is_approved      TINYINT(1)                  NOT NULL                 DEFAULT 0,
+    created_at       TIMESTAMP                                            DEFAULT CURRENT_TIMESTAMP,
+    updated_at       TIMESTAMP                                            DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (renter_id) REFERENCES users (id),
+    FOREIGN KEY (item_id) REFERENCES items (id)
 );
-
-ALTER TABLE rental_transactions
-    ADD COLUMN is_approved TINYINT(1)   NOT NULL DEFAULT 0;

@@ -206,15 +206,15 @@
         </div>
 
         <!-- Decline Confirmation Modal -->
-<div id="decline-confirmation-modal1" class="confirmation-modal1">
-    <div class="confirmation-box1">
-        <h2>Are you sure you want to <span class="decline-text1">decline</span> this request?</h2>
-        <div class="button-container1">
-            <button id="decline-yes-btn1" class="yes-btn1">Yes</button>
-            <button id="decline-no-btn1" class="no-btn1">No</button>
+        <div id="decline-confirmation-modal1" class="confirmation-modal1">
+            <div class="confirmation-box1">
+                <h2>Are you sure you want to <span class="decline-text1">decline</span> this request?</h2>
+                <div class="button-container1">
+                    <button id="decline-yes-btn1" class="yes-btn1">Yes</button>
+                    <button id="decline-no-btn1" class="no-btn1">No</button>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
 
         <!-- Ongoing Transactions -->
@@ -226,7 +226,7 @@
                         <div class="rentalItem">
                             <div class="rentalInfo">
                                 <div class="renterDetails">
-                                    <strong class="renterName"><%= item.renters_name %></strong>
+                                    <strong class="renterName"><%= item.renters_name %> - Qty: <%= item.rental_quantity %></strong>
                                 </div>
                                 <div class="itemDetails">
                                     <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
@@ -239,9 +239,13 @@
                                 </div>
                             </div>
                             <div class="completeAction">
-                                <button id="report-btn">File a Report</button>
+                                <button id="report-btn">
+                                    File a Report
+                                </button>
                                 <!--FIX ME: width problem, no submit requirements, no darkbg overlay-->
-                                <button id="review-btn">Done</button>
+                                <button class="review-btn" data-id="review-btn-<%= item.rent_transaction_id %>">
+                                    Done
+                                </button>
                             </div>
                         </div>
                     <% }); %>
@@ -339,13 +343,12 @@
         </div>
     </div>
 </div>
-</div>
 
 <!-- JavaScript -->
 <script>
     // OPEN TAB FUNCTION
     function openTab(evt, tabName) {
-        var i, tabs, buttons;
+        let i, tabs, buttons;
         tabs = document.getElementsByClassName("tab-content");
         for (i = 0; i < tabs.length; i++) {
             tabs[i].style.display = "none";
@@ -542,6 +545,9 @@
             this.successContainer = document.getElementById("success-container1");
             this.declineContainer = document.getElementById("decline-container1");
 
+            this.reviewButton = document.querySelector(`[data-id="review-btn-${id}"]`);
+            this.reviewModal = document.querySelector('#review-modal');
+
             // Getting the current data-id
             this.dataId = 0
 
@@ -562,6 +568,13 @@
                     this.showModal("decline")
                 });
             }
+
+            if (this.reviewButton) {
+                this.reviewButton.addEventListener('click', () => {
+                    this.dataId = event.target.getAttribute('data-id').replace('review-btn-', '');
+                    this.showModal('review-modal')
+                });
+            }
         }
 
         showModal(action) {
@@ -577,6 +590,11 @@
 
                 document.getElementById("decline-yes-btn1").onclick = () => this.confirmDecline();
                 document.getElementById("decline-no-btn1").onclick = () => this.hideModals();
+            } else if (action === 'review-modal') {
+                this.reviewModal.style.display = "block";
+
+                document.getElementById('submit-rev').onclick = () => this.submitReview();
+                document.getElementById('cancel-rev').onclick = () => this.hideModals();
             }
         }
 
@@ -615,11 +633,34 @@
             this.confirmationModal.style.display = "none";
             this.declineConfirmationModal.style.display = "none";
             this.overlay.style.display = "none";
+            this.reviewModal.style.display = 'none'
+        }
+
+        async submitReview() {
+            const rentTransactionId = this.dataId
+
+            try {
+                await fetch(`http://localhost:8000/api/user/my-items/return-items/${rentTransactionId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                })
+            } catch (error) {
+                alert(error.message);
+            }
+
+            this.reviewModal.style.display = "none";
+
+            setTimeout(() => {
+                this.overlay.style.display = "none";
+                this.successContainer.style.display = "none";
+
+                window.location.reload()
+            }, 3000);
         }
     }
 
     // Initialize rental requests for existing items
-    document.querySelectorAll(".accept-btn, .decline-btn").forEach((button) => {
+    document.querySelectorAll(".accept-btn, .decline-btn, .review-btn").forEach((button) => {
         const id = button.dataset.id.split("-").pop(); // Extracts the unique ID from data-id
         new RentalRequest(id);
     });
@@ -633,105 +674,91 @@
         const rentalItem = document.createElement("div");
         rentalItem.classList.add("rentalItem");
         rentalItem.innerHTML = `
-    <div class="rentalInfo">
-      <div class="renterDetails">
-        <strong class="renterName">${renterName}</strong>
-        <strong>•</strong>
-        <strong class="renterLocation">${location}</strong>
-      </div>
-      <div class="itemDetails">
-        <img src="" alt="" class="itemImage" />
-        <h2 class="itemName">${itemName}</h2>
-      </div>
-      <div class="rentalDurationContainer">
-        <strong class="rentalDuration">${rentalDuration}</strong>
-        <strong>•</strong>
-        <strong class="MOD">${modeOfDelivery}</strong>
-      </div>
-    </div>
+            <div class="rentalInfo">
+              <div class="renterDetails">
+                <strong class="renterName">${renterName}</strong>
+                <strong>•</strong>
+                <strong class="renterLocation">${location}</strong>
+              </div>
+              <div class="itemDetails">
+                <img src="" alt="" class="itemImage" />
+                <h2 class="itemName">${itemName}</h2>
+              </div>
+              <div class="rentalDurationContainer">
+                <strong class="rentalDuration">${rentalDuration}</strong>
+                <strong>•</strong>
+                <strong class="MOD">${modeOfDelivery}</strong>
+              </div>
+            </div>
 
-    <div class="rentalAction">
-      <button class="accept-btn" data-id="accept-btn-${rentalItemCount}">✓</button>
-      <button class="decline-btn" data-id="decline-btn-${rentalItemCount}">✗</button>
-    </div>
-  `;
+            <div class="rentalAction">
+              <button class="accept-btn" data-id="accept-btn-${rentalItemCount}">✓</button>
+              <button class="decline-btn" data-id="decline-btn-${rentalItemCount}">✗</button>
+            </div>
+        `
 
         document.getElementById("rentalContainer").appendChild(rentalItem);
         new RentalRequest(rentalItemCount);
     }
 
     document.querySelectorAll('.decline-btn').forEach(button => {
-    button.addEventListener('click', async (event) => {
-        const rentalTransactionId = event.target.dataset.id.split('-').pop();
+        button.addEventListener('click', async (event) => {
+            const rentalTransactionId = event.target.dataset.id.split('-').pop();
 
-        // Show the decline confirmation modal
-        const modal = document.getElementById('decline-confirmation-modal1');
-        modal.style.display = 'block';
+            // Show the decline confirmation modal
+            const modal = document.getElementById('decline-confirmation-modal1');
+            modal.style.display = 'block';
 
-        const yesButton = document.getElementById('decline-yes-btn1');
-        const noButton = document.getElementById('decline-no-btn1');
+            const yesButton = document.getElementById('decline-yes-btn1');
+            const noButton = document.getElementById('decline-no-btn1');
 
-        // When the user clicks "Yes", decline the request
-        yesButton.addEventListener('click', async () => {
-            const response = await fetch('/api/user/my-items/rental-requests/declined', {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ rental_transaction_id: rentalTransactionId })
+            // When the user clicks "Yes", decline the request
+            yesButton.addEventListener('click', async () => {
+                const response = await fetch('/api/user/my-items/rental-requests/declined', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({rental_transaction_id: rentalTransactionId})
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Find and remove the rental item from the DOM
+                    const rentalItem = event.target.closest('.rentalItem');
+                    if (rentalItem) {
+                        rentalItem.remove(); // Remove the item from the DOM
+                    }
+
+                    // Check if there are any remaining rental requests
+                    const rentalItems = document.querySelectorAll('.rentalItem');
+                    if (rentalItems.length === 0) {
+                        // If no rental requests remain, display the "No Rental Requests available." message
+                        const rentalList = document.querySelector('.RentalList');
+                        rentalList.innerHTML = '<p>No Rental Requests available.</p>';
+                    }
+                } else {
+                    alert('Failed to decline the rental request.');
+                }
+
+                // Close the modal
+                modal.style.display = 'none';
             });
 
-            const data = await response.json();
-
-            if (data.success) {
-                // Find and remove the rental item from the DOM
-                const rentalItem = event.target.closest('.rentalItem');
-                if (rentalItem) {
-                    rentalItem.remove(); // Remove the item from the DOM
-                }
-
-                // Check if there are any remaining rental requests
-                const rentalItems = document.querySelectorAll('.rentalItem');
-                if (rentalItems.length === 0) {
-                    // If no rental requests remain, display the "No Rental Requests available." message
-                    const rentalList = document.querySelector('.RentalList');
-                    rentalList.innerHTML = '<p>No Rental Requests available.</p>';
-                }
-            } else {
-                alert('Failed to decline the rental request.');
-            }
-
-            // Close the modal
-            modal.style.display = 'none';
-        });
-
-        // When the user clicks "No", simply close the modal without doing anything
-        noButton.addEventListener('click', () => {
-            modal.style.display = 'none'; // Close the modal
+            // When the user clicks "No", simply close the modal without doing anything
+            noButton.addEventListener('click', () => {
+                modal.style.display = 'none'; // Close the modal
+            });
         });
     });
-});
 
 
     // Review Modal Functionality FIX ME: WIDTH TOO WIDE, DARKBG OVERLAY NOT WORKING
-    const reviewBtn = document.getElementById("review-btn");
-    const reviewModal = document.getElementById("review-modal");
     const confirmModal = document.getElementById("confirm-modal");
-    const submitRev = document.getElementById("submit-rev");
     const confirmSubmit = document.getElementById("confirm-submit");
     const cancelConfirm = document.getElementById("cancel-confirm");
-    const cancelRev = document.getElementById("cancel-rev");
     const toast = document.getElementById("toast");
-
-    // Show review modal
-    reviewBtn.addEventListener("click", function () {
-        reviewModal.style.display = "flex";
-    });
-
-    // Hide review modal
-    cancelRev.addEventListener("click", function () {
-        reviewModal.style.display = "none";
-    });
 
     // Star Rating System
     const stars = document.querySelectorAll(".star2");
@@ -782,16 +809,6 @@
     // Cancel confirmation modal
     cancelConfirm.addEventListener("click", function () {
         confirmModal.style.display = "none";
-    });
-
-    // Hide modal when clicking outside
-    window.addEventListener("click", function (event) {
-        if (event.target === reviewModal) {
-            reviewModal.style.display = "block";
-        }
-        if (event.target === confirmModal) {
-            confirmModal.style.display = "none";
-        }
     });
 
     // Toast Notification Function
