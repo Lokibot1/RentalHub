@@ -70,7 +70,13 @@ router.patch("/rental-requests/approved", (req, res) => {
             const { item_id, rental_quantity } = results[0];
 
             // Approve rental request
-            const updateTransactionSql = `UPDATE rental_transactions SET is_approved = 1 WHERE id = ?`;
+            const updateTransactionSql = `
+                UPDATE rental_transactions
+                SET is_approved = 1
+                    AND status = 'ongoing'
+                WHERE id = ?
+            `
+
             db.query(updateTransactionSql, [rental_transaction_id], (err) => {
                 if (err) return rollback(res, "Failed to update rental transaction.");
 
