@@ -72,8 +72,7 @@ router.patch("/rental-requests/approved", (req, res) => {
             // Approve rental request
             const updateTransactionSql = `
                 UPDATE rental_transactions
-                SET is_approved = 1
-                    AND status = 'ongoing'
+                SET is_approved = 1, status = 'ongoing'
                 WHERE id = ?
             `
 
@@ -84,7 +83,8 @@ router.patch("/rental-requests/approved", (req, res) => {
                 const updateInventorySql = `
                     UPDATE inventory SET stock_quantity = stock_quantity - ? 
                     WHERE item_id = ? AND stock_quantity >= ?
-                `;
+                `
+
                 db.query(updateInventorySql, [rental_quantity, item_id, rental_quantity], (err, results) => {
                     if (err || results.affectedRows === 0) {
                         return rollback(res, "Insufficient stock or update failed.");
