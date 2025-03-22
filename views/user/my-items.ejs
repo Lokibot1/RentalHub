@@ -304,9 +304,9 @@
                         <span class="star2" data-value="5">★</span>
                     </div>
                     <br/>
-                    <label for="description">Describe Your Experience</label>
+                    <label for="review-description">Describe Your Experience</label>
                     <br/>
-                    <textarea id="description" name="description" rows="4" cols="50"></textarea>
+                    <textarea id="review-description" name="review_description" rows="4" cols="50"></textarea>
                     <br/>
                     <button id="submit-rev" type="submit">Submit</button>
                     <button id="cancel-rev" type="button">Cancel</button>
@@ -545,8 +545,9 @@
             this.successContainer = document.getElementById("success-container1");
             this.declineContainer = document.getElementById("decline-container1");
 
-            this.reviewButton = document.querySelector(`[data-id="review-btn-${id}"]`);
-            this.reviewModal = document.querySelector('#review-modal');
+            this.reviewButton = document.querySelector(`[data-id="review-btn-${id}"]`)
+            this.reviewDescription = document.querySelector('#review-description')
+            this.reviewModal = document.querySelector('#review-modal')
 
             // Getting the current data-id
             this.dataId = 0
@@ -593,7 +594,10 @@
             } else if (action === 'review-modal') {
                 this.reviewModal.style.display = "block";
 
-                document.getElementById('submit-rev').onclick = () => this.submitReview();
+                document.getElementById('submit-rev').onclick = () => {
+                    this.submitReview();
+                }
+
                 document.getElementById('cancel-rev').onclick = () => this.hideModals();
             }
         }
@@ -643,6 +647,10 @@
                 await fetch(`http://localhost:8000/api/user/my-items/return-items/${rentTransactionId}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        stars: selectedRating,
+                        description: this.reviewDescription.value,
+                    })
                 })
             } catch (error) {
                 alert(error.message);
@@ -656,6 +664,7 @@
 
                 window.location.reload()
             }, 3000);
+
         }
     }
 

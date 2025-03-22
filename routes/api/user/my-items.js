@@ -1,4 +1,5 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const {connection: db} = require("../../../configs/db");
 
 const router = express.Router();
@@ -10,7 +11,7 @@ const router = express.Router();
  * @route GET /api/user/my-listings/rental-requests/:user_id
  */
 router.get("/rental-requests/:user_id", async (req, res) => {
-    const { user_id } = req.params
+    const {user_id} = req.params
 
     const sql = `
         SELECT rental_transactions.id                         AS rent_transaction_id,
@@ -32,7 +33,7 @@ router.get("/rental-requests/:user_id", async (req, res) => {
     db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({ success: false, message: "Query failed." });
+            return res.status(500).json({success: false, message: "Query failed."});
         }
 
         // Send back the results (the rental requests that are pending)
@@ -52,27 +53,31 @@ router.get("/rental-requests/:user_id", async (req, res) => {
  * @route PATCH /api/user/my-listings/rental-requests/approved
  */
 router.patch("/rental-requests/approved", (req, res) => {
-    const { rental_transaction_id } = req.body;
+    const {rental_transaction_id} = req.body;
     if (!rental_transaction_id) {
-        return res.status(400).json({ success: false, message: "Missing rental_transaction_id" });
+        return res.status(400).json({success: false, message: "Missing rental_transaction_id"});
     }
 
     db.beginTransaction((err) => {
-        if (err) return res.status(500).json({ success: false, message: "Transaction initiation failed." });
+        if (err) return res.status(500).json({success: false, message: "Transaction initiation failed."});
 
         // Get item_id and rental_quantity
-        const selectSql = `SELECT item_id, rental_quantity FROM rental_transactions WHERE id = ? FOR UPDATE`;
+        const selectSql = `SELECT item_id, rental_quantity
+                           FROM rental_transactions
+                           WHERE id = ? FOR
+                           UPDATE`;
         db.query(selectSql, [rental_transaction_id], (err, results) => {
             if (err || results.length === 0) {
                 return rollback(res, "Transaction details not found.");
             }
 
-            const { item_id, rental_quantity } = results[0];
+            const {item_id, rental_quantity} = results[0];
 
             // Approve rental request
             const updateTransactionSql = `
                 UPDATE rental_transactions
-                SET is_approved = 1, status = 'ongoing'
+                SET is_approved = 1,
+                    status      = 'ongoing'
                 WHERE id = ?
             `
 
@@ -81,8 +86,10 @@ router.patch("/rental-requests/approved", (req, res) => {
 
                 // Update inventory stock
                 const updateInventorySql = `
-                    UPDATE inventory SET stock_quantity = stock_quantity - ? 
-                    WHERE item_id = ? AND stock_quantity >= ?
+                    UPDATE inventory
+                    SET stock_quantity = stock_quantity - ?
+                    WHERE item_id = ?
+                      AND stock_quantity >= ?
                 `
 
                 db.query(updateInventorySql, [rental_quantity, item_id, rental_quantity], (err, results) => {
@@ -91,7 +98,7 @@ router.patch("/rental-requests/approved", (req, res) => {
                     }
 
                     db.commit((err) => {
-                        if (err) return res.status(500).json({ success: false, message: "Commit failed." });
+                        if (err) return res.status(500).json({success: false, message: "Commit failed."});
 
                         res.status(200).json({
                             success: true,
@@ -111,18 +118,19 @@ router.patch("/rental-requests/approved", (req, res) => {
  * @route PATCH /api/user/my-items/rental-requests/declined
  */
 router.patch("/rental-requests/declined", (req, res) => {
-    const { rental_transaction_id } = req.body;
+    const {rental_transaction_id} = req.body;
     if (!rental_transaction_id) {
-        return res.status(400).json({ success: false, message: "Missing rental_transaction_id" });
+        return res.status(400).json({success: false, message: "Missing rental_transaction_id"});
     }
 
     db.beginTransaction((err) => {
-        if (err) return res.status(500).json({ success: false, message: "Transaction initiation failed." });
+        if (err) return res.status(500).json({success: false, message: "Transaction initiation failed."});
 
         // Update rental transaction to declined status (is_approved = -1)
         const updateTransactionSql = `
             UPDATE rental_transactions
-            SET is_approved = 0, status = 'declined'
+            SET is_approved = 0,
+                status      = 'declined'
             WHERE id = ?
         `
 
@@ -130,7 +138,7 @@ router.patch("/rental-requests/declined", (req, res) => {
             if (err) return rollback(res, "Failed to decline rental transaction.");
 
             db.commit((err) => {
-                if (err) return res.status(500).json({ success: false, message: "Declined failed." });
+                if (err) return res.status(500).json({success: false, message: "Declined failed."});
 
                 res.status(200).json({
                     success: true,
@@ -144,7 +152,7 @@ router.patch("/rental-requests/declined", (req, res) => {
 
 // Helper function to rollback transaction
 function rollback(res, message) {
-    db.rollback(() => res.status(400).json({ success: false, message }));
+    db.rollback(() => res.status(400).json({success: false, message}));
 }
 
 
@@ -154,7 +162,7 @@ function rollback(res, message) {
  * @route GET /api/user/my-items/ongoing-transactions/:user_id
  */
 router.get("/ongoing-transactions/:user_id", async (req, res) => {
-    const { user_id } = req.params
+    const {user_id} = req.params
 
     const sql = `
         SELECT rental_transactions.id                         AS rent_transaction_id,
@@ -177,7 +185,7 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
     db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({ success: false, message: "Query failed." })
+            return res.status(500).json({success: false, message: "Query failed."})
         }
 
         res.status(200).json({
@@ -194,48 +202,73 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
  * @route PATCH /api/user/my-items/return-items/:rent_transaction_id
  */
 router.patch("/return-items/:rent_transaction_id", async (req, res) => {
-    const { rent_transaction_id } = req.params;
+    const {rent_transaction_id} = req.params;
+    const {stars, description} = req.body
+    const token = req.cookies.token || '';
+    const user = jwt.verify(token, process.env.JWT_SECRET);
 
     db.beginTransaction((err) => {
-        if (err) return res.status(500).json({ success: false, message: "Transaction initiation failed." });
+        if (err) return res.status(500).json({success: false, message: "Transaction initiation failed."});
 
         // Get item_id and rental_quantity
-        const selectSql = `SELECT item_id, rental_quantity FROM rental_transactions WHERE id = ? FOR UPDATE`;
+        const selectSql = `
+            SELECT item_id, rental_quantity
+            FROM rental_transactions
+            WHERE id = ? FOR
+            UPDATE
+        `
         db.query(selectSql, [rent_transaction_id], (err, results) => {
             if (err || results.length === 0) {
                 return rollback(res, "Transaction details not found.");
             }
 
-            const { item_id, rental_quantity } = results[0];
+            const {item_id, rental_quantity} = results[0];
 
             // Delete transaction
-            const deleteRentalTransactionById = `DELETE FROM rental_transactions WHERE id = ?`;
+            const deleteRentalTransactionById = `
+                DELETE
+                FROM rental_transactions
+                WHERE id = ?
+            `
             db.query(deleteRentalTransactionById, [rent_transaction_id], (err) => {
-                if (err) return rollback(res, "Failed to delete rental transaction.");
+                if (err) return rollback(res, "Failed to delete rental transaction.")
 
                 // Update inventory stock
                 const updateInventorySql = `
-                    UPDATE inventory SET stock_quantity = stock_quantity + ?
+                    UPDATE inventory
+                    SET stock_quantity = stock_quantity + ?
                     WHERE item_id = ?
                 `
-
                 db.query(updateInventorySql, [rental_quantity, item_id], (err, results) => {
                     if (err || results.affectedRows === 0) {
-                        return rollback(res, "Failed to update inventory.");
+                        return rollback(res, "Failed to update inventory.")
                     }
 
-                    db.commit((err) => {
-                        if (err) return res.status(500).json({ success: false, message: "Commit failed." });
+                    // Save reviews and star rating
+                    const createReviewAndStarRatingSql = `
+                        INSERT INTO reviews(item_id, user_id, rating, review_text)
+                            VALUE (?, ?, ?, ?)
+                    `
+                    db.query(createReviewAndStarRatingSql, [item_id, user.id, stars, description], (err) => {
+                        if (err) return rollback(res, "Failed to create reviews");
 
-                        res.status(200).json({
-                            success: true,
-                            message: 'Items returned and stock updated.'
-                        });
-                    });
-                });
-            });
-        });
-    });
-});
+                        db.commit((err) => {
+                            if (err) return res.status(500).json({
+                                success: false,
+                                message: "Commit failed."
+                            });
+
+                            res.status(200).json({
+                                success: true,
+                                message: 'Items returned and stock updated.'
+                            })
+                        })
+                    })
+                })
+            })
+        })
+    })
+})
+
 
 module.exports = router
