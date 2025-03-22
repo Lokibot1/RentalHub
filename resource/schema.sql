@@ -93,6 +93,21 @@ CREATE TABLE IF NOT EXISTS items
 );
 
 
+-- reviews
+CREATE TABLE reviews
+(
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    item_id     INT NOT NULL,
+    user_id     INT NOT NULL,
+    rating      INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    review_text TEXT,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (item_id) REFERENCES items (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+
+-- inventory
 CREATE TABLE inventory
 (
     id             INT PRIMARY KEY AUTO_INCREMENT,
@@ -103,6 +118,7 @@ CREATE TABLE inventory
 );
 
 
+-- rental_transactions
 CREATE TABLE rental_transactions
 (
     id               INT AUTO_INCREMENT PRIMARY KEY,
@@ -113,7 +129,7 @@ CREATE TABLE rental_transactions
     total_price      DECIMAL(10, 2)              NOT NULL,
     rental_quantity  INT                         NOT NULL                 DEFAULT 1,
     mode_of_delivery ENUM ('meetup', 'delivery') NOT NULL                 DEFAULT 'meetup',
-    status           ENUM ('pending', 'ongoing', 'cancelled', 'declined') DEFAULT 'available',
+    status           ENUM ('pending', 'ongoing', 'cancelled', 'declined') DEFAULT 'pending',
     is_approved      TINYINT(1)                  NOT NULL                 DEFAULT 0,
     created_at       TIMESTAMP                                            DEFAULT CURRENT_TIMESTAMP,
     updated_at       TIMESTAMP                                            DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
