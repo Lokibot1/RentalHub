@@ -100,6 +100,7 @@ router.get("/listing/:category_id", upload.single('item_file'), async (req, res)
         SELECT
             items.*,
             inventory.stock_quantity AS quantity,
+            CONCAT(users.first_name, ' ', users.last_name) AS owner,
             profile_image
         FROM items
                  JOIN inventory ON inventory.item_id = items.id
@@ -114,7 +115,7 @@ router.get("/listing/:category_id", upload.single('item_file'), async (req, res)
             return res.status(500).json({ success: false, message: "Failed to add item." });
         }
 
-        const filteredResults = results.map(({ id, name, price, description, location, quantity, file_path, profile_image }) => {
+        const filteredResults = results.map(({ id, name, price, description, location, quantity, file_path, owner, profile_image }) => {
             return {
                 id,
                 name,
@@ -123,6 +124,7 @@ router.get("/listing/:category_id", upload.single('item_file'), async (req, res)
                 location,
                 quantity,
                 image: `/uploads/${file_path}`,
+                owner,
                 profile_image
             }
         });

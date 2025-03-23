@@ -14,11 +14,11 @@
             <a href="/user/listing"><img src="/images/WhiteAdd.png" class="add-icon"/></a>
         </li>
         <li>
-            <% if (isAuthenticated && role == 'admin' ) { %>
+            <% if (isAuthenticated && role === 'admin' ) { %>
                 <a href='/admin/admin-dashboard'>
                     <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
                 </a>
-            <% } else if (isAuthenticated && role == 'user' ) { %>
+            <% } else if (isAuthenticated && role === 'user' ) { %>
                 <a href='/user/profile'>
                     <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
                 </a>
@@ -221,6 +221,7 @@
                 selectedItem.name || "Unknown Owner";
 
             document.querySelector('#owner-image').src = `/uploads/${selectedItem.profile_image}`
+            document.querySelector('#owner-name').textContent = selectedItem.owner
 
             document.getElementById("owner-location").textContent =
                 selectedItem.location || "Unknown Location";

@@ -25,26 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-/*
-document.addEventListener("DOMContentLoaded", async function () {
-  try {
-    // Fetch dashboard counts from backend API
-    const response = await fetch("/api/dashboard-counts");
-    const data = await response.json();
-
-    // Update counts dynamically
-    document.getElementById("rents-count").textContent = data.rents || 0;
-    document.getElementById("pending-posts-count").textContent =
-      data.pendingPosts || 0;
-    document.getElementById("rental-request-count").textContent =
-      data.rentalRequests || 0;
-    document.getElementById("item-posted-count").textContent =
-      data.itemsPosted || 0;
-  } catch (error) {
-    console.error("Error fetching dashboard counts:", error);
-  }
-});
-*/
 
 // Tabs Functionality
 function openTab(evt, tabName) {
