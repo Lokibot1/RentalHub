@@ -288,6 +288,16 @@
 
         <!-- Toast Notification -->
         <div id="report-toast" class="toast">Report Submitted Successfully!</div>
+        <!-- FIX ME: Report Confirmation Modal, NOT SHOWING  -->
+        <div id="confirm-modal" class="modal">
+            <div class="modal-content">
+                <h3>Are you sure you want to submit this report?</h3>
+                <div class="modal-buttons">
+                    <button class="btn-yes" id="confirm-submit">Confirm</button>
+                    <button class="btn-no" id="cancel-confirm">Cancel</button>
+                </div>
+            </div>
+        </div>        
 
         <!-- Modal for Review  -->
         <div id="review-modal" class="modal">
@@ -314,19 +324,19 @@
             </div>
         </div>
 
-        <!-- FIX ME: Report Confirmation Modal, NOT SHOWING  -->
-        <div id="confirm-modal" class="modal">
+        <!-- FIX ME: Review Confirmation Modal, NOT SHOWING  -->
+        <div id="confirm-modal1" class="modal">
             <div class="modal-content">
                 <h3>Are you sure you want to submit this review?</h3>
                 <div class="modal-buttons">
-                    <button class="btn-yes" id="confirm-submit">Confirm</button>
-                    <button class="btn-no" id="cancel-confirm">Cancel</button>
+                    <button class="btn-yes" id="confirm-review">Confirm</button>
+                    <button class="btn-no" id="cancel-review">Cancel</button>
                 </div>
             </div>
         </div>
         <!-- FIXME: Toast Notification-->
         <div class="modalOverlay" id="modalOverlay"></div>
-        <div id="toast" class="toast">Report Submitted Successfully!</div>
+        <div id="review-toast" class="toast">Review Submitted Successfully!</div>
 
         <!--Reviews-->
         <div id="Reviews" class="tab-content" style="display: none">
@@ -583,24 +593,37 @@
 
             if (action === "accept") {
                 this.confirmationModal.style.display = "block";
-
                 document.getElementById("yes-btn1").onclick = () => this.confirmAccept();
                 document.getElementById("no-btn1").onclick = () => this.hideModals();
             } else if (action === "decline") {
                 this.declineConfirmationModal.style.display = "block";
-
                 document.getElementById("decline-yes-btn1").onclick = () => this.confirmDecline();
                 document.getElementById("decline-no-btn1").onclick = () => this.hideModals();
             } else if (action === 'review-modal') {
                 this.reviewModal.style.display = "block";
 
-                document.getElementById('submit-rev').onclick = () => {
-                    this.submitReview();
-                }
+                document.getElementById('submit-rev').onclick = (event) => {
+                    event.preventDefault();
+                    document.getElementById('review-modal').style.display = "none";
+                    document.getElementById('confirm-modal1').style.display = "block";
+                };
 
                 document.getElementById('cancel-rev').onclick = () => this.hideModals();
             }
+
+            // Handle confirmation modal actions
+            document.getElementById("confirm-review").onclick = async () => {
+                await this.submitReview(); // Submits the review
+                document.getElementById("confirm-modal1").style.display = "none"; // Hide confirm modal
+                showToast("Review Submitted Successfully!"); // Show toast
+            };
+
+            document.getElementById('cancel-review').onclick = () => {
+                document.getElementById('confirm-modal1').style.display = "none"; // Close confirm modal
+                this.overlay.style.display = "none"; // Hide overlay
+            };
         }
+
 
         async confirmAccept() {
             try {
@@ -652,6 +675,11 @@
                         description: this.reviewDescription.value,
                     })
                 })
+
+                document.getElementById('review-toast').style.display = "block";
+                setTimeout(() => {
+                    document.getElementById('review-toast').style.display = "none";
+                }, 3000);
             } catch (error) {
                 alert(error.message);
             }
