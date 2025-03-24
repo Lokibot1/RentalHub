@@ -9,49 +9,46 @@
 
     <!--Main Content-->
     <div class="content">
-        <button id="restore-btn" class="restore-btn">Restore All</button>
+        <!--        <button id="restore-btn" class="restore-btn">Restore All</button>-->
+<!--        <pre><%= JSON.stringify(archivedItems, null, 2) %></pre>-->
+
         <div class="shoppingList">
-          <a href="/view-archive">
-            <div class="shoppingItem">
-              <img src="" alt="" class="itemImage" />
-              <hr />
-              <strong class="itemName">Name</strong>
-              <br />
-              <strong class="itemPrice">$123</strong>
-              <br />
-              <strong class="itemLocation">Jan lang</strong>
-            </div>
-          </a>
+            <% if (archivedItems.length > 0) { %>
+                <% archivedItems.forEach(function(item) { %>
+                    <a href="/view-archive">
+                        <div class="shoppingItem">
+                            <img src="/uploads/<%= item.image %>" alt="" class="itemImage"/>
+                            <hr/>
+                            <strong class="itemName"><%= item.name %></strong>
+                            <br/>
+                            <strong class="itemPrice">$<%= item.price %></strong>
+                            <br/>
+                            <strong class="itemLocation"><%= item.location %></strong>
+                            <button class="restore-btn">Restore</button>
+                        </div>
+                    </a>
+                <% }); %>
+            <% } else { %>
+                <p>No Rental Requests available.</p>
+            <% } %>
         </div>
-      </div>
+    </div>
     <!--Confirmation Modal-->
     <div id="overlay" class="overlay"></div>
     <div id="restore-Modal" class="modal">
-      <div class="modal-content">
-        <h3>
-          Are you sure you want to
-          <span style="color: #009959">restore</span> this item?
-        </h3>
-        <div class="modal-buttons">
-          <button class="btn-yes" id="confirmBan">Yes</button>
-          <button class="btn-no" id="cancelBtn">No</button>
+        <div class="modal-content">
+            <h3>
+                Are you sure you want to
+                <span style="color: #009959">restore</span> this item?
+            </h3>
+            <div class="modal-buttons">
+                <button class="btn-yes" id="confirmBan">Yes</button>
+                <button class="btn-no" id="cancelBtn">No</button>
+            </div>
         </div>
-      </div>
     </div>
     <div id="restoreToast" class="toast"></div>
-  </div>
 </div>
-
-  <!-- Logout Confirmation Modal -->
-  <div id="logout-modal" class="logout-modal">
-    <div class="logout-content">
-      <p>Are you sure you want to log out?</p>
-      <div class="logout-button-group">
-        <button id="confirm-logout" class="yes-btn">Yes</button>
-        <button id="cancel-logout" class="no-btn">No</button>
-      </div>
-    </div>
-  </div>
 
 <!--JAVASCRIPT-->
 <script>
@@ -121,61 +118,63 @@
             console.error("Error restoring all listings:", error);
         }
     }
-    // Restore Posting
-      const restoreIcon = document.getElementById("restore-btn");
-      const restoreModal = document.getElementById("restore-Modal");
-      const confirmBan = document.getElementById("confirmBan");
-      const restoreToast = document.getElementById("restoreToast");
 
-      restoreIcon.addEventListener("click", function (event) {
+    // Restore Posting
+    const restoreIcon = document.getElementById("restore-btn");
+    const restoreModal = document.getElementById("restore-Modal");
+    const confirmBan = document.getElementById("confirmBan");
+    const restoreToast = document.getElementById("restoreToast");
+
+    restoreIcon.addEventListener("click", function (event) {
         event.preventDefault();
         restoreModal.style.display = "flex";
-      });
-      cancelBtn.addEventListener("click", function () {
+    });
+    cancelBtn.addEventListener("click", function () {
         restoreModal.style.display = "none";
-      });
-      window.addEventListener("click", function (event) {
+    });
+    window.addEventListener("click", function (event) {
         if (event.target === restoreModal) {
-          restoreModal.style.display = "none";
+            restoreModal.style.display = "none";
         }
-      });
-      function showRestoreToast(message) {
+    });
+
+    function showRestoreToast(message) {
         restoreToast.textContent = message;
         restoreToast.classList.add("show");
         setTimeout(() => {
-          restoreToast.classList.remove("show");
+            restoreToast.classList.remove("show");
         }, 3000);
-      }
-      confirmBan.addEventListener("click", function () {
+    }
+
+    confirmBan.addEventListener("click", function () {
         showRestoreToast("Restored Successfully!");
         restoreModal.style.display = "none";
-      });
-      
-//logout
-document.addEventListener("DOMContentLoaded", function () {
-    const logoutLink = document.getElementById("logout");
-    const modal = document.getElementById("logout-modal");
-    const confirmLogout = document.getElementById("confirm-logout");
-    const cancelLogout = document.getElementById("cancel-logout");
-  
-    // Ensure modal starts hidden
-    modal.style.display = "none";
-  
-    // Show modal when logout is clicked
-    logoutLink.addEventListener("click", function (event) {
-      event.preventDefault(); // Prevents default link behavior
-      modal.style.display = "flex"; // Show modal only on click
     });
-  
-    // Redirect when "Yes" is clicked
-    confirmLogout.addEventListener("click", function () {
-      window.location.href = "/logout"; // Adjust logout URL
-    });
-  
-    // Close modal when "No" is clicked
-    cancelLogout.addEventListener("click", function () {
-      modal.style.display = "none"; // Hide modal
-    });
-  });
 
+    //logout
+    document.addEventListener("DOMContentLoaded", function () {
+        const logoutLink = document.getElementById("logout");
+        const modal = document.getElementById("logout-modal");
+        const confirmLogout = document.getElementById("confirm-logout");
+        const cancelLogout = document.getElementById("cancel-logout");
+
+        // Ensure modal starts hidden
+        modal.style.display = "none";
+
+        // Show modal when logout is clicked
+        logoutLink.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevents default link behavior
+            modal.style.display = "flex"; // Show modal only on click
+        });
+
+        // Redirect when "Yes" is clicked
+        confirmLogout.addEventListener("click", function () {
+            window.location.href = "/logout"; // Adjust logout URL
+        });
+
+        // Close modal when "No" is clicked
+        cancelLogout.addEventListener("click", function () {
+            modal.style.display = "none"; // Hide modal
+        });
+    });
 </script>

@@ -1,8 +1,78 @@
-const express = require("express");
-const jwt = require("jsonwebtoken");
-const {connection: db} = require("../../../configs/db");
+const express = require("express")
+const jwt = require("jsonwebtoken")
+const {connection: db} = require("../../../configs/db")
 
-const router = express.Router();
+const router = express.Router()
+
+
+/**
+ * View pending items by user id
+ *
+ * @route GET /api/user/my-items/pending/:user_id
+ */
+router.get("/pending/:user_id", async (req, res) => {
+    const { user_id } = req.params
+
+    const sql = `
+        SELECT items.id                                       AS product_id,
+               items.name                                     AS product_name,
+               items.price                                    AS product_price,
+               items.file_path                                AS product_image,
+               items.location                                 AS owner_location,
+               inventory.stock_quantity                       AS product_quantity
+        FROM items
+                 JOIN users ON items.user_id = users.id
+                 JOIN inventory ON inventory.item_id = items.id
+        WHERE users.id = ?
+          AND is_approved = 0
+    `
+    db.query(sql, [user_id], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({success: false, message: "Query failed."})
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results
+        })
+    })
+})
+
+
+/**
+ * Get all approved items
+ *
+ * @route GET /api/user/my-items/approved/:user_id
+ */
+router.get("/approved/:user_id", async (req, res) => {
+    const { user_id } = req.params
+
+    const sql = `
+        SELECT items.id                 AS item_id,
+               items.name               AS item_name,
+               items.price              AS item_price,
+               items.location           AS item_location,
+               items.file_path          AS item_image,
+               inventory.stock_quantity AS item_quantity
+        FROM items
+                 JOIN inventory ON inventory.item_id = items.id
+        WHERE is_approved = 1
+          AND is_archived = 0
+          AND user_id = ?
+    `
+    db.query(sql, [user_id], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err)
+            return res.status(500).json({success: false, message: "Query failed."})
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results
+        })
+    })
+})
 
 
 /**
@@ -29,22 +99,19 @@ router.get("/rental-requests/:user_id", async (req, res) => {
           AND rental_transactions.status != 'declined'
           AND items.user_id = ?
     `
-
     db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Query failed."});
+            return res.status(500).json({success: false, message: "Query failed."})
         }
 
         // Send back the results (the rental requests that are pending)
         res.status(200).json({
             success: true,
             data: results
-        });
-    });
-
-
-});
+        })
+    })
+})
 
 
 /**
@@ -53,7 +120,8 @@ router.get("/rental-requests/:user_id", async (req, res) => {
  * @route PATCH /api/user/my-listings/rental-requests/approved
  */
 router.patch("/rental-requests/approved", (req, res) => {
-    const {rental_transaction_id} = req.body;
+    const {rental_transaction_id} = req.body
+
     if (!rental_transaction_id) {
         return res.status(400).json({success: false, message: "Missing rental_transaction_id"});
     }
@@ -62,16 +130,18 @@ router.patch("/rental-requests/approved", (req, res) => {
         if (err) return res.status(500).json({success: false, message: "Transaction initiation failed."});
 
         // Get item_id and rental_quantity
-        const selectSql = `SELECT item_id, rental_quantity
-                           FROM rental_transactions
-                           WHERE id = ? FOR
-                           UPDATE`;
+        const selectSql = `
+            SELECT item_id, rental_quantity
+            FROM rental_transactions
+            WHERE id = ? FOR
+            UPDATE
+        `
         db.query(selectSql, [rental_transaction_id], (err, results) => {
             if (err || results.length === 0) {
-                return rollback(res, "Transaction details not found.");
+                return rollback(res, "Transaction details not found.")
             }
 
-            const {item_id, rental_quantity} = results[0];
+            const {item_id, rental_quantity} = results[0]
 
             // Approve rental request
             const updateTransactionSql = `
@@ -80,9 +150,8 @@ router.patch("/rental-requests/approved", (req, res) => {
                     status      = 'ongoing'
                 WHERE id = ?
             `
-
             db.query(updateTransactionSql, [rental_transaction_id], (err) => {
-                if (err) return rollback(res, "Failed to update rental transaction.");
+                if (err) return rollback(res, "Failed to update rental transaction.")
 
                 // Update inventory stock
                 const updateInventorySql = `
@@ -91,10 +160,9 @@ router.patch("/rental-requests/approved", (req, res) => {
                     WHERE item_id = ?
                       AND stock_quantity >= ?
                 `
-
                 db.query(updateInventorySql, [rental_quantity, item_id, rental_quantity], (err, results) => {
                     if (err || results.affectedRows === 0) {
-                        return rollback(res, "Insufficient stock or update failed.");
+                        return rollback(res, "Insufficient stock or update failed.")
                     }
 
                     db.commit((err) => {
@@ -103,13 +171,13 @@ router.patch("/rental-requests/approved", (req, res) => {
                         res.status(200).json({
                             success: true,
                             message: 'Rental request approved, stock updated.'
-                        });
-                    });
-                });
-            });
-        });
-    });
-});
+                        })
+                    })
+                })
+            })
+        })
+    })
+})
 
 
 /**
