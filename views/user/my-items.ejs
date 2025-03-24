@@ -64,13 +64,16 @@
             <!-- Items Posted -->
             <div id="Items" class="tab-content" style="display: none">
                 <div class="shoppingList">
-
                     <% if (approvedPosts.length > 0) { %>
                         <% approvedPosts.forEach(function(item) { %>
-                            <a href="/user/update-listing/<%= item.item_id %>">
-                                <div class="shoppingItem">
-                                    <img src="/images/trashcan.png" alt="Delete" class="itemDelete"
-                                         onclick="showDeleteModal('<%= item.item_id %>')"/>
+                            <div class="shoppingItem">
+                                <!-- Delete Icon with data-item-id -->
+                                <img src="/images/trashcan.png" 
+                                     alt="Delete" 
+                                     class="itemDelete" 
+                                     data-item-id="<%= item.item_id %>" />
+            
+                                <a href="/user/update-listing/<%= item.item_id %>">
                                     <hr/>
                                     <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
                                     <hr/>
@@ -84,16 +87,17 @@
                                         </strong>
                                     </div>
                                     <strong class="itemLocation"><%= item.item_location %></strong>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         <% }); %>
                     <% } else { %>
                         <p>No Posted Items available.</p>
                     <% } %>
                 </div>
             </div>
-
-            <div id="deleteModal" class="modal" style="display: none;">
+            
+            <!-- Archive Confirmation Modal -->
+            <div id="archiveModal" class="modal" style="display: none;">
                 <div class="modal-content">
                     <p><strong>Are you sure you want to <span style="color: #990000;">archive</span> this item?</strong>
                     </p>
@@ -356,6 +360,75 @@
 
 <!-- JavaScript -->
 <script>
+// archive
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.itemDelete');
+    const archiveModal = document.getElementById('archiveModal');
+    const successModal = document.getElementById('successModal');
+    const overlay = document.getElementById('overlay');
+    const confirmButton = document.getElementById('confirmDelete');
+    const cancelButton = document.getElementById('cancelDelete');
+    let currentItem = null;
+
+    // Show delete confirmation modal when trash icon is clicked
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();  // Stop any link redirection
+            e.stopPropagation(); // Stop event from bubbling
+
+            const itemId = this.getAttribute('data-item-id'); // Get item ID
+            currentItem = this.closest('.shoppingItem'); // Get the whole item block
+
+            if (!currentItem) {
+                console.error("Error: Could not find the parent '.shoppingItem' element.");
+                return;
+            }
+
+            console.log("Delete button clicked for item ID:", itemId);
+            
+            // Show the delete confirmation modal
+            archiveModal.style.display = 'block';
+            overlay.style.display = 'block';
+        });
+    });
+
+    // Confirm delete
+    confirmButton.addEventListener('click', function () {
+        if (currentItem) {
+            currentItem.style.display = 'none'; // Hide item from list
+            console.log("Item deleted successfully.");
+        } else {
+            console.error("Error: No item selected for deletion.");
+        }
+
+        archiveModal.style.display = 'none';
+        overlay.style.display = 'block';
+        successModal.style.display = 'block';
+
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            successModal.style.display = 'none';
+        }, 5000);
+    });
+
+    // Cancel delete
+    cancelButton.addEventListener('click', function () {
+        archiveModal.style.display = 'none';
+        overlay.style.display = 'none';
+    });
+
+    // Hide modals when clicking outside
+    if (overlay) {
+        overlay.addEventListener('click', function (event) {
+            if (event.target === overlay) {
+                archiveModal.style.display = 'none';
+                overlay.style.display = 'none';
+                successModal.style.display = 'none';
+            }
+        });
+    }
+});
+
     // OPEN TAB FUNCTION
     function openTab(evt, tabName) {
         let i, tabs, buttons;
@@ -865,67 +938,7 @@
         }, 3000);
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const deleteButtons = document.querySelectorAll('.itemDelete');
-        const deleteModal = document.getElementById('deleteModal');
-        const successModal = document.getElementById('successModal');
-        const overlay = document.getElementById('overlay');
-        const confirmButton = document.getElementById('confirmDelete');
-        const cancelButton = document.getElementById('cancelDelete');
-        let currentItem = null;
 
-        // Show delete confirmation modal
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                currentItem = this.closest('.shoppingItem');
-
-                if (!currentItem) {
-                    console.error("Error: Could not find the parent '.shoppingItem' element.");
-                    return;
-                }
-
-                deleteModal.style.display = 'block';
-                overlay.style.display = 'block';
-            });
-        });
-
-        // Confirm delete
-        confirmButton.addEventListener('click', function () {
-            if (currentItem) {
-                currentItem.remove();
-                console.log("Item deleted successfully.");
-            } else {
-                console.error("Error: No item selected for deletion.");
-            }
-
-            deleteModal.style.display = 'none';
-            overlay.style.display = 'block';
-            successModal.style.display = 'block';
-
-            setTimeout(() => {
-                overlay.style.display = 'none';
-                successModal.style.display = 'none';
-            }, 5000);
-        });
-
-        // Cancel delete
-        cancelButton.addEventListener('click', function () {
-            deleteModal.style.display = 'none';
-            overlay.style.display = 'none';
-        });
-
-        // Hide modals when clicking outside
-        window.addEventListener('click', function (event) {
-            if (event.target === overlay) {
-                deleteModal.style.display = 'none';
-                overlay.style.display = 'none';
-                successModal.style.display = 'none';
-            }
-        });
-    });
 
     //logout
     document.addEventListener("DOMContentLoaded", function () {
