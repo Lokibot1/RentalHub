@@ -369,6 +369,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const confirmButton = document.getElementById('confirmDelete');
     const cancelButton = document.getElementById('cancelDelete');
     let currentItem = null;
+    let itemId = 0;
 
     // Show delete confirmation modal when trash icon is clicked
     deleteButtons.forEach(button => {
@@ -376,7 +377,7 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();  // Stop any link redirection
             e.stopPropagation(); // Stop event from bubbling
 
-            const itemId = this.getAttribute('data-item-id'); // Get item ID
+            itemId = this.getAttribute('data-item-id'); // Get item ID
             currentItem = this.closest('.shoppingItem'); // Get the whole item block
 
             if (!currentItem) {
@@ -393,9 +394,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Confirm delete
-    confirmButton.addEventListener('click', function () {
+    confirmButton.addEventListener('click', async function () {
         if (currentItem) {
             currentItem.style.display = 'none'; // Hide item from list
+
+            await fetch(`http://localhost:8000/api/user/my-items/archive-item/${itemId}`, {
+                method: 'PATCH'
+            })
+
             console.log("Item deleted successfully.");
         } else {
             console.error("Error: No item selected for deletion.");

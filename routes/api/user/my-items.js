@@ -76,9 +76,48 @@ router.get("/approved/:user_id", async (req, res) => {
 
 
 /**
+ * Decline rental request and keep the item in the "Rental Requests" tab
+ *
+ * @route PATCH /api/user/my-items/archive-item/:item_id
+ */
+router.patch("/archive-item/:item_id", (req, res) => {
+    const { item_id } = req.params;
+
+    if (!item_id) {
+        return res.status(400).json({success: false, message: "Missing item id"});
+    }
+
+    db.beginTransaction((err) => {
+        if (err) return res.status(500).json({success: false, message: "Transaction initiation failed."});
+
+        // Update rental transaction to declined status (is_approved = -1)
+        const updateTransactionSql = `
+            UPDATE items
+                LEFT JOIN rental_transactions ON items.id = rental_transactions.item_id
+            SET items.is_archived = 1
+            WHERE items.is_approved = 1
+              AND rental_transactions.item_id IS NULL
+              AND items.id = ?
+        `
+        db.query(updateTransactionSql, [item_id], (err) => {
+            if (err) return rollback(res, "Failed to archive items because it has an existing rental transaction.");
+
+            db.commit((err) => {
+                if (err) return res.status(500).json({success: false, message: "Archive failed."});
+
+                res.status(200).json({
+                    success: true,
+                    message: 'Archived successfully!'
+                });
+            });
+        });
+    });
+});
+
+/**
  * Get rental requests
  *
- * @route GET /api/user/my-listings/rental-requests/:user_id
+ * @route GET /api/user/my-items/rental-requests/:user_id
  */
 router.get("/rental-requests/:user_id", async (req, res) => {
     const {user_id} = req.params
@@ -117,7 +156,7 @@ router.get("/rental-requests/:user_id", async (req, res) => {
 /**
  * Update rental request to approved and update stock quantity
  *
- * @route PATCH /api/user/my-listings/rental-requests/approved
+ * @route PATCH /api/user/my-items/rental-requests/approved
  */
 router.patch("/rental-requests/approved", (req, res) => {
     const {rental_transaction_id} = req.body
