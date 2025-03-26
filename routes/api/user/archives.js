@@ -37,4 +37,27 @@ router.get("/:user_id", async (req, res) => {
 })
 
 
+/**
+ * Restore item by id
+ *
+ * @route PATCH /api/user/archives/restore-item/:item_id
+ */
+router.patch("/restore-item/:item_id", async (req, res) => {
+    const { item_id } = req.params
+
+    const sql = "UPDATE items SET is_archived = 0 WHERE items.id = ?";
+    db.query(sql, [item_id], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({success: false, message: "Query failed."})
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results
+        })
+    })
+})
+
+
 module.exports = router

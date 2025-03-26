@@ -10,23 +10,22 @@
     <!--Main Content-->
     <div class="content">
         <!--        <button id="restore-btn" class="restore-btn">Restore All</button>-->
-<!--        <pre><%= JSON.stringify(archivedItems, null, 2) %></pre>-->
+        <!--        <pre><%= JSON.stringify(archivedItems, null, 2) %></pre>-->
 
         <div class="shoppingList">
             <% if (archivedItems.length > 0) { %>
                 <% archivedItems.forEach(function(item) { %>
-                        <div class="shoppingItem1">
-                            <img src="/uploads/<%= item.image %>" alt="" class="itemImage"/>
-                            <hr/>
-                            <p><strong class="itemName"><%= item.name %></strong></p>
-                            <p><strong class="itemPrice">$<%= item.price %></strong></p>
-                            <p><strong class="itemLocation"><%= item.location %></strong></p>
-                            <button class="restore-btn" data-id="1">Restore</button>
-                        </div>
-                        
+                    <div class="shoppingItem1">
+                        <img src="/uploads/<%= item.image %>" alt="" class="itemImage"/>
+                        <hr/>
+                        <p><strong class="itemName"><%= item.name %></strong></p>
+                        <p><strong class="itemPrice">$<%= item.price %></strong></p>
+                        <p><strong class="itemLocation"><%= item.location %></strong></p>
+                        <button class="restore-btn" data-id="<%= item.id %>">Restore</button>
+                    </div>
                 <% }); %>
             <% } else { %>
-                <p>No Rental Requests available.</p>
+                <p>No archived items available.</p>
             <% } %>
         </div>
     </div>
@@ -119,72 +118,80 @@
 
     // Restore Posting
     document.addEventListener("DOMContentLoaded", function () {
-    console.log("DOM fully loaded"); // Debugging step
+        console.log("DOM fully loaded"); // Debugging step
 
-    const restoreButtons = document.querySelectorAll(".restore-btn");
-    const restoreModal = document.getElementById("restore-Modal");
-    const confirmBan = document.getElementById("confirmBan");
-    const restoreToast = document.getElementById("restoreToast");
-    const overlay = document.getElementById("overlay");
-    let currentItemId = null;
+        const restoreButtons = document.querySelectorAll(".restore-btn");
+        const restoreModal = document.getElementById("restore-Modal");
+        const confirmBan = document.getElementById("confirmBan");
+        const restoreToast = document.getElementById("restoreToast");
+        const overlay = document.getElementById("overlay");
+        let currentItemId = null;
 
-    console.log("Restore buttons found:", restoreButtons.length); // Debugging step
+        console.log("Restore buttons found:", restoreButtons.length); // Debugging step
 
-    // Attach click event to each restore button
-    restoreButtons.forEach(button => {
-        button.addEventListener("click", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
+        // Attach click event to each restore button
+        restoreButtons.forEach(button => {
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
 
-            console.log("Restore button clicked!");
+                currentItemId = this.getAttribute("data-id"); // Get item ID
 
-            currentItemId = this.getAttribute("data-id"); // Get item ID
-            console.log("Item ID:", currentItemId);
-
-            restoreModal.style.display = "flex";
-            overlay.style.display = "block";
+                restoreModal.style.display = "flex";
+                overlay.style.display = "block";
+            });
         });
-    });
 
-    // Confirm Restore
-    confirmBan.addEventListener("click", function () {
-        if (!currentItemId) {
-            console.error("Error: No item selected for restoration.");
-            return;
-        }
+        // Confirm Restore
+        confirmBan.addEventListener("click", async function () {
+            if (!currentItemId) {
+                console.error("Error: No item selected for restoration.");
+                return;
+            }
 
-        console.log("Restoring item with ID:", currentItemId);
+            await fetch(`/api/user/archives/restore-item/${currentItemId}`, {
+                method: "PATCH",
+                headers: {"Content-Type": "application/json"},
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Error restoring item.");
+                    } else {
+                        console.log('Item restored successfully');
+                        window.location.reload()
+                    }
+                })
 
-        // Perform restore action (Replace this with an actual fetch request if needed)
-        showRestoreToast("Item restored successfully!");
+            // Perform restore action (Replace this with an actual fetch request if needed)
+            showRestoreToast("Item restored successfully!");
 
-        restoreModal.style.display = "none";
-        overlay.style.display = "none";
-    });
-
-    // Cancel Restore
-    document.getElementById("cancelBtn").addEventListener("click", function () {
-        restoreModal.style.display = "none";
-        overlay.style.display = "none";
-    });
-
-    // Hide modal when clicking outside
-    overlay.addEventListener("click", function (event) {
-        if (event.target === overlay) {
             restoreModal.style.display = "none";
             overlay.style.display = "none";
+        });
+
+        // Cancel Restore
+        document.getElementById("cancelBtn").addEventListener("click", function () {
+            restoreModal.style.display = "none";
+            overlay.style.display = "none";
+        });
+
+        // Hide modal when clicking outside
+        overlay.addEventListener("click", function (event) {
+            if (event.target === overlay) {
+                restoreModal.style.display = "none";
+                overlay.style.display = "none";
+            }
+        });
+
+        // Show toast message
+        function showRestoreToast(message) {
+            restoreToast.textContent = message;
+            restoreToast.classList.add("show");
+            setTimeout(() => {
+                restoreToast.classList.remove("show");
+            }, 3000);
         }
     });
-
-    // Show toast message
-    function showRestoreToast(message) {
-        restoreToast.textContent = message;
-        restoreToast.classList.add("show");
-        setTimeout(() => {
-            restoreToast.classList.remove("show");
-        }, 3000);
-    }
-});
 
 
     //logout

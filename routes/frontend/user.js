@@ -154,7 +154,6 @@ router.get('/archives', checkAuth, checkUser, async (req, res) => {
   try {
     const response = await fetch(`${process.env.BASE_URL}/api/user/archives/${req.user.id}`)
     const archivedItems = await response.json()
-    console.log('archivedItems:', archivedItems)
 
     res.render('user/archives', {
       layout: 'layouts/user',
