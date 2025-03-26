@@ -151,7 +151,6 @@
 
             await fetch(`/api/user/archives/restore-item/${currentItemId}`, {
                 method: "PATCH",
-                headers: {"Content-Type": "application/json"},
             })
                 .then(response => {
                     if (!response.ok) {

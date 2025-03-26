@@ -97,16 +97,16 @@ router.get("/listing/:category_id", upload.single('item_file'), async (req, res)
     const { category_id } = req.params;
 
     const sql = `
-        SELECT
-            items.*,
-            inventory.stock_quantity AS quantity,
-            CONCAT(users.first_name, ' ', users.last_name) AS owner,
-            profile_image
+        SELECT items.*,
+               inventory.stock_quantity                       AS quantity,
+               CONCAT(users.first_name, ' ', users.last_name) AS owner,
+               profile_image
         FROM items
                  JOIN inventory ON inventory.item_id = items.id
                  JOIN users ON users.id = items.user_id
         WHERE items.category_id = ?
           AND items.is_approved = 1
+          AND is_archived = 0
     `
 
     db.query(sql, [category_id], (err, results) => {
