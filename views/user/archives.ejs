@@ -149,20 +149,31 @@
                 return;
             }
 
-            await fetch(`/api/user/archives/restore-item/${currentItemId}`, {
-                method: "PATCH",
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Error restoring item.");
-                    } else {
-                        console.log('Item restored successfully');
-                        window.location.reload()
-                    }
-                })
+            try {
+                const response = await fetch(`/api/user/archives/restore-item/${currentItemId}`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                });
 
-            // Perform restore action (Replace this with an actual fetch request if needed)
-            showRestoreToast("Item restored successfully!");
+                if (!response.ok) {
+                    throw new Error("Error restoring item.");
+                }
+
+                console.log('Item restored successfully');
+
+                
+                const restoredItem = document.querySelector(`.restore-btn[data-id="${currentItemId}"]`).parentElement;
+                if (restoredItem) {
+                    restoredItem.remove(); 
+                }
+
+                
+                showRestoreToast("Item restored successfully!");
+
+            } catch (error) {
+                console.error("Error:", error);
+                showRestoreToast("Failed to restore item.");
+            }
 
             restoreModal.style.display = "none";
             overlay.style.display = "none";
