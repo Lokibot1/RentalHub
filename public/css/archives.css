@@ -319,6 +319,7 @@ nav button {
 }
 .cancel-btn,
 .restore-btn {
+  cursor: pointer;
   border: none;
   padding: 8px 20px;
   font-size: 20px;
@@ -326,6 +327,7 @@ nav button {
   cursor: pointer;
   align-self: flex-end;
   color: white;
+  margin-left: 150px;
 }
 .cancel-btn {
   background-color: #800020;
@@ -402,6 +404,7 @@ nav button {
 }
 
 /* Item Container */
+.shoppingItem1,
 .shoppingItem {
   cursor: pointer;
   width: 290px;
@@ -419,7 +422,7 @@ nav button {
   transition: transform 0.3s ease-in-out;
   position: relative;
 }
-.shoppingItem:hover {
+.shoppingItem:hover, .shoppingItem1:hover {
   transform: scale(1.05);
 }
 .itemImage {

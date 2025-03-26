@@ -15,18 +15,15 @@
         <div class="shoppingList">
             <% if (archivedItems.length > 0) { %>
                 <% archivedItems.forEach(function(item) { %>
-                    <a href="/view-archive">
-                        <div class="shoppingItem">
+                        <div class="shoppingItem1">
                             <img src="/uploads/<%= item.image %>" alt="" class="itemImage"/>
                             <hr/>
-                            <strong class="itemName"><%= item.name %></strong>
-                            <br/>
-                            <strong class="itemPrice">$<%= item.price %></strong>
-                            <br/>
-                            <strong class="itemLocation"><%= item.location %></strong>
-                            <button class="restore-btn">Restore</button>
+                            <p><strong class="itemName"><%= item.name %></strong></p>
+                            <p><strong class="itemPrice">$<%= item.price %></strong></p>
+                            <p><strong class="itemLocation"><%= item.location %></strong></p>
+                            <button class="restore-btn" data-id="1">Restore</button>
                         </div>
-                    </a>
+                        
                 <% }); %>
             <% } else { %>
                 <p>No Rental Requests available.</p>
@@ -41,7 +38,7 @@
                 Are you sure you want to
                 <span style="color: #009959">restore</span> this item?
             </h3>
-            <div class="modal-buttons">
+            <div class="modal-buttons" data-id="1">
                 <button class="btn-yes" id="confirmBan">Yes</button>
                 <button class="btn-no" id="cancelBtn">No</button>
             </div>
@@ -52,6 +49,7 @@
 
 <!--JAVASCRIPT-->
 <script>
+
     document.addEventListener("DOMContentLoaded", fetchArchivedListings);
 
     // FETCH ARCHIVED LISTINGS FROM THE BACKEND
@@ -120,24 +118,65 @@
     }
 
     // Restore Posting
-    const restoreIcon = document.getElementById("restore-btn");
+    document.addEventListener("DOMContentLoaded", function () {
+    console.log("DOM fully loaded"); // Debugging step
+
+    const restoreButtons = document.querySelectorAll(".restore-btn");
     const restoreModal = document.getElementById("restore-Modal");
     const confirmBan = document.getElementById("confirmBan");
     const restoreToast = document.getElementById("restoreToast");
+    const overlay = document.getElementById("overlay");
+    let currentItemId = null;
 
-    restoreIcon.addEventListener("click", function (event) {
-        event.preventDefault();
-        restoreModal.style.display = "flex";
+    console.log("Restore buttons found:", restoreButtons.length); // Debugging step
+
+    // Attach click event to each restore button
+    restoreButtons.forEach(button => {
+        button.addEventListener("click", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            console.log("Restore button clicked!");
+
+            currentItemId = this.getAttribute("data-id"); // Get item ID
+            console.log("Item ID:", currentItemId);
+
+            restoreModal.style.display = "flex";
+            overlay.style.display = "block";
+        });
     });
-    cancelBtn.addEventListener("click", function () {
+
+    // Confirm Restore
+    confirmBan.addEventListener("click", function () {
+        if (!currentItemId) {
+            console.error("Error: No item selected for restoration.");
+            return;
+        }
+
+        console.log("Restoring item with ID:", currentItemId);
+
+        // Perform restore action (Replace this with an actual fetch request if needed)
+        showRestoreToast("Item restored successfully!");
+
         restoreModal.style.display = "none";
+        overlay.style.display = "none";
     });
-    window.addEventListener("click", function (event) {
-        if (event.target === restoreModal) {
+
+    // Cancel Restore
+    document.getElementById("cancelBtn").addEventListener("click", function () {
+        restoreModal.style.display = "none";
+        overlay.style.display = "none";
+    });
+
+    // Hide modal when clicking outside
+    overlay.addEventListener("click", function (event) {
+        if (event.target === overlay) {
             restoreModal.style.display = "none";
+            overlay.style.display = "none";
         }
     });
 
+    // Show toast message
     function showRestoreToast(message) {
         restoreToast.textContent = message;
         restoreToast.classList.add("show");
@@ -145,11 +184,8 @@
             restoreToast.classList.remove("show");
         }, 3000);
     }
+});
 
-    confirmBan.addEventListener("click", function () {
-        showRestoreToast("Restored Successfully!");
-        restoreModal.style.display = "none";
-    });
 
     //logout
     document.addEventListener("DOMContentLoaded", function () {
