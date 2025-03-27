@@ -130,17 +130,27 @@ Replace your-new-branch with a descriptive name. This ensures you are always wor
 
 ## Project Structure
 
-- [main.js](http://_vscodecontentref_/1): The main entry point of the application.
-- [package.json](http://_vscodecontentref_/2): Contains third party libraries.
+- [app/](http://_vscodecontentref_/9): Contains HTML files (EJS Templating) for the frontend.
+  - [admin/](http://_vscodecontentref_/7): Contains admin views.
+  - [layouts/](http://_vscodecontentref_/7): Contains layout views.
+  - [main/](http://_vscodecontentref_/7): Contains views for landing page.
+  - [partials/](http://_vscodecontentref_/7): Contains partial/component views.
+  - [public/](http://_vscodecontentref_/7): Contains static files such as CSS, JavaScript, and images.
+  - [user/](http://_vscodecontentref_/7): Contains user views.
+- [server/](http://_vscodecontentref_/0): The server directory contains the backend.
+  - [configs/](http://_vscodecontentref_/4): Contains db and mail configuration.
+  - [helpers/](http://_vscodecontentref_/5): Contains helper functions for the backend/frontend.
+  - [middlewares/](http://_vscodecontentref_/6): Contains functions that processes requests and responses before passing control to the next function.
+  - [resource/](http://_vscodecontentref_/4): Contains schema.sql file.
+  - [routes/](http://_vscodecontentref_/8): Contains route definitions for the application.
+  - [main.js](http://_vscodecontentref_/1): The main entry point of the application.
 - [.env](http://_vscodecontentref_/3): Contains environment configs.
-- [configs/](http://_vscodecontentref_/4): Contains db and mail configuration.
-- [helpers/](http://_vscodecontentref_/5): Contains helper functions for the backend/frontend.
-- [middlewares/](http://_vscodecontentref_/6): Contains functions that processes requests and responses before passing
-  control to the next function.
-- [public/](http://_vscodecontentref_/7): Contains static files such as CSS, JavaScript, and images.
-- [resource/](http://_vscodecontentref_/4): Contains schema.sql file.
-- [routes/](http://_vscodecontentref_/8): Contains route definitions for the application.
-- [views/](http://_vscodecontentref_/9): Contains HTML files (EJS Templating) for the frontend.
+- [.env.example](http://_vscodecontentref_/3): Template for environment configs.
+- [.gitignore](http://_vscodecontentref_/3): Git ignore file.
+- [package.json](http://_vscodecontentref_/2): Contains third party libraries.
+- [package-lock.json](http://_vscodecontentref_/2): Lock file for npm.
+- [README.md](http://_vscodecontentref_/2): This file.
+  
 
 ## Dependencies
 
