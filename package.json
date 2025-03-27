@@ -2,9 +2,10 @@
   "name": "rentalhub",
   "version": "1.0.0",
   "description": "Rental Hub",
+  "type": "module",
   "scripts": {
-    "dev": "node --watch --env-file=.env server.js",
-    "db:migrate": "node --env-file=.env ./resource/migration.js"
+    "dev": "node --watch --env-file=.env server/main.js",
+    "db:migrate": "node --env-file=.env server/resource/migration.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

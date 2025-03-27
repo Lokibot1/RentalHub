@@ -130,7 +130,7 @@ Replace your-new-branch with a descriptive name. This ensures you are always wor
 
 ## Project Structure
 
-- [server.js](http://_vscodecontentref_/1): The main entry point of the application.
+- [main.js](http://_vscodecontentref_/1): The main entry point of the application.
 - [package.json](http://_vscodecontentref_/2): Contains third party libraries.
 - [.env](http://_vscodecontentref_/3): Contains environment configs.
 - [configs/](http://_vscodecontentref_/4): Contains db and mail configuration.
