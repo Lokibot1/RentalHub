@@ -1,8 +1,8 @@
 import express from "express"
 import multer from 'multer'
 import path from 'path'
-import { db } from "../../configs/db.js"
-import { checkAuth } from "../../middlewares/auth.js"
+import {db} from "../../configs/db.js"
+import {checkAuth} from "../../middlewares/auth.js"
 import fs from 'fs'
 
 const router = express.Router();
@@ -11,7 +11,7 @@ const storagePath = process.env.STORAGE_PATH
 
 // Ensure the directory exists
 if (!fs.existsSync(storagePath)) {
-    fs.mkdirSync(storagePath, { recursive: true });
+    fs.mkdirSync(storagePath, {recursive: true});
 }
 
 const storage = multer.diskStorage({
@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({storage: storage});
 
 
 /**
@@ -31,12 +31,12 @@ const upload = multer({ storage: storage });
  * @route POST /api/listing
  */
 router.post("/listing", checkAuth, upload.single('item_file'), async (req, res) => {
-    const { item_name, item_price, item_description, item_quantity, location, categories } = req.body;
+    const {item_name, item_price, item_description, item_quantity, location, categories} = req.body;
     const item_file = req.file; // Access the uploaded file
     let isApproved = false
 
     if (!item_file) {
-        return res.status(400).json({ success: false, message: "File upload failed." });
+        return res.status(400).json({success: false, message: "File upload failed."});
     }
 
     isApproved = req.user.role === 'admin';
@@ -45,7 +45,7 @@ router.post("/listing", checkAuth, upload.single('item_file'), async (req, res) 
     db.beginTransaction((err) => {
         if (err) {
             console.error("Transaction initiation failed:", err);
-            return res.status(500).json({ success: false, message: "Transaction error." });
+            return res.status(500).json({success: false, message: "Transaction error."});
         }
 
         // Insert item into `items` table
@@ -54,7 +54,7 @@ router.post("/listing", checkAuth, upload.single('item_file'), async (req, res) 
             if (err) {
                 console.error("Item insertion failed:", err);
                 return db.rollback(() => {
-                    res.status(500).json({ success: false, message: "Failed to add item." });
+                    res.status(500).json({success: false, message: "Failed to add item."});
                 });
             }
 
@@ -66,7 +66,7 @@ router.post("/listing", checkAuth, upload.single('item_file'), async (req, res) 
                 if (err) {
                     console.error("Inventory insertion failed:", err);
                     return db.rollback(() => {
-                        res.status(500).json({ success: false, message: "Failed to add item inventory." });
+                        res.status(500).json({success: false, message: "Failed to add item inventory."});
                     });
                 }
 
@@ -75,11 +75,11 @@ router.post("/listing", checkAuth, upload.single('item_file'), async (req, res) 
                     if (err) {
                         console.error("Transaction commit failed:", err);
                         return db.rollback(() => {
-                            res.status(500).json({ success: false, message: "Transaction error." });
+                            res.status(500).json({success: false, message: "Transaction error."});
                         });
                     }
 
-                    res.status(201).json({ success: true, message: "Item added successfully with inventory." });
+                    res.status(201).json({success: true, message: "Item added successfully with inventory."});
                 });
             });
         });
@@ -87,18 +87,19 @@ router.post("/listing", checkAuth, upload.single('item_file'), async (req, res) 
 });
 
 
-
 /**
  * Get all items/listing
+ *
  * @route GET /api/listing/:category_id
  */
 router.get("/listing/:category_id", upload.single('item_file'), async (req, res) => {
     // Get the category ID from the request
-    const { category_id } = req.params;
+    const {category_id} = req.params;
 
     const sql = `
         SELECT items.*,
                inventory.stock_quantity                       AS quantity,
+               items.user_id                                  AS owner_id,
                CONCAT(users.first_name, ' ', users.last_name) AS owner,
                profile_image
         FROM items
@@ -112,22 +113,35 @@ router.get("/listing/:category_id", upload.single('item_file'), async (req, res)
     db.query(sql, [category_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({ success: false, message: "Failed to add item." });
+            return res.status(500).json({success: false, message: "Failed to add item."});
         }
 
-        const filteredResults = results.map(({ id, name, price, description, location, quantity, file_path, owner, profile_image }) => {
-            return {
-                id,
-                name,
-                price,
-                description,
-                location,
-                quantity,
-                image: `/uploads/${file_path}`,
-                owner,
-                profile_image
-            }
-        });
+        const filteredResults = results.map(
+            ({
+                 id,
+                 name,
+                 price,
+                 description,
+                 location,
+                 quantity,
+                 file_path,
+                 owner_id,
+                 owner,
+                 profile_image
+             }) => {
+                return {
+                    id,
+                    name,
+                    price,
+                    description,
+                    location,
+                    quantity,
+                    image: `/uploads/${file_path}`,
+                    owner_id,
+                    owner,
+                    profile_image
+                }
+            });
 
         res.status(200).json({
             success: true,

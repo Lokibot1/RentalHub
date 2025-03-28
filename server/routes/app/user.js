@@ -195,19 +195,24 @@ router.get('/listing', checkAuth, (req, res) => {
  * TODO: Find this page and organize it
  * View Product Page
  *
- * @route GET /user/view-product
+ * @route GET /user/view-product/:item_id
  */
-router.get('/view-product', optionalAuth, (req, res) => {
+router.get('/view-product/:item_id', optionalAuth, async (req, res) => {
   // Set the user_id
   let renter_id = ''
   if (req.user !== undefined) {
     renter_id = req.user.id
   }
 
+  const response = await fetch(`${process.env.BASE_URL}/api/user/is-owner/${renter_id}/item-id/${req.params.item_id}`)
+  const user = await response.json()
+
   res.render('user/view-product', {
     layout: 'layouts/user',
     title: 'View Product',
     isAuthenticated: req.isAuthenticated,
+    is_owner: user.data.is_owner === 1,
+    item_id: req.params.item_id,
     renter_id,
     role: req.role,
   })

@@ -140,7 +140,7 @@
             // Make the item clickable
             li.addEventListener("click", function () {
                 localStorage.setItem("selectedItem", JSON.stringify(item));
-                window.location.href = "/user/view-product";
+                window.location.href = `/user/view-product/${item.id}`;
             });
 
             shoppingList.appendChild(li);
