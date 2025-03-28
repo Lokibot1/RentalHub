@@ -73,6 +73,7 @@
     </div>
 
     <!-- Modal for Owner Information -->
+    <div id="modalOverlay" class="modal-overlay"></div>
     <div id="myForm">
         <button class="close-btn" onclick="closeForm()">X</button>
 
@@ -84,7 +85,9 @@
             <hr/>
             <h3 id="owners-fullname">*Owner's Name*</h3>
             <p id="contact-number">*Contact Info*</p>
-            <p id="social-media">*Social Media Link*</p>
+            <p id="social-media">
+                <a id="social-media-link" href="#" target="_blank">*Social Media Link*</a>
+            </p>
             <p id="location">*Location*</p>
             <p>*Rating*</p>
         </div>
@@ -158,26 +161,38 @@
 <script>
     let selectedItem = null;
 
+    window.addEventListener('load', function() {
+        document.getElementById("myForm").style.display = "none";
+        document.getElementById("modalOverlay").style.display = "none";
+    });
+
     // Open Form (Show overlay & form)
     async function openForm() {
-        const item = JSON.parse(localStorage.getItem("selectedItem"))
-        const response = await fetch(`http://localhost:8000/api/user/view-product/posted-by/${item.id}`)
-        const data = await response.json()
-        const { id, profile_image, owner, contact_number, social_media, location } = data.data
+        const item = JSON.parse(localStorage.getItem("selectedItem"));
+        const response = await fetch(`http://localhost:8000/api/user/view-product/posted-by/${item.id}`);
+        const data = await response.json();
+        const { id, profile_image, owner, contact_number, social_media, location } = data.data;
 
-        document.querySelector('#profile-image').src = `/uploads/${profile_image}`
-        document.querySelector('#owners-fullname').textContent = owner
-        document.querySelector('#contact-number').textContent = contact_number
-        document.querySelector('#social-media').textContent = social_media
-        document.querySelector('#location').textContent = location
+        document.querySelector('#profile-image').src = `/uploads/${profile_image}`;
+        document.querySelector('#owners-fullname').textContent = owner;
+        document.querySelector('#contact-number').textContent = contact_number;
+        
+        // Update the link and text
+        const socialMediaLink = document.querySelector('#social-media-link');
+        socialMediaLink.textContent = social_media;
+        socialMediaLink.href = social_media; // Set the href attribute
+        document.querySelector('#location').textContent = location;
 
         document.getElementById("myForm").style.display = "flex";
+        document.getElementById("modalOverlay").style.display = "block"; // Show the overlay
     }
 
     // Close Form (Hide overlay & form)
     function closeForm() {
         document.getElementById("myForm").style.display = "none";
+        document.getElementById("modalOverlay").style.display = "none"; // Hide the overlay
     }
+
 
     // Switch Tabs
     function switchTab(event, tabName) {
@@ -207,7 +222,7 @@
             document.getElementById("product-name").innerText = selectedItem.name;
             document.getElementById(
                 "product-price"
-            ).innerText = `Price per day: ₱${selectedItem.price}`;
+            ).innerText = `₱${selectedItem.price}`;
             document.getElementById("product-description").innerText =
                 selectedItem.description;
 
@@ -514,6 +529,7 @@
               <strong>From:</strong> ${formatDate(startDate)}<br>
               <strong>To:</strong> ${formatDate(endDate)}<br>
               <strong>Payment Method:</strong> ${deliveryMethod}</p><br>
+              <strong>Note: Please contact the owner for the transaction settlement.</strong>
                         <h3>Terms and Condition</h3>
                             <p>
                             <strong>1. General Terms:</strong><br>
