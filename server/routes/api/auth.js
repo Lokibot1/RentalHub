@@ -71,10 +71,6 @@ router.post("/register", async (req, res) => {
 
         const userId = result.insertId;
 
-        // Remove existing token and OTP
-        res.clearCookie("token");
-        res.clearCookie("otp");
-
         // Generate OTP
         const otp = Math.floor(100000 + Math.random() * 900000);
         await db.promise().query("UPDATE users SET otp = ? WHERE email = ?", [otp, email]);
