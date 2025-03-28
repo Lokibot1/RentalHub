@@ -24,7 +24,11 @@
         <!-- <pre><%= JSON.stringify(userProfile, null, 2) %></pre> -->
         <% const date=new Date(userProfile.joined_date); const formattedDate=new Intl.DateTimeFormat('en-US', {
           year: 'numeric' , month: 'long' }).format(date); %>
-
+          <div class="tab">
+            <button class="tablinks active" onclick="openTab(event, 'Profile')">Profile</button>
+            <button class="tablinks" onclick="openTab(event, 'Reviews')">Reviews</button>
+            
+            <div id="Profile" class="tab-content">
           <div class="profile-header">
             <label for="profileImageInput">
               <img src="/uploads/<%= userProfile.profile_image %>" alt="Profile Picture" class="profile-img"
@@ -66,6 +70,31 @@
               <input type="text" id="address" value="<%= userProfile.address %>" placeholder="Address" disabled />
             </div>
           </form>
+        </div>
+
+        <div id="Reviews" class="tab-content">
+          <h2>Reviews for:</h2>
+          <button class="tablinks active" onclick="openTab(event, 'Owner')">Owner</button>
+          <button class="tablinks" onclick="openTab(event, 'Renter')">Renter</button>
+
+          <div id="Owner" class="tab-content">
+            <div id="Owner" class="tab-content">
+              <div class="OwnerReview">
+                <h1>Name</h1>
+                <p>Rating</p>
+                <p>Review</p>
+              </div>
+            </div>
+            <div id="Renter" class="tab-content">
+              <div class="OwnerReview">
+                <h1>Name</h1>
+                <p>Rating</p>
+                <p>Review</p>
+              </div>
+            </div>
+        </div>
+        </div>
+      </div>
       </div>
   </div>
 
@@ -172,4 +201,20 @@
         modal.style.display = "none"; // Hide modal
       });
     });
+
+    // OPEN TAB FUNCTION
+    function openTab(evt, tabName) {
+        let i, tabs, buttons;
+        tabs = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabs.length; i++) {
+            tabs[i].style.display = "none";
+        }
+        buttons = document.getElementsByClassName("tablinks");
+        for (i = 0; i < buttons.length; i++) {
+            buttons[i].classList.remove("active");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.classList.add("active");
+    }
+
   </script>
