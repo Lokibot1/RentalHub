@@ -27,6 +27,7 @@
       </nav>
   
       <!--Form to add a new listing-->
+      <pre><%= JSON.stringify(item, null, 2) %></pre>
       <h2>Update listing</h2>
       <div class="container">
         <div class="form">
@@ -36,6 +37,7 @@
                 id="itemName"
                 placeholder="Enter item name"
                 oninput="updatePreview()"
+                value="<%= item.name %>"
                 required
               />
               <input
@@ -43,6 +45,7 @@
                 id="itemPrice"
                 placeholder="Enter item price"
                 oninput="updatePreview()"
+                value="<%= item.price %>"
                 required
               />
               <textarea
@@ -50,11 +53,12 @@
               placeholder="Enter item description"
               oninput="updatePreview()"
               required
-            ></textarea>
+            ><%= item.description %></textarea>
               <input
                 type="text"
                 id="location"
                 placeholder="Enter location"
+                value="<%= item.location %>"
                 required
               />
               <input type="file" id="img" for="imageInput" accept="image/*" onchange="previewImage()" required />
