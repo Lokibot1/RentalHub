@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import knex from 'knex'
+import {fileURLToPath} from "node:url";
 
 const db = knex({
   client: 'mysql2',
@@ -13,6 +14,8 @@ const db = knex({
   },
 });
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const schemaPath = path.join(__dirname, 'schema.sql');
 
 async function migrateDatabase() {
