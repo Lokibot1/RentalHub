@@ -98,20 +98,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function fetchItems(searchQuery = "") {
         try {
-            const response = await fetch(`/api/shared/listing/${getCategoryId(category)}?search=${encodeURIComponent(searchQuery)}`);
+            const response = await fetch(`/api/shared/items/${getCategoryId(category)}?keyword=${(searchQuery)}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
 
-            // Clear previous search results, including messages
             shoppingContainer.innerHTML = "";
 
             if (data.success && data.data.length > 0) {
                 displayItems(data.data);
 
-                // Display search message only when searchQuery is present
                 if (searchQuery) {
                     const resultCount = data.data.length;
                     const searchMessage = document.createElement("div");
@@ -172,7 +170,6 @@ document.addEventListener("DOMContentLoaded", function () {
             <br>
             📍: ${item.location}
             <br>
-            <div class="item-owner">Owner: ${item.owner_name || 'Unknown'}</div>
         `;
 
         li.addEventListener("click", function () {
@@ -280,5 +277,38 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     });
+
+    function getCategoryId(categoryValue) {
+    let category = categoryValue
+    let categoryId = 1;
+
+    switch (category) {
+        case "events-and-parties":
+            categoryId = 1;
+            break;
+        case "tech-and-gadgets":
+            categoryId = 2;
+            break;
+        case "clothing-and-accessories":
+            categoryId = 3;
+            break;
+        case "sports-and-outdoor-gear":
+            categoryId = 4;
+            break;
+        case "tools-and-equipment":
+            categoryId = 5;
+            break;
+        case "musical-instruments":
+            categoryId = 6;
+            break;
+        case "home-and-office":
+            categoryId = 7;
+            break;
+        case "pets-accessories":
+            categoryId = 8;
+            break;
+    }
+    return categoryId;
+}
 </script>
 <script src="/js/get-category-id.js"></script>
