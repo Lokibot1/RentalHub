@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/css/listing.css"/>
+<link rel="stylesheet" href="/css/listing.css" />
 <link rel="web icon" type="png" href="/images/webicon.png">
 <!--Navigation Bar-->
 <nav>
@@ -10,17 +10,11 @@
     <ul>
         <li><a href="/">Home</a></li>
         <li>
-            <a href="/listing"
-            ><img src="/images/WhiteAdd.png" class="add-icon"
-                /></a>
+            <a href="/listing"><img src="/images/WhiteAdd.png" class="add-icon" /></a>
         </li>
         <li>
             <a href="/login">
-                <img
-                        src="/images/Icon1.png"
-                        alt="Profile"
-                        class="profile-icon"
-                />
+                <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
             </a>
         </li>
     </ul>
@@ -31,49 +25,19 @@
 <div class="container">
     <div class="form">
         <form method="post" id="listingForm">
-            <input
-                    type="text"
-                    name="item_name"
-                    id="itemName"
-                    placeholder="Enter item name"
-                    oninput="updatePreview()"
-                    required
-            />
-            <input
-                    type="number"
-                    name="item_price"
-                    id="itemPrice"
-                    placeholder="Enter item price"
-                    oninput="updatePreview()"
-                    required
-            />
-            <textarea
-                    name="item_description"
-                    id="itemDescription"
-                    placeholder="Enter item description"
-                    oninput="updatePreview()"
-                    required
-            ></textarea>
+            <input type="text" name="item_name" id="itemName" placeholder="Enter item name" oninput="updatePreview()"
+                required />
+            <input type="number" name="item_price" id="itemPrice" placeholder="Enter item price"
+                oninput="updatePreview()" required />
+            <textarea name="item_description" id="itemDescription" placeholder="Enter item description"
+                oninput="updatePreview()" required></textarea>
 
-            <input
-                    type="number"
-                    name="item_quantity"
-                    id="itemQuantity"
-                    min="1"
-                    placeholder="Enter of Quantity of Item"
-                    oninput="updatePreview()"
-                    required
-            />
+            <input type="number" name="item_quantity" id="itemQuantity" min="1" placeholder="Enter of Quantity of Item"
+                oninput="updatePreview()" required />
 
-            <input
-                    type="text"
-                    name="location"
-                    id="location"
-                    placeholder="Enter location"
-                    required
-            />
+            <input type="text" name="location" id="location" placeholder="Enter location" required />
             <input type="file" name="item_file" id="img" for="imageInput" accept="image/*" onchange="previewImage()"
-                   required/>
+                required />
 
             <select name="categories" id="categories" required></select>
 
@@ -118,14 +82,14 @@
         document.querySelector('span#item-quantity').textContent = item.quantity
 
         const categories = [
-            {value: 1, text: "Events & Parties"},
-            {value: 2, text: "Tech & Gadgets"},
-            {value: 3, text: "Clothing & Accessories"},
-            {value: 4, text: "Sports & Outdoor Gear"},
-            {value: 5, text: "Tools & Equipment"},
-            {value: 6, text: "Musical Instruments"},
-            {value: 7, text: "Home & Office"},
-            {value: 8, text: "Pets Accessories"}
+            { value: 1, text: "Events & Parties" },
+            { value: 2, text: "Tech & Gadgets" },
+            { value: 3, text: "Clothing & Accessories" },
+            { value: 4, text: "Sports & Outdoor Gear" },
+            { value: 5, text: "Tools & Equipment" },
+            { value: 6, text: "Musical Instruments" },
+            { value: 7, text: "Home & Office" },
+            { value: 8, text: "Pets Accessories" }
         ];
 
         const select = document.getElementById("categories");
@@ -166,15 +130,13 @@
                 })
                     .then((response) => response.json())
                     .then((data) => {
-                        console.log("Success:", data);
                         alert("Item updated!");
-                        window.location.href = "/my-listing";
+                        window.location.href = `/shopping/${getCategoryName(select.value)}`;
                     })
                     .catch((error) => {
                         console.error("Error:", error);
                     });
 
-                // window.location.href = `/shopping/${getCategoryName(category)}`;
 
                 // let itemName = document.getElementById("itemName").value.trim();
                 // let itemPrice = parseFloat(
@@ -190,34 +152,6 @@
                 // if (itemPrice <= 0 || isNaN(itemPrice)) {
                 //     alert("Please enter a valid price greater than zero.");
                 //     return;
-                // }
-
-
-
-                // if (imgInput.files.length > 0) {
-                //   let reader = new FileReader();
-                //   reader.onload = function (event) {
-                //     let item = {
-                //       name: itemName,
-                //       price: itemPrice.toFixed(2),
-                //       description: itemDescription,
-                //       location: location,
-                //       image: event.target.result, // Base64 encoded image
-                //       category: category,
-                //     };
-                //
-                //     // Save to localStorage
-                //     let items = JSON.parse(localStorage.getItem("items")) || [];
-                //     items.push(item);
-                //     localStorage.setItem("items", JSON.stringify(items));
-                //
-                //     alert("Item added!");
-                //     document.getElementById("listingForm").reset(); // Reset form
-                //     window.location.href = "my-listing.html"; // Redirect to shopping page
-                //   };
-                //   reader.readAsDataURL(imgInput.files[0]); // Convert image to Base64
-                // } else {
-                //   alert("Please select an image.");
                 // }
             });
 
