@@ -10,18 +10,10 @@ const router = express.Router();
  * @route GET /api/shared/items?keyword=keyword
  */
 router.get('/', async (req, res) => {
-    // Get the category ID from the request
     const { keyword } = req.query;
 
-    // Ensure keyword is not undefined
-    if (!keyword) {
-        return res.status(400).json({
-            success: false,
-            message: "Keyword is required"
-        });
-    }
-
-    const sql = `
+    // Base SQL query
+    let sql = `
         SELECT items.*,
                inventory.stock_quantity                       AS quantity,
                items.user_id                                  AS owner_id,
@@ -30,15 +22,21 @@ router.get('/', async (req, res) => {
         FROM items
                  JOIN inventory ON inventory.item_id = items.id
                  JOIN users ON users.id = items.user_id
-        WHERE items.name LIKE ?
-          AND items.is_approved = 1
-          AND is_archived = 0
-    `
+        WHERE items.is_approved = 1
+          AND items.is_archived = 0
+    `;
 
-    db.query(sql, [`%${keyword}%`], (err, results) => {
+    // If keyword exists, add the WHERE condition for name search
+    const params = [];
+    if (keyword) {
+        sql += ` AND items.name LIKE ? `;
+        params.push(`%${keyword}%`);
+    }
+
+    db.query(sql, params, (err, results) => {
         if (err) {
-            console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Query failed."});
+            console.error("Database query error", err);
+            return res.status(500).json({ success: false, message: "Query failed." });
         }
 
         const filteredResults = results.map(
@@ -65,7 +63,7 @@ router.get('/', async (req, res) => {
                     owner_id,
                     owner,
                     profile_image,
-                }
+                };
             });
 
         res.status(200).json({
@@ -74,6 +72,7 @@ router.get('/', async (req, res) => {
         });
     });
 });
+
 
 
 export default router
