@@ -7,9 +7,11 @@ const router = express.Router();
 /**
  * Get all items
  *
- * @route GET /api/shared/items?keyword=keyword
+ * @route GET /api/shared/items/:category_id?keyword=keyword
  */
-router.get('/', async (req, res) => {
+router.get('/:category_id', async (req, res) => {
+    // Get the category ID from the request
+    const { category_id } = req.params;
     const { keyword } = req.query;
 
     // Base SQL query
@@ -22,12 +24,13 @@ router.get('/', async (req, res) => {
         FROM items
                  JOIN inventory ON inventory.item_id = items.id
                  JOIN users ON users.id = items.user_id
-        WHERE items.is_approved = 1
+        WHERE items.category_id = ?
+          AND items.is_approved = 1
           AND items.is_archived = 0
     `;
 
     // If keyword exists, add the WHERE condition for name search
-    const params = [];
+    const params = [category_id];
     if (keyword) {
         sql += ` AND items.name LIKE ? `;
         params.push(`%${keyword}%`);
