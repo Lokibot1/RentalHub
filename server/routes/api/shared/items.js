@@ -12,7 +12,6 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     // Get the category ID from the request
     const { keyword } = req.query;
-    console.log('keyword', keyword)
 
     // Ensure keyword is not undefined
     if (!keyword) {
