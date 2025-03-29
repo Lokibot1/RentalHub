@@ -96,6 +96,7 @@ router.post("/", checkAuth, upload.single('item_file'), async (req, res) => {
 router.get("/:category_id", upload.single('item_file'), async (req, res) => {
     // Get the category ID from the request
     const { category_id } = req.params;
+    const { keyword } = req.query;
 
     const sql = `
         SELECT items.*,
@@ -107,14 +108,15 @@ router.get("/:category_id", upload.single('item_file'), async (req, res) => {
                  JOIN inventory ON inventory.item_id = items.id
                  JOIN users ON users.id = items.user_id
         WHERE items.category_id = ?
+          AND items.name LIKE ?
           AND items.is_approved = 1
           AND is_archived = 0
     `
 
-    db.query(sql, [category_id], (err, results) => {
+    db.query(sql, [category_id, `%${keyword}%`], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Failed to add item."});
+            return res.status(500).json({success: false, message: "Query failed."});
         }
 
         const filteredResults = results.map(
