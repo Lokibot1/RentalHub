@@ -43,7 +43,7 @@ app.use("/auth/otp", await loadRoute("./routes/app/otp.js"));
 app.use("/forbidden", await loadRoute("../server/routes/forbidden.js"));
 
 // Backend routes
-app.use("/api", await loadRoute("../server/routes/api/listing.js"));
+app.use("/api/shared", await loadRoute("../server/routes/api/shared/index.js"));
 app.use("/api/auth", await loadRoute("../server/routes/api/auth.js"));
 
 // Backend Admin route

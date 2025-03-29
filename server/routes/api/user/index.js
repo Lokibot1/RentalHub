@@ -13,7 +13,7 @@ const archives = await import("./archives.js").then(m => m.default);
 const isOwner = await import("./utils/is-owner.js").then(m => m.default);
 const getItem = await import("./utils/get-item.js").then(m => m.default);
 
-// Route Prefix: /api/admin
+// Route Prefix: /api/user
 router.use("/posts", posts);
 router.use("/view-product", viewProduct);
 router.use("/dashboard", dashboard);

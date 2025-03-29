@@ -94,7 +94,7 @@
         // Get the URL parameter after shopping/
         const category = window.location.pathname.split("/").pop();
 
-        const data = await fetch(`/api/listing/${getCategoryId(category)}`)
+        const data = await fetch(`/api/shared/listing/${getCategoryId(category)}`)
             .then((response) => response.json())
             .then((data) => {
                 return data.data
@@ -122,21 +122,22 @@
             let li = document.createElement("li");
             li.className = "shoppingItem"; // For CSS
             li.innerHTML = `
-        <img src="${item.image}" alt="Item Image" class="itemImage">
-        <br>
-        <hr>
-        <strong>${item.name}</strong>
-        <br>
-        <br>
-        <div class="item-price-quantity">
-        <strong>₱ ${item.price} per day</strong>
-        <br>
-        <p class="item-quantity"> ${item.quantity} left</p>
-        </div>
-        <br>
-        📍: ${item.location}
-        <br>
-    `;
+                <img src="${item.image}" alt="Item Image" class="itemImage">
+                <br>
+                <hr>
+                <strong>${item.name}</strong>
+                <br>
+                <br>
+                <div class="item-price-quantity">
+                <strong>₱ ${item.price} per day</strong>
+                <br>
+                <p class="item-quantity"> ${item.quantity} left</p>
+                </div>
+                <br>
+                📍: ${item.location}
+                <br>
+            `;
+
             // Make the item clickable
             li.addEventListener("click", function () {
                 localStorage.setItem("selectedItem", JSON.stringify(item));

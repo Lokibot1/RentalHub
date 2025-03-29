@@ -1,180 +1,290 @@
-<link rel="stylesheet" href="/css/listing.css" />
+<link rel="stylesheet" href="/css/listing.css"/>
 <link rel="web icon" type="png" href="/images/webicon.png">
 <!--Navigation Bar-->
-    <nav>
-        <a href="/">
-          <div class="logo">
+<nav>
+    <a href="/">
+        <div class="logo">
             <h1>Rental <span> Hub</span></h1>
-          </div>
-        </a>
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li>
-            <a href="/listing"
-              ><img src="/images/WhiteAdd.png" class="add-icon"
-            /></a>
-          </li>
-          <li>
-            <a href="/login">
-              <img
-                src="/images/Icon1.png"
-                alt="Profile"
-                class="profile-icon"
-              />
-            </a>
-          </li>
-        </ul>
-      </nav>
-  
-      <!--Form to add a new listing-->
-      <pre><%= JSON.stringify(item, null, 2) %></pre>
-      <h2>Update listing</h2>
-      <div class="container">
-        <div class="form">
-          <form action="" id="listingForm">
-              <input
-                type="text"
-                id="itemName"
-                placeholder="Enter item name"
-                oninput="updatePreview()"
-                value="<%= item.name %>"
-                required
-              />
-              <input
-                type="number"
-                id="itemPrice"
-                placeholder="Enter item price"
-                oninput="updatePreview()"
-                value="<%= item.price %>"
-                required
-              />
-              <textarea
-              id="itemDescription"
-              placeholder="Enter item description"
-              oninput="updatePreview()"
-              required
-            ><%= item.description %></textarea>
-              <input
-                type="text"
-                id="location"
-                placeholder="Enter location"
-                value="<%= item.location %>"
-                required
-              />
-              <input type="file" id="img" for="imageInput" accept="image/*" onchange="previewImage()" required />
-              <select name="categories" id="categories" required>
-                <option value="Events & Parties">Events & Parties</option>
-                <option value="Tech & Gadgets">Tech & Gadgets</option>
-                <option value="Clothing & Accessories">
-                  Clothing & Accessories
-                </option>
-                <option value="Sports & Outdoor Gear">
-                  Sports & Outdoor Gear
-                </option>
-                <option value="Tools & Equipment">Tools & Equipment</option>
-                <option value="Musical Instruments">Musical Instruments</option>
-                <option value="Home & Office">Home & Office</option>
-                <option value="Pets Accessories">Pets Accessories</option>
-              </select>
-              <button type="submit">Update Listing</button>
-          </form>
         </div>
-  
-        <!--Preview Section-->
-        <div class="preview">
-          <div class="pic">
-            <img id="preview" alt="">
-          </div>
-          <div class="product-details">
+    </a>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li>
+            <a href="/listing"
+            ><img src="/images/WhiteAdd.png" class="add-icon"
+                /></a>
+        </li>
+        <li>
+            <a href="/login">
+                <img
+                        src="/images/Icon1.png"
+                        alt="Profile"
+                        class="profile-icon"
+                />
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<!--Form to add a new listing-->
+<h2>Update listing</h2>
+<div class="container">
+    <div class="form">
+        <form method="post" id="listingForm">
+            <input
+                    type="text"
+                    name="item_name"
+                    id="itemName"
+                    placeholder="Enter item name"
+                    oninput="updatePreview()"
+                    required
+            />
+            <input
+                    type="number"
+                    name="item_price"
+                    id="itemPrice"
+                    placeholder="Enter item price"
+                    oninput="updatePreview()"
+                    required
+            />
+            <textarea
+                    name="item_description"
+                    id="itemDescription"
+                    placeholder="Enter item description"
+                    oninput="updatePreview()"
+                    required
+            ></textarea>
+
+            <input
+                    type="number"
+                    name="item_quantity"
+                    id="itemQuantity"
+                    min="1"
+                    placeholder="Enter of Quantity of Item"
+                    oninput="updatePreview()"
+                    required
+            />
+
+            <input
+                    type="text"
+                    name="location"
+                    id="location"
+                    placeholder="Enter location"
+                    required
+            />
+            <input type="file" name="item_file" id="img" for="imageInput" accept="image/*" onchange="previewImage()"
+                   required/>
+
+            <select name="categories" id="categories" required></select>
+
+            <button type="submit">Update Listing</button>
+        </form>
+    </div>
+
+    <!--Preview Section-->
+    <div class="preview">
+        <div class="pic">
+            <img id="preview" src="" alt="">
+        </div>
+        <div class="product-details">
             <label>Name of product: <span id="product-name"></span></label>
             <hr>
             <label>Price per day: <span id="product-price"></span></label>
             <hr>
             <label>Item Description: <span id="product-description"></span></label>
-        </div>      
-      </div>
-  
-      <!--Script-->
-      <script>
+            <hr>
+            <label>No. of Item Quantity: <span id="item-quantity"></span></label>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let selectedItem = localStorage.getItem('selectedItem')
+        let item = JSON.parse(selectedItem)
+
+        // Set values upon load
+        document.querySelector('[name="item_name"]').value = item.name
+        document.querySelector('[name="item_price"]').value = item.price
+        document.querySelector('[name="item_description"]').value = item.description
+        document.querySelector('[name="item_quantity"]').value = item.quantity
+        document.querySelector('[name="location"]').value = item.location
+
+        // Set preview values
+        document.querySelector('img#preview').src = item.image
+        document.querySelector('span#product-name').textContent = item.name
+        document.querySelector('span#product-price').textContent = item.price
+        document.querySelector('span#product-description').textContent = item.description
+        document.querySelector('span#item-quantity').textContent = item.quantity
+
+        const categories = [
+            {value: 1, text: "Events & Parties"},
+            {value: 2, text: "Tech & Gadgets"},
+            {value: 3, text: "Clothing & Accessories"},
+            {value: 4, text: "Sports & Outdoor Gear"},
+            {value: 5, text: "Tools & Equipment"},
+            {value: 6, text: "Musical Instruments"},
+            {value: 7, text: "Home & Office"},
+            {value: 8, text: "Pets Accessories"}
+        ];
+
+        const select = document.getElementById("categories");
+        const selectedValue = item.category_id; // Change this value to preselect a different option
+
+        categories.forEach(category => {
+            const option = document.createElement("option");
+            option.value = category.value;
+            option.textContent = category.text;
+
+            if (category.value === selectedValue) {
+                option.selected = true; // Set the default selected option
+            }
+
+            select.appendChild(option);
+        });
+
+        console.log('selectedItem', item)
+
+
         //Listing Functionality
         document
-          .getElementById("listingForm")
-          .addEventListener("submit", function (e) {
-            e.preventDefault();
-  
-            let itemName = document.getElementById("itemName").value.trim();
-            let itemPrice = parseFloat(
-              document.getElementById("itemPrice").value
-            );
-            let itemDescription = document
-              .getElementById("itemDescription")
-              .value.trim();
-            let location = document.getElementById("location").value.trim();
-            let ewallet = document.getElementById("ewallet").value.trim();
-            let category = document.getElementById("categories").value;
-            let imgInput = document.getElementById("img");
-  
-            // Validate price
-            if (itemPrice <= 0 || isNaN(itemPrice)) {
-              alert("Please enter a valid price greater than zero.");
-              return;
-            }
-  
-            if (imgInput.files.length > 0) {
-              let reader = new FileReader();
-              reader.onload = function (event) {
-                let item = {
-                  name: itemName,
-                  price: itemPrice.toFixed(2),
-                  description: itemDescription,
-                  location: location,
-                  image: event.target.result, // Base64 encoded image
-                  category: category,
+            .getElementById("listingForm")
+            .addEventListener("submit", async function (e) {
+                e.preventDefault();
+
+                // Get the current URL last segment
+                let url = window.location.href;
+                let itemId = url.substring(url.lastIndexOf("/") + 1);
+
+                const formData = new FormData(this);
+
+                console.log('submitting form', this);
+
+                await fetch(`/api/shared/update-product/${itemId}`, {
+                    method: "PATCH",
+                    body: formData,
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log("Success:", data);
+                        alert("Item updated!");
+                        window.location.href = "/my-listing";
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                    });
+
+                // window.location.href = `/shopping/${getCategoryName(category)}`;
+
+                // let itemName = document.getElementById("itemName").value.trim();
+                // let itemPrice = parseFloat(
+                //     document.getElementById("itemPrice").value
+                // );
+                // let itemDescription = document
+                //     .getElementById("itemDescription")
+                //     .value.trim();
+                // let location = document.getElementById("location").value.trim();
+                // let category = document.getElementById("categories").value;
+                //
+                // // Validate price
+                // if (itemPrice <= 0 || isNaN(itemPrice)) {
+                //     alert("Please enter a valid price greater than zero.");
+                //     return;
+                // }
+
+
+
+                // if (imgInput.files.length > 0) {
+                //   let reader = new FileReader();
+                //   reader.onload = function (event) {
+                //     let item = {
+                //       name: itemName,
+                //       price: itemPrice.toFixed(2),
+                //       description: itemDescription,
+                //       location: location,
+                //       image: event.target.result, // Base64 encoded image
+                //       category: category,
+                //     };
+                //
+                //     // Save to localStorage
+                //     let items = JSON.parse(localStorage.getItem("items")) || [];
+                //     items.push(item);
+                //     localStorage.setItem("items", JSON.stringify(items));
+                //
+                //     alert("Item added!");
+                //     document.getElementById("listingForm").reset(); // Reset form
+                //     window.location.href = "my-listing.html"; // Redirect to shopping page
+                //   };
+                //   reader.readAsDataURL(imgInput.files[0]); // Convert image to Base64
+                // } else {
+                //   alert("Please select an image.");
+                // }
+            });
+
+        // Preview Functionality
+        function updatePreview() {
+            document.getElementById("product-name").textContent = document.getElementById("itemName").value;
+            document.getElementById("product-price").textContent = document.getElementById("itemPrice").value;
+            document.getElementById("itemDescription").addEventListener("input", function () {
+                document.getElementById("product-description").innerHTML = this.value.replace(/\n/g, "<br>");
+            });
+
+        }
+
+        function previewImage() {
+            let file = document.getElementById("img").files[0];
+            let preview = document.getElementById("preview");
+
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function (event) {
+                    preview.src = event.target.result;
                 };
-  
-                // Save to localStorage
-                let items = JSON.parse(localStorage.getItem("items")) || [];
-                items.push(item);
-                localStorage.setItem("items", JSON.stringify(items));
-  
-                alert("Item added!");
-                document.getElementById("listingForm").reset(); // Reset form
-                window.location.href = "my-listing.html"; // Redirect to shopping page
-              };
-              reader.readAsDataURL(imgInput.files[0]); // Convert image to Base64
+                reader.readAsDataURL(file);
             } else {
-              alert("Please select an image.");
+                preview.src = "";
             }
-          });
-  
-          // Preview Functionality
-          function updatePreview() {
-          document.getElementById("product-name").textContent = document.getElementById("itemName").value;
-          document.getElementById("product-price").textContent = document.getElementById("itemPrice").value;
-          document.getElementById("itemDescription").addEventListener("input", function() {
-          document.getElementById("product-description").innerHTML = this.value.replace(/\n/g, "<br>");
-        });
-  
-      }
-  
-      function previewImage() {
-          let file = document.getElementById("img").files[0];
-          let preview = document.getElementById("preview");
-  
-          if (file) {
-              let reader = new FileReader();
-              reader.onload = function(event) {
-                  preview.src = event.target.result;
-              };
-              reader.readAsDataURL(file);
-          } else {
-              preview.src = "";
-          }
-      }
-  
-      // Attach event listeners to inputs for live preview
-      document.getElementById("itemName").addEventListener("input", updatePreview);
-      document.getElementById("itemPrice").addEventListener("input", updatePreview);
-      document.getElementById("itemDescription").addEventListener("input", updatePreview);
-      document.getElementById("img").addEventListener("change", previewImage);
-      </script>
+        }
+
+        // Attach event listeners to inputs for live preview
+        document.getElementById("itemName").addEventListener("input", updatePreview);
+        document.getElementById("itemPrice").addEventListener("input", updatePreview);
+        document.getElementById("itemDescription").addEventListener("input", updatePreview);
+        document.getElementById("img").addEventListener("change", previewImage);
+    });
+
+    // Get category name
+    function getCategoryName(categoryValue) {
+        let category = categoryValue
+        let categoryName = "";
+
+        switch (category) {
+            case "1":
+                categoryName = "events-and-parties";
+                break;
+            case "2":
+                categoryName = "tech-and-gadgets";
+                break;
+            case "3":
+                categoryName = "clothing-and-accessories";
+                break;
+            case "4":
+                categoryName = "sports-and-outdoor-gear";
+                break;
+            case "5":
+                categoryName = "tools-and-equipment";
+                break;
+            case "6":
+                categoryName = "musical-instruments";
+                break;
+            case "7":
+                categoryName = "home-and-office";
+                break;
+            case "8":
+                categoryName = "pets-accessories";
+                break;
+        }
+        return categoryName;
+    }
+
+</script>

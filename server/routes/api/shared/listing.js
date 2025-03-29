@@ -1,8 +1,8 @@
 import express from "express"
 import multer from 'multer'
 import path from 'path'
-import {db} from "../../configs/db.js"
-import {checkAuth} from "../../middlewares/auth.js"
+import {db} from "../../../configs/db.js"
+import {checkAuth} from "../../../middlewares/auth.js"
 import fs from 'fs'
 
 const router = express.Router();
@@ -28,9 +28,10 @@ const upload = multer({storage: storage});
 
 /**
  * Add New Item
- * @route POST /api/listing
+ *
+ * @route POST /api/shared/listing
  */
-router.post("/listing", checkAuth, upload.single('item_file'), async (req, res) => {
+router.post("/", checkAuth, upload.single('item_file'), async (req, res) => {
     const {item_name, item_price, item_description, item_quantity, location, categories} = req.body;
     const item_file = req.file; // Access the uploaded file
     let isApproved = false
@@ -90,9 +91,9 @@ router.post("/listing", checkAuth, upload.single('item_file'), async (req, res) 
 /**
  * Get all items/listing
  *
- * @route GET /api/listing/:category_id
+ * @route GET /api/shared/listing/:category_id
  */
-router.get("/listing/:category_id", upload.single('item_file'), async (req, res) => {
+router.get("/:category_id", upload.single('item_file'), async (req, res) => {
     // Get the category ID from the request
     const {category_id} = req.params;
 
@@ -127,7 +128,8 @@ router.get("/listing/:category_id", upload.single('item_file'), async (req, res)
                  file_path,
                  owner_id,
                  owner,
-                 profile_image
+                 profile_image,
+                 category_id
              }) => {
                 return {
                     id,
@@ -139,7 +141,8 @@ router.get("/listing/:category_id", upload.single('item_file'), async (req, res)
                     image: `/uploads/${file_path}`,
                     owner_id,
                     owner,
-                    profile_image
+                    profile_image,
+                    category_id
                 }
             });
 

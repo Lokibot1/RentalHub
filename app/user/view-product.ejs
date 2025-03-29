@@ -225,7 +225,7 @@
     }
 
     // Function to load the selected product details
-    function loadSelectedProduct() {
+    async function loadSelectedProduct() {
         selectedItem = JSON.parse(localStorage.getItem("selectedItem"));
         if (selectedItem) {
             document.getElementById("product-image").src =
@@ -239,8 +239,11 @@
 
             document.getElementById("product-quantity").innerText =
                 selectedItem.quantity;
-            document.querySelector("[name='rental_quantity']")
-                .setAttribute('max', selectedItem.quantity)
+
+            const rentalQuantity = document.querySelector("[name='rental_quantity']")
+            if (rentalQuantity) {
+                rentalQuantity.setAttribute('max', selectedItem.quantity)
+            }
 
             // Owner Info
             document.getElementById("owner-name").textContent =

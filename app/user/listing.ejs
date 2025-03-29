@@ -40,7 +40,7 @@
                 placeholder="Enter of Quantity of Item"
                 oninput="updatePreview()"
                 required
-            ></input>
+            />
 
             <input type="text"
                    name="location"
@@ -139,7 +139,7 @@
 
             let formData = new FormData(this);
 
-            fetch("/api/listing", {
+            fetch("/api/shared/listing", {
                 method: "POST",
                 body: formData,
             })
