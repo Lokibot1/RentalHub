@@ -154,4 +154,34 @@ router.get("/:category_id", upload.single('item_file'), async (req, res) => {
 });
 
 
+/**
+ * Get Items/Listing that is searched
+ *
+ * @route GET /api/shared/listing/:category_id
+ */
+router.get("/listing/:categoryId", async (req, res) => {
+    const categoryId = req.params.categoryId;
+    const searchQuery = req.query.search ? req.query.search.trim() : "";
+
+    let sql = "SELECT * FROM listings WHERE category_id = ?";
+    let params = [categoryId];
+
+    if (searchQuery) {
+        const searchTerms = searchQuery.split(' ').map(term => `%${term}%`);
+        const conditions = searchTerms.map(() => "(name LIKE ? OR owner_name LIKE ?)").join(" AND ");
+        sql += ` AND ${conditions}`;
+        params.push(...searchTerms.flatMap(term => [term, term])); 
+    }
+
+    db.query(sql, params, (err, results) => {
+        if (err) {
+            console.error("Database query error:", err);
+            return res.status(500).json({ success: false, message: "Internal Server Error" });
+        }
+        
+        res.json({ success: true, data: results });
+    });
+});
+
+
 export default router

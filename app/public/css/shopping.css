@@ -63,24 +63,59 @@
     width: 40px;
     height: 40px;
   }
-  .search-bar {
+  .search-wrapper {
     display: flex;
     align-items: center;
   }
-  .search-bar input {
-    width: 100%;
-    height: 40px;
+  .search-wrapper input {
+    width: 300px;
+    height: 45px;
     padding: 0 10px;
     border: 2px solid #1b2e3d;
     border-radius: 50px;
     font-size: 15px;
     color: #1b2e3d;
   }
-  .search-bar img {
+  .search-wrapper img {
     width: 30px;
     height: 30px;
     cursor: pointer;
   }
+
+  .search-results-message {
+    margin: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.clear-search {
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.clear-search:hover {
+    background-color: #3A80D2;
+}
+
+/* Highlight search results */
+.search-active .shoppingItem {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
   
   /*scroll bar*/
   ::-webkit-scrollbar {
