@@ -37,6 +37,7 @@
                 type="number"
                 name="item_quantity"
                 id="itemQuantity"
+                min="1"
                 placeholder="Enter of Quantity of Item"
                 oninput="updatePreview()"
                 required
@@ -85,13 +86,6 @@
                 </option>
             </select>
 
-                <!-- TODO: To be removed -->
-<!--            <input-->
-<!--                    type="number"-->
-<!--                    id="ewallet"-->
-<!--                    placeholder="Enter e-wallet"-->
-<!--                    required-->
-<!--            />-->
             <button type="submit">Add Listing</button>
         </form>
     </div>
@@ -130,12 +124,6 @@
                 alert("Please enter a valid price greater than zero.");
                 return;
             }
-
-            // Validate e-wallet number (ensure only digits)
-            // if (!/^\d{10,16}$/.test(ewallet)) {
-            //     alert("Please enter a valid e-wallet number (10-16 digits).");
-            //     return;
-            // }
 
             let formData = new FormData(this);
 

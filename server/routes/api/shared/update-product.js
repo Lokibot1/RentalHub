@@ -27,7 +27,7 @@ const upload = multer({storage: storage});
 
 
 /**
- * Update existing product
+ * Update existing product without ongoing transaction
  *
  * @route PATCH /api/shared/update-product/:item_id
  */
@@ -44,17 +44,21 @@ router.patch("/:item_id", checkAuth, upload.single('item_file'), async (req, res
     isApproved = req.user.role === 'admin';
 
     const sql = `
-            UPDATE items
-                JOIN inventory ON items.id = inventory.item_id
-            SET 
-                name = ?, 
-                price = ?,
-                description = ?, 
-                inventory.stock_quantity = ?, 
-                location = ?,
-                category_id = ?,
-                is_approved = ?
-            WHERE items.id = ?
+        UPDATE items
+            JOIN inventory ON items.id = inventory.item_id
+        SET
+            items.name = ?,
+            items.price = ?,
+            items.description = ?,
+            inventory.stock_quantity = ?,
+            items.location = ?,
+            items.category_id = ?,
+            items.file_path = ?,
+            items.is_approved = ?
+        WHERE items.id = ?
+          AND NOT EXISTS (
+            SELECT 1 FROM rental_transactions WHERE rental_transactions.item_id = items.id
+        )
     `
     db.query(sql, [
         item_name,
@@ -62,10 +66,10 @@ router.patch("/:item_id", checkAuth, upload.single('item_file'), async (req, res
         item_description,
         item_quantity,
         location,
-        categories,
+        parseInt(categories),
         item_file.filename,
-        isApproved,
-        item_id
+        isApproved ? 1 : 0,
+        parseInt(item_id)
     ], (err) => {
         if (err) {
             console.error("Database not connected", err);

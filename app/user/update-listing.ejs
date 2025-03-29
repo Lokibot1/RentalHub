@@ -136,33 +136,20 @@
                     .catch((error) => {
                         console.error("Error:", error);
                     });
-
-
-                // let itemName = document.getElementById("itemName").value.trim();
-                // let itemPrice = parseFloat(
-                //     document.getElementById("itemPrice").value
-                // );
-                // let itemDescription = document
-                //     .getElementById("itemDescription")
-                //     .value.trim();
-                // let location = document.getElementById("location").value.trim();
-                // let category = document.getElementById("categories").value;
-                //
-                // // Validate price
-                // if (itemPrice <= 0 || isNaN(itemPrice)) {
-                //     alert("Please enter a valid price greater than zero.");
-                //     return;
-                // }
             });
 
         // Preview Functionality
         function updatePreview() {
             document.getElementById("product-name").textContent = document.getElementById("itemName").value;
             document.getElementById("product-price").textContent = document.getElementById("itemPrice").value;
+
             document.getElementById("itemDescription").addEventListener("input", function () {
                 document.getElementById("product-description").innerHTML = this.value.replace(/\n/g, "<br>");
             });
 
+            document.getElementById("itemQuantity").addEventListener("input", function () {
+                document.getElementById("item-quantity").textContent = this.value;
+            });
         }
 
         function previewImage() {
@@ -185,6 +172,7 @@
         document.getElementById("itemPrice").addEventListener("input", updatePreview);
         document.getElementById("itemDescription").addEventListener("input", updatePreview);
         document.getElementById("img").addEventListener("change", previewImage);
+        document.getElementById("itemQuantity").addEventListener("change", updatePreview);
     });
 
     // Get category name
