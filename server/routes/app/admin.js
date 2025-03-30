@@ -200,7 +200,7 @@ router.get("/manage-listings", checkAuth, checkAdmin, async (req, res) => {
         const approvedResponse = await fetch(`${process.env.BASE_URL}/api/admin/manage-listings`);
         const approvedPosts = await approvedResponse.json();
 
-        const declinedRequestResponse = await fetch(`${process.env.BASE_URL}/api/admin/manage-listings/declined-requests`);
+        const declinedRequestResponse = await fetch(`${process.env.BASE_URL}/api/admin/manage-listings/decline-requests`);
         const declinedRequests = await declinedRequestResponse.json();
 
         res.render("admin/manage-listings", {

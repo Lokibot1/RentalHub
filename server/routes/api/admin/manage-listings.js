@@ -18,8 +18,9 @@ router.get("/pending", async (req, res) => {
                  JOIN users ON items.user_id = users.id
                  JOIN categories
                       ON items.category_id = categories.id
-        WHERE is_approved = 0;
-    `;
+        WHERE is_approved = 0
+          AND is_declined = 0
+    `
     db.query(sql, (err, results) => {
         if (err) {
             console.error("Database not connected", err);
@@ -128,12 +129,48 @@ router.get("/", async (req, res) => {
 
 
 /**
+ * View decline items
+ *
+ * @route GET /api/admin/manage-listings/decline-requests
+ */
+router.get("/decline-requests", async (req, res) => {
+    const sql = `
+        SELECT items.id                                       AS item_id,
+               CONCAT(users.first_name, ' ', users.last_name) AS owner,
+               items.name                                     AS item_name,
+               categories.name                                AS category_name
+        FROM items
+                 JOIN users ON items.user_id = users.id
+                 JOIN categories ON items.category_id = categories.id
+        WHERE items.is_declined = 1
+    `
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error("Database not connected", err)
+
+            return res.status(500)
+                .json({
+                    success: false,
+                    message: "Query failed"
+                })
+        }
+
+        res.status(200)
+            .json({
+                success: true,
+                data: results
+            })
+    })
+})
+
+
+/**
  * Decline item
  *
- * @route PATCH /api/admin/manage-listings/decline-request/:item_id
+ * @route PATCH /api/admin/manage-listings/decline-requests/:item_id
  */
-router.patch("/decline-request/:item_id", async (req, res) => {
-    const {item_id} = req.params
+router.patch("/decline-requests/:item_id", async (req, res) => {
+    const { item_id } = req.params
 
     const sql = `
         UPDATE items
