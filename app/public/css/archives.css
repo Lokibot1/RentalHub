@@ -401,6 +401,7 @@ nav button {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 11px;
+  overflow-y: auto;
 }
 
 /* Item Container */
@@ -421,6 +422,7 @@ nav button {
   overflow-x: hidden;
   transition: transform 0.3s ease-in-out;
   position: relative;
+  height: 400px;
 }
 .shoppingItem:hover, .shoppingItem1:hover {
   transform: scale(1.05);
