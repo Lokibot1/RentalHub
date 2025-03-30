@@ -67,5 +67,15 @@ router.get("/shopping/:category", optionalAuth, (req, res) => {
   });
 });
 
+/**
+ * Reset Password Page
+ * @route GET /reset-password
+ */
+router.get("/reset-password", optionalAuth, (req, res) => {
+  res.render("main/reset-password", {
+    layout: "layouts/main",
+    title: "Reset Password",
+  });
+});
 
 export default router
