@@ -98,7 +98,7 @@ input {
 
 .toggle-password {
     position: absolute;
-    right: 15px;
+    right: 20px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
@@ -110,6 +110,10 @@ input {
     display: none;
 }
 
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
 .modal {
     display: none;
     position: fixed;
