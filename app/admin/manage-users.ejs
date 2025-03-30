@@ -155,4 +155,172 @@
     </div>
     <div id="restoreToast" class="toast">User Successfully Restored!</div>
 
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.querySelector(".search-bar input");
+    const searchButton = document.querySelector(".search-bar button");
+    const userListTab = document.getElementById("UserList");
+    const userTableBody = userListTab.querySelector("table tbody");
+    
+    // Create a container for the black box area (search results)
+    let searchResultsBox = document.createElement("div");
+    searchResultsBox.className = "search-results-box";
+    
+    // Get the header element to position the box
+    const headerElement = document.querySelector(".header");
+    
+    // Insert the search results box after the header
+    headerElement.parentNode.insertBefore(searchResultsBox, headerElement.nextSibling);
+    
+    // Create the search message element inside the box
+    let searchMessage = document.createElement("div");
+    searchMessage.className = "search-results-message";
+    searchResultsBox.appendChild(searchMessage);
+    
+    async function fetchUsers(searchQuery = "") {
+        try {
+            searchMessage.innerHTML = searchQuery ? `<p>Searching for results...</p>` : "";
+            userTableBody.innerHTML = "<tr><td colspan='2'>Searching for users...</td></tr>";
+            
+            const endpoint = searchQuery 
+                ? `/api/admin/manage-users/search?search=${encodeURIComponent(searchQuery)}`
+                : "/api/admin/manage-users";
+                
+            const response = await fetch(endpoint);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            userTableBody.innerHTML = "";
+            
+            if (data.success && data.data.length > 0) {
+                displayUsers(data.data);
+                
+                // Update search results box visibility
+                searchResultsBox.style.display = searchQuery ? "flex" : "none";
+                
+                searchMessage.innerHTML = searchQuery
+                    ? `<p>Showing ${data.data.length} result${data.data.length !== 1 ? 's' : ''} for "<strong>${searchQuery}</strong>"</p>`
+                    : "";
+                    
+                // Clear Search Button
+                if (searchQuery) {
+                    let clearButton = document.createElement("button");
+                    clearButton.className = "clear-search";
+                    clearButton.innerText = "Clear Search";
+                    clearButton.addEventListener("click", function () {
+                        searchInput.value = "";
+                        fetchUsers("");
+                    });
+                    
+                    searchMessage.appendChild(clearButton);
+                }
+            } else {
+                userTableBody.innerHTML = `<tr><td colspan='2'>No users found.</td></tr>`;
+                
+                // Update search results box visibility
+                searchResultsBox.style.display = searchQuery ? "flex" : "none";
+                searchMessage.innerHTML = searchQuery ? `<p>No results found for "<strong>${searchQuery}</strong>"</p>` : "";
+            }
+        } catch (error) {
+            console.error("Error fetching users:", error);
+            userTableBody.innerHTML = "<tr><td colspan='2'>Error loading users.</td></tr>";
+        }
+    }
+    
+    function displayUsers(users) {
+        userTableBody.innerHTML = "";
+        
+        users.forEach(user => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${user.fullname}</td>
+                <td>
+                    <a href="/view-users#UserList">
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                </td>
+            `;
+            userTableBody.appendChild(row);
+        });
+    }
+    
+    let debounceTimer;
+    searchInput.addEventListener("input", function () {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            fetchUsers(this.value.trim());
+        }, 300);
+    });
+    
+    searchInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+            fetchUsers(this.value.trim());
+        }
+    });
+    
+    searchButton.addEventListener("click", function () {
+        fetchUsers(searchInput.value.trim());
+    });
+    
+    // Initialize users list
+    fetchUsers();
+    
+    // Add CSS for the search results box and message
+    const style = document.createElement('style');
+    style.textContent = `
+        .search-results-box {
+            display: none;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 10px 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            background-color: none;
+            border-radius: 4px;
+        }
+        
+        .search-results-message {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .search-results-message p {
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        .clear-search {
+            background-color: none;
+            color: #800020;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        
+        .clear-search:hover {
+            background-color: #800020;
+            color: #fff;
+            transition: background-color 0.2s;
+        }
+        
+        /* Media query for desktop view - position on the right side */
+        @media (min-width: 768px) {
+            .search-results-box {
+                position: absolute;
+                top: 170px; /* Adjust this value to align with your tabs */
+                right: 20px;
+                width: 350px;
+                z-index: 1;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+});
+    </script>
     <script src="/js/admin.js"></script>
