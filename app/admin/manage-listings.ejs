@@ -178,4 +178,272 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.querySelector(".search-bar input");
+    const tabsContainer = document.querySelector(".tab");
+    const tabContents = document.querySelectorAll(".tab-content");
+    
+    let searchResultsBox = document.createElement("div");
+    searchResultsBox.className = "search-results-box";
+    
+    const headerElement = document.querySelector(".header");
+    headerElement.parentNode.insertBefore(searchResultsBox, headerElement.nextSibling);
+    
+    let searchMessage = document.createElement("div");
+    searchMessage.className = "search-results-message";
+    searchResultsBox.appendChild(searchMessage);
+    
+    async function searchListings(searchQuery = "") {
+    try {
+        searchResultsBox.style.display = searchQuery ? "flex" : "none";
+        searchMessage.innerHTML = searchQuery ? `<p>Searching for listings...</p>` : "";
+
+        const endpoint = searchQuery
+            ? `/api/admin/manage-listings/search?search=${encodeURIComponent(searchQuery)}`
+            : "/api/admin/manage-listings";
+
+        const response = await fetch(endpoint);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            let lowerQuery = ""; 
+
+            if (searchQuery) {
+                lowerQuery = searchQuery.toLowerCase();
+
+                let totalResults = 0;
+                let results = data.data;
+
+                // Group results by tab criteria (case-insensitive)
+                let pendingPosts = results.filter(item => item.owner.toLowerCase().includes(lowerQuery) || item['item_name'].toLowerCase().includes(lowerQuery) || item['category_name'].toLowerCase().includes(lowerQuery));
+                let approvedPosts = results.filter(item => item.owner.toLowerCase().includes(lowerQuery) || item.item_name.toLowerCase().includes(lowerQuery) || item.item_category.toLowerCase().includes(lowerQuery));
+                let declinedRequests = results.filter(item => item.owner.toLowerCase().includes(lowerQuery) || item.item_name.toLowerCase().includes(lowerQuery) || item.category_name.toLowerCase().includes(lowerQuery));
+                let updateRequests = results.filter(item => item.owner.toLowerCase().includes(lowerQuery) || item.item_name.toLowerCase().includes(lowerQuery) || item.category_name.toLowerCase().includes(lowerQuery));
+
+                if (pendingPosts.length > 0) {
+                    displayTabItems("PendingPosts", pendingPosts);
+                    activateTab("PendingPosts");
+                    totalResults += pendingPosts.length;
+                }
+                else if (approvedPosts.length > 0) {
+                    displayTabItems("AllListings", approvedPosts);
+                    activateTab("AllListings");
+                    totalResults += approvedPosts.length;
+                }
+                else if (declinedRequests.length > 0) {
+                    displayTabItems("DeclinedRequests", declinedRequests);
+                    activateTab("DeclinedRequests");
+                    totalResults += declinedRequests.length;
+                }
+                else if (updateRequests.length > 0) {
+                    displayTabItems("UpdateRequests", updateRequests);
+                    activateTab("UpdateRequests");
+                    totalResults += updateRequests.length;
+                }
+
+                searchMessage.innerHTML = `<p>Showing ${totalResults} result${totalResults !== 1 ? 's' : ''} for "<strong>${searchQuery}</strong>"</p>`;
+
+                let clearButton = document.createElement("button");
+                clearButton.className = "clear-search";
+                clearButton.innerText = "Clear Search";
+                clearButton.addEventListener("click", function () {
+                    searchInput.value = "";
+                    searchListings("");
+                    document.querySelector(".tablinks.active").click();
+                });
+                searchMessage.appendChild(clearButton);
+
+                if (totalResults === 0) {
+                    searchMessage.innerHTML = `<p>No results found for "<strong>${searchQuery}</strong>"</p>`;
+                    searchMessage.appendChild(clearButton);
+                }
+            } else {
+                if (window.pendingPosts) displayTabItems("PendingPosts", window.pendingPosts);
+                if (window.approvedPosts) displayTabItems("AllListings", window.approvedPosts);
+                if (window.declinedRequests) displayTabItems("DeclinedRequests", window.declinedRequests);
+                if (window.updateRequests) displayTabItems("UpdateRequests", window.updateRequests);
+                searchResultsBox.style.display = "none";
+            }
+        } else {
+            // Handle API error response
+            document.querySelectorAll(".tab-content table tbody").forEach(tbody => {
+                tbody.innerHTML = `<tr><td colspan="4">Error loading listings. ${data.message || ''}</td></tr>`;
+            });
+            if (searchQuery) {
+                searchMessage.innerHTML = `<p>Error searching for "<strong>${searchQuery}</strong>". Please try again.</p>`;
+            }
+        }
+    } catch (error) {
+        console.error("Error searching listings:", error);
+        document.querySelectorAll(".tab-content table tbody").forEach(tbody => {
+            tbody.innerHTML = "<tr><td colspan='4'>Error loading listings. Please try again.</td></tr>";
+        });
+        if (searchQuery) {
+            searchMessage.innerHTML = `<p>Error searching for "<strong>${searchQuery}</strong>". Please try again.</p>`;
+        }
+    }
+}
+    
+    function displayTabItems(tabId, items) {
+        const tabContent = document.getElementById(tabId);
+        const tableBody = tabContent.querySelector("table tbody");
+        
+        if (!tableBody) return;
+        
+        tableBody.innerHTML = "";
+        
+        if (items.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="4">No items found.</td></tr>`;
+            return;
+        }
+        
+        items.forEach(item => {
+            const row = document.createElement("tr");
+            
+            switch(tabId) {
+                case "PendingPosts":
+                    row.innerHTML = `
+                        <td id="owner">${item.owner}</td>
+                        <td id="item-name">${item.item_name}</td>
+                        <td id="category-name">${item.category_name}</td>
+                        <td>
+                            <a href="/admin/admin-view-product/${item.item_id}">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                        </td>
+                    `;
+                    break;
+                    
+                case "AllListings":
+                    row.innerHTML = `
+                        <td>${item.item_owner}</td>
+                        <td>${item.item_name}</td>
+                        <td>${item.item_category}</td>
+                        <td>${item.item_availability}</td>
+                    `;
+                    break;
+                    
+                case "DeclinedRequests":
+                    row.innerHTML = `
+                        <td>${item.owner}</td>
+                        <td>${item.item_name}</td>
+                        <td>${item.category_name}</td>
+                    `;
+                    break;
+                    
+                case "UpdateRequests":
+                    row.innerHTML = `
+                        <td>${item.owner || 'Unknown'}</td>
+                        <td>${item.item_name || 'Unknown'}</td>
+                        <td>${item.category_name || 'Unknown'}</td>
+                        <td>
+                            <a href="/admin/admin-view-product/${item.item_id || ''}">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                        </td>
+                    `;
+                    break;
+            }
+            
+            tableBody.appendChild(row);
+        });
+    }
+    
+    function activateTab(tabId) {
+        document.querySelectorAll(".tablinks").forEach(tab => {
+            tab.classList.remove("active");
+        });
+        
+        document.querySelectorAll(".tab-content").forEach(content => {
+            content.style.display = "none";
+        });
+        
+        const targetTab = document.querySelector(`.tablinks[onclick*="${tabId}"]`);
+        if (targetTab) {
+            targetTab.classList.add("active");
+        }
+
+        const targetContent = document.getElementById(tabId);
+        if (targetContent) {
+            targetContent.style.display = "block";
+        }
+    }
+    
+    let debounceTimer;
+    searchInput.addEventListener("input", function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            searchListings(this.value.trim());
+        }, 300);
+    });
+    
+    searchInput.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            searchListings(this.value.trim());
+        }
+    });
+
+    const style = document.createElement('style');
+    style.textContent = `
+        .search-results-box {
+            display: none;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 10px 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            background-color: none;
+            border-radius: 4px;
+        }
+        
+        .search-results-message {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .search-results-message p {
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        .clear-search {
+            background-color: none;
+            color: #800020;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        
+        .clear-search:hover {
+            background-color: #800020;
+            color: #fff;
+            transition: background-color 0.2s;
+        }
+        
+        /* Media query for desktop view - position on the right side */
+        @media (min-width: 768px) {
+            .search-results-box {
+                position: absolute;
+                top: 170px; /* Adjust this value to align with your tabs */
+                right: 20px;
+                width: 350px;
+                z-index: 1;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
+    searchListings();
+});
+</script>
+
 <script src="/js/admin.js"></script>

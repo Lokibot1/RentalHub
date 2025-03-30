@@ -229,5 +229,49 @@ router.get("/declined-requests", async (req, res) => {
     });
 });
 
+/**
+ * Search listings and owners
+ * 
+ * @route GET /api/admin/manage-listings/search
+ */
+router.get("/search", async (req, res) => {
+    const searchQuery = req.query.search;
+
+    if (!searchQuery) {
+        return res.status(400).json({ success: false, message: "Search query is required." });
+    }
+
+    const sql = `
+        SELECT items.id                                       AS item_id,
+               CONCAT(users.first_name, ' ', users.last_name) AS owner,
+               items.name                                     AS item_name,
+               categories.name                                AS category_name
+        FROM items
+                 JOIN users ON items.user_id = users.id
+                 JOIN categories ON items.category_id = categories.id
+        WHERE 
+            items.is_approved = 1 AND
+            (
+                items.name LIKE ? OR 
+                CONCAT(users.first_name, ' ', users.last_name) LIKE ? OR
+                categories.name LIKE ?
+            )
+    `;
+
+    const searchParam = `%${searchQuery}%`;
+
+    db.query(sql, [searchParam, searchParam, searchParam], (err, results) => {
+        if (err) {
+            console.error("Database query error", err);
+            return res.status(500).json({ success: false, message: "Query failed." });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results
+        });
+    });
+
+});
 
 export default router
