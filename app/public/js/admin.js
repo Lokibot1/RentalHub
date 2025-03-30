@@ -63,6 +63,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const confirmNo = document.getElementById("confirm-no");
   const confirmYes = document.getElementById("confirm-yes");
   const successPopup = document.getElementById("success-popup");
+  const declineBtn = document.getElementById("decline-btn");
+  const declinePopup = document.getElementById("decline-popup");
+  const confirmNoDecline = document.getElementById("confirm-no-decline");
+  const confirmYesDecline = document.getElementById("confirm-yes-decline");
+  const successPopupDecline = document.getElementById("success-popup-decline");
 
   acceptBtn.addEventListener("click", function () {
     confirmPopup.style.display = "block";
@@ -103,9 +108,58 @@ document.addEventListener("DOMContentLoaded", function () {
       window.location.href = "/admin/manage-listings";
     }, 3000);
 
+  });
+
+    
+    // Decline button functionality
+    // When the decline button is clicked, show the decline popup
+    declineBtn.addEventListener("click", function () {
+      declinePopup.style.display = "block";
+      overlay.style.display = "block";
+      console.log("working to pre");
+    });
+
+    confirmNoDecline.addEventListener("click", function () {
+      declinePopup.style.display = "none";
+      overlay.style.display = "none";
+    });
+
+    confirmYesDecline.addEventListener("click", async function () {
+      declinePopup.style.display = "none";
+      successPopup.style.display = "block";
+
+      // Update is_approved to 0
+      const itemId = document.querySelector("[name='item_id']").value
+
+      try {
+        const response = await fetch (`http://localhost:8000/api/admin/manage-listings/decline-requests/${itemId}`, {
+          method: "PATCH",
+        });
+
+        const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Approve failed. Please try again.");
+      }
+
+      } 
+      
+      catch (error) {
+        alert(error.message);
+      }
+
+        setTimeout(function () {
+      successPopupDecline.style.display = "none";
+      overlay.style.display = "none";
+
+      window.location.href = "/admin/manage-listings";
+    }, 3000);
 
   });
 });
+
+
+
 
 // Ban User
 const banIcon = document.getElementById("ban");
@@ -193,3 +247,4 @@ function showRestoreToast(message) {
     overlay.style.display = "none"; // Hide dark background
   }, 3000);
 }
+

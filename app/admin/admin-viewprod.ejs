@@ -68,7 +68,7 @@
     </div>
 
     <!-- Confirmation Popup -->
-    <d iv id="overlay" class="overlay"></d>
+    <div id="overlay" class="overlay"></div>
     <div id="confirm-popup" class="popup">
       <div class="popup-content">
         <p class="popup-text">Are you sure you want to</p>
@@ -89,5 +89,28 @@
       </p>
     </div>
   </div>
+
+  <!-- Confirmation Popup for Decline-->
+  
+  <div id="decline-popup" class="popup">
+    <div class="popup-content">
+      <p class="popup-text">Are you sure you want to</p>
+      <p class="popup-text2">
+        <span class="highlight">decline</span> this posting request?
+      </p>
+      <div class="popup-buttons">
+        <button id="confirm-yes-decline" class="yes-btn">Yes</button>
+        <button id="confirm-no-decline" class="no-btn">No</button>
+      </div>
+    </div>
+  </div>
+  <div id="success-popup-decline" class="success-popup">
+    <p>
+      <strong>
+        Declined Sucessfully.
+      </strong>
+    </p>
+  </div>
+</div>
 
   <script src="/js/admin.js"></script>
