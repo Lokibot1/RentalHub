@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS users
     created_at     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE users ADD COLUMN password_reset_token VARCHAR(255) NULL;
+ALTER TABLE users ADD COLUMN password_reset_token VARCHAR(255) NULL AFTER password;
 
 
 -- Note: (Only for development)
@@ -96,6 +96,7 @@ CREATE TABLE IF NOT EXISTS items
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
+ALTER TABLE items ADD COLUMN is_declined TINYINT(1) NOT NULL DEFAULT 0 AFTER is_approved;
 
 -- reviews
 CREATE TABLE reviews
