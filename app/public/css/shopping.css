@@ -93,8 +93,8 @@
 }
 
 .clear-search {
-    background-color: #4A90E2;
-    color: white;
+    background-color: none;
+    color: #800020;
     border: none;
     border-radius: 5px;
     padding: 8px 15px;
@@ -104,7 +104,9 @@
 }
 
 .clear-search:hover {
-    background-color: #3A80D2;
+    background-color: #800020;
+    color: #fff;
+    transition: background-color 0.2s;
 }
 
 /* Highlight search results */

@@ -26,7 +26,7 @@
             <div class="header">
                 <h2>Transactions</h2>
                 <div class="search-bar">
-                    <input type="text" placeholder="Looking for...">
+                    <input type="text" id="search" placeholder="Looking for...">
                 </div>
             </div>
 
@@ -72,6 +72,107 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("search");
+    const transactionsTableBody = document.querySelector(".transaction-table tbody");
+    const searchContainer = document.querySelector(".search-bar"); // Parent div for search
+    const header = document.querySelector(".header"); // Reference for inserting messages
+
+    let searchMessage = document.createElement("div");
+    searchMessage.className = "search-results-message";
+    const transactionsTable = document.querySelector(".transaction-table");
+    transactionsTable.parentNode.insertBefore(searchMessage, transactionsTable);
+
+    async function fetchTransactions(searchQuery = "") {
+        try {
+            searchMessage.innerHTML = searchQuery ? `<p>Searching for results...</p>` : ""; // Update message dynamically
+            transactionsTableBody.innerHTML = "<tr><td colspan='6'>Searching for results...</td></tr>";
+
+            const endpoint = searchQuery 
+                ? `/api/admin/transactions/search?search=${encodeURIComponent(searchQuery)}`
+                : "/api/admin/transactions";
+
+            const response = await fetch(endpoint);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            transactionsTableBody.innerHTML = ""; // Clear table content
+
+            if (data.success && data.data.length > 0) {
+                displayTransactions(data.data);
+
+                searchMessage.innerHTML = searchQuery
+                    ? `<p>Showing ${data.data.length} result${data.data.length !== 1 ? 's' : ''} for "<strong>${searchQuery}</strong>"</p>`
+                    : "";
+
+                // Clear Search Button
+                if (searchQuery) {
+                    let clearButton = document.createElement("button");
+                    clearButton.className = "clear-search";
+                    clearButton.innerText = "Clear Search";
+                    clearButton.addEventListener("click", function () {
+                        searchInput.value = "";
+                        fetchTransactions("");
+                    });
+
+                    searchMessage.appendChild(clearButton);
+                }
+            } else {
+                transactionsTableBody.innerHTML = `<tr><td colspan='6'>No transactions found.</td></tr>`;
+                searchMessage.innerHTML = searchQuery ? `<p>No results found for "<strong>${searchQuery}</strong>"</p>` : "";
+            }
+        } catch (error) {
+            console.error("Error fetching transactions:", error);
+            transactionsTableBody.innerHTML = "<tr><td colspan='6'>Error loading transactions.</td></tr>";
+        }
+    }
+
+    function displayTransactions(transactions) {
+        transactionsTableBody.innerHTML = ""; // Clear previous transactions
+
+        transactions.forEach(transaction => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${transaction.transaction_id}</td>
+                <td>${transaction.item_name}</td>
+                <td>${transaction.renter}</td>
+                <td>${transaction.owner}</td>
+                <td>${formatDateRange(transaction.start_date, transaction.end_date)}</td>
+                <td>${transaction.status}</td>
+            `;
+            transactionsTableBody.appendChild(row);
+        });
+    }
+
+    function formatDateRange(startDate, endDate) {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const start = new Date(startDate).toLocaleDateString('en-US', options);
+        const end = new Date(endDate).toLocaleDateString('en-US', options);
+        return `${start} - ${end}`;
+    }
+
+    let debounceTimer;
+    searchInput.addEventListener("input", function () {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            fetchTransactions(this.value.trim());
+        }, 300); // Smooth typing experience
+    });
+
+    searchInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+            fetchTransactions(this.value.trim());
+        }
+    });
+
+    fetchTransactions();
+});
+
+</script>
 
 <script src="/js/admin.js"></script>
 
