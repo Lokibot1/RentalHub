@@ -332,12 +332,12 @@ router.patch("/return-items/:rent_transaction_id", async (req, res) => {
             const {item_id, rental_quantity} = results[0];
 
             // Delete transaction
-            const deleteRentalTransactionById = `
-                DELETE
-                FROM rental_transactions
+            const updateStatusToDone = `
+                UPDATE rental_transactions
+                SET status = 'done'
                 WHERE id = ?
             `
-            db.query(deleteRentalTransactionById, [rent_transaction_id], (err) => {
+            db.query(updateStatusToDone, [rent_transaction_id], (err) => {
                 if (err) return rollback(res, "Failed to delete rental transaction.")
 
                 // Update inventory stock

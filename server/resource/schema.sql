@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS users
     created_at     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE users ADD COLUMN password_reset_token VARCHAR(255) NULL AFTER password;
+ALTER TABLE users
+    ADD COLUMN password_reset_token VARCHAR(255) NULL AFTER password;
 
 
 -- Note: (Only for development)
@@ -96,7 +97,8 @@ CREATE TABLE IF NOT EXISTS items
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
-ALTER TABLE items ADD COLUMN is_declined TINYINT(1) NOT NULL DEFAULT 0 AFTER is_approved;
+ALTER TABLE items
+    ADD COLUMN is_declined TINYINT(1) NOT NULL DEFAULT 0 AFTER is_approved;
 
 -- reviews
 CREATE TABLE reviews
@@ -132,12 +134,15 @@ CREATE TABLE rental_transactions
     start_date       DATE                        NOT NULL,
     end_date         DATE                        NOT NULL,
     total_price      DECIMAL(10, 2)              NOT NULL,
-    rental_quantity  INT                         NOT NULL                 DEFAULT 1,
-    mode_of_delivery ENUM ('meetup', 'delivery') NOT NULL                 DEFAULT 'meetup',
+    rental_quantity  INT                         NOT NULL                         DEFAULT 1,
+    mode_of_delivery ENUM ('meetup', 'delivery') NOT NULL                         DEFAULT 'meetup',
     status           ENUM ('pending', 'ongoing', 'cancelled', 'declined') DEFAULT 'pending',
-    is_approved      TINYINT(1)                  NOT NULL                 DEFAULT 0,
-    created_at       TIMESTAMP                                            DEFAULT CURRENT_TIMESTAMP,
-    updated_at       TIMESTAMP                                            DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    is_approved      TINYINT(1)                  NOT NULL                         DEFAULT 0,
+    created_at       TIMESTAMP                                                    DEFAULT CURRENT_TIMESTAMP,
+    updated_at       TIMESTAMP                                                    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (renter_id) REFERENCES users (id),
     FOREIGN KEY (item_id) REFERENCES items (id)
 );
+
+ALTER TABLE rental_transactions
+    MODIFY COLUMN status ENUM ('pending', 'ongoing', 'cancelled', 'declined', 'done') DEFAULT 'pending';
