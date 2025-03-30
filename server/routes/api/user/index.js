@@ -10,8 +10,11 @@ const profile = await import("./profile.js").then(m => m.default);
 const myRequests = await import("./my-requests.js").then(m => m.default);
 const myItems = await import("./my-items.js").then(m => m.default);
 const archives = await import("./archives.js").then(m => m.default);
+// Utils routes
 const isOwner = await import("./utils/is-owner.js").then(m => m.default);
 const getItem = await import("./utils/get-item.js").then(m => m.default);
+const forgotPassword = await import("./utils/forgot-password.js").then(m => m.default);
+const resetPassword = await import("./utils/reset-password.js").then(m => m.default);
 
 // Route Prefix: /api/user
 router.use("/posts", posts);
@@ -23,5 +26,7 @@ router.use("/my-items", myItems);
 router.use("/archives", archives);
 router.use("/is-owner", isOwner);
 router.use("/get-item", getItem);
+router.use("/forgot-password", forgotPassword);
+router.use("/reset-password", resetPassword);
 
 export default router

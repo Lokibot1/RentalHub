@@ -35,6 +35,9 @@ CREATE TABLE IF NOT EXISTS users
     created_at     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP
 );
 
+ALTER TABLE users ADD COLUMN password_reset_token VARCHAR(255) NULL;
+
+
 -- Note: (Only for development)
 -- Password is '1234567a'
 INSERT INTO users (role_id, first_name, last_name, contact_number, email, password, social_media, address)
