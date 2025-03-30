@@ -44,11 +44,10 @@ input {
 }
 
 .btn {
-    width: 80%; 
+    width: 90%; 
     text-align: center;
     padding: 10px;
     border-radius: 25px;
-    margin-top: 15px;
     cursor: pointer;
     text-decoration: none;
     &:hover {
@@ -65,13 +64,20 @@ input {
 
 .secondary {
     display: block;
-    width: 70%;
+    width: 90%;
     border: 2px solid #a30000;
     background: transparent;
     font-weight: bold;
     margin: 25px auto;
     border-radius: 25px;
 }
+
+.secondary:hover {
+    background: #a30000;
+    color: white;
+    transition: background 0.5s ease;
+}
+
 
 .text1, .text2 {
     text-align: left;
@@ -114,8 +120,11 @@ input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
   display: none;
 }
+
 .modal {
-    display: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -147,9 +156,43 @@ input[type="password"]::-ms-clear {
     color: black;
 }
 
-.flower-icon {
+.flower {
+    width: 40px;
+    height: 40px;
+    position: relative;
     margin: 20px auto;
-}
+    background-color: transparent;
+    animation: rotateFerrisWheel 5s linear infinite; 
+    transform-origin: center; 
+  }
+  
+  .petal {
+    position: absolute;
+    width: 12px;
+    height: 20px;
+    background-color: #000;
+    border-radius: 50% 50% 50% 20%;
+    top: 50%;
+    left: 50%;
+    transform-origin: 0 0; /* Rotate petals around their original positions */
+  }
+  
+  /* Position and rotate each petal */
+  .petal:nth-child(1) { transform: translate(-50%, -50%) rotate(0deg); }
+  .petal:nth-child(2) { transform: translate(-50%, -50%) rotate(60deg); }
+  .petal:nth-child(3) { transform: translate(-50%, -50%) rotate(120deg); }
+  .petal:nth-child(4) { transform: translate(-50%, -50%) rotate(180deg); }
+  .petal:nth-child(5) { transform: translate(-50%, -50%) rotate(240deg); }
+  .petal:nth-child(6) { transform: translate(-50%, -50%) rotate(300deg); }
+  
+  @keyframes rotateFerrisWheel {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 
 .forgot-password {
     display: block;
