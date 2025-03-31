@@ -358,12 +358,14 @@
 
             if (!startDate) {
                 startDate = selectedDate;
+                localStorage.setItem("startDate", dateStr);
                 instructionText.textContent =
                     "Now select an end date for your rental.";
                 resetBtn.style.display = "block";
                 highlightSelectedDates();
             } else if (!endDate && selectedDate >= startDate) {
                 endDate = selectedDate;
+                localStorage.setItem("endDate", dateStr);
                 instructionText.textContent = `Rental period: ${formatDate(
                     startDate
                 )} to ${formatDate(endDate)}.`;
@@ -495,39 +497,18 @@
         requestBtn.addEventListener("click", function (event) {
             event.preventDefault()
 
-            // Get the selected dates from the calendar
-            const selectedDates = document.querySelectorAll(".date-cell.selected");
-            const instructionText = document.getElementById("instruction-text");
+            
+            let startDateStr = localStorage.getItem("startDate");
+            let endDateStr = localStorage.getItem("endDate");
 
-            // Check if two dates are selected
-            if (selectedDates.length < 2) {
-                showErrorMessage(
-                    "Please select both start and end dates for your rental period."
-                );
+            if (!startDateStr || !endDateStr) {
+                showErrorMessage("Please select both start and end dates.");
                 return;
             }
 
-            // Get the actual dates
-            const startDateStr = selectedDates[0].dataset.date;
-            const endDateStr = selectedDates[1].dataset.date;
             startDate = new Date(startDateStr);
             endDate = new Date(endDateStr);
 
-            // Check if dates are in proper order
-            if (endDate < startDate) {
-                showErrorMessage("End date cannot be before start date.");
-                return;
-            }
-
-            // Check if delivery method is selected
-            if (!selectedDeliveryMethod) {
-                showErrorMessage(
-                    "Please select a mode of delivery (Meet Up or Delivery)."
-                );
-                return;
-            }
-
-            // If all checks pass, show confirmation modal
             showConfirmationModal(startDate, endDate, selectedDeliveryMethod);
         });
 
