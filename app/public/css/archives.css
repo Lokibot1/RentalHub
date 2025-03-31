@@ -1002,3 +1002,63 @@ nav button {
   color:  #666666;
   font-size: 17px ;
 }
+
+/* Toggle Switch */
+.toggle-wrapper {
+  display: flex;
+  justify-content: start;
+}
+
+.toggle-container {
+  display: flex;
+  background-color: #12263f;
+  border-radius: 30px;
+  padding: 5px;
+  width: 200px; 
+  height: 50px;
+  position: relative;
+  cursor: pointer;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toggle-btn {
+  flex: 1;
+  border: none;
+  border-radius: 35px;
+  background: none;
+  color: white;
+  font-weight: bold;
+  font-size: 18px; 
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+.toggle-slider {
+  position: absolute;
+  width: 48%;
+  height: 40px;
+  background: white;
+  border-radius: 35px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.toggle-container.active .toggle-slider {
+  transform: translateX(100%);
+}
+
+/* General Box Styling */
+.content-box {
+  width: 100%;
+  text-align: left;
+  padding: 20px;
+}
+.contemt-wrapper {
+  padding: 20px;
+}
+.review-header{
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
