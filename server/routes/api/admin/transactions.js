@@ -7,7 +7,7 @@ const router = express.Router();
 /**
  * Get transactions data
  *
- * @route POST /api/admin/transactions
+ * @route GET /api/admin/transactions
  */
 router.get("/", async (req, res) => {
     const sql = `
@@ -61,12 +61,13 @@ router.get("/search", async (req, res) => {
                CONCAT(owner.first_name, ' ', owner.last_name)   AS owner,
                status
         FROM rental_transactions
-        JOIN items ON items.id = rental_transactions.item_id
-        JOIN users AS renter ON renter.id = rental_transactions.renter_id
-        JOIN users AS owner ON owner.id = items.user_id
+                 JOIN items ON items.id = rental_transactions.item_id
+                 JOIN users AS renter ON renter.id = rental_transactions.renter_id
+                 JOIN users AS owner ON owner.id = items.user_id
         WHERE rental_transactions.is_approved = 1
-        AND (rental_transactions.status = 'ongoing' OR rental_transactions.status = 'done')
-        AND (items.name LIKE ? OR renter.first_name LIKE ? OR renter.last_name LIKE ? OR owner.first_name LIKE ? OR owner.last_name LIKE ?)
+          AND (rental_transactions.status = 'ongoing' OR rental_transactions.status = 'done')
+          AND (items.name LIKE ? OR renter.first_name LIKE ? OR renter.last_name LIKE ? OR owner.first_name LIKE ? OR
+               owner.last_name LIKE ?)
     `;
 
     const params = Array(5).fill(`%${searchQuery}%`);
