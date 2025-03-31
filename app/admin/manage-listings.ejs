@@ -24,9 +24,6 @@
     <div class="content">
         <div class="header">
             <h1>Listing Management</h1>
-            <div class="search-bar">
-                <input type="text" placeholder="Looking for...">
-            </div>
         </div>
 
         <!--Tab Headings-->
@@ -46,26 +43,28 @@
 
             <!--Tab Content-->
 
-            <!--User List-->
-            <div id="PendingPosts" class="tab-content">
-                <div class="user-table">
-                    <table>
-                        <thead>
+        <!-- Pending Posts -->
+        <div id="PendingPosts" class="tab-content">
+            <div class="search-bar">
+                <input type="text" id="searchPendingPosts" placeholder="Search Pending Posts...">
+            </div>
+            <div class="user-table">
+                <table>
+                    <thead>
                         <tr>
                             <th>Owner</th>
                             <th>Item Name</th>
                             <th>Category</th>
                             <th>Action</th>
                         </tr>
-                        </thead>
-
-                        <tbody>
+                    </thead>
+                    <tbody id="pendingPostsTable">
                         <% if (pendingPosts.length > 0) { %>
                             <% pendingPosts.forEach(function(item) { %>
                                 <tr>
-                                    <td id="owner"><%= item.owner %></td>
-                                    <td id="item-name"><%= item.item_name %></td>
-                                    <td id="category-name"><%= item.category_name %></td>
+                                    <td><%= item.owner %></td>
+                                    <td><%= item.item_name %></td>
+                                    <td><%= item.category_name %></td>
                                     <td>
                                         <a href="/admin/admin-view-product/<%= item.item_id %>">
                                             <i class="fa-solid fa-eye"></i>
@@ -74,29 +73,29 @@
                                 </tr>
                             <% }); %>
                         <% } else { %>
-                            <tr>
-                                <td colspan="4">No pending posts available.</td>
-                            </tr>
+                            <tr><td colspan="4">No pending posts available.</td></tr>
                         <% } %>
-                        </tbody>
-                    </table>
-
-                </div>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <!--All Listings-->
-            <div id="AllListings" class="tab-content" style="display: none">
-                <div class="user-table">
-                    <table>
-                        <thead>
+        <!-- All Listings -->
+        <div id="AllListings" class="tab-content" style="display: none">
+            <div class="search-bar">
+                <input type="text" id="searchAllListings" placeholder="Search All Listings...">
+            </div>
+            <div class="user-table">
+                <table>
+                    <thead>
                         <tr>
                             <th>Owner</th>
                             <th>Item Name</th>
                             <th>Category</th>
                             <th>Item Availability</th>
                         </tr>
-                        </thead>
-                        <tbody>
+                    </thead>
+                    <tbody id="allListingsTable">
                         <% if (approvedPosts.length > 0) { %>
                             <% approvedPosts.forEach(function(post) { %>
                                 <tr>
@@ -107,27 +106,28 @@
                                 </tr>
                             <% }); %>
                         <% } else { %>
-                            <tr>
-                                <td colspan="4">No available posts.</td>
-                            </tr>
+                            <tr><td colspan="4">No available posts.</td></tr>
                         <% } %>
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <!--Declined-->
-            <div id="DeclinedRequests" class="tab-content" style="display: none">
-                <div class="user-table">
-                    <table>
-                        <thead>
+        <!-- Declined Requests -->
+        <div id="DeclinedRequests" class="tab-content" style="display: none">
+            <div class="search-bar">
+                <input type="text" id="searchDeclinedRequests" placeholder="Search Declined Requests...">
+            </div>
+            <div class="user-table">
+                <table>
+                    <thead>
                         <tr>
                             <th>Owner</th>
                             <th>Item Name</th>
                             <th>Category</th>
                         </tr>
-                        </thead>
-                        <tbody>
+                    </thead>
+                    <tbody id="declinedRequestsTable">
                         <% if (declinedRequests.length > 0) { %>
                             <% declinedRequests.forEach(function(item) { %>
                                 <tr>
@@ -137,45 +137,100 @@
                                 </tr>
                             <% }); %>
                         <% } else { %>
-                            <tr>
-                                <td colspan="4">No available declined requests.</td>
-                            </tr>
+                            <tr><td colspan="3">No available declined requests.</td></tr>
                         <% } %>
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
-
-            <!--Update-->
-            <div id="UpdateRequests" class="tab-content" style="display: none">
-                <div class="user-table">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Owner</th>
-                            <th>Item Name</th>
-                            <th>Category</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>First Name M. Last Name</td>
-                            <td>Item Name</td>
-                            <td>Category</td>
-                            <td>
-                                <a href="/admin/admin-view-product">
-                                    <i class="fa-solid fa-eye"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
         </div>
+
+<!-- Update Requests -->
+<div id="UpdateRequests" class="tab-content" style="display: none">
+    <div class="search-bar">
+        <input type="text" id="searchUpdateRequests" placeholder="Search Update Requests...">
+    </div>
+    <div class="user-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Owner</th>
+                    <th>Item Name</th>
+                    <th>Category</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="updateRequestsTable">
+                <tr>
+                    <td>First Name M. Last Name</td>
+                    <td>Item Name</td>
+                    <td>Category</td>
+                    <td>
+                        <a href="/admin/admin-view-product">
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    function filterTable(inputId, tableId) {
+        const input = document.getElementById(inputId);
+        const filter = input.value.toLowerCase();
+        const table = document.getElementById(tableId);
+        const rows = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) { // Skip table header
+            let row = rows[i];
+            let textContent = row.textContent || row.innerText;
+
+            if (textContent.toLowerCase().includes(filter)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        }
+    }
+
+    function searchListingsLocally(searchQuery) {
+    const items = [...document.querySelectorAll(".listing-item")]; // Assuming each listing has a class `listing-item`
+    
+    searchQuery = searchQuery.trim().toLowerCase(); // Normalize input
+
+    items.forEach(item => {
+        const itemName = item.querySelector(".item-name").textContent.toLowerCase();
+        const ownerName = item.querySelector(".owner-name").textContent.toLowerCase();
+        const categoryName = item.querySelector(".category-name").textContent.toLowerCase();
+
+        const isMatch = [itemName, ownerName, categoryName].some(field => field.includes(searchQuery));
+
+        item.style.display = isMatch ? "" : "none"; // Hide non-matching items
+    });
+}
+
+
+    // Attach event listeners to each search input
+    document.getElementById("searchPendingPosts").addEventListener("keyup", function () {
+        filterTable("searchPendingPosts", "pendingPostsTable");
+    });
+
+    document.getElementById("searchAllListings").addEventListener("keyup", function () {
+        filterTable("searchAllListings", "allListingsTable");
+    });
+
+    document.getElementById("searchDeclinedRequests").addEventListener("keyup", function () {
+        filterTable("searchDeclinedRequests", "declinedRequestsTable");
+    });
+
+    document.getElementById("searchUpdateRequests").addEventListener("keyup", function () {
+        filterTable("searchUpdateRequests", "updateRequestsTable");
+    });
+});
+
+</script>
 
 <script src="/js/admin.js"></script>
