@@ -1057,7 +1057,7 @@ nav button {
 .contemt-wrapper {
   padding: 20px;
 }
-.review-header{
+.review-header, .item-rate{
   display: flex;
   align-items: center;
   gap: 20px;
