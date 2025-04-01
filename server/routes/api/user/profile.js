@@ -200,7 +200,8 @@ router.get("/reviews/:user_id", async (req, res) => {
                CONCAT(first_name, ' ', last_name) AS renter,
                rating                             AS stars,
                review_text,
-               items.name                         AS item_name
+               items.name                         AS item_name,
+               location
         FROM reviews
                  JOIN items ON reviews.item_id = items.id
                  JOIN users ON items.user_id = users.id
