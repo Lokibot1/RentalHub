@@ -192,8 +192,8 @@ router.patch("/return-items/:rent_transaction_id", async (req, res) => {
 
             // Save reviews and star rating
             const createReviewAndStarRatingSql = `
-                INSERT INTO reviews(item_id, user_id, rating, review_text)
-                    VALUE (?, ?, ?, ?)
+                INSERT INTO reviews(item_id, user_id, rating, review_text, role)
+                    VALUE (?, ?, ?, ?, 'renter')
             `
             db.query(createReviewAndStarRatingSql, [item_id, user.id, stars, description], (err) => {
                 if (err) return rollback(res, "Failed to insert reviews.")
