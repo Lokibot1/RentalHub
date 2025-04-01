@@ -114,10 +114,8 @@ CREATE TABLE reviews
 );
 
 ALTER TABLE reviews
-    ADD COLUMN is_renter_submit_review TINYINT(1) NOT NULL DEFAULT 0 AFTER review_text;
+    ADD COLUMN role ENUM ('owner', 'renter') NOT NULL DEFAULT 'owner' AFTER user_id;
 
-ALTER TABLE reviews
-    ADD COLUMN is_owner_submit_review TINYINT(1) NOT NULL DEFAULT 0 AFTER is_renter_submit_review;
 
 -- inventory
 CREATE TABLE inventory
@@ -152,3 +150,8 @@ CREATE TABLE rental_transactions
 ALTER TABLE rental_transactions
     MODIFY COLUMN status ENUM ('pending', 'ongoing', 'cancelled', 'declined', 'done') DEFAULT 'pending';
 
+ALTER TABLE rental_transactions
+    ADD COLUMN is_renter_submit_review TINYINT(1) NOT NULL DEFAULT 0 AFTER status;
+
+ALTER TABLE rental_transactions
+    ADD COLUMN is_owner_submit_review TINYINT(1) NOT NULL DEFAULT 0 AFTER is_renter_submit_review;

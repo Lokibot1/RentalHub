@@ -359,7 +359,7 @@
             const rentTransactionId = this.dataId
 
             try {
-                await fetch(`http://localhost:8000/api/user/my-items/return-items/${rentTransactionId}`, {
+                await fetch(`http://localhost:8000/api/user/my-requests/return-items/${rentTransactionId}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

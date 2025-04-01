@@ -1,6 +1,6 @@
 import express from "express"
 import jwt from "jsonwebtoken"
-import { db } from "../../../configs/db.js"
+import {db} from "../../../configs/db.js"
 
 const router = express.Router()
 
@@ -11,15 +11,15 @@ const router = express.Router()
  * @route GET /api/user/my-items/pending/:user_id
  */
 router.get("/pending/:user_id", async (req, res) => {
-    const { user_id } = req.params
+    const {user_id} = req.params
 
     const sql = `
-        SELECT items.id                                       AS product_id,
-               items.name                                     AS product_name,
-               items.price                                    AS product_price,
-               items.file_path                                AS product_image,
-               items.location                                 AS owner_location,
-               inventory.stock_quantity                       AS product_quantity
+        SELECT items.id                 AS product_id,
+               items.name               AS product_name,
+               items.price              AS product_price,
+               items.file_path          AS product_image,
+               items.location           AS owner_location,
+               inventory.stock_quantity AS product_quantity
         FROM items
                  JOIN users ON items.user_id = users.id
                  JOIN inventory ON inventory.item_id = items.id
@@ -47,7 +47,7 @@ router.get("/pending/:user_id", async (req, res) => {
  * @route GET /api/user/my-items/approved/:user_id
  */
 router.get("/approved/:user_id", async (req, res) => {
-    const { user_id } = req.params
+    const {user_id} = req.params
 
     const sql = `
         SELECT items.id                 AS item_id,
@@ -82,7 +82,7 @@ router.get("/approved/:user_id", async (req, res) => {
  * @route PATCH /api/user/my-items/archive-item/:item_id
  */
 router.patch("/archive-item/:item_id", (req, res) => {
-    const { item_id } = req.params;
+    const {item_id} = req.params;
 
     if (!item_id) {
         return res.status(400).json({success: false, message: "Missing item id"});
@@ -285,10 +285,9 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
         FROM rental_transactions
                  JOIN users ON users.id = rental_transactions.renter_id
                  JOIN items ON items.id = rental_transactions.item_id
-                 JOIN reviews ON reviews.item_id = items.id
         WHERE rental_transactions.is_approved = 1
-          AND status = 'ongoing'
-          AND is_owner_submit_review = 0
+          AND rental_transactions.status = 'ongoing'
+          AND rental_transactions.is_owner_submit_review = 0
           AND items.user_id = ?
     `
 
@@ -312,75 +311,111 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
  * @route PATCH /api/user/my-items/return-items/:rent_transaction_id
  */
 router.patch("/return-items/:rent_transaction_id", async (req, res) => {
-    const {rent_transaction_id} = req.params;
-    const {stars, description} = req.body
-    const token = req.cookies.token || '';
+    const { rent_transaction_id } = req.params;
+    const { stars, description } = req.body;
+    const token = req.cookies.token || "";
     const user = jwt.verify(token, process.env.JWT_SECRET);
 
     db.beginTransaction((err) => {
-        if (err) return res.status(500).json({success: false, message: "Transaction initiation failed."});
+        if (err)
+            return res.status(500).json({
+                success: false,
+                message: "Transaction initiation failed.",
+            });
 
-        // Get item_id and rental_quantity
+        // Get item_id, rental_quantity, and is_renter_submit_review
         const selectSql = `
-            SELECT item_id, rental_quantity
+            SELECT item_id, rental_quantity, is_renter_submit_review
             FROM rental_transactions
-            WHERE id = ? FOR
-            UPDATE
-        `
+            WHERE id = ? FOR UPDATE
+        `;
         db.query(selectSql, [rent_transaction_id], (err, results) => {
             if (err || results.length === 0) {
                 return rollback(res, "Transaction details not found.");
             }
 
-            const {item_id, rental_quantity} = results[0];
+            const { item_id, rental_quantity, is_renter_submit_review } = results[0];
 
-            // Delete transaction
-            const updateStatusToDone = `
-                UPDATE rental_transactions
-                    JOIN reviews ON reviews.item_id = rental_transactions.item_id
-                SET status                  = 'done',
-                    is_owner_submit_review = 1
-                WHERE id = ?
-            `
-            db.query(updateStatusToDone, [rent_transaction_id], (err) => {
-                if (err) return rollback(res, "Failed to delete rental transaction.")
+            // Save review and star rating
+            const createReviewAndStarRatingSql = `
+                INSERT INTO reviews(item_id, user_id, rating, review_text)
+                VALUES (?, ?, ?, ?)
+            `;
+            db.query(
+                createReviewAndStarRatingSql,
+                [item_id, user.id, stars, description],
+                (err) => {
+                    if (err) return rollback(res, "Failed to insert reviews.");
 
-                // Update inventory stock
-                const updateInventorySql = `
-                    UPDATE inventory
-                    SET stock_quantity = stock_quantity + ?
-                    WHERE item_id = ?
-                `
-                db.query(updateInventorySql, [rental_quantity, item_id], (err, results) => {
-                    if (err || results.affectedRows === 0) {
-                        return rollback(res, "Failed to update inventory.")
-                    }
+                    // Update transaction to mark owner as reviewed
+                    const updateStatusToDone = `
+                        UPDATE rental_transactions
+                        SET is_owner_submit_review = 1,
+                            status = CASE
+                                         WHEN is_renter_submit_review = 1 THEN 'done'
+                                         ELSE status
+                                     END
+                        WHERE id = ?
+                    `;
+                    db.query(updateStatusToDone, [rent_transaction_id], (err) => {
+                        if (err)
+                            return rollback(res, "Failed to update rental transactions");
 
-                    // Save reviews and star rating
-                    const createReviewAndStarRatingSql = `
-                        INSERT INTO reviews(item_id, user_id, rating, review_text)
-                            VALUE (?, ?, ?, ?)
-                    `
-                    db.query(createReviewAndStarRatingSql, [item_id, user.id, stars, description], (err) => {
-                        if (err) return rollback(res, "Failed to create reviews");
+                        // **Only update inventory if both reviews are submitted**
+                        if (is_renter_submit_review === 1) {
+                            const updateInventorySql = `
+                                UPDATE inventory
+                                SET stock_quantity = stock_quantity + ?
+                                WHERE item_id = ?
+                                  AND EXISTS (
+                                    SELECT 1
+                                    FROM rental_transactions
+                                    WHERE rental_transactions.item_id = inventory.item_id
+                                      AND rental_transactions.id = ?
+                                      AND rental_transactions.is_owner_submit_review = 1
+                                      AND rental_transactions.is_renter_submit_review = 1
+                                )
+                            `
+                            db.query(updateInventorySql, [rental_quantity, item_id, rent_transaction_id], (err, results) => {
+                                if (err || results.affectedRows === 0) {
+                                    return rollback(res, "Failed to update inventory.");
+                                }
 
-                        db.commit((err) => {
-                            if (err) return res.status(500).json({
-                                success: false,
-                                message: "Commit failed."
+                                db.commit((err) => {
+                                    if (err)
+                                        return res.status(500).json({
+                                            success: false,
+                                            message: "Commit failed.",
+                                        });
+
+                                    res.status(200).json({
+                                        success: true,
+                                        message: "Items returned, stock updated.",
+                                    });
+                                });
                             });
+                        } else {
+                            // If renter hasn't submitted a review, commit without updating inventory
+                            db.commit((err) => {
+                                if (err)
+                                    return res.status(500).json({
+                                        success: false,
+                                        message: "Commit failed.",
+                                    });
 
-                            res.status(200).json({
-                                success: true,
-                                message: 'Items returned and stock updated.'
-                            })
-                        })
-                    })
-                })
-            })
-        })
-    })
-})
+                                res.status(200).json({
+                                    success: true,
+                                    message: "Owner review submitted, waiting for renter review.",
+                                });
+                            });
+                        }
+                    });
+                }
+            );
+        });
+    });
+});
+
 
 
 export default router
