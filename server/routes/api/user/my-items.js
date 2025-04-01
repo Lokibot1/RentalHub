@@ -25,6 +25,7 @@ router.get("/pending/:user_id", async (req, res) => {
                  JOIN inventory ON inventory.item_id = items.id
         WHERE users.id = ?
           AND is_approved = 0
+          AND is_declined != 1
     `
     db.query(sql, [user_id], (err, results) => {
         if (err) {
