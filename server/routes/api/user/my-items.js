@@ -338,8 +338,8 @@ router.patch("/return-items/:rent_transaction_id", async (req, res) => {
 
             // Save review and star rating
             const createReviewAndStarRatingSql = `
-                INSERT INTO reviews(item_id, user_id, rating, review_text)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO reviews(item_id, user_id, rating, review_text, role)
+                VALUES (?, ?, ?, ?, 'owner')
             `;
             db.query(
                 createReviewAndStarRatingSql,
