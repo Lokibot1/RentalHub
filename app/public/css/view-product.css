@@ -286,14 +286,14 @@ nav button {
 .owner-details {
     display: flex;
     align-items: center;
-    gap: 90px;
+    gap: 50px;
     padding: 20px;
 }
 
 /* Profile Picture */
 .owner-details img {
-    width: 50px;
-    height: 50px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
 }
 
@@ -641,3 +641,68 @@ nav button {
 #owner-image{
     cursor: pointer;
 }
+
+/* Toggle Switch */
+.toggle-wrapper {
+    display: flex;
+    justify-content: start;
+  }
+  
+  .toggle-container {
+    display: flex;
+    background-color: #12263f;
+    border-radius: 30px;
+    padding: 10px;
+    width: 150px; 
+    height: 30px;
+    position: relative;
+    cursor: pointer;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .toggle-btn {
+    flex: 1;
+    border: none;
+    border-radius: 35px;
+    background: none;
+    color: white;
+    font-weight: bold;
+    font-size: 15px; 
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .toggle-slider {
+    position: absolute;
+    width: 45%;
+    height: 35px;
+    background: white;
+    border-radius: 35px;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .toggle-container.active .toggle-slider {
+    transform: translateX(100%);
+  }
+  
+  /* General Box Styling */
+  .content-box {
+    width: 90%;
+    text-align: left;
+    padding: 20px;
+  }
+  .contemt-wrapper {
+    padding: 20px;
+  }
+  .review-header,.item-rate{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .review-header img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
