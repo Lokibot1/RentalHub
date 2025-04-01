@@ -69,7 +69,7 @@ router.delete("/cancel/:request_id", (req, res) => {
 });
 
 /**
- * Get ongoing rent items
+ * Get RENTER ongoing transactions
  * 
  * @route GET /api/user/my-requests/ongoing/:user_id
  */
@@ -87,8 +87,10 @@ router.get("/ongoing/:user_id", async (req, res) => {
         FROM rental_transactions
                  JOIN items ON items.id = rental_transactions.item_id
                  JOIN users ON users.id = items.user_id
+                JOIN reviews ON reviews.item_id = items.id
         WHERE rental_transactions.is_approved = 1
           AND status = 'ongoing'
+          AND reviews.is_renter_submit_review = 0
           AND rental_transactions.renter_id = ?
     `
 

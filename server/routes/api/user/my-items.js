@@ -265,7 +265,7 @@ function rollback(res, message) {
 
 
 /**
- * Get ongoing transactions
+ * Get OWNER ongoing transactions
  *
  * @route GET /api/user/my-items/ongoing-transactions/:user_id
  */
@@ -285,8 +285,10 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
         FROM rental_transactions
                  JOIN users ON users.id = rental_transactions.renter_id
                  JOIN items ON items.id = rental_transactions.item_id
+                 JOIN reviews ON reviews.item_id = items.id
         WHERE rental_transactions.is_approved = 1
           AND status = 'ongoing'
+          AND is_owner_submit_review = 0
           AND items.user_id = ?
     `
 
@@ -335,7 +337,9 @@ router.patch("/return-items/:rent_transaction_id", async (req, res) => {
             // Delete transaction
             const updateStatusToDone = `
                 UPDATE rental_transactions
-                SET status = 'done'
+                    JOIN reviews ON reviews.item_id = rental_transactions.item_id
+                SET status                  = 'done',
+                    is_owner_submit_review = 1
                 WHERE id = ?
             `
             db.query(updateStatusToDone, [rent_transaction_id], (err) => {

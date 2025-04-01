@@ -113,6 +113,11 @@ CREATE TABLE reviews
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
+ALTER TABLE reviews
+    ADD COLUMN is_renter_submit_review TINYINT(1) NOT NULL DEFAULT 0 AFTER review_text;
+
+ALTER TABLE reviews
+    ADD COLUMN is_owner_submit_review TINYINT(1) NOT NULL DEFAULT 0 AFTER is_renter_submit_review;
 
 -- inventory
 CREATE TABLE inventory
@@ -146,3 +151,4 @@ CREATE TABLE rental_transactions
 
 ALTER TABLE rental_transactions
     MODIFY COLUMN status ENUM ('pending', 'ongoing', 'cancelled', 'declined', 'done') DEFAULT 'pending';
+
