@@ -152,9 +152,6 @@ router.get("/:user_id", async (req, res) => {
 });
 
 
-
-
-
 /**
  * Update Profile
  * @route POST /api/user/profile/update
@@ -186,6 +183,43 @@ router.post("/update", async (req, res) => {
         });
     });
 });
+
+
+/**
+ * Get Review for Owner or Renter
+ *
+ * @route GET /api/user/profile/reviews/:user_id
+ */
+router.get("/reviews/:user_id", async (req, res) => {
+    const { user_id } = req.params
+    const { role } = req.query
+
+    const sql = `
+        SELECT reviews.id                         AS id,
+               profile_image,
+               CONCAT(first_name, ' ', last_name) AS renter,
+               rating                             AS stars,
+               review_text,
+               items.name                         AS item_name
+        FROM reviews
+                 JOIN items ON reviews.item_id = items.id
+                 JOIN users ON items.user_id = users.id
+        WHERE users.id = ?
+          AND reviews.role = ?
+    `
+
+    db.query(sql, [user_id, role], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({ success: false, message: "Query failed." });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results
+        })
+    })
+})
 
 
 export default router
