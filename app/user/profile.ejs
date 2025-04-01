@@ -231,6 +231,85 @@
       });
     });
 
+    // Get Stars Function
+    function generateReviewStars(rating) {
+      let stars = "";
+      for (let i = 1; i <= rating; i++) {
+        stars += "⭐"
+      }
+      return stars;
+    }
+    // Fetch and display the owner rating
+    document.addEventListener("DOMContentLoaded", function () {
+      const renterBtn = document.getElementById("renterBtn");
+      const ownerBtn = document.getElementById("ownerBtn");
+      const renterContent = document.getElementById("renterContent");
+      const ownerContent = document.getElementById("ownerContent");
+      const userId = "<%= userProfile.id %>"; 
+
+      async function fetchReviews(role) {
+          try {
+              const response = await fetch(`http://localhost:8000/api/user/profile/reviews/${userId}?role=${role}`);
+              const data = await response.json();
+
+              if (data.success) {
+                  renderReviews(data.data, role);
+              } else {
+                  console.error("Failed to fetch reviews");
+              }
+          } catch (error) {
+              console.error("Error fetching reviews:", error);
+          }
+      }
+
+      function renderReviews(reviews, role) {
+          const contentBox = role === "renter" ? renterContent : ownerContent;
+          contentBox.innerHTML = ""; 
+
+          reviews.forEach(review => {
+              const reviewHTML = `
+                  <div class="content-wrapper">
+                      <hr>
+                      <br>
+                      <div class="review-header">
+                          <img src="/uploads/${review.profile_image}" alt="Profile Picture" class="profile-img" />
+                          <div class="header-info">
+                              <h2>${review.renter}</h2>
+                              <p>${review.location}</p>
+                          </div>
+                          
+                      </div>
+                      <br>
+                      <div class="review-content">
+                          <div class="item-rate">
+                              <span> ${generateReviewStars(review.stars)} </span>
+                              <strong><p>${review.item_name}</p></strong>
+                          </div>
+                          <p><strong>Description:</strong> ${review.review_text}</p>
+                      </div>
+                      <br>
+                      <hr>
+                  </div>`;
+              contentBox.innerHTML += reviewHTML;
+          });
+      }
+
+      renterBtn.addEventListener("click", () => {
+          renterContent.style.display = "block";
+          ownerContent.style.display = "none";
+          fetchReviews("renter");
+      });
+
+      ownerBtn.addEventListener("click", () => {
+          ownerContent.style.display = "block";
+          renterContent.style.display = "none";
+          fetchReviews("owner");
+      });
+
+      // Load renter reviews by default
+      fetchReviews("renter");
+  });
+
     //logout
     document.addEventListener("DOMContentLoaded", function () {
       const logoutLink = document.getElementById("logout");
@@ -305,5 +384,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-
-  </script>
+</script>
