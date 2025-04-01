@@ -115,8 +115,71 @@
                     <p>Items content goes here...</p>
                 </div>
                 <div id="reviews" class="tab-content">
-                    <p>Reviews content goes here...</p>
+            <h3>Reviewed As:</h3>
+            <div class="toggle-wrapper">
+              <div class="toggle-container">
+                  <button id="renterBtn" class="toggle-btn">Renter</button>
+                  <button id="ownerBtn" class="toggle-btn">Owner</button>
+                  <div class="toggle-slider"></div>
+              </div>
+          </div>
+      
+          <div id="renterContent" class="content-box">
+              <div class="content-wrapper">
+                <hr>
+                <div class="review-header">
+                  <div class="pfp">
+                    <img id="" src="" alt="Profile Picture"/>
                 </div>
+                <div class="header-info">
+                    <h4 id="profileName">
+                      <p>Name</p>
+                    </h3>
+                    <h4 id="profileLocation">
+                      <p>location</p>
+                    </h4>
+                  </div>
+            </div>
+                <div class="review-content">
+                    <div class="item-rate">
+                    <span id="owner-rating">⭐ Loading...</span>
+                     <p>Item Name</p>
+                </div>
+                    <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
+                    dolore magna aliqua.</p>
+              </div>
+              <hr>
+            </div>
+          </div>
+      
+          <div id="ownerContent" class="content-box" style="display: none">
+            <div class="content-wrapper">
+              <hr>
+                <div class="review-header">
+                  <div class="pfp">
+                    <img id="" src="" alt="Profile Picture"/>
+                </div>
+                <div class="header-info">
+                  <h4 id="profileName">
+                    <p>Name</p>
+                  </h3>
+                  <h4 id="profileLocation">
+                    <p>location</p>
+                  </h4>
+                </div>
+            </div>
+                <div class="review-content">
+                    <div class="item-rate">
+                        <span id="owner-rating">⭐ Loading...</span>
+                         <p>Item Name</p>
+                    </div>
+                    <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
+                    dolore magna aliqua.</p>
+              </div>
+              <hr>
+            </div>
+          </div>
+          </div>
             </div>
         </div>
     </div>
@@ -799,4 +862,36 @@
         qtyInput.value = newQty;
     }
 
+    
+    // Toggle between renter and owner
+document.addEventListener("DOMContentLoaded", function () {
+    const renterBtn = document.getElementById("renterBtn");
+    const ownerBtn = document.getElementById("ownerBtn");
+    const slider = document.querySelector(".toggle-slider");
+    const renterContent = document.getElementById("renterContent");
+    const ownerContent = document.getElementById("ownerContent");
+
+    // Default state: Show "For Renters" and position the slider
+    slider.style.transform = "translateX(0%)";
+    renterBtn.style.color = "#12263f";
+    ownerBtn.style.color = "white";
+    renterContent.style.display = "block"; // Show renters section
+    ownerContent.style.display = "none"; // Hide owners section
+
+    renterBtn.addEventListener("click", function () {
+        slider.style.transform = "translateX(0%)";
+        renterBtn.style.color = "#12263f";
+        ownerBtn.style.color = "white";
+        renterContent.style.display = "block"; // Show renters section
+        ownerContent.style.display = "none"; // Hide owners section
+    });
+
+    ownerBtn.addEventListener("click", function () {
+        slider.style.transform = "translateX(100%)";
+        ownerBtn.style.color = "#12263f";
+        renterBtn.style.color = "white";
+        renterContent.style.display = "none"; // Hide renters section
+        ownerContent.style.display = "block"; // Show owners section
+    });
+});
 </script>

@@ -73,7 +73,7 @@
         </div>
 
         <div id="Reviews" class="tab-content">
-          <h2>Reviews for:</h2>
+          <h2>Reviewed As:</h2>
           <div class="toggle-wrapper">
             <div class="toggle-container">
                 <button id="renterBtn" class="toggle-btn">Renter</button>
@@ -87,22 +87,33 @@
               <hr>
               <br>
                 <div class="review-header">
-                  <label for="profileImageInput">
-                    <img src="/uploads/<%= userProfile.profile_image %>" alt="Profile Picture" class="profile-img"
-                      id="profilePicture" />
-                  </label>
-                  <h2 id="profileName">
-                    <%= userProfile.fullname %>
-                  </h2>
-                </div>
-                <div class="review-content">
-                  <span id="owner-rating">⭐ Loading...</span>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua.</p>
+                    <label for="profileImageInput">
+                      <img src="/uploads/<%= userProfile.profile_image %>" alt="Profile Picture" class="profile-img"
+                        id="profilePicture" />
+                    </label>
+                    
+                  <div class="header-info">
+                    <h2 id="profileName">
+                      <p>name</p>
+                      <%= userProfile.fullname %>
+                    </h2>
+                      <h4 id="profileLocation">
+                        <p>location</p>
+                      </h4>
+                    </div>
               </div>
               <br>
-              <hr>
-            </div>
+                  <div class="review-content">
+                    <div class="item-rate">
+                      <span id="owner-rating">⭐ Loading...</span>
+                       <p>Item Name</p>
+                    </div>
+                      <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
+                      dolore magna aliqua.</p>
+                </div>
+                <br>
+                <hr>
+        </div>
         </div>
     
         <div id="ownerContent" class="content-box" style="display: none">
@@ -110,21 +121,32 @@
             <hr>
             <br>
               <div class="review-header">
-                <label for="profileImageInput">
-                  <img src="/uploads/<%= userProfile.profile_image %>" alt="Profile Picture" class="profile-img"
-                    id="profilePicture" />
-                </label>
-                <h2 id="profileName">
-                  <%= userProfile.fullname %>
-                </h2>
-              </div>
-              <div class="review-content">
-                <span id="owner-rating">⭐ Loading...</span>
-                <p>1ABC132 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-                  dolore magna aliqua.</p>
+                  <label for="profileImageInput">
+                    <img src="/uploads/<%= userProfile.profile_image %>" alt="Profile Picture" class="profile-img"
+                      id="profilePicture" />
+                  </label>
+                  
+                <div class="header-info">
+                  <h2 id="profileName">
+                    <p>name</p>
+                    <%= userProfile.fullname %>
+                  </h2>
+                    <h4 id="profileLocation">
+                      <p>location</p>
+                    </h4>
+                  </div>
             </div>
             <br>
-            <hr>
+                <div class="review-content">
+                  <div class="item-rate">
+                    <span id="owner-rating">⭐ Loading...</span>
+                     <p>Item Name</p>
+                  </div>
+                    <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
+                    dolore magna aliqua.</p>
+              </div>
+              <br>
+              <hr>
           </div>
         </div>
         </div>
