@@ -465,10 +465,26 @@
         function resetSelection() {
             startDate = null;
             endDate = null;
+            localStorage.removeItem("startDate");
+            localStorage.removeItem("endDate");
             instructionText.textContent = "Select a start date for your rental.";
             resetBtn.style.display = "none";
             highlightSelectedDates();
         }
+        
+        //Clears localStorage(start & end date) on page load
+        document.addEventListener("DOMContentLoaded", function () {
+            localStorage.removeItem("startDate");
+            localStorage.removeItem("endDate");
+            renderCalendar();
+        });
+
+        // Clear localStorage when the page is closed or refreshed
+        window.addEventListener("beforeunload", function () {
+            localStorage.removeItem("startDate");
+            localStorage.removeItem("endDate");
+        });
+
 
         prevMonthBtn.addEventListener("click", (e) => {
             e.preventDefault();
@@ -560,17 +576,25 @@
         requestBtn.addEventListener("click", function (event) {
             event.preventDefault()
 
-            
+            // Get the selected dates from the calendar
             let startDateStr = localStorage.getItem("startDate");
             let endDateStr = localStorage.getItem("endDate");
 
             if (!startDateStr || !endDateStr) {
-                showErrorMessage("Please select both start and end dates.");
+                showErrorMessage("Please select both start and end dates for your rental period.");
                 return;
             }
 
             startDate = new Date(startDateStr);
             endDate = new Date(endDateStr);
+
+            // Check if delivery method is selected
+            if (!selectedDeliveryMethod) {
+                showErrorMessage(
+                    "Please select a mode of delivery (Meet Up or Delivery)."
+                );
+                return;
+            }
 
             showConfirmationModal(startDate, endDate, selectedDeliveryMethod);
         });
