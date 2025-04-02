@@ -194,20 +194,41 @@ router.get("/reviews/:user_id", async (req, res) => {
     const { user_id } = req.params
     const { role } = req.query
 
-    const sql = `
-        SELECT reviews.id                         AS id,
-               profile_image,
-               CONCAT(first_name, ' ', last_name) AS renter,
-               rating                             AS stars,
-               review_text,
-               items.name                         AS item_name,
-               location
-        FROM reviews
-                 JOIN items ON reviews.item_id = items.id
-                 JOIN users ON items.user_id = users.id
-        WHERE users.id = ?
-          AND reviews.role = ?
-    `
+//     const sql = `
+//         SELECT reviews.id                         AS id,
+//        users_reviewer.profile_image       AS profile_image,
+//        CONCAT(users_reviewer.first_name, ' ', users_reviewer.last_name) AS renter,
+//        rating                             AS stars,
+//        review_text,
+//        items.name                         AS item_name,
+//        location
+// FROM reviews
+//        JOIN items ON reviews.item_id = items.id
+//        JOIN users AS users_owner ON reviews.item_owner_id = users_owner.id
+//        JOIN users AS users_reviewer ON reviews.reviewer_id = users_reviewer.id
+// WHERE users_reviewer.id = ?
+//        AND reviews.role = ?
+//     `
+
+const sql = `
+SELECT 
+    reviews.id AS id,
+    users_reviewer.profile_image AS profile_image,
+    CONCAT(users_reviewer.first_name, ' ', users_reviewer.last_name) AS renter,
+    reviews.rating AS stars,
+    reviews.review_text,
+    items.name AS item_name,
+    items.location AS location
+FROM reviews
+LEFT JOIN items ON reviews.item_id = items.id
+LEFT JOIN users AS users_owner ON reviews.item_owner_id = users_owner.id
+LEFT JOIN users AS users_reviewer ON reviews.reviewer_id = users_reviewer.id
+LEFT JOIN rental_transactions ON reviews.item_renter_id = rental_transactions.id
+WHERE 
+    reviews.for_user = ?
+    AND reviews.role = ?
+`
+
 
     db.query(sql, [user_id, role], (err, results) => {
         if (err) {

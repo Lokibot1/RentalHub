@@ -324,26 +324,34 @@ router.patch("/return-items/:rent_transaction_id", async (req, res) => {
             });
 
         // Get item_id, rental_quantity, and is_renter_submit_review
+        // const selectSql = `
+        //     SELECT item_id, rental_quantity, is_renter_submit_review, item_owner_id
+        //     FROM rental_transactions
+        //     WHERE id = ? FOR UPDATE
+        // `;
+
         const selectSql = `
-            SELECT item_id, rental_quantity, is_renter_submit_review
-            FROM rental_transactions
-            WHERE id = ? FOR UPDATE
-        `;
+        SELECT rt.item_id, rt.rental_quantity, i.user_id as item_owner_id, rt.renter_id, rt.is_owner_submit_review
+            FROM rental_transactions rt
+            JOIN items i ON rt.item_id = i.id
+            WHERE rt.id = ? FOR 
+            UPDATE;
+        `
         db.query(selectSql, [rent_transaction_id], (err, results) => {
             if (err || results.length === 0) {
                 return rollback(res, "Transaction details not found.");
             }
 
-            const { item_id, rental_quantity, is_renter_submit_review } = results[0];
+            const { item_id, rental_quantity, is_renter_submit_review, is_owner_submit_review, item_owner_id, renter_id } = results[0];
 
             // Save review and star rating
             const createReviewAndStarRatingSql = `
-                INSERT INTO reviews(item_id, user_id, rating, review_text, role)
-                VALUES (?, ?, ?, ?, 'owner')
+                INSERT INTO reviews(item_id, item_owner_id, reviewer_id, rating, review_text, for_user, role)
+                VALUES (?, ?, ?, ?, ?, ?, 'renter')
             `;
             db.query(
                 createReviewAndStarRatingSql,
-                [item_id, user.id, stars, description],
+                [item_id, item_owner_id, user.id, stars, description, renter_id],
                 (err) => {
                     if (err) return rollback(res, "Failed to insert reviews.");
 
@@ -361,8 +369,8 @@ router.patch("/return-items/:rent_transaction_id", async (req, res) => {
                         if (err)
                             return rollback(res, "Failed to update rental transactions");
 
-                        // **Only update inventory if both reviews are submitted**
-                        if (is_renter_submit_review === 1) {
+                        // Only update inventory if the owner has submitted a review
+                        if (is_owner_submit_review === 1) {
                             const updateInventorySql = `
                                 UPDATE inventory
                                 SET stock_quantity = stock_quantity + ?
@@ -373,20 +381,24 @@ router.patch("/return-items/:rent_transaction_id", async (req, res) => {
                                     WHERE rental_transactions.item_id = inventory.item_id
                                       AND rental_transactions.id = ?
                                       AND rental_transactions.is_owner_submit_review = 1
-                                      AND rental_transactions.is_renter_submit_review = 1
                                 )
                             `
                             db.query(updateInventorySql, [rental_quantity, item_id, rent_transaction_id], (err, results) => {
+                                console.log("Results from inventory update:", results);
+
                                 if (err || results.affectedRows === 0) {
                                     return rollback(res, "Failed to update inventory.");
                                 }
 
                                 db.commit((err) => {
-                                    if (err)
+                                    if (err) {
+                                        console.log("Commit failed:", err);
+                                    
                                         return res.status(500).json({
                                             success: false,
                                             message: "Commit failed.",
                                         });
+                                    }
 
                                     res.status(200).json({
                                         success: true,
