@@ -137,11 +137,16 @@
                                     <div class="renterDetails">
                                         <strong class="renterName"><%= item.renters_name %></strong>
                                         <strong>•</strong>
-                                        <strong class="renterLocation"><%= item.item_location %></strong>
+                                        <strong class="renterLocation"><%= item.item_location %></strong> <!-- PAKIFIX: Renter's Location dapat, pero yung kinocall item_location -->
                                     </div>
                                     <div class="itemDetails">
                                         <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
-                                        <h2 class="itemName"><%= item.item_name %></h2>
+                                        <div class="details">
+                                            <p class="itemName">Item Name:<%= item.item_name %></p>
+                                            <p class="itemLocation">Item Location:</p>
+                                            <p class="Quantity">Quantity:</p>
+                                            <p class="postedDate">Posted on:</p>
+                                        </div>
                                     </div>
                                     <div class="rentalDurationContainer">
                                         <strong class="rentalDuration"><%= formatDateRange(item.start_date, item.end_date) %></strong>
