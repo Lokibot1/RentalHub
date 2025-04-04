@@ -105,16 +105,18 @@ CREATE TABLE reviews
 (
     id          INT AUTO_INCREMENT PRIMARY KEY,
     item_id     INT NOT NULL,
-    user_id     INT NOT NULL,
+    item_owner_id INT NOT NULL,
+    reviewer_id INT NOT NULL,
+    item_renter_id INT NULL,
+    for_user INT NOT NULL,
     rating      INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
     review_text TEXT,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (item_id) REFERENCES items (id),
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (item_id) REFERENCES items (id)
 );
 
 ALTER TABLE reviews
-    ADD COLUMN role ENUM ('owner', 'renter') NOT NULL DEFAULT 'owner' AFTER user_id;
+    ADD COLUMN role ENUM ('owner', 'renter') NOT NULL DEFAULT 'owner' AFTER item_id;
 
 
 -- inventory
