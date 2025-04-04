@@ -1,5 +1,5 @@
 import express from "express"
-import { db } from "../../../configs/db.js"
+import {db} from "../../../configs/db.js"
 import jwt from "jsonwebtoken"
 import multer from 'multer'
 import path from 'path'
@@ -10,7 +10,7 @@ const storagePath = process.env.STORAGE_PATH
 
 // Ensure the directory exists
 if (!fs.existsSync(storagePath)) {
-    fs.mkdirSync(storagePath, { recursive: true });
+    fs.mkdirSync(storagePath, {recursive: true});
 }
 
 const storage = multer.diskStorage({
@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({storage: storage});
 
 /**
  * Update profile after OTP verified
@@ -31,26 +31,25 @@ const upload = multer({ storage: storage });
 router.patch("/setup", upload.single('profile_image'), async (req, res) => {
     const token = req.cookies.token || '';
     const user = jwt.verify(token, process.env.JWT_SECRET);
-    const { middle_name, suffix, social_media, region, city, barangay, address, postal_code } = req.body
+    const {middle_name, suffix, social_media, region, city, barangay, address, postal_code} = req.body
     const profile_image = req.file
 
     if (!profile_image) {
-        return res.status(400).json({ success: false, message: "File upload failed." });
+        return res.status(400).json({success: false, message: "File upload failed."});
     }
 
     const sql = `
-            UPDATE users 
-            SET 
-                middle_name = ?, 
-                suffix = ?,
-                social_media = ?, 
-                region = ?, 
-                city = ?, 
-                barangay = ?, 
-                address = ?, 
-                postal_code = ?, 
-                profile_image = ?
-            WHERE id = ?
+        UPDATE users
+        SET middle_name   = ?,
+            suffix        = ?,
+            social_media  = ?,
+            region        = ?,
+            city          = ?,
+            barangay      = ?,
+            address       = ?,
+            postal_code   = ?,
+            profile_image = ?
+        WHERE id = ?
     `
 
     db.query(sql, [
@@ -67,7 +66,7 @@ router.patch("/setup", upload.single('profile_image'), async (req, res) => {
     ], (err) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({ success: false, message: "Update failed." });
+            return res.status(500).json({success: false, message: "Update failed."});
         }
 
         res.status(200).json({
@@ -79,22 +78,21 @@ router.patch("/setup", upload.single('profile_image'), async (req, res) => {
 
 /**
  * Update profile inside user dashboard
- * 
+ *
  * @route PATCH /api/user/profile/update
  */
 router.patch("/update", async (req, res) => {
     const token = req.cookies.token || '';
     const user = jwt.verify(token, process.env.JWT_SECRET);
-    const { email, contact_number, social_media, address } = req.body
+    const {email, contact_number, social_media, address} = req.body
 
     const sql = `
-            UPDATE users 
-            SET 
-                email = ?, 
-                contact_number = ?, 
-                social_media = ?, 
-                address = ?
-            WHERE id = ?
+        UPDATE users
+        SET email          = ?,
+            contact_number = ?,
+            social_media   = ?,
+            address        = ?
+        WHERE id = ?
     `
 
     db.query(sql, [
@@ -106,7 +104,7 @@ router.patch("/update", async (req, res) => {
     ], (err) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({ success: false, message: "Update failed." });
+            return res.status(500).json({success: false, message: "Update failed."});
         }
 
         res.status(200).json({
@@ -122,26 +120,25 @@ router.patch("/update", async (req, res) => {
  * @route GET /api/user/profile/:user_id
  */
 router.get("/:user_id", async (req, res) => {
-    const { user_id } = req.params
+    const {user_id} = req.params
 
     const sql = `
-            SELECT
-                id,
-                profile_image,
-                CONCAT(first_name, ' ', middle_name, ' ', last_name) AS fullname,
-                created_at AS joined_date,
-                email,
-                contact_number,
-                social_media,
-                address
-            FROM users
-            WHERE id = ?
+        SELECT id,
+               profile_image,
+               CONCAT(first_name, ' ', middle_name, ' ', last_name) AS fullname,
+               created_at                                           AS joined_date,
+               email,
+               contact_number,
+               social_media,
+               address
+        FROM users
+        WHERE id = ?
     `
 
     db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({ success: false, message: "Query failed." });
+            return res.status(500).json({success: false, message: "Query failed."});
         }
 
         res.status(200).json({
@@ -159,22 +156,21 @@ router.get("/:user_id", async (req, res) => {
 router.post("/update", async (req, res) => {
     const token = req.cookies.token || '';
     const user = jwt.verify(token, process.env.JWT_SECRET);
-    const { middle_name, suffix, social_media, region, city, barangay, address, postal_code } = req.body
+    const {middle_name, suffix, social_media, region, city, barangay, address, postal_code} = req.body
 
     const sql = `
-            UPDATE users 
-            SET 
-                email = ?, 
-                contact_number = ?,
-                social_media = ?, 
-                address = ?, 
+        UPDATE users
+        SET email          = ?,
+            contact_number = ?,
+            social_media   = ?,
+            address        = ?,
             WHERE id = ?
     `
 
     db.query(sql, [middle_name, suffix, social_media, region, city, barangay, address, postal_code, user.id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({ success: false, message: "Update failed." });
+            return res.status(500).json({success: false, message: "Update failed."});
         }
 
         res.status(200).json({
@@ -191,49 +187,31 @@ router.post("/update", async (req, res) => {
  * @route GET /api/user/profile/reviews/:user_id
  */
 router.get("/reviews/:user_id", async (req, res) => {
-    const { user_id } = req.params
-    const { role } = req.query
+    const {user_id} = req.params
+    const {role} = req.query
 
-//     const sql = `
-//         SELECT reviews.id                         AS id,
-//        users_reviewer.profile_image       AS profile_image,
-//        CONCAT(users_reviewer.first_name, ' ', users_reviewer.last_name) AS renter,
-//        rating                             AS stars,
-//        review_text,
-//        items.name                         AS item_name,
-//        location
-// FROM reviews
-//        JOIN items ON reviews.item_id = items.id
-//        JOIN users AS users_owner ON reviews.item_owner_id = users_owner.id
-//        JOIN users AS users_reviewer ON reviews.reviewer_id = users_reviewer.id
-// WHERE users_reviewer.id = ?
-//        AND reviews.role = ?
-//     `
-
-const sql = `
-SELECT 
-    reviews.id AS id,
-    users_reviewer.profile_image AS profile_image,
-    CONCAT(users_reviewer.first_name, ' ', users_reviewer.last_name) AS renter,
-    reviews.rating AS stars,
-    reviews.review_text,
-    items.name AS item_name,
-    items.location AS location
-FROM reviews
-LEFT JOIN items ON reviews.item_id = items.id
-LEFT JOIN users AS users_owner ON reviews.item_owner_id = users_owner.id
-LEFT JOIN users AS users_reviewer ON reviews.reviewer_id = users_reviewer.id
-LEFT JOIN rental_transactions ON reviews.item_renter_id = rental_transactions.id
-WHERE 
-    reviews.for_user = ?
-    AND reviews.role = ?
-`
+    const sql = `
+        SELECT reviews.id                                                       AS id,
+               users_reviewer.profile_image                                     AS profile_image,
+               CONCAT(users_reviewer.first_name, ' ', users_reviewer.last_name) AS renter,
+               reviews.rating                                                   AS stars,
+               reviews.review_text,
+               items.name                                                       AS item_name,
+               users_reviewer.address                                           AS location
+        FROM reviews
+                 LEFT JOIN items ON reviews.item_id = items.id
+                 LEFT JOIN users AS users_owner ON reviews.item_owner_id = users_owner.id
+                 LEFT JOIN users AS users_reviewer ON reviews.reviewer_id = users_reviewer.id
+                 LEFT JOIN rental_transactions ON reviews.item_renter_id = rental_transactions.id
+        WHERE reviews.for_user = ?
+          AND reviews.role = ?
+    `
 
 
     db.query(sql, [user_id, role], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({ success: false, message: "Query failed." });
+            return res.status(500).json({success: false, message: "Query failed."});
         }
 
         res.status(200).json({

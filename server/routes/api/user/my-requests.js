@@ -176,22 +176,6 @@ router.patch("/return-items/:rent_transaction_id", async (req, res) => {
     db.beginTransaction((err) => {
         if (err) return res.status(500).json({success: false, message: "Transaction initiation failed."});
 
-        // Get item_id and rental_quantity
-        // const selectSql = `
-        //     SELECT item_id, rental_quantity
-        //     FROM rental_transactions
-        //     WHERE id = ? FOR
-        //     UPDATE
-        // `
-
-//         const selectSql = `
-//             SELECT rt.item_id, rt.rental_quantity, i.user_id as item_owner_id
-//             FROM rental_transactions rt
-//             JOIN items i ON rt.item_id = i.id
-//             WHERE rt.id = ? FOR 
-//             UPDATE
-// `
-
             const selectSql = `
             SELECT rt.item_id, rt.rental_quantity, i.user_id AS item_owner_id, rt.renter_id
             FROM rental_transactions rt
