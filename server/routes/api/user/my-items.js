@@ -126,15 +126,19 @@ router.get("/rental-requests/:user_id", async (req, res) => {
     const sql = `
         SELECT rental_transactions.id                         AS rent_transaction_id,
                CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
+               users.address                                  AS renters_address,
                items.location                                 AS item_location,
                items.file_path                                AS item_image,
                items.name                                     AS item_name,
+               inventory.stock_quantity                       AS item_quantity,
+               inventory.created_at,
                rental_transactions.start_date                 AS start_date,
                rental_transactions.end_date                   AS end_date,
                rental_transactions.mode_of_delivery           AS mode_of_delivery
         FROM rental_transactions
                  JOIN users ON users.id = rental_transactions.renter_id
                  JOIN items ON items.id = rental_transactions.item_id
+                 JOIN inventory ON inventory.item_id = items.id
         WHERE rental_transactions.is_approved = 0
           AND rental_transactions.status != 'declined'
           AND items.user_id = ?

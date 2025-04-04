@@ -128,6 +128,13 @@
 
                         return `${start} - ${end}`;
                     }
+
+                    // This function formats the date to "Month Day, Year"
+                    // Example: "April 4, 2025"
+                    function formatDate(dateString) {
+                        const options = { year: "numeric", month: "long", day: "numeric" };
+                        return new Date(dateString).toLocaleDateString("en-US", options);
+                    }
                     %>
 
                     <% if (rentalRequests.length > 0) { %>
@@ -137,15 +144,15 @@
                                     <div class="renterDetails">
                                         <strong class="renterName"><%= item.renters_name %></strong>
                                         <strong>•</strong>
-                                        <strong class="renterLocation"><%= item.item_location %></strong> <!-- PAKIFIX: Renter's Location dapat, pero yung kinocall item_location -->
+                                        <strong class="renterLocation"><%= item.renters_address %></strong> <!-- PAKIFIX: Renter's Location dapat, pero yung kinocall item_location -->
                                     </div>
                                     <div class="itemDetails">
                                         <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
                                         <div class="details">
-                                            <p class="itemName">Item Name:<%= item.item_name %></p>
-                                            <p class="itemLocation">Item Location:</p>
-                                            <p class="Quantity">Quantity:</p>
-                                            <p class="postedDate">Posted on:</p>
+                                            <p class="itemName">Item Name: <%= item.item_name %></p>
+                                            <p class="itemLocation">Item Location: <%= item.location %></p>
+                                            <p class="Quantity">Quantity: <%= item.item_quantity %></p>
+                                            <p class="postedDate">Posted on: <%= formatDate(item.created_at) %></p>
                                         </div>
                                     </div>
                                     <div class="rentalDurationContainer">

@@ -129,6 +129,8 @@ CREATE TABLE inventory
     FOREIGN KEY (item_id) REFERENCES items (id)
 );
 
+ALTER TABLE inventory
+    ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER stock_quantity;
 
 -- rental_transactions
 CREATE TABLE rental_transactions
