@@ -130,7 +130,7 @@ router.get("/rental-requests/:user_id", async (req, res) => {
                items.location                                 AS item_location,
                items.file_path                                AS item_image,
                items.name                                     AS item_name,
-               inventory.stock_quantity                       AS item_quantity,
+               rental_transactions.rental_quantity            AS item_quantity,
                inventory.created_at,
                rental_transactions.start_date                 AS start_date,
                rental_transactions.end_date                   AS end_date,
