@@ -191,13 +191,13 @@ router.get("/reviews/:user_id", async (req, res) => {
     const {role} = req.query
 
     const sql = `
-        SELECT reviews.id                                                       AS id,
-               users_reviewer.profile_image                                     AS profile_image,
-               CONCAT(users_reviewer.first_name, ' ', users_reviewer.last_name) AS renter,
-               reviews.rating                                                   AS stars,
+        SELECT reviews.id                                                                             AS id,
+               users_reviewer.profile_image                                                           AS profile_image,
+               CONCAT(users_reviewer.first_name, ' ', users_reviewer.last_name)                       AS renter,
+               reviews.rating                                                                         AS stars,
                reviews.review_text,
-               items.name                                                       AS item_name,
-               users_reviewer.address                                           AS location
+               items.name                                                                             AS item_name,
+               CONCAT(users_reviewer.address, ' ', users_reviewer.barangay, ' ', users_reviewer.city) AS location
         FROM reviews
                  LEFT JOIN items ON reviews.item_id = items.id
                  LEFT JOIN users AS users_owner ON reviews.item_owner_id = users_owner.id
