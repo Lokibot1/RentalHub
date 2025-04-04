@@ -103,15 +103,15 @@ ALTER TABLE items
 -- reviews
 CREATE TABLE reviews
 (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    item_id     INT NOT NULL,
-    item_owner_id INT NOT NULL,
-    reviewer_id INT NOT NULL,
+    id             INT AUTO_INCREMENT PRIMARY KEY,
+    item_id        INT NOT NULL,
+    item_owner_id  INT NOT NULL,
+    reviewer_id    INT NOT NULL,
     item_renter_id INT NULL,
-    for_user INT NOT NULL,
-    rating      INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
-    review_text TEXT,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    for_user       INT NOT NULL,
+    rating         INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    review_text    TEXT,
+    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (item_id) REFERENCES items (id)
 );
 
@@ -139,12 +139,12 @@ CREATE TABLE rental_transactions
     start_date       DATE                        NOT NULL,
     end_date         DATE                        NOT NULL,
     total_price      DECIMAL(10, 2)              NOT NULL,
-    rental_quantity  INT                         NOT NULL                         DEFAULT 1,
-    mode_of_delivery ENUM ('meetup', 'delivery') NOT NULL                         DEFAULT 'meetup',
+    rental_quantity  INT                         NOT NULL                 DEFAULT 1,
+    mode_of_delivery ENUM ('meetup', 'delivery') NOT NULL                 DEFAULT 'meetup',
     status           ENUM ('pending', 'ongoing', 'cancelled', 'declined') DEFAULT 'pending',
-    is_approved      TINYINT(1)                  NOT NULL                         DEFAULT 0,
-    created_at       TIMESTAMP                                                    DEFAULT CURRENT_TIMESTAMP,
-    updated_at       TIMESTAMP                                                    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    is_approved      TINYINT(1)                  NOT NULL                 DEFAULT 0,
+    created_at       TIMESTAMP                                            DEFAULT CURRENT_TIMESTAMP,
+    updated_at       TIMESTAMP                                            DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (renter_id) REFERENCES users (id),
     FOREIGN KEY (item_id) REFERENCES items (id)
 );

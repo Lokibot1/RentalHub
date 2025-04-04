@@ -323,26 +323,19 @@ router.patch("/return-items/:rent_transaction_id", async (req, res) => {
                 message: "Transaction initiation failed.",
             });
 
-        // Get item_id, rental_quantity, and is_renter_submit_review
-        // const selectSql = `
-        //     SELECT item_id, rental_quantity, is_renter_submit_review, item_owner_id
-        //     FROM rental_transactions
-        //     WHERE id = ? FOR UPDATE
-        // `;
-
         const selectSql = `
-        SELECT rt.item_id, rt.rental_quantity, i.user_id as item_owner_id, rt.renter_id, rt.is_owner_submit_review
+            SELECT rt.item_id, rt.rental_quantity, i.user_id as item_owner_id, rt.renter_id, rt.is_renter_submit_review
             FROM rental_transactions rt
             JOIN items i ON rt.item_id = i.id
-            WHERE rt.id = ? FOR 
-            UPDATE;
-        `
+            WHERE rt.id = ? FOR UPDATE;
+        `;
+
         db.query(selectSql, [rent_transaction_id], (err, results) => {
             if (err || results.length === 0) {
                 return rollback(res, "Transaction details not found.");
             }
 
-            const { item_id, rental_quantity, is_renter_submit_review, is_owner_submit_review, item_owner_id, renter_id } = results[0];
+            const { item_id, rental_quantity, item_owner_id, renter_id } = results[0];
 
             // Save review and star rating
             const createReviewAndStarRatingSql = `
@@ -360,67 +353,48 @@ router.patch("/return-items/:rent_transaction_id", async (req, res) => {
                         UPDATE rental_transactions
                         SET is_owner_submit_review = 1,
                             status = CASE
-                                         WHEN is_renter_submit_review = 1 THEN 'done'
-                                         ELSE status
-                                     END
+                                WHEN is_renter_submit_review = 1 THEN 'done'
+                                ELSE status
+                            END
                         WHERE id = ?
                     `;
                     db.query(updateStatusToDone, [rent_transaction_id], (err) => {
-                        if (err)
-                            return rollback(res, "Failed to update rental transactions");
+                        if (err) return rollback(res, "Failed to update rental transactions");
 
-                        // Only update inventory if the owner has submitted a review
-                        if (is_owner_submit_review === 1) {
-                            const updateInventorySql = `
-                                UPDATE inventory
-                                SET stock_quantity = stock_quantity + ?
-                                WHERE item_id = ?
-                                  AND EXISTS (
-                                    SELECT 1
-                                    FROM rental_transactions
-                                    WHERE rental_transactions.item_id = inventory.item_id
-                                      AND rental_transactions.id = ?
-                                      AND rental_transactions.is_owner_submit_review = 1
-                                )
-                            `
-                            db.query(updateInventorySql, [rental_quantity, item_id, rent_transaction_id], (err, results) => {
-                                console.log("Results from inventory update:", results);
+                        // Proceed to update inventory since we just set is_owner_submit_review = 1
+                        const updateInventorySql = `
+                            UPDATE inventory
+                            SET stock_quantity = stock_quantity + ?
+                            WHERE item_id = ?
+                              AND EXISTS (
+                                SELECT 1
+                                FROM rental_transactions
+                                WHERE rental_transactions.item_id = inventory.item_id
+                                  AND rental_transactions.id = ?
+                                  AND rental_transactions.is_owner_submit_review = 1
+                            )
+                        `;
 
-                                if (err || results.affectedRows === 0) {
-                                    return rollback(res, "Failed to update inventory.");
-                                }
+                        db.query(updateInventorySql, [rental_quantity, item_id, rent_transaction_id], (err, results) => {
+                            if (err || results.affectedRows === 0) {
+                                return rollback(res, "Failed to update inventory.");
+                            }
 
-                                db.commit((err) => {
-                                    if (err) {
-                                        console.log("Commit failed:", err);
-                                    
-                                        return res.status(500).json({
-                                            success: false,
-                                            message: "Commit failed.",
-                                        });
-                                    }
-
-                                    res.status(200).json({
-                                        success: true,
-                                        message: "Items returned, stock updated.",
-                                    });
-                                });
-                            });
-                        } else {
-                            // If renter hasn't submitted a review, commit without updating inventory
                             db.commit((err) => {
-                                if (err)
+                                if (err) {
+                                    console.log("Commit failed:", err);
                                     return res.status(500).json({
                                         success: false,
                                         message: "Commit failed.",
                                     });
+                                }
 
                                 res.status(200).json({
                                     success: true,
-                                    message: "Owner review submitted, waiting for renter review.",
+                                    message: "Items returned, stock updated.",
                                 });
                             });
-                        }
+                        });
                     });
                 }
             );
