@@ -12,7 +12,7 @@ const mailOptions = {
   from: process.env.MAIL_AUTH_USER,
   to: '',
   subject: 'OTP Verification',
-  text: '',
+  html: '',
 }
 
 export { transporter, mailOptions }

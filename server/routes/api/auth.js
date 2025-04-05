@@ -40,6 +40,7 @@ const registerSchema = Joi.object({
 
 /**
  * Register a new user
+ *
  * @route POST /api/auth/register
  */
 router.post("/register", async (req, res) => {
@@ -84,9 +85,33 @@ router.post("/register", async (req, res) => {
 
         // Send Email (Ensures It's Awaited)
         mailOptions.to = email
-        mailOptions.text = `Good Day from RentalHub! Thank you for registering. Your OTP is ${otp}`
+        mailOptions.html = `
+          <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <h2 style="color: #4CAF50;">RentalHub - OTP Verification</h2>
+            <p>Good Day!</p>
+            <p>Thank you for registering. Please use the following One-Time Password (OTP) to verify your account:</p>
+            <div style="font-size: 24px; font-weight: bold; letter-spacing: 4px; margin: 20px 0; color: #000;">
+              ${otp}
+            </div>
+            <hr style="border: none; border-top: 1px solid #eee;">
+            <p style="font-size: 12px; color: #999;">RentalHub Team</p>
+          </div>
+        `
 
-        await transporter.sendMail(mailOptions);
+        try {
+            await transporter.verify();
+            await transporter.sendMail(mailOptions);
+        } catch (error) {
+            console.error("First attempt failed:", error);
+            // Optional: Retry once after short delay
+            await new Promise((res) => setTimeout(res, 1000)); // 1-second delay
+            try {
+                await transporter.sendMail(mailOptions);
+            } catch (secondError) {
+                console.error("Second attempt failed:", secondError);
+                return res.status(500).json({ message: "Failed to send OTP email." });
+            }
+        }
 
         res.status(201).json({
             data: { email },
