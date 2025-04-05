@@ -422,7 +422,7 @@ nav button {
   overflow-x: hidden;
   transition: transform 0.3s ease-in-out;
   position: relative;
-  height: 400px;
+  height: 410px;
 }
 .shoppingItem:hover, .shoppingItem1:hover {
   transform: scale(1.05);
@@ -995,11 +995,13 @@ nav button {
 
 .item-price-quantity {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: start; /* optional: aligns left */
 }
 
+
 .itemQuantity {
-  color:  #666666;
+  color:  #1b2e3d;
   font-size: 17px ;
 }
 

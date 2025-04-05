@@ -159,17 +159,15 @@ document.addEventListener("DOMContentLoaded", function () {
         li.innerHTML = `
             <img src="${item.image}" alt="Item Image" class="itemImage">
             <br>
-            <hr>
-            <strong>${item.name}</strong>
+            ${item.name} 
+            <br><br>
+            ${item.location}
             <br><br>
             <div class="item-price-quantity">
-                <strong>₱ ${item.price} per day</strong>
-                <br>
+                ₱ ${item.price} per day
+                
                 <p class="item-quantity"> ${item.quantity} left</p>
             </div>
-            <br>
-            📍: ${item.location}
-            <br>
         `;
 
         li.addEventListener("click", function () {
