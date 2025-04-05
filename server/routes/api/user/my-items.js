@@ -279,8 +279,11 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
     const sql = `
         SELECT rental_transactions.id                         AS rent_transaction_id,
                CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
+               users.address                                  AS renters_address,
                items.file_path                                AS item_image,
                items.name                                     AS item_name,
+               items.location                                 AS item_location,
+               rental_transactions.created_at,
                rental_transactions.start_date                 AS start_date,
                rental_transactions.end_date                   AS end_date,
                rental_transactions.mode_of_delivery           AS mode_of_delivery,
