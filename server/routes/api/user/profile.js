@@ -163,7 +163,7 @@ router.post("/update", async (req, res) => {
         SET email          = ?,
             contact_number = ?,
             social_media   = ?,
-            address        = ?,
+            address        = ?
             WHERE id = ?
     `
 

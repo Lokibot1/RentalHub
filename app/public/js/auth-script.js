@@ -1,39 +1,3 @@
-const loginButton = document.querySelector('#login-button')
-const emailField = document.querySelector('input[name="email"]')
-const passwordField = document.querySelector('input[name="password"]')
-
-loginButton.addEventListener('click', async (event) => {
-    event.preventDefault()
-    const email = emailField.value
-    const password = passwordField.value
-
-    try {
-        const response = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Login failed. Please try again.");
-        }
-
-        // Set the token as a cookie
-        document.cookie = `token=${data.token}; path=/; secure=${location.protocol === 'https:'}; HttpOnly`;
-
-        // Get the redirect URL from the query parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const redirectUrl = urlParams.get('redirect') || '/';
-
-        // Redirect to the specified URL or homepage
-        window.location.href = redirectUrl;
-    } catch (error) {
-        alert(error.message);
-    }
-})
-
 // Form validation function
 async function signup(event) {
     event.preventDefault(); // Prevent form submission
@@ -54,7 +18,7 @@ async function signup(event) {
     try {
         const response = await fetch("/api/auth/register", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 first_name: firstName,
                 last_name: lastName,
@@ -96,3 +60,33 @@ async function signup(event) {
         console.log(error.message);
     }
 }
+
+const modal = document.getElementById("terms-modal");
+const openModal = document.getElementById("open-terms");
+const closeModal = document.querySelector(".close-btn");
+const overlay = document.getElementById("modal-overlay");
+
+openModal.addEventListener("click", function () {
+    modal.style.display = "block";
+    overlay.style.display = "block";
+});
+
+closeModal.addEventListener("click", function () {
+    modal.style.display = "none";
+    overlay.style.display = "none";
+});
+
+overlay.addEventListener("click", function () {
+    modal.style.display = "none";
+    overlay.style.display = "none";
+});
+
+document.getElementById("signup-form").addEventListener("submit", function (event) {
+    let checkbox = document.getElementById("terms-checkbox");
+
+    if (!checkbox.checked) {
+        alert("You must agree to the Terms and Conditions before creating an account.")
+        event.preventDefault(); // Prevent form submission
+    }
+})
+

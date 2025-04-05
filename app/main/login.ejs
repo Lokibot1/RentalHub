@@ -172,5 +172,39 @@ sendResetBtn.onclick = function() {
 document.getElementById("email-input").addEventListener("keypress", handleKeyPress);
 document.getElementById("login-password").addEventListener("keypress", handleKeyPress);
 
+const loginButton = document.querySelector('#login-button')
+const emailField = document.querySelector('input[name="email"]')
+const passwordField = document.querySelector('input[name="password"]')
+
+loginButton.addEventListener('click', async (event) => {
+    event.preventDefault()
+    const email = emailField.value
+    const password = passwordField.value
+
+    try {
+        const response = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({email, password}),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Login failed. Please try again.");
+        }
+
+        // Set the token as a cookie
+        document.cookie = `token=${data.token}; path=/; secure=${location.protocol === 'https:'}; HttpOnly`;
+
+        // Get the redirect URL from the query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectUrl = urlParams.get('redirect') || '/';
+
+        // Redirect to the specified URL or homepage
+        window.location.href = redirectUrl;
+    } catch (error) {
+        alert(error.message);
+    }
+})
 </script>
-<script src="/js/auth-script.js"></script>
