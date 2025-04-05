@@ -247,11 +247,12 @@
         const item = JSON.parse(localStorage.getItem("selectedItem"));
         const response = await fetch(`http://localhost:8000/api/user/view-product/posted-by/${item.id}`);
         const data = await response.json();
-        const {id, profile_image, owner_id, owner, contact_number, social_media, location} = data.data;
+        const {id, profile_image, owner_id, owner, contact_number, social_media, location, average_rating} = data.data;
 
         document.querySelector('#profile-image').src = `/uploads/${profile_image}`;
         document.querySelector('#owners-fullname').textContent = owner;
         document.querySelector('#contact-number').textContent = contact_number;
+        document.querySelector('#owner-rating').textContent = average_rating;
 
         // Update the link and text
         const socialMediaLink = document.querySelector('#social-media-link');
