@@ -138,11 +138,12 @@
                             <div class="rentalItem" style="margin-bottom: 10px;">
                                 <div class="rentalInfo">
                                     <div class="renterDetails">
-                                        <strong class="renterName"><%= item.renters_name %></strong>
-                                        <strong>•</strong>
-                                        <strong class="renterLocation"><%= item.renters_address %></strong>
+                                        <h4 class="renterName"> <%= item.renters_name %> </h4>
+                                        <strong> • </strong>
+                                        <h4 class="renterLocation"> <%= item.renters_address %> </h4>
                                     </div>
-                                    <div class="itemDetails">
+                                    <div class="middle">
+                                        <div class="itemDetails">
                                         <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
                                         <div class="details">
                                             <p class="itemName">Item Name: <%= item.item_name %></p>
@@ -151,23 +152,25 @@
                                             <p class="postedDate">Requested on: <%= formatDate(item.created_at) %></p>
                                         </div>
                                     </div>
+                                    <div class="rentalAction">
+                                        <button class="accept-btn" data-id="accept-btn-<%= item.rent_transaction_id %>">
+                                            ✓
+                                        </button>
+                                        <button class="decline-btn" data-id="decline-btn-<%= item.rent_transaction_id %>">
+                                            ✗
+                                        </button>
+                                    </div>
+                                    </div>
                                     <div class="rentalDurationContainer">
-                                        <strong class="rentalDuration"><%= formatDateRange(item.start_date, item.end_date) %></strong>
-                                        <strong>•</strong>
-                                        <strong class="MOD"><%= item.mode_of_delivery %></strong>
+                                        <h4 class="rentalDuration"><%= formatDateRange(item.start_date, item.end_date) %></h4>
+                                        <h4>•</h4>
+                                        <h4 class="MOD"><%= item.mode_of_delivery %></h4>
                                     </div>
                                 </div>
 
                                 <!-- Dark Background Overlay -->
                                 <div id="overlay" class="overlay"></div>
-                                <div class="rentalAction">
-                                    <button class="accept-btn" data-id="accept-btn-<%= item.rent_transaction_id %>">
-                                        ✓
-                                    </button>
-                                    <button class="decline-btn" data-id="decline-btn-<%= item.rent_transaction_id %>">
-                                        ✗
-                                    </button>
-                                </div>
+                                
                             </div>
 
                         <% }); %>
@@ -232,17 +235,24 @@
         <!-- Ongoing Transactions -->
         <div id="OnTransactions" class="tab-content" style="display: none">
             <div class="RentalList">
-
+                
                 <% if (ongoingTransactions.length > 0) { %>
                     <% ongoingTransactions.forEach(function(item) { %>
                         <div class="rentalItem">
                             <div class="rentalInfo">
                                 <div class="renterDetails">
-                                    <strong class="renterName"><%= item.renters_name %> - Qty: <%= item.rental_quantity %></strong>
+                                    <h4 class="renterName"> <%= item.renters_name %> </h4>
+                                    <strong> • </strong>
+                                    <h4 class="renterLocation"> <%= item.renters_address %> </h4>
                                 </div>
                                 <div class="itemDetails">
                                     <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
-                                    <h2 class="itemName"><%= item.item_name %></h2>
+                                    <div class="details">
+                                        <p class="itemName">Item Name: <%= item.item_name %></p>
+                                        <p class="itemLocation">Item Location: <%= item.item_location %></p>
+                                        <p class="Quantity">Quantity: <%= item.rental_quantity %> </p>
+                                        <p class="postedDate">Requested on: <%= formatDate(item.created_at) %></p>
+                                    </div>
                                 </div>
                                 <div class="rentalDurationContainer">
                                     <strong class="rentalDuration"><%= formatDateRange(item.start_date, item.end_date) %></strong>
