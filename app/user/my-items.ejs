@@ -76,14 +76,13 @@
                                     <hr/>
                                     <strong class="itemName"><%= item.item_name %></strong>
                                     <br/>
+                                    <strong class="itemLocation"><%= item.item_location %></strong>
                                     <div class="item-price-quantity">
-                                        <strong class="itemPrice">$<%= item.item_price %></strong>
-                                        <br/>
+                                        <strong class="itemPrice">₱ <%= item.item_price %></strong>
                                         <strong>
                                             <p class="itemQuantity"><%= item.item_quantity %> left</p>
                                         </strong>
                                     </div>
-                                    <strong class="itemLocation"><%= item.item_location %></strong>
                                 </a>
                             </div>
                         <% }); %>
