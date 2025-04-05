@@ -19,10 +19,13 @@ router.get("/posted-by/:item_id", async (req, res) => {
             CONCAT(users.first_name, ' ', users.last_name) AS owner,
             contact_number,
             social_media,
-            location
+            location,
+            AVG(reviews.rating) AS average_rating
         FROM items
                  JOIN users ON users.id = items.user_id
+                 LEFT JOIN reviews ON reviews.item_id = items.id
         WHERE items.id = ?
+        GROUP BY users.id, profile_image, users.first_name, users.last_name, contact_number, social_media, location
     `
 
     db.query(sql, [item_id], (err, results) => {
