@@ -178,7 +178,10 @@
     const profileImage = document.getElementById("profileImage");
     const uploadButton = document.getElementById("uploadButton");
 
-    uploadButton.addEventListener("click", () => fileInput.click());
+    uploadButton.addEventListener("click", (event) => {
+        event.preventDefault()
+        fileInput.click()
+    });
 
     fileInput.addEventListener("change", function (event) {
         const file = event.target.files[0];
