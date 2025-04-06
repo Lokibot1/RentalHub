@@ -5,12 +5,12 @@
     <p>Enter the 6-digit code sent to your email</p>
     <div id="timer">Time remaining: 5:00</div>
     <div class="otp-input">
-        <input type="number" min="0" max="9" required>
-        <input type="number" min="0" max="9" required>
-        <input type="number" min="0" max="9" required>
-        <input type="number" min="0" max="9" required>
-        <input type="number" min="0" max="9" required>
-        <input type="number" min="0" max="9" required>
+        <input type="number" maxlength="1" min="0" max="9" required>
+        <input type="number" maxlength="1" min="0" max="9" required>
+        <input type="number" maxlength="1" min="0" max="9" required>
+        <input type="number" maxlength="1" min="0" max="9" required>
+        <input type="number" maxlength="1" min="0" max="9" required>
+        <input type="number" maxlength="1" min="0" max="9" required>
     </div>
     <button onclick="verifyOTP()">Verify</button>
     <button id="resendButton" onclick="resendOTP()" disabled>Resend Code</button>

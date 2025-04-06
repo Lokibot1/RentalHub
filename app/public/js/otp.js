@@ -4,6 +4,48 @@ const resendButton = document.getElementById('resendButton');
 let timeLeft = 300; // 5 minutes in seconds
 let timerId;
 
+document.addEventListener('DOMContentLoaded', () => {
+    const inputs = document.querySelectorAll('.otp-input input');
+
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', () => {
+            if (input.value.length > 1) {
+                // In case someone pastes here, split and fill
+                const values = input.value.split('');
+                input.value = values[0]; // first value goes here
+                values.slice(1).forEach((val, i) => {
+                    if (inputs[index + 1 + i]) {
+                        inputs[index + 1 + i].value = val;
+                    }
+                });
+            }
+
+            // Auto-focus next
+            if (input.value && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+        });
+
+        // Handle paste (ideal place)
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pasted = (e.clipboardData || window.clipboardData).getData('text');
+            const digits = pasted.replace(/\D/g, '').split('').slice(0, inputs.length);
+
+            digits.forEach((digit, i) => {
+                inputs[i].value = digit;
+            });
+
+            // Focus last filled input
+            if (digits.length > 0) {
+                const lastInput = inputs[Math.min(digits.length, inputs.length) - 1];
+                lastInput.focus();
+            }
+        });
+    });
+});
+
+
 function startTimer() {
     timerId = setInterval(() => {
         if (timeLeft <= 0) {
