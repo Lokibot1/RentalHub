@@ -20,14 +20,17 @@ router.get('/:category_id', async (req, res) => {
                inventory.stock_quantity                       AS quantity,
                items.user_id                                  AS owner_id,
                CONCAT(users.first_name, ' ', users.last_name) AS owner,
-               profile_image
+               profile_image,
+               ROUND(AVG(reviews.rating), 2)                  AS average_rating
         FROM items
                  JOIN inventory ON inventory.item_id = items.id
                  JOIN users ON users.id = items.user_id
+                 LEFT JOIN reviews ON reviews.item_id = items.id
         WHERE items.category_id = ?
           AND items.is_approved = 1
           AND items.is_archived = 0
-    `;
+        GROUP BY items.id, inventory.stock_quantity, items.user_id, users.first_name, users.last_name, profile_image
+    `
 
     // If keyword exists, add the WHERE condition for name search
     const params = [category_id];
@@ -54,6 +57,7 @@ router.get('/:category_id', async (req, res) => {
                  owner_id,
                  owner,
                  profile_image,
+                average_rating
              }) => {
                 return {
                     id,
@@ -66,6 +70,7 @@ router.get('/:category_id', async (req, res) => {
                     owner_id,
                     owner,
                     profile_image,
+                    average_rating: average_rating ? parseFloat(average_rating).toFixed(2) : null
                 };
             });
 

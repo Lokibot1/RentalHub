@@ -97,7 +97,7 @@
                 <a id="social-media-link" href="#" target="_blank">*Social Media Link*</a>
             </p>
             <p id="location">*Location*</p>
-            <p>*Rating*</p>
+            <p id="owner-rating">*Rating*</p>
         </div>
 
         <!-- Right Side-->
@@ -252,13 +252,13 @@
         document.querySelector('#profile-image').src = `/uploads/${profile_image}`;
         document.querySelector('#owners-fullname').textContent = owner;
         document.querySelector('#contact-number').textContent = contact_number;
-        document.querySelector('#owner-rating').textContent = average_rating;
 
         // Update the link and text
         const socialMediaLink = document.querySelector('#social-media-link');
         socialMediaLink.textContent = social_media;
         socialMediaLink.href = social_media; // Set the href attribute
         document.querySelector('#location').textContent = location;
+        document.querySelector('p#owner-rating').textContent = `⭐ ${selectedItem.average_rating}`
 
         document.getElementById("myForm").style.display = "flex";
         document.getElementById("modalOverlay").style.display = "block"; // Show the overlay
@@ -293,6 +293,7 @@
     // Function to load the selected product details
     async function loadSelectedProduct() {
         selectedItem = JSON.parse(localStorage.getItem("selectedItem"));
+        console.log('selectedItem', selectedItem)
         if (selectedItem) {
             document.getElementById("product-image").src =
                 selectedItem.image || "default.jpg";
@@ -320,6 +321,7 @@
 
             document.getElementById("owner-location").textContent =
                 selectedItem.location || "Unknown Location";
+            document.querySelector('#owner-rating').textContent = `⭐ ${selectedItem.average_rating}`
         } else {
             alert("No product selected!");
             window.location.href = ".shopping";
