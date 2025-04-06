@@ -566,13 +566,13 @@
 
         // Handle delivery method selection
         meetupBtn.addEventListener("click", function () {
-            selectedDeliveryMethod = "meetup";
+            selectedDeliveryMethod = "Meetup";
             meetupBtn.classList.add("selected");
             deliveryBtn.classList.remove("selected");
         });
 
         deliveryBtn.addEventListener("click", function () {
-            selectedDeliveryMethod = "delivery";
+            selectedDeliveryMethod = "Delivery";
             deliveryBtn.classList.add("selected");
             meetupBtn.classList.remove("selected");
         });
@@ -615,7 +615,7 @@
               <p><strong>Confirm rental request for: </strong><br>
               <strong>From:</strong> ${formatDate(startDate)}<br>
               <strong>To:</strong> ${formatDate(endDate)}<br>
-              <strong>Payment Method:</strong> ${deliveryMethod}</p><br>
+              <strong>Delivery Method:</strong> ${deliveryMethod}</p><br>
               <strong>Note: Please contact the owner for the transaction settlement.</strong>
                         <h3>Terms and Condition</h3>
                             <p>

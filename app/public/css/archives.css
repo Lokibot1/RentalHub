@@ -575,7 +575,7 @@ nav button {
 .renterDetails {
   font-size: 20px;
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   width: 100%;
 }
 .itemDetails {
@@ -588,6 +588,7 @@ nav button {
 .middle{
   display: flex;
   justify-content: space-between;
+  gap: 450px;
 }
 .rentalDurationContainer {
   font-size: 20px;
