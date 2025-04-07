@@ -112,7 +112,19 @@
             </div>
             <div class="content">
                 <div id="items" class="tab-content active">
-                    <p>Items content goes here...</p>
+                    <div class="shoppingList">
+                         <div class="shoppingItem">
+                            <div class="itemImage">
+                                <img src="/images/Item1.png" alt="Item 1"/>
+                            </div>
+                            <div class="itemDetails">
+                                <h3><Strong>Name</Strong></h3>
+                                <p> <strong>₱ :</strong></p>
+                                <p> <strong>Loc:</strong> </p>
+                                <p> <Strong>Qty:</Strong> </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div id="reviews" class="tab-content">
                     <h3>Reviewed As:</h3>
@@ -924,6 +936,7 @@
         });
     });
 
+    // Fetch and display reviews
     document.addEventListener("DOMContentLoaded", () => {
         const userId = "<%= is_owner %>"; 
         const renterBtn = document.getElementById("renterBtn");
@@ -944,7 +957,7 @@
         });
 
         function fetchReviews(userId, role, container) {
-            const apiUrl = `http://localhost:8000/api/user/view-product/reviews/${userId}?role=owner`;
+            const apiUrl = `http://localhost:8000/api/user/profile/reviews/{user_id}?role=owner`;
 
             fetch(apiUrl)
                 .then((response) => response.json())
@@ -990,5 +1003,38 @@
         // Optional: load renter reviews by default
         fetchReviews(userId, "renter", renterContent);
     });
+
+    //function to get items
+    async function displayApprovedItems(userId) {
+    try {
+        const response = await fetch(`http://localhost:8000/api/user/my-items/approved/${userId}`);
+        const data = await response.json();
+
+        const shoppingList = document.querySelector('.shoppingList');
+        shoppingList.innerHTML = '';
+
+        data.forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.classList.add('shoppingItem');
+
+            itemDiv.innerHTML = `
+                <div class="itemImage">
+                    <img src="${item.image || '/images/default.png'}" alt="${item.name}" />
+                </div>
+                <div class="itemDetails">
+                    <h3><strong></strong> ${item.name}</h3>
+                    <p><strong>₱ :</strong> ${item.price}</p>
+                    <p><strong>Location:</strong> ${item.location}</p>
+                    <p><strong>Quantity:</strong> ${item.quantity}</p>
+                </div>
+            `;
+
+            shoppingList.appendChild(itemDiv);
+        });
+    } catch (error) {
+        console.error('Error fetching approved items:', error);
+    }
+}
+
 
 </script>
