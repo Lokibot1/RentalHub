@@ -111,11 +111,11 @@
                 </button>
             </div>
             <div class="content">
-                <div id="items" class="tab-content active">
-                    <div class="shoppingList">
+                <div id="items" class="tab-content active" data-user-id="<%= is_owner %>">
+                    <div id="approvedItemsList" class="shoppingList">
                          <div class="shoppingItem">
                             <div class="itemImage">
-                                <img src="/images/Item1.png" alt="Item 1"/>
+                                <img src=" " alt="Item 1"/>
                             </div>
                             <div class="itemDetails">
                                 <h3><Strong>Name</Strong></h3>
@@ -1004,37 +1004,65 @@
         fetchReviews(userId, "renter", renterContent);
     });
 
-    //function to get items
-    async function displayApprovedItems(userId) {
+//Function to get items
+document.addEventListener("DOMContentLoaded", () => {
+  const approvedItemsList = document.getElementById("approvedItemsList");
+  const pathParts = window.location.pathname.split('/');
+  const userId = document.getElementById("items").dataset.userId;  
+  console.log("User ID from URL:", userId);
+
+  async function fetchApprovedItems() {
     try {
-        const response = await fetch(`http://localhost:8000/api/user/my-items/approved/${userId}`);
-        const data = await response.json();
+      if (!userId || userId === 'false' || userId === '{user_id}') {
+        console.error("Invalid user ID detected:", userId);
+        approvedItemsList.innerHTML = "<p>Error: Unable to determine user ID</p>";
+        return;
+      }
+      
+      const response = await fetch(`http://localhost:8000/api/user/my-items/approved/{user_id}`);
+      const data = await response.json();
 
-        const shoppingList = document.querySelector('.shoppingList');
-        shoppingList.innerHTML = '';
-
-        data.forEach(item => {
-            const itemDiv = document.createElement('div');
-            itemDiv.classList.add('shoppingItem');
-
-            itemDiv.innerHTML = `
-                <div class="itemImage">
-                    <img src="${item.image || '/images/default.png'}" alt="${item.name}" />
-                </div>
-                <div class="itemDetails">
-                    <h3><strong></strong> ${item.name}</h3>
-                    <p><strong>₱ :</strong> ${item.price}</p>
-                    <p><strong>Location:</strong> ${item.location}</p>
-                    <p><strong>Quantity:</strong> ${item.quantity}</p>
-                </div>
-            `;
-
-            shoppingList.appendChild(itemDiv);
-        });
+      if (data.success) {
+        renderApprovedItems(data.data);
+      } else {
+        console.error("Failed to load approved items:", data.message || "Unknown error");
+        approvedItemsList.innerHTML = "<p>Error loading approved items</p>";
+      }
     } catch (error) {
-        console.error('Error fetching approved items:', error);
+      console.error("Error fetching approved items:", error);
+      approvedItemsList.innerHTML = "<p>Connection error while loading items</p>";
     }
-}
+  }
+
+  function renderApprovedItems(items) {
+    approvedItemsList.innerHTML = ""; // Clear existing
+
+    if (!items || items.length === 0) {
+      approvedItemsList.innerHTML = "<p>No approved items found.</p>";
+      return;
+    }
+
+    items.forEach(item => {
+      const itemHTML = `
+        <div class="shoppingItem">
+          <div class="itemImage">
+            <img src="${item.item_image || '/images/default-item.png'}" alt="${item.item_name}" />
+          </div>
+          <div class="itemDetails">
+            <h3><strong>${item.item_name}</strong></h3>
+            <p><strong>₱ :</strong> ${item.item_price}</p>
+            <p><strong>Loc:</strong> ${item.item_location}</p>
+            <p><strong>Qty:</strong> ${item.item_quantity}</p>
+          </div>
+        </div>
+      `;
+      approvedItemsList.innerHTML += itemHTML;
+    });
+  }
+  fetchApprovedItems();
+  
+});
+
 
 
 </script>
