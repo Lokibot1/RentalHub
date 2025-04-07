@@ -923,4 +923,72 @@
             ownerContent.style.display = "block"; // Show owners section
         });
     });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const userId = "<%= is_owner %>"; 
+        const renterBtn = document.getElementById("renterBtn");
+        const ownerBtn = document.getElementById("ownerBtn");
+        const renterContent = document.getElementById("renterContent");
+        const ownerContent = document.getElementById("ownerContent");
+
+        renterBtn.addEventListener("click", () => {
+            renterContent.style.display = "block";
+            ownerContent.style.display = "none";
+            fetchReviews(userId, "renter", renterContent);
+        });
+
+        ownerBtn.addEventListener("click", () => {
+            ownerContent.style.display = "block";
+            renterContent.style.display = "none";
+            fetchReviews(userId, "owner", ownerContent);
+        });
+
+        function fetchReviews(userId, role, container) {
+            const apiUrl = `http://localhost:8000/api/user/view-product/reviews/${userId}?role=owner`;
+
+            fetch(apiUrl)
+                .then((response) => response.json())
+                .then((reviews) => {
+                    container.innerHTML = ""; // Clear previous content
+
+                    if (reviews.length === 0) {
+                        container.innerHTML = `<p>No ${role=owner} reviews available.</p>`;
+                        return;
+                    }
+
+                    reviews.forEach((review) => {
+                        const reviewHTML = `
+                            <div class="content-wrapper">
+                                <hr>
+                                <div class="review-header">
+                                    <div class="pfp">
+                                        <img src="${review.reviewer_profile_pic || '/default-pic.jpg'}" alt="Profile Picture"/>
+                                    </div>
+                                    <div class="header-info">
+                                        <h4>${review.reviewer_name}</h4>
+                                        <h4>${review.reviewer_location}</h4>
+                                    </div>
+                                </div>
+                                <div class="review-content">
+                                    <div class="item-rate">
+                                        <span>⭐ ${review.rating}</span>
+                                        <p>${review.item_name}</p>
+                                    </div>
+                                    <p>${review.comment}</p>
+                                </div>
+                                <hr>
+                            </div>`;
+                        container.innerHTML += reviewHTML;
+                    });
+                })
+                .catch((error) => {
+                    container.innerHTML = `<p>Error loading ${role} reviews.</p>`;
+                    console.error("Error fetching reviews:", error);
+                });
+        }
+
+        // Optional: load renter reviews by default
+        fetchReviews(userId, "renter", renterContent);
+    });
+
 </script>
