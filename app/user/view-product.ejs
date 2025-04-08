@@ -1007,25 +1007,33 @@
 //Function to get items
 document.addEventListener("DOMContentLoaded", () => {
   const approvedItemsList = document.getElementById("approvedItemsList");
-  const pathParts = window.location.pathname.split('/');
-  const userId = document.getElementById("items").dataset.userId;  
-  console.log("User ID from URL:", userId);
+  const selectedItem = JSON.parse(localStorage.getItem("selectedItem"));
+  const userId = selectedItem?.user_id || selectedItem?.id || htmlUserId;
+  const htmlUserId = document.getElementById("items").dataset.userId;
+
+  console.log("User ID used:", userId);
 
   async function fetchApprovedItems() {
     try {
-      if (!userId || userId === 'false' || userId === '{user_id}') {
-        console.error("Invalid user ID detected:", userId);
-        approvedItemsList.innerHTML = "<p>Error: Unable to determine user ID</p>";
+      const apiUrl = `http://localhost:8000/api/user/my-items/approved/${userId}`;
+      console.log("Fetching data from:", apiUrl);
+
+      const response = await fetch(apiUrl);
+
+      if (!response.ok) {
+        console.error(`HTTP error! status: ${response.status}`);
+        approvedItemsList.innerHTML = `<p>Error: Failed to fetch approved items (HTTP ${response.status})</p>`;
         return;
       }
-      
-      const response = await fetch(`http://localhost:8000/api/user/my-items/approved/{user_id}`);
+
       const data = await response.json();
 
-      if (data.success) {
+      console.log("API response for approved items:", data);
+
+      if (data && data.success) {
         renderApprovedItems(data.data);
       } else {
-        console.error("Failed to load approved items:", data.message || "Unknown error");
+        console.error("Failed to load approved items:", data ? (data.message || "Unknown error") : "Empty response");
         approvedItemsList.innerHTML = "<p>Error loading approved items</p>";
       }
     } catch (error) {
@@ -1035,7 +1043,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderApprovedItems(items) {
-    approvedItemsList.innerHTML = ""; // Clear existing
+    approvedItemsList.innerHTML = "";
 
     if (!items || items.length === 0) {
       approvedItemsList.innerHTML = "<p>No approved items found.</p>";
@@ -1059,8 +1067,8 @@ document.addEventListener("DOMContentLoaded", () => {
       approvedItemsList.innerHTML += itemHTML;
     });
   }
+
   fetchApprovedItems();
-  
 });
 
 
