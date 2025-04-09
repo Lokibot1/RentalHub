@@ -61,6 +61,7 @@ router.get("/approved/:user_id", async (req, res) => {
         WHERE is_approved = 1
           AND is_archived = 0
           AND user_id = ?
+        ORDER BY items.created_at DESC
     `
     db.query(sql, [user_id], (err, results) => {
         if (err) {

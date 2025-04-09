@@ -192,7 +192,6 @@ router.get('/listing', checkAuth, (req, res) => {
 
 
 /**
- * TODO: Find this page and organize it
  * View Product Page
  *
  * @route GET /user/view-product/:item_id

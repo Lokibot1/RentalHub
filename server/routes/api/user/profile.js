@@ -205,9 +205,8 @@ router.get("/reviews/:user_id", async (req, res) => {
                  LEFT JOIN rental_transactions ON reviews.item_renter_id = rental_transactions.id
         WHERE reviews.for_user = ?
           AND reviews.role = ?
+        ORDER BY reviews.created_at DESC
     `
-
-
     db.query(sql, [user_id, role], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
