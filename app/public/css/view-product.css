@@ -686,25 +686,29 @@ nav button {
   .toggle-container.active .toggle-slider {
     transform: translateX(100%);
   }
-  
-  /* General Box Styling */
-  .content-box {
-    width: 90%;
+
+/* General Box Styling */
+.content-box {
+    width: 100%;
     text-align: left;
-    padding: 20px;
-  }
-  .contemt-wrapper {
-    padding: 20px;
-  }
-  .review-header,.item-rate{
+    padding: 0px;
+    margin: 0px;
+}
+  
+  .review-header, .item-rate{
+    line-height: 0.5%;
     display: flex;
     align-items: center;
     gap: 20px;
   }
+  .header-info p{
+    font-size: 13px;
+  }
   .review-header img {
-    width: 50px;
-    height: 50px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
+    object-fit: cover;
   }
 
   .shoppingList {

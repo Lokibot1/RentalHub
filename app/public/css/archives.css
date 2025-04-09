@@ -1000,7 +1000,7 @@ nav button {
   color: white;
 }
 
-.item-price-quantity {
+.item-price-quantity { 
   display: flex;
   flex-direction: column;
   align-items: start; /* optional: aligns left */
@@ -1063,9 +1063,7 @@ nav button {
   text-align: left;
   padding: 20px;
 }
-.contemt-wrapper {
-  padding: 20px;
-}
+
 .review-header, .item-rate{
   display: flex;
   align-items: center;
