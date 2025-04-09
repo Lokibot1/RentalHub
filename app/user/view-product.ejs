@@ -1034,18 +1034,20 @@
 
       items.forEach((item) => {
         const itemHTML = `
-        <div class="shoppingItem">
-          <div>
-            <img class="itemImage" src="/uploads/${item.item_image}" alt = "${item.item_name}" />
-          </div>
-          <div class="itemDetails">
-            <h3><strong>${item.item_name}</strong></h3>
-            <p><strong>₱ :</strong> ${item.item_price}</p>
-            <p><strong>Loc:</strong> ${item.item_location}</p>
-            <p><strong>Qty:</strong> ${item.item_quantity}</p>
-          </div>
-        </div>
-      `;
+          <a href="/user/view-product/${item.item_id}">
+            <div class="shoppingItem">
+              <div>
+                <img class="itemImage" src="/uploads/${item.item_image}" alt = "${item.item_name}" />
+              </div>
+              <div class="itemDetails">
+                <h3><strong>${item.item_name}</strong></h3>
+                <p><strong>₱ :</strong> ${item.item_price}</p>
+                <p><strong>Loc:</strong> ${item.item_location}</p>
+                <p><strong>Qty:</strong> ${item.item_quantity}</p>
+              </div>
+            </div>
+          </a>
+        `;
         approvedItemsList.innerHTML += itemHTML;
       });
     }
