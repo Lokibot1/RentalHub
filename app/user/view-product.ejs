@@ -976,9 +976,15 @@
     });
   }
 
-  function generateStars(starCount) {
-    return "★".repeat(starCount) + "☆".repeat(5 - starCount);
+//Get Stars
+  function generateStars(rating) {
+    let stars = "";
+    for (let i = 1; i <= rating; i++) {
+      stars += "⭐"
   }
+    return stars;
+  }
+  renterBtn.click(); //para sa autoshow ng reviews
 });
 
 
