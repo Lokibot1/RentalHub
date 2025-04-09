@@ -122,19 +122,7 @@
           id="items"
           class="tab-content active"
         >
-          <div id="approvedItemsList" class="shoppingList">
-            <div class="shoppingItem">
-              <div class="itemImage">
-                <img src=" " alt="Item 1" />
-              </div>
-              <div class="itemDetails">
-                <h3><Strong>Name</Strong></h3>
-                <p><strong>₱ :</strong></p>
-                <p><strong>Loc:</strong></p>
-                <p><Strong>Qty:</Strong></p>
-              </div>
-            </div>
-          </div>
+          <div id="approvedItemsList" class="shoppingList"> </div>
         </div>
         <div id="reviews" class="tab-content">
           <h3>Reviewed As:</h3>
@@ -971,7 +959,7 @@
 
   // Fetch and display reviews
   document.addEventListener("DOMContentLoaded", () => {
-    const userId = "<%= is_owner %>";
+    const userId = JSON.parse(localStorage.getItem("selectedItem"))?.owner_id;
     const renterBtn = document.getElementById("renterBtn");
     const ownerBtn = document.getElementById("ownerBtn");
     const renterContent = document.getElementById("renterContent");
@@ -1065,6 +1053,7 @@
         const { data, success } = await response.json();
 
         if (success) {
+            console.log("Approved items data:", data);
           renderApprovedItems(data);
         } else {
           console.error(
@@ -1091,10 +1080,8 @@
       items.forEach((item) => {
         const itemHTML = `
         <div class="shoppingItem">
-          <div class="itemImage">
-            <img src="${item.item_image || "/images/default-item.png"}" alt="${
-          item.item_name
-        }" />
+          <div>
+            <img class="itemImage" src="/uploads/${item.item_image}" alt = "${item.item_name}" />
           </div>
           <div class="itemDetails">
             <h3><strong>${item.item_name}</strong></h3>
