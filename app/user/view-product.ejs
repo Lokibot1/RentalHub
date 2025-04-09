@@ -1,629 +1,662 @@
-<link rel="stylesheet" href="/css/view-product.css"/>
-<link rel="web icon" type="png" href="/images/webicon.png">
+<link rel="stylesheet" href="/css/view-product.css" />
+<link rel="web icon" type="png" href="/images/webicon.png" />
 
 <!--Navigation Bar-->
 <nav>
-    <a href="/">
-        <div class="logo">
-            <h1>Rental <span> Hub</span></h1>
-        </div>
-    </a>
-    <ul>
-        <li><a href="/shopping/events-and-parties">Shop</a></li>
-        <li>
-            <a href="/user/listing"><img src="/images/WhiteAdd.png" class="add-icon"/></a>
-        </li>
-        <li>
-            <% if (isAuthenticated && role === 'admin' ) { %>
-                <a href='/admin/admin-dashboard'>
-                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
-                </a>
-            <% } else if (isAuthenticated && role === 'user' ) { %>
-                <a href='/user/profile'>
-                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
-                </a>
-            <% } else { %>
-                <a href="/login">
-                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
-                </a>
-            <% } %>
-        </li>
-    </ul>
+  <a href="/">
+    <div class="logo">
+      <h1>Rental <span> Hub</span></h1>
+    </div>
+  </a>
+  <ul>
+    <li><a href="/shopping/events-and-parties">Shop</a></li>
+    <li>
+      <a href="/user/listing"
+        ><img src="/images/WhiteAdd.png" class="add-icon"
+      /></a>
+    </li>
+    <li>
+      <% if (isAuthenticated && role === 'admin' ) { %>
+      <a href="/admin/admin-dashboard">
+        <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
+      </a>
+      <% } else if (isAuthenticated && role === 'user' ) { %>
+      <a href="/user/profile">
+        <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
+      </a>
+      <% } else { %>
+      <a href="/login">
+        <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
+      </a>
+      <% } %>
+    </li>
+  </ul>
 </nav>
-<br/><br/><br/><br/>
+<br /><br /><br /><br />
 
 <% if (is_owner) { %>
-    <div style="display: flex; justify-content: center;">
-        <button class="request-btn" onclick="window.location.href='/user/update-listing/<%= item_id %>'">
-            Update
-        </button>
-    </div>
+<div style="display: flex; justify-content: center">
+  <button
+    class="request-btn"
+    onclick="window.location.href='/user/update-listing/<%= item_id %>'"
+  >
+    Update
+  </button>
+</div>
 <% } %>
 <!-- Main container for product view -->
 <div class="view-product-container">
-    <!-- Left Section: Product Image + Details (Stacked) -->
-    <div class="left-section">
-        <!-- Product Image -->
-        <div class="product-image">
-            <img id="product-image" src="" alt="Product Image"/>
+  <!-- Left Section: Product Image + Details (Stacked) -->
+  <div class="left-section">
+    <!-- Product Image -->
+    <div class="product-image">
+      <img id="product-image" src="" alt="Product Image" />
+    </div>
+
+    <!-- Product Details -->
+    <div class="product-details">
+      <label>Name of product:</label>
+      <p id="product-name"></p>
+
+      <label>Price per day:</label>
+      <p id="product-price"></p>
+
+      <label>No. of Item Quantity:</label>
+      <p id="product-quantity"></p>
+
+      <label>Item Description:</label>
+      <p id="product-description"></p>
+    </div>
+
+    <!-- Owner Info -->
+    <div class="owner-info" onclick="openForm()">
+      <h2>Posted by</h2>
+      <hr />
+      <div class="owner-details">
+        <div class="pfp">
+          <img id="owner-image" src="" alt="Owner Image" />
         </div>
-
-        <!-- Product Details -->
-        <div class="product-details">
-            <label>Name of product:</label>
-            <p id="product-name"></p>
-
-            <label>Price per day:</label>
-            <p id="product-price"></p>
-
-            <label>No. of Item Quantity:</label>
-            <p id="product-quantity"></p>
-
-            <label>Item Description:</label>
-            <p id="product-description"></p>
+        <div>
+          <strong id="owner-name">Loading...</strong><br />
+          <span id="owner-location">Loading...</span> <br />
+          <span id="owner-rating">⭐ Loading...</span>
         </div>
+      </div>
+    </div>
+  </div>
 
-        <!-- Owner Info -->
-        <div class="owner-info" onclick="openForm()">
-            <h2>Posted by</h2>
-            <hr/>
-            <div class="owner-details">
+  <!-- Modal for Owner Information -->
+  <div id="modalOverlay" class="modal-overlay"></div>
+  <div id="myForm">
+    <button class="close-btn" onclick="closeForm()">X</button>
+
+    <!--Profile Details-->
+    <div class="side-profile">
+      <div class="profile">
+        <img id="profile-image" src="" alt="" />
+      </div>
+      <hr />
+      <h3 id="owners-fullname">*Owner's Name*</h3>
+      <p id="contact-number">*Contact Info*</p>
+      <p id="social-media">
+        <a id="social-media-link" href="#" target="_blank"
+          >*Social Media Link*</a
+        >
+      </p>
+      <p id="location">*Location*</p>
+      <p id="owner-rating">*Rating*</p>
+    </div>
+
+    <!-- Right Side-->
+    <div class="side-info">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(event, 'items')">
+          Items
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'reviews')">
+          Reviews
+        </button>
+      </div>
+      <div class="content">
+        <div
+          id="items"
+          class="tab-content active"
+        >
+          <div id="approvedItemsList" class="shoppingList">
+            <div class="shoppingItem">
+              <div class="itemImage">
+                <img src=" " alt="Item 1" />
+              </div>
+              <div class="itemDetails">
+                <h3><Strong>Name</Strong></h3>
+                <p><strong>₱ :</strong></p>
+                <p><strong>Loc:</strong></p>
+                <p><Strong>Qty:</Strong></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="reviews" class="tab-content">
+          <h3>Reviewed As:</h3>
+          <div class="toggle-wrapper">
+            <div class="toggle-container">
+              <button id="renterBtn" class="toggle-btn">Renter</button>
+              <button id="ownerBtn" class="toggle-btn">Owner</button>
+              <div class="toggle-slider"></div>
+            </div>
+          </div>
+
+          <div id="renterContent" class="content-box">
+            <div class="content-wrapper">
+              <hr />
+              <div class="review-header">
                 <div class="pfp">
-                    <img id="owner-image" src="" alt="Owner Image"/>
+                  <img id="" src="" alt="Profile Picture" />
                 </div>
-                <div>
-                    <strong id="owner-name">Loading...</strong><br/>
-                    <span id="owner-location">Loading...</span> <br/>
-                    <span id="owner-rating">⭐ Loading...</span>
+                <div class="header-info">
+                  <h4 id="profileName">
+                    <p>Name</p>
+                  </h4>
+                  <h4 id="profileLocation">
+                    <p>location</p>
+                  </h4>
                 </div>
+              </div>
+              <div class="review-content">
+                <div class="item-rate">
+                  <span id="owner-rating">⭐ Loading...</span>
+                  <p>Item Name</p>
+                </div>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </p>
+              </div>
+              <hr />
             </div>
+          </div>
+
+          <div id="ownerContent" class="content-box" style="display: none">
+            <div class="content-wrapper">
+              <hr />
+              <div class="review-header">
+                <div class="pfp">
+                  <img id="" src="" alt="Profile Picture" />
+                </div>
+                <div class="header-info">
+                  <h4 id="profileName">
+                    <p>Name</p>
+                  </h4>
+                  <h4 id="profileLocation">
+                    <p>location</p>
+                  </h4>
+                </div>
+              </div>
+              <div class="review-content">
+                <div class="item-rate">
+                  <span id="owner-rating">⭐ Loading...</span>
+                  <p>Item Name</p>
+                </div>
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </p>
+              </div>
+              <hr />
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 
-    <!-- Modal for Owner Information -->
-    <div id="modalOverlay" class="modal-overlay"></div>
-    <div id="myForm">
-        <button class="close-btn" onclick="closeForm()">X</button>
-
-        <!--Profile Details-->
-        <div class="side-profile">
-            <div class="profile">
-                <img id="profile-image" src="" alt=""/>
-            </div>
-            <hr/>
-            <h3 id="owners-fullname">*Owner's Name*</h3>
-            <p id="contact-number">*Contact Info*</p>
-            <p id="social-media">
-                <a id="social-media-link" href="#" target="_blank">*Social Media Link*</a>
-            </p>
-            <p id="location">*Location*</p>
-            <p id="owner-rating">*Rating*</p>
+  <!-- Right Section: Rental Options -->
+  <% if (!is_owner) { %>
+  <div class="rental-options">
+    <form id="rent-form">
+      <h3 class="pickdate" id="pickdate">Pick Date</h3>
+      <div class="calendar">
+        <div class="month">
+          <a href="#" id="prev-month" class="nav">&lt;</a>
+          <div id="month-year">February 2025</div>
+          <a href="#" id="next-month" class="nav">&gt;</a>
         </div>
-
-        <!-- Right Side-->
-        <div class="side-info">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab(event, 'items')">
-                    Items
-                </button>
-                <button class="tab-btn" onclick="switchTab(event, 'reviews')">
-                    Reviews
-                </button>
-            </div>
-            <div class="content">
-                <div id="items" class="tab-content active" data-user-id="<%= is_owner %>">
-                    <div id="approvedItemsList" class="shoppingList">
-                         <div class="shoppingItem">
-                            <div class="itemImage">
-                                <img src=" " alt="Item 1"/>
-                            </div>
-                            <div class="itemDetails">
-                                <h3><Strong>Name</Strong></h3>
-                                <p> <strong>₱ :</strong></p>
-                                <p> <strong>Loc:</strong> </p>
-                                <p> <Strong>Qty:</Strong> </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="reviews" class="tab-content">
-                    <h3>Reviewed As:</h3>
-                    <div class="toggle-wrapper">
-                        <div class="toggle-container">
-                            <button id="renterBtn" class="toggle-btn">Renter</button>
-                            <button id="ownerBtn" class="toggle-btn">Owner</button>
-                            <div class="toggle-slider"></div>
-                        </div>
-                    </div>
-
-                    <div id="renterContent" class="content-box">
-                        <div class="content-wrapper">
-                            <hr>
-                            <div class="review-header">
-                                <div class="pfp">
-                                    <img id="" src="" alt="Profile Picture"/>
-                                </div>
-                                <div class="header-info">
-                                    <h4 id="profileName">
-                                        <p>Name</p>
-                                    </h4>
-                                    <h4 id="profileLocation">
-                                        <p>location</p>
-                                    </h4>
-                                </div>
-                            </div>
-                            <div class="review-content">
-                                <div class="item-rate">
-                                    <span id="owner-rating">⭐ Loading...</span>
-                                    <p>Item Name</p>
-                                </div>
-                                <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                                    incididunt ut labore et
-                                    dolore magna aliqua.</p>
-                            </div>
-                            <hr>
-                        </div>
-                    </div>
-
-                    <div id="ownerContent" class="content-box" style="display: none">
-                        <div class="content-wrapper">
-                            <hr>
-                            <div class="review-header">
-                                <div class="pfp">
-                                    <img id="" src="" alt="Profile Picture"/>
-                                </div>
-                                <div class="header-info">
-                                    <h4 id="profileName">
-                                        <p>Name</p>
-                                    </h4>
-                                    <h4 id="profileLocation">
-                                        <p>location</p>
-                                    </h4>
-                                </div>
-                            </div>
-                            <div class="review-content">
-                                <div class="item-rate">
-                                    <span id="owner-rating">⭐ Loading...</span>
-                                    <p>Item Name</p>
-                                </div>
-                                <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                                    incididunt ut labore et
-                                    dolore magna aliqua.</p>
-                            </div>
-                            <hr>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="days">
+          <span>Sun</span>
+          <span>Mon</span>
+          <span>Tue</span>
+          <span>Wed</span>
+          <span>Thu</span>
+          <span>Fri</span>
+          <span>Sat</span>
         </div>
-    </div>
-
-    <!-- Right Section: Rental Options -->
-    <% if (!is_owner) { %>
-        <div class="rental-options">
-            <form id="rent-form">
-                <h3 class="pickdate" id="pickdate">Pick Date</h3>
-                <div class="calendar">
-                    <div class="month">
-                        <a href="#" id="prev-month" class="nav">&lt;</a>
-                        <div id="month-year">February 2025</div>
-                        <a href="#" id="next-month" class="nav">&gt;</a>
-                    </div>
-                    <div class="days">
-                        <span>Sun</span>
-                        <span>Mon</span>
-                        <span>Tue</span>
-                        <span>Wed</span>
-                        <span>Thu</span>
-                        <span>Fri</span>
-                        <span>Sat</span>
-                    </div>
-                    <div id="dates-grid" class="dates">
-                        <!-- Dates will be rendered here -->
-                    </div>
-                </div>
-                <div class="quantity-container">
-                    <strong>Qty</strong>
-                    <button type="button" onclick="changeQuantity(-1)">-</button>
-                    <input type="number" id="quantity" name="rental_quantity" value="1" min="1">
-                    <button type="button" onclick="changeQuantity(1)">+</button>
-                </div>
-                <h3 class="mod">Mode of Payment</h3>
-                <div class="delivery-options">
-                    <button type="button" id="meetup-btn">Meet Up</button>
-                    <button type="button" id="delivery-btn">Delivery</button>
-                </div>
-
-                <% if (isAuthenticated && role === 'admin' || role === 'user' ) { %>
-                    <button type="submit" id="request-btn">Request</button>
-                <% } else { %>
-                    <a href="/login?redirect=/user/view-product" class="request-btn">
-                        Request
-                    </a>
-                <% } %>
-            </form>
+        <div id="dates-grid" class="dates">
+          <!-- Dates will be rendered here -->
         </div>
-    <% } %>
+      </div>
+      <div class="quantity-container">
+        <strong>Qty</strong>
+        <button type="button" onclick="changeQuantity(-1)">-</button>
+        <input
+          type="number"
+          id="quantity"
+          name="rental_quantity"
+          value="1"
+          min="1"
+        />
+        <button type="button" onclick="changeQuantity(1)">+</button>
+      </div>
+      <h3 class="mod">Mode of Payment</h3>
+      <div class="delivery-options">
+        <button type="button" id="meetup-btn">Meet Up</button>
+        <button type="button" id="delivery-btn">Delivery</button>
+      </div>
+
+      <% if (isAuthenticated && role === 'admin' || role === 'user' ) { %>
+      <button type="submit" id="request-btn">Request</button>
+      <% } else { %>
+      <a href="/login?redirect=/user/view-product" class="request-btn">
+        Request
+      </a>
+      <% } %>
+    </form>
+  </div>
+  <% } %>
 </div>
 
 <script>
-    let selectedItem = null;
+  let selectedItem = null;
 
-    window.addEventListener('load', function () {
-        document.getElementById("myForm").style.display = "none";
-        document.getElementById("modalOverlay").style.display = "none";
-    });
+  window.addEventListener("load", function () {
+    document.getElementById("myForm").style.display = "none";
+    document.getElementById("modalOverlay").style.display = "none";
+  });
 
-    // Open Form (Show overlay & form)
-    async function openForm() {
-        const item = JSON.parse(localStorage.getItem("selectedItem"));
-        const response = await fetch(`http://localhost:8000/api/user/view-product/posted-by/${item.id}`);
-        const data = await response.json();
-        const {id, profile_image, owner_id, owner, contact_number, social_media, location, average_rating} = data.data;
+  // Open Form (Show overlay & form)
+  async function openForm() {
+    const item = JSON.parse(localStorage.getItem("selectedItem"));
+    const response = await fetch(
+      `http://localhost:8000/api/user/view-product/posted-by/${item.id}`
+    );
+    const data = await response.json();
+    const {
+      id,
+      profile_image,
+      owner_id,
+      owner,
+      contact_number,
+      social_media,
+      location,
+      average_rating,
+    } = data.data;
 
-        document.querySelector('#profile-image').src = `/uploads/${profile_image}`;
-        document.querySelector('#owners-fullname').textContent = owner;
-        document.querySelector('#contact-number').textContent = contact_number;
+    document.querySelector("#profile-image").src = `/uploads/${profile_image}`;
+    document.querySelector("#owners-fullname").textContent = owner;
+    document.querySelector("#contact-number").textContent = contact_number;
 
-        // Update the link and text
-        const socialMediaLink = document.querySelector('#social-media-link');
-        socialMediaLink.textContent = social_media;
-        socialMediaLink.href = social_media; // Set the href attribute
-        document.querySelector('#location').textContent = location;
-        document.querySelector('p#owner-rating').textContent = `⭐ ${selectedItem.average_rating}`
+    // Update the link and text
+    const socialMediaLink = document.querySelector("#social-media-link");
+    socialMediaLink.textContent = social_media;
+    socialMediaLink.href = social_media; // Set the href attribute
+    document.querySelector("#location").textContent = location;
+    document.querySelector(
+      "p#owner-rating"
+    ).textContent = `⭐ ${selectedItem.average_rating}`;
 
-        document.getElementById("myForm").style.display = "flex";
-        document.getElementById("modalOverlay").style.display = "block"; // Show the overlay
+    document.getElementById("myForm").style.display = "flex";
+    document.getElementById("modalOverlay").style.display = "block"; // Show the overlay
+  }
+
+  // Close Form (Hide overlay & form)
+  function closeForm() {
+    document.getElementById("myForm").style.display = "none";
+    document.getElementById("modalOverlay").style.display = "none"; // Hide the overlay
+  }
+
+  // Switch Tabs
+  function switchTab(event, tabName) {
+    // Remove active class from all buttons
+    document
+      .querySelectorAll(".tab-btn")
+      .forEach((btn) => btn.classList.remove("active"));
+
+    // Hide all content sections
+    document
+      .querySelectorAll(".tab-content")
+      .forEach((content) => content.classList.remove("active"));
+
+    // Add active class to the clicked button
+    event.currentTarget.classList.add("active");
+
+    // Show the selected tab content
+    document.getElementById(tabName).classList.add("active");
+  }
+
+  // Function to load the selected product details
+  async function loadSelectedProduct() {
+    selectedItem = JSON.parse(localStorage.getItem("selectedItem"));
+    console.log("selectedItem", selectedItem);
+    if (selectedItem) {
+      document.getElementById("product-image").src =
+        selectedItem.image || "default.jpg";
+      document.getElementById("product-name").innerText = selectedItem.name;
+      document.getElementById(
+        "product-price"
+      ).innerText = `₱${selectedItem.price}`;
+      document.getElementById("product-description").innerText =
+        selectedItem.description;
+
+      document.getElementById("product-quantity").innerText =
+        selectedItem.quantity;
+
+      const rentalQuantity = document.querySelector("[name='rental_quantity']");
+      if (rentalQuantity) {
+        rentalQuantity.setAttribute("max", selectedItem.quantity);
+      }
+
+      // Owner Info
+      document.getElementById("owner-name").textContent =
+        selectedItem.name || "Unknown Owner";
+
+      document.querySelector(
+        "#owner-image"
+      ).src = `/uploads/${selectedItem.profile_image}`;
+      document.querySelector("#owner-name").textContent = selectedItem.owner;
+
+      document.getElementById("owner-location").textContent =
+        selectedItem.location || "Unknown Location";
+      document.querySelector(
+        "#owner-rating"
+      ).textContent = `⭐ ${selectedItem.average_rating}`;
+    } else {
+      alert("No product selected!");
+      window.location.href = ".shopping";
     }
+  }
 
-    // Close Form (Hide overlay & form)
-    function closeForm() {
-        document.getElementById("myForm").style.display = "none";
-        document.getElementById("modalOverlay").style.display = "none"; // Hide the overlay
-    }
+  // Call function when page loads
+  loadSelectedProduct();
 
+  // Function to convert rating number to stars
+  function generateStars(rating) {
+    if (rating === "No Ratings") return rating;
+    let stars = "⭐".repeat(Math.floor(rating)); // Full stars
+    return stars + ` (${rating})`; // Show the average rating value
+  }
 
-    // Switch Tabs
-    function switchTab(event, tabName) {
-        // Remove active class from all buttons
-        document
-            .querySelectorAll(".tab-btn")
-            .forEach((btn) => btn.classList.remove("active"));
+  //CALENDRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+  //calendar functionssssss
+  document.addEventListener("DOMContentLoaded", function () {
+    const datesGrid = document.getElementById("dates-grid");
+    const monthYearDisplay = document.getElementById("month-year");
+    const prevMonthBtn = document.getElementById("prev-month");
+    const nextMonthBtn = document.getElementById("next-month");
 
-        // Hide all content sections
-        document
-            .querySelectorAll(".tab-content")
-            .forEach((content) => content.classList.remove("active"));
+    const instructionText = document.createElement("p");
+    instructionText.id = "instruction-text";
+    instructionText.textContent = "Select a start date for your rental.";
+    datesGrid.parentElement.appendChild(instructionText);
 
-        // Add active class to the clicked button
-        event.currentTarget.classList.add("active");
+    const resetBtn = document.createElement("button");
+    resetBtn.id = "reset-selection";
+    resetBtn.textContent = "Reset Selection";
+    resetBtn.style.marginTop = "10px";
+    resetBtn.style.display = "none";
+    datesGrid.parentElement.appendChild(resetBtn);
 
-        // Show the selected tab content
-        document.getElementById(tabName).classList.add("active");
-    }
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    let displayedMonth = currentDate.getMonth();
+    let displayedYear = currentDate.getFullYear();
+    let startDate = null;
+    let endDate = null;
 
-    // Function to load the selected product details
-    async function loadSelectedProduct() {
-        selectedItem = JSON.parse(localStorage.getItem("selectedItem"));
-        console.log('selectedItem', selectedItem)
-        if (selectedItem) {
-            document.getElementById("product-image").src =
-                selectedItem.image || "default.jpg";
-            document.getElementById("product-name").innerText = selectedItem.name;
-            document.getElementById(
-                "product-price"
-            ).innerText = `₱${selectedItem.price}`;
-            document.getElementById("product-description").innerText =
-                selectedItem.description;
+    const unavailableDates = [];
 
-            document.getElementById("product-quantity").innerText =
-                selectedItem.quantity;
+    function renderCalendar() {
+      datesGrid.innerHTML = "";
+      instructionText.textContent = "Select a start date for your rental.";
+      resetBtn.style.display = "none";
 
-            const rentalQuantity = document.querySelector("[name='rental_quantity']")
-            if (rentalQuantity) {
-                rentalQuantity.setAttribute('max', selectedItem.quantity)
-            }
+      const firstDay = new Date(displayedYear, displayedMonth, 1);
+      const lastDay = new Date(displayedYear, displayedMonth + 1, 0);
+      const startingDay = firstDay.getDay();
+      const monthLength = lastDay.getDate();
 
-            // Owner Info
-            document.getElementById("owner-name").textContent =
-                selectedItem.name || "Unknown Owner";
+      monthYearDisplay.textContent = `${firstDay.toLocaleString("default", {
+        month: "long",
+      })} ${displayedYear}`;
 
-            document.querySelector('#owner-image').src = `/uploads/${selectedItem.profile_image}`
-            document.querySelector('#owner-name').textContent = selectedItem.owner
+      for (let i = 0; i < startingDay; i++) {
+        const emptyCell = document.createElement("div");
+        emptyCell.className = "empty-cell";
+        datesGrid.appendChild(emptyCell);
+      }
 
-            document.getElementById("owner-location").textContent =
-                selectedItem.location || "Unknown Location";
-            document.querySelector('#owner-rating').textContent = `⭐ ${selectedItem.average_rating}`
+      for (let day = 1; day <= monthLength; day++) {
+        const dateCell = document.createElement("div");
+        dateCell.className = "date-cell";
+        dateCell.textContent = day;
+
+        const cellDate = new Date(displayedYear, displayedMonth, day);
+        cellDate.setHours(0, 0, 0, 0);
+
+        //Use locale date format to prevent timezone shift issues
+        dateCell.dataset.date = cellDate.toLocaleDateString("en-CA");
+
+        if (cellDate < currentDate) {
+          dateCell.classList.add("disabled");
+        } else if (unavailableDates.includes(dateCell.dataset.date)) {
+          dateCell.classList.add("unavailable");
         } else {
-            alert("No product selected!");
-            window.location.href = ".shopping";
+          dateCell.addEventListener("click", () =>
+            handleDateSelection(dateCell.dataset.date, dateCell)
+          );
         }
+
+        datesGrid.appendChild(dateCell);
+      }
+
+      highlightSelectedDates();
     }
 
-    // Call function when page loads
-    loadSelectedProduct()
+    function handleDateSelection(dateStr, cell) {
+      // Convert dataset string back to Date consistently
+      const selectedDate = new Date(dateStr);
+      selectedDate.setHours(0, 0, 0, 0);
 
+      if (selectedDate < currentDate || unavailableDates.includes(dateStr)) {
+        return;
+      }
 
-    // Function to convert rating number to stars
-    function generateStars(rating) {
-        if (rating === "No Ratings") return rating;
-        let stars = "⭐".repeat(Math.floor(rating)); // Full stars
-        return stars + ` (${rating})`; // Show the average rating value
+      if (!startDate) {
+        startDate = selectedDate;
+        localStorage.setItem("startDate", dateStr);
+        instructionText.textContent = "Now select an end date for your rental.";
+        resetBtn.style.display = "block";
+        highlightSelectedDates();
+      } else if (!endDate && selectedDate >= startDate) {
+        endDate = selectedDate;
+        localStorage.setItem("endDate", dateStr);
+        instructionText.textContent = `Rental period: ${formatDate(
+          startDate
+        )} to ${formatDate(endDate)}.`;
+        highlightSelectedDates();
+      } else {
+        resetSelection();
+      }
     }
 
-    //CALENDRRRRRRRRRRRRRRRRRRRRRRRRRRRR
-    //calendar functionssssss
+    function highlightSelectedDates() {
+      document.querySelectorAll(".date-cell").forEach((cell) => {
+        const cellDate = new Date(cell.dataset.date);
+        cellDate.setHours(0, 0, 0, 0);
+
+        cell.classList.remove("selected", "range");
+
+        if (startDate && cellDate.getTime() === startDate.getTime()) {
+          cell.classList.add("selected");
+        }
+        if (endDate && cellDate.getTime() === endDate.getTime()) {
+          cell.classList.add("selected");
+        }
+        if (
+          startDate &&
+          endDate &&
+          cellDate > startDate &&
+          cellDate < endDate
+        ) {
+          cell.classList.add("range");
+        }
+      });
+    }
+
+    function resetSelection() {
+      startDate = null;
+      endDate = null;
+      localStorage.removeItem("startDate");
+      localStorage.removeItem("endDate");
+      instructionText.textContent = "Select a start date for your rental.";
+      resetBtn.style.display = "none";
+      highlightSelectedDates();
+    }
+
+    //Clears localStorage(start & end date) on page load
     document.addEventListener("DOMContentLoaded", function () {
-        const datesGrid = document.getElementById("dates-grid");
-        const monthYearDisplay = document.getElementById("month-year");
-        const prevMonthBtn = document.getElementById("prev-month");
-        const nextMonthBtn = document.getElementById("next-month");
+      localStorage.removeItem("startDate");
+      localStorage.removeItem("endDate");
+      renderCalendar();
+    });
 
-        const instructionText = document.createElement("p");
-        instructionText.id = "instruction-text";
-        instructionText.textContent = "Select a start date for your rental.";
-        datesGrid.parentElement.appendChild(instructionText);
+    // Clear localStorage when the page is closed or refreshed
+    window.addEventListener("beforeunload", function () {
+      localStorage.removeItem("startDate");
+      localStorage.removeItem("endDate");
+    });
 
-        const resetBtn = document.createElement("button");
-        resetBtn.id = "reset-selection";
-        resetBtn.textContent = "Reset Selection";
-        resetBtn.style.marginTop = "10px";
-        resetBtn.style.display = "none";
-        datesGrid.parentElement.appendChild(resetBtn);
-
-        let currentDate = new Date();
-        currentDate.setHours(0, 0, 0, 0);
-        let displayedMonth = currentDate.getMonth();
-        let displayedYear = currentDate.getFullYear();
-        let startDate = null;
-        let endDate = null;
-
-        const unavailableDates = [];
-
-        function renderCalendar() {
-            datesGrid.innerHTML = "";
-            instructionText.textContent = "Select a start date for your rental.";
-            resetBtn.style.display = "none";
-
-            const firstDay = new Date(displayedYear, displayedMonth, 1);
-            const lastDay = new Date(displayedYear, displayedMonth + 1, 0);
-            const startingDay = firstDay.getDay();
-            const monthLength = lastDay.getDate();
-
-            monthYearDisplay.textContent = `${firstDay.toLocaleString("default", {
-                month: "long",
-            })} ${displayedYear}`;
-
-            for (let i = 0; i < startingDay; i++) {
-                const emptyCell = document.createElement("div");
-                emptyCell.className = "empty-cell";
-                datesGrid.appendChild(emptyCell);
-            }
-
-            for (let day = 1; day <= monthLength; day++) {
-                const dateCell = document.createElement("div");
-                dateCell.className = "date-cell";
-                dateCell.textContent = day;
-
-                const cellDate = new Date(displayedYear, displayedMonth, day);
-                cellDate.setHours(0, 0, 0, 0);
-
-                //Use locale date format to prevent timezone shift issues
-                dateCell.dataset.date = cellDate.toLocaleDateString("en-CA");
-
-                if (cellDate < currentDate) {
-                    dateCell.classList.add("disabled");
-                } else if (unavailableDates.includes(dateCell.dataset.date)) {
-                    dateCell.classList.add("unavailable");
-                } else {
-                    dateCell.addEventListener("click", () =>
-                        handleDateSelection(dateCell.dataset.date, dateCell)
-                    );
-                }
-
-                datesGrid.appendChild(dateCell);
-            }
-
-            highlightSelectedDates();
+    prevMonthBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (
+        displayedYear > currentDate.getFullYear() ||
+        (displayedYear === currentDate.getFullYear() &&
+          displayedMonth > currentDate.getMonth())
+      ) {
+        displayedMonth--;
+        if (displayedMonth < 0) {
+          displayedMonth = 11;
+          displayedYear--;
         }
-
-        function handleDateSelection(dateStr, cell) {
-            // Convert dataset string back to Date consistently
-            const selectedDate = new Date(dateStr);
-            selectedDate.setHours(0, 0, 0, 0);
-
-            if (selectedDate < currentDate || unavailableDates.includes(dateStr)) {
-                return;
-            }
-
-            if (!startDate) {
-                startDate = selectedDate;
-                localStorage.setItem("startDate", dateStr);
-                instructionText.textContent =
-                    "Now select an end date for your rental.";
-                resetBtn.style.display = "block";
-                highlightSelectedDates();
-            } else if (!endDate && selectedDate >= startDate) {
-                endDate = selectedDate;
-                localStorage.setItem("endDate", dateStr);
-                instructionText.textContent = `Rental period: ${formatDate(
-                    startDate
-                )} to ${formatDate(endDate)}.`;
-                highlightSelectedDates();
-            } else {
-                resetSelection();
-            }
-        }
-
-        function highlightSelectedDates() {
-            document.querySelectorAll(".date-cell").forEach((cell) => {
-                const cellDate = new Date(cell.dataset.date);
-                cellDate.setHours(0, 0, 0, 0);
-
-                cell.classList.remove("selected", "range");
-
-                if (startDate && cellDate.getTime() === startDate.getTime()) {
-                    cell.classList.add("selected");
-                }
-                if (endDate && cellDate.getTime() === endDate.getTime()) {
-                    cell.classList.add("selected");
-                }
-                if (
-                    startDate &&
-                    endDate &&
-                    cellDate > startDate &&
-                    cellDate < endDate
-                ) {
-                    cell.classList.add("range");
-                }
-            });
-        }
-
-        function resetSelection() {
-            startDate = null;
-            endDate = null;
-            localStorage.removeItem("startDate");
-            localStorage.removeItem("endDate");
-            instructionText.textContent = "Select a start date for your rental.";
-            resetBtn.style.display = "none";
-            highlightSelectedDates();
-        }
-
-        //Clears localStorage(start & end date) on page load
-        document.addEventListener("DOMContentLoaded", function () {
-            localStorage.removeItem("startDate");
-            localStorage.removeItem("endDate");
-            renderCalendar();
-        });
-
-        // Clear localStorage when the page is closed or refreshed
-        window.addEventListener("beforeunload", function () {
-            localStorage.removeItem("startDate");
-            localStorage.removeItem("endDate");
-        });
-
-
-        prevMonthBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            if (
-                displayedYear > currentDate.getFullYear() ||
-                (displayedYear === currentDate.getFullYear() &&
-                    displayedMonth > currentDate.getMonth())
-            ) {
-                displayedMonth--;
-                if (displayedMonth < 0) {
-                    displayedMonth = 11;
-                    displayedYear--;
-                }
-                renderCalendar();
-            }
-        });
-
-        nextMonthBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            displayedMonth++;
-            if (displayedMonth > 11) {
-                displayedMonth = 0;
-                displayedYear++;
-            }
-            renderCalendar();
-        });
-
-        resetBtn.addEventListener("click", resetSelection);
-
-        function formatDate(date) {
-            return date.toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-            });
-        }
-
         renderCalendar();
+      }
     });
 
-    //PRESSED FUNCTION SA Mode of Payment
-    document.addEventListener("DOMContentLoaded", function () {
-        const meetupBtn = document.getElementById("meetup-btn");
-        const deliveryBtn = document.getElementById("delivery-btn");
-
-        function addPressEffect(button) {
-            button.classList.add("pressed");
-
-            // Keep the effect for 200ms before removing it
-            setTimeout(() => {
-                button.classList.remove("pressed");
-            }, 200);
-        }
-
-        meetupBtn.addEventListener("click", function () {
-            addPressEffect(meetupBtn);
-        });
-
-        deliveryBtn.addEventListener("click", function () {
-            addPressEffect(deliveryBtn);
-        });
+    nextMonthBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      displayedMonth++;
+      if (displayedMonth > 11) {
+        displayedMonth = 0;
+        displayedYear++;
+      }
+      renderCalendar();
     });
 
-    //FUNCTION FOR REQUEST BUTTON!!!!
-    document.addEventListener("DOMContentLoaded", function () {
-        const requestBtn = document.getElementById("request-btn");
-        const meetupBtn = document.getElementById("meetup-btn");
-        const deliveryBtn = document.getElementById("delivery-btn");
+    resetBtn.addEventListener("click", resetSelection);
 
-        let selectedDeliveryMethod = null;
+    function formatDate(date) {
+      return date.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
+    }
 
-        // Get access to the calendar's date variables
-        const calendar = document.querySelector(".calendar");
+    renderCalendar();
+  });
 
-        // Handle delivery method selection
-        meetupBtn.addEventListener("click", function () {
-            selectedDeliveryMethod = "Meetup";
-            meetupBtn.classList.add("selected");
-            deliveryBtn.classList.remove("selected");
-        });
+  //PRESSED FUNCTION SA Mode of Payment
+  document.addEventListener("DOMContentLoaded", function () {
+    const meetupBtn = document.getElementById("meetup-btn");
+    const deliveryBtn = document.getElementById("delivery-btn");
 
-        deliveryBtn.addEventListener("click", function () {
-            selectedDeliveryMethod = "Delivery";
-            deliveryBtn.classList.add("selected");
-            meetupBtn.classList.remove("selected");
-        });
+    function addPressEffect(button) {
+      button.classList.add("pressed");
 
-        // ✅ Handle Request Button Click
-        requestBtn.addEventListener("click", function (event) {
-            event.preventDefault()
+      // Keep the effect for 200ms before removing it
+      setTimeout(() => {
+        button.classList.remove("pressed");
+      }, 200);
+    }
 
-            // Get the selected dates from the calendar
-            let startDateStr = localStorage.getItem("startDate");
-            let endDateStr = localStorage.getItem("endDate");
+    meetupBtn.addEventListener("click", function () {
+      addPressEffect(meetupBtn);
+    });
 
-            if (!startDateStr || !endDateStr) {
-                showErrorMessage("Please select both start and end dates for your rental period.");
-                return;
-            }
+    deliveryBtn.addEventListener("click", function () {
+      addPressEffect(deliveryBtn);
+    });
+  });
 
-            startDate = new Date(startDateStr);
-            endDate = new Date(endDateStr);
+  //FUNCTION FOR REQUEST BUTTON!!!!
+  document.addEventListener("DOMContentLoaded", function () {
+    const requestBtn = document.getElementById("request-btn");
+    const meetupBtn = document.getElementById("meetup-btn");
+    const deliveryBtn = document.getElementById("delivery-btn");
 
-            // Check if delivery method is selected
-            if (!selectedDeliveryMethod) {
-                showErrorMessage(
-                    "Please select a mode of delivery (Meet Up or Delivery)."
-                );
-                return;
-            }
+    let selectedDeliveryMethod = null;
 
-            showConfirmationModal(startDate, endDate, selectedDeliveryMethod);
-        });
+    // Get access to the calendar's date variables
+    const calendar = document.querySelector(".calendar");
 
-        // Function to show confirmation modal
-        function showConfirmationModal(startDate, endDate, deliveryMethod,) {
-            const modalOverlay = document.createElement("div");
-            modalOverlay.className = "modal-overlay";
+    // Handle delivery method selection
+    meetupBtn.addEventListener("click", function () {
+      selectedDeliveryMethod = "Meetup";
+      meetupBtn.classList.add("selected");
+      deliveryBtn.classList.remove("selected");
+    });
 
-            const modal = document.createElement("div");
-            modal.className = "modal";
-            modal.innerHTML = `
+    deliveryBtn.addEventListener("click", function () {
+      selectedDeliveryMethod = "Delivery";
+      deliveryBtn.classList.add("selected");
+      meetupBtn.classList.remove("selected");
+    });
+
+    // ✅ Handle Request Button Click
+    requestBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      // Get the selected dates from the calendar
+      let startDateStr = localStorage.getItem("startDate");
+      let endDateStr = localStorage.getItem("endDate");
+
+      if (!startDateStr || !endDateStr) {
+        showErrorMessage(
+          "Please select both start and end dates for your rental period."
+        );
+        return;
+      }
+
+      startDate = new Date(startDateStr);
+      endDate = new Date(endDateStr);
+
+      // Check if delivery method is selected
+      if (!selectedDeliveryMethod) {
+        showErrorMessage(
+          "Please select a mode of delivery (Meet Up or Delivery)."
+        );
+        return;
+      }
+
+      showConfirmationModal(startDate, endDate, selectedDeliveryMethod);
+    });
+
+    // Function to show confirmation modal
+    function showConfirmationModal(startDate, endDate, deliveryMethod) {
+      const modalOverlay = document.createElement("div");
+      modalOverlay.className = "modal-overlay";
+
+      const modal = document.createElement("div");
+      modal.className = "modal";
+      modal.innerHTML = `
               <p><strong>Confirm rental request for: </strong><br>
               <strong>From:</strong> ${formatDate(startDate)}<br>
               <strong>To:</strong> ${formatDate(endDate)}<br>
@@ -706,276 +739,280 @@
               </div>
           `;
 
-            modalOverlay.appendChild(modal);
-            document.body.appendChild(modalOverlay);
+      modalOverlay.appendChild(modal);
+      document.body.appendChild(modalOverlay);
 
-            // Add styles for modal
-            modalOverlay.style.position = "fixed";
-            modalOverlay.style.top = "0";
-            modalOverlay.style.left = "0";
-            modalOverlay.style.width = "100%";
-            modalOverlay.style.height = "100%";
-            modalOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-            modalOverlay.style.display = "flex";
-            modalOverlay.style.justifyContent = "center";
-            modalOverlay.style.alignItems = "center";
-            modalOverlay.style.zIndex = "1000";
+      // Add styles for modal
+      modalOverlay.style.position = "fixed";
+      modalOverlay.style.top = "0";
+      modalOverlay.style.left = "0";
+      modalOverlay.style.width = "100%";
+      modalOverlay.style.height = "100%";
+      modalOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+      modalOverlay.style.display = "flex";
+      modalOverlay.style.justifyContent = "center";
+      modalOverlay.style.alignItems = "center";
+      modalOverlay.style.zIndex = "1000";
 
-            modal.style.backgroundColor = "white";
-            modal.style.padding = "20px";
-            modal.style.borderRadius = "10px";
-            modal.style.minWidth = "300px";
-            modal.style.Width = "80%";
-            modal.style.maxWidth = "450px";
-            modal.style.maxHeight = "80vh";
-            modal.style.overflowY = "auto";
-            modal.style.top = "50%";
-            modal.style.left = "50%";
-            modal.style.lineHeight = "1.6";
-            modal.style.textAlign = "justify";
-            modal.querySelector(".modal-buttons").style.display = "flex";
-            modal.querySelector(".modal-buttons").style.justifyContent = "center";
-            h3 = modal.querySelector("h3");
-            h3.style.textAlign = "center";
-            h3.style.fontSize = "1.17em";
-            h3.style.fontWeight = "bold";
+      modal.style.backgroundColor = "white";
+      modal.style.padding = "20px";
+      modal.style.borderRadius = "10px";
+      modal.style.minWidth = "300px";
+      modal.style.Width = "80%";
+      modal.style.maxWidth = "450px";
+      modal.style.maxHeight = "80vh";
+      modal.style.overflowY = "auto";
+      modal.style.top = "50%";
+      modal.style.left = "50%";
+      modal.style.lineHeight = "1.6";
+      modal.style.textAlign = "justify";
+      modal.querySelector(".modal-buttons").style.display = "flex";
+      modal.querySelector(".modal-buttons").style.justifyContent = "center";
+      h3 = modal.querySelector("h3");
+      h3.style.textAlign = "center";
+      h3.style.fontSize = "1.17em";
+      h3.style.fontWeight = "bold";
 
-            document
-                .getElementById("confirm-btn")
-                .addEventListener("click", async function () {
-                    console.log("Rental confirmed!");
-                    document.body.removeChild(modalOverlay);
+      document
+        .getElementById("confirm-btn")
+        .addEventListener("click", async function () {
+          console.log("Rental confirmed!");
+          document.body.removeChild(modalOverlay);
 
-                    // Process the data here
-                    const rentForm = document.querySelector('#rent-form')
-                    const formData = new FormData(rentForm)
-                    let formObject = {};  // Initialize an empty object to store form data
+          // Process the data here
+          const rentForm = document.querySelector("#rent-form");
+          const formData = new FormData(rentForm);
+          let formObject = {}; // Initialize an empty object to store form data
 
-                    // Loop through the form data and build the object
-                    for (let [key, value] of formData.entries()) {
-                        // Check if the key corresponds to a select element
-                        const selectElement = rentForm.querySelector(`[name="${key}"]`);
-                        if (selectElement && selectElement.tagName === 'SELECT') {
-                            // Get the selected option's text content
-                            const selectedOption = selectElement.options[selectElement.selectedIndex];
-                            formObject[key] = selectedOption.textContent;  // Use the text content for select elements
-                        } else {
-                            // For other form elements, use the value
-                            formObject[key] = value;
-                        }
-                    }
+          // Loop through the form data and build the object
+          for (let [key, value] of formData.entries()) {
+            // Check if the key corresponds to a select element
+            const selectElement = rentForm.querySelector(`[name="${key}"]`);
+            if (selectElement && selectElement.tagName === "SELECT") {
+              // Get the selected option's text content
+              const selectedOption =
+                selectElement.options[selectElement.selectedIndex];
+              formObject[key] = selectedOption.textContent; // Use the text content for select elements
+            } else {
+              // For other form elements, use the value
+              formObject[key] = value;
+            }
+          }
 
-                    // Add data from current localStorage item
-                    const selectedItem = localStorage.getItem('selectedItem')
+          // Add data from current localStorage item
+          const selectedItem = localStorage.getItem("selectedItem");
 
-                    startDate = new Date(startDate);
-                    const formattedStartDate = startDate.toISOString().split('T')[0];
-                    endDate = new Date(endDate);
-                    const formattedEndDate = endDate.toISOString().split('T')[0];
+          startDate = new Date(startDate);
+          const formattedStartDate = startDate.toISOString().split("T")[0];
+          endDate = new Date(endDate);
+          const formattedEndDate = endDate.toISOString().split("T")[0];
 
-                    formObject = {
-                        ...formObject,
-                        start_date: formattedStartDate,
-                        end_date: formattedEndDate,
-                        mode_of_delivery: selectedDeliveryMethod,
-                        ...JSON.parse(selectedItem),
-                        renter_id: "<%= renter_id %>"
-                    }
+          formObject = {
+            ...formObject,
+            start_date: formattedStartDate,
+            end_date: formattedEndDate,
+            mode_of_delivery: selectedDeliveryMethod,
+            ...JSON.parse(selectedItem),
+            renter_id: "<%= renter_id %>",
+          };
 
-                    try {
-                        const response = await fetch(`/api/user/my-requests`, {
-                            method: "POST",
-                            headers: {"Content-Type": "application/json"},
-                            body: JSON.stringify(formObject)
-                        });
-                        if (response.ok) {
-                            alert("Requesting to rent item in-progress...");
-                            setTimeout(() => {
-                                window.location.href = '/shopping/events-and-parties'
-                            }, 2000)
-                        }
-                    } catch (error) {
-                        console.error("Error canceling rent:", error);
-                    }
-
-                    console.log('formObject:', formObject)
-
-                    showSuccessMessage();
-                });
-
-            document
-                .getElementById("cancel-btn")
-                .addEventListener("click", function () {
-                    console.log("Rental canceled.");
-                    document.body.removeChild(modalOverlay);
-                });
-        }
-
-        // Function to show success message modal
-        function showSuccessMessage() {
-            const modalOverlay = document.createElement("div");
-            modalOverlay.className = "modal-overlay";
-            modalOverlay.style.position = "fixed";
-            modalOverlay.style.top = "0";
-            modalOverlay.style.left = "0";
-            modalOverlay.style.width = "100%";
-            modalOverlay.style.height = "100%";
-            modalOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-            modalOverlay.style.display = "flex";
-            modalOverlay.style.justifyContent = "center";
-            modalOverlay.style.alignItems = "center";
-            modalOverlay.style.zIndex = "1000";
-
-            const modal = document.createElement("div");
-            modal.className = "modal";
-            modal.style.backgroundColor = "#f5f5f5";
-            modal.style.padding = "20px";
-            modal.style.borderRadius = "30px";
-            modal.style.border = "3px solid #009959";
-            modal.style.fontWeight = "bold";
-            modal.style.fontSize = "30px";
-            modal.style.fontFamily = "Poppins, sans-serif";
-            modal.innerHTML = `<p>Rental request submitted successfully!</p>`;
-            modal.style.width = "40%";
-
-            modalOverlay.appendChild(modal);
-            document.body.appendChild(modalOverlay);
-
-            setTimeout(() => {
-                document.body.removeChild(modalOverlay);
-            }, 2000);
-        }
-
-        // Function to show error message modal
-        function showErrorMessage(message) {
-            const modalOverlay = document.createElement("div");
-            modalOverlay.className = "modal-overlay";
-            modalOverlay.style.position = "fixed";
-            modalOverlay.style.top = "0";
-            modalOverlay.style.left = "0";
-            modalOverlay.style.width = "100%";
-            modalOverlay.style.height = "100%";
-            modalOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-            modalOverlay.style.display = "flex";
-            modalOverlay.style.justifyContent = "center";
-            modalOverlay.style.alignItems = "center";
-            modalOverlay.style.zIndex = "1000";
-
-            const modal = document.createElement("div");
-            modal.className = "modal";
-            modal.style.backgroundColor = "#ffe6e6";
-            modal.style.padding = "20px";
-            modal.style.borderRadius = "8px";
-            modal.innerHTML = `<p>${message}</p>`;
-
-            modalOverlay.appendChild(modal);
-            document.body.appendChild(modalOverlay);
-
-            setTimeout(() => {
-                document.body.removeChild(modalOverlay);
-            }, 2000);
-        }
-
-        // Helper function to format date
-        function formatDate(date) {
-            return date.toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric",
+          try {
+            const response = await fetch(`/api/user/my-requests`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(formObject),
             });
-        }
-    });
+            if (response.ok) {
+              alert("Requesting to rent item in-progress...");
+              setTimeout(() => {
+                window.location.href = "/shopping/events-and-parties";
+              }, 2000);
+            }
+          } catch (error) {
+            console.error("Error canceling rent:", error);
+          }
 
-    //qty counter
-    function changeQuantity(amount) {
-        let qtyInput = document.getElementById("quantity");
-        let currentQty = parseInt(qtyInput.value);
-        let maxQty = parseInt(qtyInput.getAttribute("max")) || Infinity; // Get max value or set it to Infinity if not defined
+          console.log("formObject:", formObject);
 
-        let newQty = currentQty + amount;
+          showSuccessMessage();
+        });
 
-        if (newQty < 1) {
-            newQty = 1;
-        } else if (newQty > maxQty) {
-            newQty = maxQty;
-        }
-
-        qtyInput.value = newQty;
+      document
+        .getElementById("cancel-btn")
+        .addEventListener("click", function () {
+          console.log("Rental canceled.");
+          document.body.removeChild(modalOverlay);
+        });
     }
 
+    // Function to show success message modal
+    function showSuccessMessage() {
+      const modalOverlay = document.createElement("div");
+      modalOverlay.className = "modal-overlay";
+      modalOverlay.style.position = "fixed";
+      modalOverlay.style.top = "0";
+      modalOverlay.style.left = "0";
+      modalOverlay.style.width = "100%";
+      modalOverlay.style.height = "100%";
+      modalOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+      modalOverlay.style.display = "flex";
+      modalOverlay.style.justifyContent = "center";
+      modalOverlay.style.alignItems = "center";
+      modalOverlay.style.zIndex = "1000";
 
-    // Toggle between renter and owner
-    document.addEventListener("DOMContentLoaded", function () {
-        const renterBtn = document.getElementById("renterBtn");
-        const ownerBtn = document.getElementById("ownerBtn");
-        const slider = document.querySelector(".toggle-slider");
-        const renterContent = document.getElementById("renterContent");
-        const ownerContent = document.getElementById("ownerContent");
+      const modal = document.createElement("div");
+      modal.className = "modal";
+      modal.style.backgroundColor = "#f5f5f5";
+      modal.style.padding = "20px";
+      modal.style.borderRadius = "30px";
+      modal.style.border = "3px solid #009959";
+      modal.style.fontWeight = "bold";
+      modal.style.fontSize = "30px";
+      modal.style.fontFamily = "Poppins, sans-serif";
+      modal.innerHTML = `<p>Rental request submitted successfully!</p>`;
+      modal.style.width = "40%";
 
-        // Default state: Show "For Renters" and position the slider
-        slider.style.transform = "translateX(0%)";
-        renterBtn.style.color = "#12263f";
-        ownerBtn.style.color = "white";
-        renterContent.style.display = "block"; // Show renters section
-        ownerContent.style.display = "none"; // Hide owners section
+      modalOverlay.appendChild(modal);
+      document.body.appendChild(modalOverlay);
 
-        renterBtn.addEventListener("click", function () {
-            slider.style.transform = "translateX(0%)";
-            renterBtn.style.color = "#12263f";
-            ownerBtn.style.color = "white";
-            renterContent.style.display = "block"; // Show renters section
-            ownerContent.style.display = "none"; // Hide owners section
-        });
+      setTimeout(() => {
+        document.body.removeChild(modalOverlay);
+      }, 2000);
+    }
 
-        ownerBtn.addEventListener("click", function () {
-            slider.style.transform = "translateX(100%)";
-            ownerBtn.style.color = "#12263f";
-            renterBtn.style.color = "white";
-            renterContent.style.display = "none"; // Hide renters section
-            ownerContent.style.display = "block"; // Show owners section
-        });
+    // Function to show error message modal
+    function showErrorMessage(message) {
+      const modalOverlay = document.createElement("div");
+      modalOverlay.className = "modal-overlay";
+      modalOverlay.style.position = "fixed";
+      modalOverlay.style.top = "0";
+      modalOverlay.style.left = "0";
+      modalOverlay.style.width = "100%";
+      modalOverlay.style.height = "100%";
+      modalOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+      modalOverlay.style.display = "flex";
+      modalOverlay.style.justifyContent = "center";
+      modalOverlay.style.alignItems = "center";
+      modalOverlay.style.zIndex = "1000";
+
+      const modal = document.createElement("div");
+      modal.className = "modal";
+      modal.style.backgroundColor = "#ffe6e6";
+      modal.style.padding = "20px";
+      modal.style.borderRadius = "8px";
+      modal.innerHTML = `<p>${message}</p>`;
+
+      modalOverlay.appendChild(modal);
+      document.body.appendChild(modalOverlay);
+
+      setTimeout(() => {
+        document.body.removeChild(modalOverlay);
+      }, 2000);
+    }
+
+    // Helper function to format date
+    function formatDate(date) {
+      return date.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
+    }
+  });
+
+  //qty counter
+  function changeQuantity(amount) {
+    let qtyInput = document.getElementById("quantity");
+    let currentQty = parseInt(qtyInput.value);
+    let maxQty = parseInt(qtyInput.getAttribute("max")) || Infinity; // Get max value or set it to Infinity if not defined
+
+    let newQty = currentQty + amount;
+
+    if (newQty < 1) {
+      newQty = 1;
+    } else if (newQty > maxQty) {
+      newQty = maxQty;
+    }
+
+    qtyInput.value = newQty;
+  }
+
+  // Toggle between renter and owner
+  document.addEventListener("DOMContentLoaded", function () {
+    const renterBtn = document.getElementById("renterBtn");
+    const ownerBtn = document.getElementById("ownerBtn");
+    const slider = document.querySelector(".toggle-slider");
+    const renterContent = document.getElementById("renterContent");
+    const ownerContent = document.getElementById("ownerContent");
+
+    // Default state: Show "For Renters" and position the slider
+    slider.style.transform = "translateX(0%)";
+    renterBtn.style.color = "#12263f";
+    ownerBtn.style.color = "white";
+    renterContent.style.display = "block"; // Show renters section
+    ownerContent.style.display = "none"; // Hide owners section
+
+    renterBtn.addEventListener("click", function () {
+      slider.style.transform = "translateX(0%)";
+      renterBtn.style.color = "#12263f";
+      ownerBtn.style.color = "white";
+      renterContent.style.display = "block"; // Show renters section
+      ownerContent.style.display = "none"; // Hide owners section
     });
 
-    // Fetch and display reviews
-    document.addEventListener("DOMContentLoaded", () => {
-        const userId = "<%= is_owner %>"; 
-        const renterBtn = document.getElementById("renterBtn");
-        const ownerBtn = document.getElementById("ownerBtn");
-        const renterContent = document.getElementById("renterContent");
-        const ownerContent = document.getElementById("ownerContent");
+    ownerBtn.addEventListener("click", function () {
+      slider.style.transform = "translateX(100%)";
+      ownerBtn.style.color = "#12263f";
+      renterBtn.style.color = "white";
+      renterContent.style.display = "none"; // Hide renters section
+      ownerContent.style.display = "block"; // Show owners section
+    });
+  });
 
-        renterBtn.addEventListener("click", () => {
-            renterContent.style.display = "block";
-            ownerContent.style.display = "none";
-            fetchReviews(userId, "renter", renterContent);
-        });
+  // Fetch and display reviews
+  document.addEventListener("DOMContentLoaded", () => {
+    const userId = "<%= is_owner %>";
+    const renterBtn = document.getElementById("renterBtn");
+    const ownerBtn = document.getElementById("ownerBtn");
+    const renterContent = document.getElementById("renterContent");
+    const ownerContent = document.getElementById("ownerContent");
 
-        ownerBtn.addEventListener("click", () => {
-            ownerContent.style.display = "block";
-            renterContent.style.display = "none";
-            fetchReviews(userId, "owner", ownerContent);
-        });
+    renterBtn.addEventListener("click", () => {
+      renterContent.style.display = "block";
+      ownerContent.style.display = "none";
+      fetchReviews(userId, "renter", renterContent);
+    });
 
-        function fetchReviews(userId, role, container) {
-            const apiUrl = `http://localhost:8000/api/user/profile/reviews/{user_id}?role=owner`;
+    ownerBtn.addEventListener("click", () => {
+      ownerContent.style.display = "block";
+      renterContent.style.display = "none";
+      fetchReviews(userId, "owner", ownerContent);
+    });
 
-            fetch(apiUrl)
-                .then((response) => response.json())
-                .then((reviews) => {
-                    container.innerHTML = ""; // Clear previous content
+    function fetchReviews(userId, role, container) {
+      const apiUrl = `http://localhost:8000/api/user/profile/reviews/{user_id}?role=owner`;
 
-                    if (reviews.length === 0) {
-                        container.innerHTML = `<p>No ${role=owner} reviews available.</p>`;
-                        return;
-                    }
+      fetch(apiUrl)
+        .then((response) => response.json())
+        .then((reviews) => {
+          container.innerHTML = ""; // Clear previous content
 
-                    reviews.forEach((review) => {
-                        const reviewHTML = `
+          if (reviews.length === 0) {
+            container.innerHTML = `<p>No ${(role =
+              owner)} reviews available.</p>`;
+            return;
+          }
+
+          reviews.forEach((review) => {
+            const reviewHTML = `
                             <div class="content-wrapper">
                                 <hr>
                                 <div class="review-header">
                                     <div class="pfp">
-                                        <img src="${review.reviewer_profile_pic || '/default-pic.jpg'}" alt="Profile Picture"/>
+                                        <img src="${
+                                          review.reviewer_profile_pic ||
+                                          "/default-pic.jpg"
+                                        }" alt="Profile Picture"/>
                                     </div>
                                     <div class="header-info">
                                         <h4>${review.reviewer_name}</h4>
@@ -991,70 +1028,73 @@
                                 </div>
                                 <hr>
                             </div>`;
-                        container.innerHTML += reviewHTML;
-                    });
-                })
-                .catch((error) => {
-                    container.innerHTML = `<p>Error loading ${role} reviews.</p>`;
-                    console.error("Error fetching reviews:", error);
-                });
+            container.innerHTML += reviewHTML;
+          });
+        })
+        .catch((error) => {
+          container.innerHTML = `<p>Error loading ${role} reviews.</p>`;
+          console.error("Error fetching reviews:", error);
+        });
+    }
+
+    // Optional: load renter reviews by default
+    fetchReviews(userId, "renter", renterContent);
+  });
+
+  //Function to get items
+  document.addEventListener("DOMContentLoaded", () => {
+    const approvedItemsList = document.getElementById("approvedItemsList");
+    const selectedItem = JSON.parse(localStorage.getItem("selectedItem"));
+    const userId = selectedItem?.owner_id;
+
+    console.log("User ID used:", userId);
+
+    async function fetchApprovedItems() {
+      try {
+        const apiUrl = `http://localhost:8000/api/user/my-items/approved/${userId}`;
+        console.log("Fetching data from:", apiUrl);
+
+        const response = await fetch(apiUrl);
+
+        if (!response.ok) {
+          console.error(`HTTP error! status: ${response.status}`);
+          approvedItemsList.innerHTML = `<p>Error: Failed to fetch approved items (HTTP ${response.status})</p>`;
+          return;
         }
 
-        // Optional: load renter reviews by default
-        fetchReviews(userId, "renter", renterContent);
-    });
+        const { data, success } = await response.json();
 
-//Function to get items
-document.addEventListener("DOMContentLoaded", () => {
-  const approvedItemsList = document.getElementById("approvedItemsList");
-  const selectedItem = JSON.parse(localStorage.getItem("selectedItem"));
-  const userId = selectedItem?.user_id || selectedItem?.id || htmlUserId;
-  const htmlUserId = document.getElementById("items").dataset.userId;
+        if (success) {
+          renderApprovedItems(data);
+        } else {
+          console.error(
+            "Failed to load approved items:",
+            data ? data.message || "Unknown error" : "Empty response"
+          );
+          approvedItemsList.innerHTML = "<p>Error loading approved items</p>";
+        }
+      } catch (error) {
+        console.error("Error fetching approved items:", error);
+        approvedItemsList.innerHTML =
+          "<p>Connection error while loading items</p>";
+      }
+    }
 
-  console.log("User ID used:", userId);
+    function renderApprovedItems(items) {
+      approvedItemsList.innerHTML = "";
 
-  async function fetchApprovedItems() {
-    try {
-      const apiUrl = `http://localhost:8000/api/user/my-items/approved/${userId}`;
-      console.log("Fetching data from:", apiUrl);
-
-      const response = await fetch(apiUrl);
-
-      if (!response.ok) {
-        console.error(`HTTP error! status: ${response.status}`);
-        approvedItemsList.innerHTML = `<p>Error: Failed to fetch approved items (HTTP ${response.status})</p>`;
+      if (!items || items.length === 0) {
+        approvedItemsList.innerHTML = "<p>No approved items found.</p>";
         return;
       }
 
-      const data = await response.json();
-
-      console.log("API response for approved items:", data);
-
-      if (data && data.success) {
-        renderApprovedItems(data.data);
-      } else {
-        console.error("Failed to load approved items:", data ? (data.message || "Unknown error") : "Empty response");
-        approvedItemsList.innerHTML = "<p>Error loading approved items</p>";
-      }
-    } catch (error) {
-      console.error("Error fetching approved items:", error);
-      approvedItemsList.innerHTML = "<p>Connection error while loading items</p>";
-    }
-  }
-
-  function renderApprovedItems(items) {
-    approvedItemsList.innerHTML = "";
-
-    if (!items || items.length === 0) {
-      approvedItemsList.innerHTML = "<p>No approved items found.</p>";
-      return;
-    }
-
-    items.forEach(item => {
-      const itemHTML = `
+      items.forEach((item) => {
+        const itemHTML = `
         <div class="shoppingItem">
           <div class="itemImage">
-            <img src="${item.item_image || '/images/default-item.png'}" alt="${item.item_name}" />
+            <img src="${item.item_image || "/images/default-item.png"}" alt="${
+          item.item_name
+        }" />
           </div>
           <div class="itemDetails">
             <h3><strong>${item.item_name}</strong></h3>
@@ -1064,13 +1104,10 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         </div>
       `;
-      approvedItemsList.innerHTML += itemHTML;
-    });
-  }
+        approvedItemsList.innerHTML += itemHTML;
+      });
+    }
 
-  fetchApprovedItems();
-});
-
-
-
+    fetchApprovedItems();
+  });
 </script>
