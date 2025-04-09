@@ -133,8 +133,14 @@
               <div class="toggle-slider"></div>
             </div>
           </div>
-          <div id="renterContent" class="content-box"></div>
-          <div id="ownerContent" class="content-box" style="display: none"> </div>
+          <hr>
+          <div id="renterContent" class="content-box">
+            
+
+          </div>
+          <div id="ownerContent" class="content-box" style="display: none"> 
+
+          </div>
 
         </div>
       </div>
@@ -960,16 +966,23 @@
     reviews.forEach((review) => {
       const reviewHTML = `
         <div class="reviewItem">
-          <div>
+          <br>
+          <div class="review-header">
             <img class="itemImage" src="/uploads/${review.profile_image}" alt="${review.renter}" />
-          </div>
-          <div class="reviews">
-            <h3><strong>${review.renter}</strong></h3>
+            <div class="header-info">
+            <h3>${review.renter}</h3>
             <p>${review.location}</p>
-            <h3><strong>${review.item_name}</strong></h3>
-            <p><strong>Rating:</strong> ${generateStars(review.stars)}</p>
+              </div>
+          </div>
+          <div class="review-content">
+            <div class="item-rate">
+              <span> ${generateStars(review.stars)}</span>
+              <strong><p>${review.item_name}</p></strong>
+              </div>
             <p><strong>Review:</strong> ${review.review_text}</p>
           </div>
+          <br>
+          <hr>
         </div>
       `;
       container.innerHTML += reviewHTML;
