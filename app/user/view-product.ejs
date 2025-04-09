@@ -133,66 +133,9 @@
               <div class="toggle-slider"></div>
             </div>
           </div>
+          <div id="renterContent" class="content-box"></div>
+          <div id="ownerContent" class="content-box" style="display: none"> </div>
 
-          <div id="renterContent" class="content-box">
-            <div class="content-wrapper">
-              <hr />
-              <div class="review-header">
-                <div class="pfp">
-                  <img id="" src="" alt="Profile Picture" />
-                </div>
-                <div class="header-info">
-                  <h4 id="profileName">
-                    <p>Name</p>
-                  </h4>
-                  <h4 id="profileLocation">
-                    <p>location</p>
-                  </h4>
-                </div>
-              </div>
-              <div class="review-content">
-                <div class="item-rate">
-                  <span id="owner-rating">⭐ Loading...</span>
-                  <p>Item Name</p>
-                </div>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-              </div>
-              <hr />
-            </div>
-          </div>
-
-          <div id="ownerContent" class="content-box" style="display: none">
-            <div class="content-wrapper">
-              <hr />
-              <div class="review-header">
-                <div class="pfp">
-                  <img id="" src="" alt="Profile Picture" />
-                </div>
-                <div class="header-info">
-                  <h4 id="profileName">
-                    <p>Name</p>
-                  </h4>
-                  <h4 id="profileLocation">
-                    <p>location</p>
-                  </h4>
-                </div>
-              </div>
-              <div class="review-content">
-                <div class="item-rate">
-                  <span id="owner-rating">⭐ Loading...</span>
-                  <p>Item Name</p>
-                </div>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-              </div>
-              <hr />
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -965,77 +908,95 @@
     const renterContent = document.getElementById("renterContent");
     const ownerContent = document.getElementById("ownerContent");
 
+    
     renterBtn.addEventListener("click", () => {
       renterContent.style.display = "block";
       ownerContent.style.display = "none";
-      fetchReviews(userId, "renter", renterContent);
+      console.log("renter ID used:", userId);      
+      fetchReviews(userId, "owner", renterContent);
+      console.log("fetched reviews:", data);
     });
 
     ownerBtn.addEventListener("click", () => {
       ownerContent.style.display = "block";
       renterContent.style.display = "none";
-      fetchReviews(userId, "owner", ownerContent);
+      console.log("Owner ID used:", userId);
+      fetchReviews(userId, "renter", ownerContent);
+      console.log("fetched reviews:", data);
     });
 
-    function fetchReviews(userId, role, container) {
-      const apiUrl = `http://localhost:8000/api/user/profile/reviews/{user_id}?role=owner`;
+    async function fetchReviews(userId, role, container) {
+      try {
+        const apiUrl = `http://localhost:8000/api/user/profile/reviews/${userId}?role=owner`;
+        console.log("Fetching data from:", apiUrl);
 
-      fetch(apiUrl)
-        .then((response) => response.json())
-        .then((reviews) => {
-          container.innerHTML = ""; // Clear previous content
+        const response = await fetch(apiUrl);
+        const { data, success } = await response.json();
+        console.log("Reviews data:", data);
 
-          if (reviews.length === 0) {
-            container.innerHTML = `<p>No ${(role =
-              owner)} reviews available.</p>`;
+        if (!response.ok) {
+            console.error(`HTTP error! status: ${response.status}`);
+            container.innerHTML = `<p>Error: Failed to fetch reviews (HTTP ${response.status})</p>`;
             return;
-          }
+        }
 
-          reviews.forEach((review) => {
-            const reviewHTML = `
-                            <div class="content-wrapper">
-                                <hr>
-                                <div class="review-header">
-                                    <div class="pfp">
-                                        <img src="${
-                                          review.reviewer_profile_pic ||
-                                          "/default-pic.jpg"
-                                        }" alt="Profile Picture"/>
-                                    </div>
-                                    <div class="header-info">
-                                        <h4>${review.reviewer_name}</h4>
-                                        <h4>${review.reviewer_location}</h4>
-                                    </div>
-                                </div>
-                                <div class="review-content">
-                                    <div class="item-rate">
-                                        <span>⭐ ${review.rating}</span>
-                                        <p>${review.item_name}</p>
-                                    </div>
-                                    <p>${review.comment}</p>
-                                </div>
-                                <hr>
-                            </div>`;
-            container.innerHTML += reviewHTML;
-          });
-        })
-        .catch((error) => {
-          container.innerHTML = `<p>Error loading ${role} reviews.</p>`;
-          console.error("Error fetching reviews:", error);
-        });
+        if (success) {
+            
+            renderReviews(data);
+        } else {
+            console.error(
+            "Failed to load reviews:",
+            data ? data.message || "Unknown error" : "Empty response"
+            );
+            container.innerHTML = "<p>Error loading reviews</p>";
+        }
+      } catch (error) {
+        console.error("Error fetching reviews:", error.message  );
+        container.innerHTML = "<p>Connection error while loading reviews</p>";
+      }
     }
 
-    // Optional: load renter reviews by default
-    fetchReviews(userId, "renter", renterContent);
+    function renderReviews(){
+        const reviewsList = document.getElementById("reviewsList");
+        reviewsList.innerHTML = "";
+
+        if (!reviews || reviews.length === 0) {
+        reviewsList.innerHTML = "<p>No reviews found.</p>";
+        return;
+        }
+
+        reviews.forEach((review) => {
+        const reviewHTML = `
+            <div class="reviewItem">
+            <div>
+                <img class="itemImage" src="/uploads/${review.profile_image}" alt = "${review.renter}" />
+            </div>
+            <div class="reviews">
+                <h3><strong>${revews.renter}</strong></h3>
+                <p></strong> ${reviews.renter_location}</strong></p>
+                <h3><strong>${reviews.item_name}</strong></h3>
+                <p><strong>Rating:</strong> ${generateStars(review.stars)}</p>
+                <p><strong>Review:</strong> ${review.review_text}</p>
+            </div>
+            </div>
+        `;
+        reviewsList.innerHTML += reviewHTML;
+        });
+        console.log("role used:", role);
+
+    fetchReviews(userId, role, container);
+    }
   });
 
+  
+
+    
   //Function to get items
   document.addEventListener("DOMContentLoaded", () => {
     const approvedItemsList = document.getElementById("approvedItemsList");
     const selectedItem = JSON.parse(localStorage.getItem("selectedItem"));
     const userId = selectedItem?.owner_id;
 
-    console.log("User ID used:", userId);
 
     async function fetchApprovedItems() {
       try {
