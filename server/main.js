@@ -52,6 +52,23 @@ app.use("/api/admin", await loadRoute("../server/routes/api/admin/index.js"));
 // Backend User route
 app.use("/api/user", await loadRoute("../server/routes/api/user/index.js"));
 
+// 404 fallback route
+app.use((req, res, next) => {
+  const error = new Error('Not Found');
+  error.status = 404;
+  next(error);
+});
+
+// Central error handler
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).json({
+    error: {
+      message: err.message,
+    },
+  });
+});
+
+
 // Start server
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
