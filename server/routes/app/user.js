@@ -198,7 +198,7 @@ router.get('/listing', checkAuth, (req, res) => {
  */
 router.get('/view-product/:item_id', optionalAuth, async (req, res) => {
     // Set the user_id
-    let renter_id = ''
+    let renter_id = 0
     if (req.user !== undefined) {
         renter_id = req.user.id
     }
