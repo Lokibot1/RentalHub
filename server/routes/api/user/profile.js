@@ -197,6 +197,7 @@ router.get("/reviews/:user_id", async (req, res) => {
                reviews.rating                                                                         AS stars,
                reviews.review_text,
                items.name                                                                             AS item_name,
+               DATE(reviews.created_at)                                                               AS date_posted,
                CONCAT(users_reviewer.address, ' ', users_reviewer.barangay, ' ', users_reviewer.city) AS location
         FROM reviews
                  LEFT JOIN items ON reviews.item_id = items.id

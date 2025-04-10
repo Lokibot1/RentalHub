@@ -267,6 +267,8 @@
           contentBox.innerHTML = ""; 
 
           reviews.forEach(review => {
+            const formattedDate = new Date(review.date_posted).toLocaleDateString('en-US');
+            
               const reviewHTML = `
                   <div class="content-wrapper">
                       <hr>
@@ -276,6 +278,7 @@
                           <div class="header-info">
                               <h2>${review.renter}</h2>
                               <p>${review.location}</p>
+                              <p>${formattedDate}<p>
                           </div>
                           
                       </div>
