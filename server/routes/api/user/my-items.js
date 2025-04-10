@@ -1,6 +1,7 @@
 import express from "express"
 import jwt from "jsonwebtoken"
 import {db} from "../../../configs/db.js"
+import { sendApprovalNotification } from '../../../configs/mail.js'; // Import your mailer utility
 
 const router = express.Router()
 
@@ -174,19 +175,45 @@ router.patch("/rental-requests/approved", (req, res) => {
     db.beginTransaction((err) => {
         if (err) return res.status(500).json({success: false, message: "Transaction initiation failed."});
 
-        // Get item_id and rental_quantity
+
+        // const selectSql = `
+        //        SELECT rental_transactions.item_id,
+        //             rental_transactions.rental_quantity,
+        //             items.name AS item_name,
+        //             users.email AS renter_email
+        //     FROM rental_transactions
+        //     JOIN items ON items.id = rental_transactions.item_id
+        //     JOIN users ON users.id = rental_transactions.renter_id
+        //     WHERE rental_transactions.id = ? FOR UPDATE
+        // `
+
         const selectSql = `
-            SELECT item_id, rental_quantity
-            FROM rental_transactions
-            WHERE id = ? FOR
-            UPDATE
+        SELECT rental_transactions.item_id, 
+       rental_transactions.rental_quantity, 
+       items.name AS item_name,
+       renter.email AS renter_email,
+       owner.email AS owner_email,
+       owner.contact_number,
+       owner.social_media
+FROM rental_transactions
+JOIN items ON items.id = rental_transactions.item_id
+JOIN users AS renter ON renter.id = rental_transactions.renter_id
+JOIN users AS owner ON owner.id = items.user_id
+WHERE rental_transactions.id = ? FOR UPDATE
         `
+
         db.query(selectSql, [rental_transaction_id], (err, results) => {
             if (err || results.length === 0) {
                 return rollback(res, "Transaction details not found.")
             }
 
-            const {item_id, rental_quantity} = results[0]
+            const { item_id, item_name, rental_quantity, renter_email, contact_number, owner_email, social_media } = results[0];
+
+            const ownerContact = {
+                contact_number,
+                email: owner_email,
+                social_media
+              };
 
             // Approve rental request
             const updateTransactionSql = `
@@ -210,12 +237,17 @@ router.patch("/rental-requests/approved", (req, res) => {
                         return rollback(res, "Insufficient stock or update failed.")
                     }
 
+
+                    // Send approval notification email to item owner
+                    sendApprovalNotification(renter_email, item_name, rental_quantity, rental_transaction_id, ownerContact);
+
+
                     db.commit((err) => {
                         if (err) return res.status(500).json({success: false, message: "Commit failed."});
 
                         res.status(200).json({
                             success: true,
-                            message: 'Rental request approved, stock updated.'
+                            message: 'Rental request approved, stock updated, and notification sent.'
                         })
                     })
                 })
