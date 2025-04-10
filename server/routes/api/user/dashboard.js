@@ -17,9 +17,15 @@ router.get("/:user_id", async (req, res) => {
     SELECT 
         users.id AS user_id,
         (SELECT COUNT(*) FROM items WHERE items.user_id = users.id AND is_approved != 1) AS total_pending_posts,
+
         (SELECT COUNT(*) FROM items WHERE items.user_id = users.id AND is_approved = 1) AS total_items_posted,
-        (SELECT COUNT(*) FROM rental_transactions WHERE is_approved = 1) AS total_items_rented,
-        (SELECT COUNT(*) FROM rental_transactions WHERE is_approved = 0 AND users.id = ?) AS total_items_rent_request
+
+        (SELECT COUNT(*) FROM rental_transactions rt
+                                LEFT JOIN items i ON rt.item_id = i.id
+                         WHERE rt.status = 'ongoing' AND (rt.renter_id = users.id OR i.user_id = users.id)
+                       ) AS total_items_rented,
+
+        (SELECT COUNT(*) FROM rental_transactions WHERE is_approved = 0 AND renter_id = users.id) AS total_items_rent_request
         FROM users
         WHERE users.id = ?
     `;
