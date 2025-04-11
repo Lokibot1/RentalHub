@@ -60,7 +60,8 @@ VALUES ('Events & Parties', 'events-and-parties'),
        ('Tools & Equipment', 'tools-and-equipment'),
        ('Musical Instruments', 'musical-instruments'),
        ('Home & Office', 'home-and-office'),
-       ('Pets Accessories', 'pets-accessories');
+       ('Pets Accessories', 'pets-accessories'),
+       ('Books and Literature', 'books-and-literature');
 
 
 -- roles
