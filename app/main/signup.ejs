@@ -1,6 +1,7 @@
 <!-- CSS -->
 <link rel="stylesheet" href="/css/signup.css">
 <link rel="web icon" type="png" href="images/webicon.png">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
 <!-- Body -->
 <nav class="navbar">
     <a href="/" class="logo">
@@ -13,10 +14,13 @@
     <form id="signup-form" onsubmit="signup(event)">
         <input type="text" id="first-name" placeholder="First Name">
         <p id="first-name-error" class="error-message"></p>
+
         <input type="text" id="last-name" placeholder="Last Name">
         <p id="last-name-error" class="error-message"></p>
-        <input type="date" name="birth_date" id="birthdate" placeholder="Date of Birth">
+
+        <input type="text" id="birthdate" placeholder="Birthdate">
         <p id="birth-date-error" class="error-message"></p>
+
         <input type="text" id="contact-number" placeholder="Contact Number">
         <p id="contact-error" class="error-message"></p>
 
@@ -117,4 +121,5 @@
     <a href="/login">Already have an account?</a>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
 <script src="/js/auth-script.js"></script>

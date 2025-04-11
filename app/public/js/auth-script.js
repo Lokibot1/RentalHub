@@ -119,3 +119,5 @@ function handlePasswordInput(fieldId) {
     }
 }
 
+//date picker
+var picker = new Pikaday({ field: document.getElementById('birthdate') });
