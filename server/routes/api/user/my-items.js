@@ -1,7 +1,7 @@
 import express from "express"
 import jwt from "jsonwebtoken"
 import {db} from "../../../configs/db.js"
-import { sendApprovalNotification } from '../../../helpers/send-approval-notification.js'; // Import your mailer utility
+import { sendNotification } from '../../../helpers/send-notification.js'; // Import your mailer utility
 
 const router = express.Router()
 
@@ -227,7 +227,7 @@ router.patch("/rental-requests/approved", (req, res) => {
                     }
 
                     // Send approval notification email to item owner
-                    sendApprovalNotification(renter_email, item_name, rental_quantity, rental_transaction_id, ownerContact);
+                    sendNotification(renter_email, item_name, rental_quantity, rental_transaction_id, ownerContact);
 
 
                     db.commit((err) => {

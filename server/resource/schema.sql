@@ -36,6 +36,8 @@ CREATE TABLE IF NOT EXISTS users
     created_at           TIMESTAMP             DEFAULT CURRENT_TIMESTAMP
 );
 
+ALTER TABLE users
+    ADD COLUMN birth_date DATE NOT NULL DEFAULT '2000-01-01' AFTER last_name;
 
 -- Note: (Only for development)
 -- Password is '1234567a'

@@ -1,7 +1,7 @@
 // Function to send the approval notification email
 import { transporter } from '../configs/mail.js'
 
-export const sendApprovalNotification = (to, item_name, rental_quantity, rental_transaction_id, owner_contact) => {
+export const sendNotification = (to, item_name, rental_quantity, rental_transaction_id, owner_contact) => {
     const subject = 'Rental Request Approved';
     const html = `
         <p>Your rental request for <strong>${item_name}</strong> has been approved.</p>

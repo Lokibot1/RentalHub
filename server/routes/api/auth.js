@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken"
 import { transporter, mailOptions } from "../../configs/mail.js"
 import { db } from "../../configs/db.js"
 import Joi from "joi"
+import dayjs from "dayjs"
 
 const router = express.Router();
 
@@ -15,6 +16,19 @@ const registerSchema = Joi.object({
     last_name: Joi.string().required().messages({
         "string.empty": "Last name is required."
     }),
+    birth_date: Joi.date()
+        .required()
+        .custom((value, helpers) => {
+            const age = dayjs().diff(dayjs(value), 'year');
+            if (age < 18) {
+                return helpers.message("You must be at least 18 years old.");
+            }
+            return value;
+        })
+        .messages({
+            "date.base": "Birth date must be a valid date.",
+            "any.required": "Birth date is required."
+        }),
     contact_number: Joi.string().pattern(/^\d{10,12}$/).required().messages({
         "string.pattern.base": "Contact number must be 10-12 digits.",
         "string.empty": "Contact number is required."
@@ -55,7 +69,7 @@ router.post("/register", async (req, res) => {
         });
     }
 
-    const { first_name, last_name, contact_number, email, password } = req.body;
+    const { first_name, last_name, birth_date, contact_number, email, password } = req.body;
 
     try {
         // Hash password before DB operations to reduce async bottlenecks
@@ -63,11 +77,11 @@ router.post("/register", async (req, res) => {
 
         // Atomic Insert (Handles Duplicate Emails)
         const insertQuery = `
-            INSERT INTO users (first_name, last_name, contact_number, email, password)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO users (first_name, last_name, birth_date, contact_number, email, password)
+            VALUES (?, ?, ?, ?, ?, ?)
         `;
         const [result] = await db.promise().query(insertQuery, [
-            first_name, last_name, contact_number, email, hashedPassword
+            first_name, last_name, birth_date, contact_number, email, hashedPassword
         ]);
 
         const userId = result.insertId;
