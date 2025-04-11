@@ -26,7 +26,7 @@ async function signup(event) {
             body: JSON.stringify({
                 first_name: firstName,
                 last_name: lastName,
-                birth_date: birthDate,
+                birth_date: selectedDateInstance,
                 contact_number: contactNumber,
                 email: email,
                 password: password,
@@ -43,7 +43,7 @@ async function signup(event) {
             if(data.errors.last_name) {
                 lastNameError.textContent = data.errors.last_name
             }
-            if(data.birth_date) {
+            if(data.errors.birth_date) {
                 birthdateError.textContent = data.errors.birth_date
             }
             if (data.errors.email) {
@@ -122,4 +122,14 @@ function handlePasswordInput(fieldId) {
 }
 
 //date picker
-var picker = new Pikaday({ field: document.getElementById('birthdate') });
+let selectedDateInstance = null;
+
+var picker = new Pikaday({ 
+    field: document.getElementById('birth-date'),
+    format: 'MM/DD/YYYY',
+    onSelect: function(date) {
+        selectedDateInstance = new Date(date); // this is a native Date object
+        console.log('Formatted Display:', selectedDateInstance); // e.g., 04/11/2025
+  }
+});
+
