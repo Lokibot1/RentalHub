@@ -27,6 +27,9 @@ function getCategoryName(categoryValue) {
         case "8":
             categoryName = "pets-accessories";
             break;
+        case "9":
+            categoryName = "books-and-literature";
+            break;
     }
     return categoryName;
 }

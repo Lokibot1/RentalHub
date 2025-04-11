@@ -27,6 +27,9 @@ function getCategoryId(categoryValue) {
         case "pets-accessories":
             categoryId = 8;
             break;
+        case "books-and-literature":
+            categoryId = 9;
+            break;
     }
     return categoryId;
 }
