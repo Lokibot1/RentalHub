@@ -15,28 +15,26 @@ DROP TABLE IF EXISTS users;
 -- users
 CREATE TABLE IF NOT EXISTS users
 (
-    id             INT AUTO_INCREMENT PRIMARY KEY,
-    role_id        INT          NOT NULL DEFAULT 2,
-    first_name     VARCHAR(50)  NOT NULL,
-    middle_name    VARCHAR(20),
-    last_name      VARCHAR(50)  NOT NULL,
-    suffix         VARCHAR(10),
-    contact_number VARCHAR(20)  NOT NULL,
-    social_media   VARCHAR(100),
-    region         VARCHAR(100),
-    city           VARCHAR(100),
-    barangay       VARCHAR(100),
-    address        VARCHAR(150),
-    postal_code    VARCHAR(6),
-    profile_image  VARCHAR(50),
-    email          VARCHAR(100) NOT NULL UNIQUE,
-    password       VARCHAR(255) NOT NULL,
-    otp            INT(6),
-    created_at     TIMESTAMP             DEFAULT CURRENT_TIMESTAMP
+    id                   INT AUTO_INCREMENT PRIMARY KEY,
+    role_id              INT          NOT NULL DEFAULT 2,
+    first_name           VARCHAR(50)  NOT NULL,
+    middle_name          VARCHAR(20),
+    last_name            VARCHAR(50)  NOT NULL,
+    suffix               VARCHAR(10),
+    contact_number       VARCHAR(20)  NOT NULL,
+    social_media         VARCHAR(100),
+    region               VARCHAR(100),
+    city                 VARCHAR(100),
+    barangay             VARCHAR(100),
+    address              VARCHAR(150),
+    postal_code          VARCHAR(6),
+    profile_image        VARCHAR(50),
+    email                VARCHAR(100) NOT NULL UNIQUE,
+    password             VARCHAR(255) NOT NULL,
+    password_reset_token VARCHAR(255) NULL,
+    otp                  INT(6),
+    created_at           TIMESTAMP             DEFAULT CURRENT_TIMESTAMP
 );
-
-ALTER TABLE users
-    ADD COLUMN password_reset_token VARCHAR(255) NULL AFTER password;
 
 
 -- Note: (Only for development)
@@ -91,32 +89,29 @@ CREATE TABLE IF NOT EXISTS items
     category_id INT            NOT NULL,
     is_archived TINYINT(1)     NOT NULL DEFAULT 0,
     is_approved TINYINT(1)     NOT NULL DEFAULT 0,
+    is_declined TINYINT(1)     NOT NULL DEFAULT 0,
     created_at  TIMESTAMP               DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories (id),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
-ALTER TABLE items
-    ADD COLUMN is_declined TINYINT(1) NOT NULL DEFAULT 0 AFTER is_approved;
 
 -- reviews
 CREATE TABLE reviews
 (
     id             INT AUTO_INCREMENT PRIMARY KEY,
-    item_id        INT NOT NULL,
-    item_owner_id  INT NOT NULL,
-    reviewer_id    INT NOT NULL,
-    item_renter_id INT NULL,
-    for_user       INT NOT NULL,
-    rating         INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    item_id        INT                      NOT NULL,
+    role           ENUM ('owner', 'renter') NOT NULL DEFAULT 'owner',
+    item_owner_id  INT                      NOT NULL,
+    reviewer_id    INT                      NOT NULL,
+    item_renter_id INT                      NULL,
+    for_user       INT                      NOT NULL,
+    rating         INT                      NOT NULL CHECK (rating BETWEEN 1 AND 5),
     review_text    TEXT,
-    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at     TIMESTAMP                         DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (item_id) REFERENCES items (id)
 );
-
-ALTER TABLE reviews
-    ADD COLUMN role ENUM ('owner', 'renter') NOT NULL DEFAULT 'owner' AFTER item_id;
 
 
 -- inventory
@@ -125,37 +120,29 @@ CREATE TABLE inventory
     id             INT PRIMARY KEY AUTO_INCREMENT,
     item_id        INT,
     stock_quantity INT       DEFAULT 0,
+    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_updated   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (item_id) REFERENCES items (id)
 );
 
-ALTER TABLE inventory
-    ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER stock_quantity;
 
 -- rental_transactions
 CREATE TABLE rental_transactions
 (
-    id               INT AUTO_INCREMENT PRIMARY KEY,
-    renter_id        INT                         NOT NULL,
-    item_id          INT                         NOT NULL,
-    start_date       DATE                        NOT NULL,
-    end_date         DATE                        NOT NULL,
-    total_price      DECIMAL(10, 2)              NOT NULL,
-    rental_quantity  INT                         NOT NULL                 DEFAULT 1,
-    mode_of_delivery ENUM ('meetup', 'delivery') NOT NULL                 DEFAULT 'meetup',
-    status           ENUM ('pending', 'ongoing', 'cancelled', 'declined') DEFAULT 'pending',
-    is_approved      TINYINT(1)                  NOT NULL                 DEFAULT 0,
-    created_at       TIMESTAMP                                            DEFAULT CURRENT_TIMESTAMP,
-    updated_at       TIMESTAMP                                            DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    id                      INT AUTO_INCREMENT PRIMARY KEY,
+    renter_id               INT                         NOT NULL,
+    item_id                 INT                         NOT NULL,
+    start_date              DATE                        NOT NULL,
+    end_date                DATE                        NOT NULL,
+    total_price             DECIMAL(10, 2)              NOT NULL,
+    rental_quantity         INT                         NOT NULL                         DEFAULT 1,
+    mode_of_delivery        ENUM ('meetup', 'delivery') NOT NULL                         DEFAULT 'meetup',
+    status                  ENUM ('pending', 'ongoing', 'cancelled', 'declined', 'done') DEFAULT 'pending',
+    is_renter_submit_review TINYINT(1)                  NOT NULL                         DEFAULT 0,
+    is_owner_submit_review  TINYINT(1)                  NOT NULL                         DEFAULT 0,
+    is_approved             TINYINT(1)                  NOT NULL                         DEFAULT 0,
+    created_at              TIMESTAMP                                                    DEFAULT CURRENT_TIMESTAMP,
+    updated_at              TIMESTAMP                                                    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (renter_id) REFERENCES users (id),
     FOREIGN KEY (item_id) REFERENCES items (id)
 );
-
-ALTER TABLE rental_transactions
-    MODIFY COLUMN status ENUM ('pending', 'ongoing', 'cancelled', 'declined', 'done') DEFAULT 'pending';
-
-ALTER TABLE rental_transactions
-    ADD COLUMN is_renter_submit_review TINYINT(1) NOT NULL DEFAULT 0 AFTER status;
-
-ALTER TABLE rental_transactions
-    ADD COLUMN is_owner_submit_review TINYINT(1) NOT NULL DEFAULT 0 AFTER is_renter_submit_review;

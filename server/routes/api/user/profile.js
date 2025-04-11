@@ -197,6 +197,7 @@ router.get("/reviews/:user_id", async (req, res) => {
                reviews.rating                                                                         AS stars,
                reviews.review_text,
                items.name                                                                             AS item_name,
+               DATE(reviews.created_at)                                                               AS date_posted,
                CONCAT(users_reviewer.address, ' ', users_reviewer.barangay, ' ', users_reviewer.city) AS location
         FROM reviews
                  LEFT JOIN items ON reviews.item_id = items.id
@@ -205,9 +206,8 @@ router.get("/reviews/:user_id", async (req, res) => {
                  LEFT JOIN rental_transactions ON reviews.item_renter_id = rental_transactions.id
         WHERE reviews.for_user = ?
           AND reviews.role = ?
+        ORDER BY reviews.created_at DESC
     `
-
-
     db.query(sql, [user_id, role], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
