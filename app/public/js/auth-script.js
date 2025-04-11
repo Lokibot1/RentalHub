@@ -9,6 +9,7 @@ async function signup(event) {
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("signup-password").value;
     const confirmPassword = document.getElementById("confirm-password").value;
+    const birthDate = document.getElementById("birth-date").value;
 
     // Error elements
     const firstNameError = document.getElementById("first-name-error");
@@ -25,6 +26,7 @@ async function signup(event) {
             body: JSON.stringify({
                 first_name: firstName,
                 last_name: lastName,
+                birth_date: birthDate,
                 contact_number: contactNumber,
                 email: email,
                 password: password,
