@@ -1,7 +1,7 @@
 import express from "express"
 import jwt from "jsonwebtoken"
 import {db} from "../../../configs/db.js"
-import { sendApprovalNotification } from '../../../configs/mail.js'; // Import your mailer utility
+import { sendApprovalNotification } from '../../../helpers/send-approval-notification.js'; // Import your mailer utility
 
 const router = express.Router()
 
@@ -175,31 +175,20 @@ router.patch("/rental-requests/approved", (req, res) => {
     db.beginTransaction((err) => {
         if (err) return res.status(500).json({success: false, message: "Transaction initiation failed."});
 
-
-        // const selectSql = `
-        //        SELECT rental_transactions.item_id,
-        //             rental_transactions.rental_quantity,
-        //             items.name AS item_name,
-        //             users.email AS renter_email
-        //     FROM rental_transactions
-        //     JOIN items ON items.id = rental_transactions.item_id
-        //     JOIN users ON users.id = rental_transactions.renter_id
-        //     WHERE rental_transactions.id = ? FOR UPDATE
-        // `
-
         const selectSql = `
-        SELECT rental_transactions.item_id, 
-       rental_transactions.rental_quantity, 
-       items.name AS item_name,
-       renter.email AS renter_email,
-       owner.email AS owner_email,
-       owner.contact_number,
-       owner.social_media
-FROM rental_transactions
-JOIN items ON items.id = rental_transactions.item_id
-JOIN users AS renter ON renter.id = rental_transactions.renter_id
-JOIN users AS owner ON owner.id = items.user_id
-WHERE rental_transactions.id = ? FOR UPDATE
+            SELECT rental_transactions.item_id,
+                   rental_transactions.rental_quantity,
+                   items.name   AS item_name,
+                   renter.email AS renter_email,
+                   owner.email  AS owner_email,
+                   owner.contact_number,
+                   owner.social_media
+            FROM rental_transactions
+                     JOIN items ON items.id = rental_transactions.item_id
+                     JOIN users AS renter ON renter.id = rental_transactions.renter_id
+                     JOIN users AS owner ON owner.id = items.user_id
+            WHERE rental_transactions.id = ? FOR
+            UPDATE
         `
 
         db.query(selectSql, [rental_transaction_id], (err, results) => {
@@ -236,7 +225,6 @@ WHERE rental_transactions.id = ? FOR UPDATE
                     if (err || results.affectedRows === 0) {
                         return rollback(res, "Insufficient stock or update failed.")
                     }
-
 
                     // Send approval notification email to item owner
                     sendApprovalNotification(renter_email, item_name, rental_quantity, rental_transaction_id, ownerContact);
