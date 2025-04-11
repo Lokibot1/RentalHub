@@ -22,10 +22,21 @@
         <p id="email-error" class="error-message"></p>
 
         <div class="input-group">
-            <input type="password" id="signup-password" placeholder="Password" required>
-            <input type="password" id="confirm-password" placeholder="Re-enter Password" required>
+            <div style="position: relative; width: 48%;">
+                <input type="password" id="signup-password" placeholder="Password" required 
+                       oninput="handlePasswordInput('signup-password')" 
+                       oncopy="return false" onpaste="return false" oncut="return false">
+                <span class="toggle-password" onclick="togglePassword('signup-password')" id="toggle-signup-password"></span>
+            </div>
+            <div style="position: relative;;">
+                <input type="password" id="confirm-password" placeholder="Re-enter Password" required 
+                       oninput="handlePasswordInput('confirm-password')" 
+                       oncopy="return false" onpaste="return false" oncut="return false">
+                <span class="toggle-password" onclick="togglePassword('confirm-password')" id="toggle-confirm-password"></span>
+            </div>
         </div>
         <p id="password-error" class="error-message"></p>
+        
 
         <!-- Terms and Conditions Checkbox -->
         <div class="terms-container">

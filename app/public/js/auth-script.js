@@ -90,3 +90,27 @@ document.getElementById("signup-form").addEventListener("submit", function (even
     }
 })
 
+function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    if (field) {
+        field.type = field.type === "password" ? "text" : "password";
+    }
+}
+
+// Show/hide toggle button based on input value
+function handlePasswordInput(fieldId) {
+    const field = document.getElementById(fieldId);
+    const toggle = document.getElementById(`toggle-${fieldId}`);
+
+    if (field && toggle) {
+        toggle.style.display = field.value.length > 0 ? "block" : "none";
+    }
+}
+
+function validateContactNumber(input) {
+    input.value = input.value.replace(/\D/g, '');
+
+    if (input.value.length > 12) {
+        input.value = input.value.slice(0, 12);
+    }
+}
