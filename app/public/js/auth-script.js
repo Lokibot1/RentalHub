@@ -11,6 +11,9 @@ async function signup(event) {
     const confirmPassword = document.getElementById("confirm-password").value;
 
     // Error elements
+    const firstNameError = document.getElementById("first-name-error");
+    const lastNameError = document.getElementById("last-name-error");
+    const birthdateError = document.getElementById("birth-date-error");
     const contactError = document.getElementById("contact-error");
     const emailError = document.getElementById("email-error");
     const passwordError = document.getElementById("password-error");
@@ -32,6 +35,15 @@ async function signup(event) {
         const data = await response.json();
 
         if ('errors' in data) {
+            if(data.errors.first_name) {
+                firstNameError.textContent = data.errors.first_name
+            }
+            if(data.errors.last_name) {
+                lastNameError.textContent = data.errors.last_name
+            }
+            if(data.birth_date) {
+                birthdateError.textContent = data.errors.birth_date
+            }
             if (data.errors.email) {
                 emailError.textContent = data.errors.email
             } else {
@@ -107,10 +119,3 @@ function handlePasswordInput(fieldId) {
     }
 }
 
-function validateContactNumber(input) {
-    input.value = input.value.replace(/\D/g, '');
-
-    if (input.value.length > 12) {
-        input.value = input.value.slice(0, 12);
-    }
-}

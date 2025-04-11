@@ -11,25 +11,27 @@
 <div class="container">
     <h2>Create an Account</h2>
     <form id="signup-form" onsubmit="signup(event)">
-        <div class="input-group">
-            <input type="text" id="first-name" placeholder="First Name" required>
-            <input type="text" id="last-name" placeholder="Last Name" required>
-        </div>
-        <input type="text" id="contact-number" placeholder="Contact Number" required>
+        <input type="text" id="first-name" placeholder="First Name">
+        <p id="first-name-error" class="error-message"></p>
+        <input type="text" id="last-name" placeholder="Last Name">
+        <p id="last-name-error" class="error-message"></p>
+        <input type="date" name="birth_date" id="birthdate" placeholder="Date of Birth">
+        <p id="birth-date-error" class="error-message"></p>
+        <input type="text" id="contact-number" placeholder="Contact Number">
         <p id="contact-error" class="error-message"></p>
 
-        <input type="email" id="email" placeholder="Email" required>
+        <input type="email" id="email" placeholder="Email">
         <p id="email-error" class="error-message"></p>
 
         <div class="input-group">
             <div style="position: relative; width: 48%;">
-                <input type="password" id="signup-password" placeholder="Password" required 
+                <input type="password" id="signup-password" placeholder="Password" 
                        oninput="handlePasswordInput('signup-password')" 
                        oncopy="return false" onpaste="return false" oncut="return false">
                 <span class="toggle-password" onclick="togglePassword('signup-password')" id="toggle-signup-password"></span>
             </div>
             <div style="position: relative;;">
-                <input type="password" id="confirm-password" placeholder="Re-enter Password" required 
+                <input type="password" id="confirm-password" placeholder="Re-enter Password"
                        oninput="handlePasswordInput('confirm-password')" 
                        oncopy="return false" onpaste="return false" oncut="return false">
                 <span class="toggle-password" onclick="togglePassword('confirm-password')" id="toggle-confirm-password"></span>
