@@ -122,14 +122,32 @@ function handlePasswordInput(fieldId) {
 }
 
 //date picker
-let selectedDateInstance = null;
+let selectedDateInstance = null
 
-var picker = new Pikaday({ 
+const picker = new Pikaday({
     field: document.getElementById('birth-date'),
-    format: 'MM/DD/YYYY',
+    format: 'YYYY-MM-DD',
+    toString(date, format) {
+        const day = date.getDate() // no leading zero
+        const year = date.getFullYear()
+        const monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ]
+        const monthName = monthNames[date.getMonth()]
+        return `${monthName} ${day}, ${year}`
+    },
+    parse(dateString, format) {
+        // dateString is the result of `toString` method
+        const parts = dateString.split('/')
+        const month = parseInt(parts[0], 10) - 1
+        const day = parseInt(parts[1], 10)
+        const year = parseInt(parts[2], 10)
+        return new Date(year, month, day)
+    },
     onSelect: function(date) {
-        selectedDateInstance = new Date(date); // this is a native Date object
-        console.log('Formatted Display:', selectedDateInstance); // e.g., 04/11/2025
-  }
-});
+        // Format the selected date as 'YYYY-MM-DD'
+        selectedDateInstance = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
+})
 
