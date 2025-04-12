@@ -50,6 +50,7 @@ router.post("/", async (req, res) => {
 
         const selectSql = `
             SELECT rt.item_id, rt.rental_quantity, i.user_id AS item_owner_id, rt.renter_id,
+                   rt.start_date, rt.end_date,
 				   i.name   AS item_name,
                    renter.email AS renter_email,
                    owner.email  AS owner_email,
@@ -68,7 +69,7 @@ router.post("/", async (req, res) => {
             }
 
 
-            const { item_id, item_name, rental_quantity, renter_email, contact_number, owner_email, social_media } = results[0];
+            const { item_id, start_date, end_date, item_name, rental_quantity, renter_email, contact_number, owner_email, social_media } = results[0];
 
             const renterContact = {
                 contact_number,
@@ -76,10 +77,14 @@ router.post("/", async (req, res) => {
                 social_media
             };
 
+            const formattedStart = new Date(start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            const formattedEnd = new Date(end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
             const subject = 'New Rental Request';
             const html = `
                                 <p>Your item <strong>${item_name}</strong> has a new rental request.</p>
                                 <p>Rental Quantity: ${rental_quantity}</p>
+                                <p>Rental Period: ${formattedStart} to ${formattedEnd}</p>
                                 <p>Rental Transaction ID: ${rental_transaction_id}</p>
                                 <p>Please contact the renter using the information below for further details regarding the transaction:</p>
                                 <ul>
