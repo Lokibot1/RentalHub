@@ -236,6 +236,32 @@
 
     // Tabs Functionality
     function openCategory(categoryName) {
+        // This updates the URL in the address bar without reloading the page
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('category', categoryName);
+
+        window.history.replaceState({}, '', currentUrl);
+
+        // Add active class to the clicked button when the category name in url matches
+        const currentCategory = currentUrl.searchParams.get('category');
+
+        const categoryButtons = document.querySelectorAll('.category');
+
+        categoryButtons.forEach(button => {
+            const onclickAttr = button.getAttribute('onclick');
+            const match = onclickAttr.match(/openCategory\('(.+)'\)/);
+
+            if (match) {
+                const buttonCategory = match[1];
+
+                if (buttonCategory === currentCategory) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            }
+        });
+
         // Get items for the selected category
         fetchItems(getCategoryId(categoryName));
     }
