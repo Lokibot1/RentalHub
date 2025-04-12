@@ -1041,6 +1041,11 @@
           "<p>Connection error while loading items</p>";
       }
     }
+    
+    //TODO: Partial code
+    function getSelectedItem(item_id) {
+      localStorage.setItem("selectedItem", '');
+    }
 
     function renderApprovedItems(items) {
       approvedItemsList.innerHTML = "";
@@ -1052,7 +1057,7 @@
 
       items.forEach((item) => {
         const itemHTML = `
-          <a href="/user/view-product/${item.item_id}">
+          <a href="#" onclick="getSelectedItem(${item.item_id})">
             <div class="shoppingItem">
               <div>
                 <img class="itemImage" src="/uploads/${item.item_image}" alt = "${item.item_name}" />
