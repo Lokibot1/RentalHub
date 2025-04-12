@@ -5,6 +5,50 @@ const router = express.Router();
 
 
 /**
+ * Search item by item_id
+ *
+ * @route GET /api/shared/items/:item_id
+ */
+router.get('/:item_id', async (req, res) => {
+    const { item_id } = req.params;
+
+    const sql = `
+        SELECT items.id,
+               items.file_path                                AS image,
+               items.name,
+               items.description,
+               items.location,
+               items.price,
+               inventory.stock_quantity                       AS quantity,
+               items.user_id                                  AS owner_id,
+               CONCAT(users.first_name, ' ', users.last_name) AS owner,
+               profile_image,
+               ROUND(AVG(reviews.rating), 2)                  AS average_rating
+        FROM items
+                 JOIN inventory ON items.id = inventory.item_id
+                 JOIN users ON users.id = items.user_id
+                 LEFT JOIN reviews ON reviews.item_id = items.id
+        WHERE items.id = ?
+        GROUP BY items.id, inventory.stock_quantity, items.user_id, users.first_name, users.last_name, profile_image
+    `
+
+    db.query(sql, [item_id], (err, results) => {
+        if (err) {
+            console.error("Database query error", err);
+            return res.status(500).json({
+                success: false,
+                message: "Query failed."
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results.length > 0 ? results[0] : null
+        });
+    });
+});
+
+/**
  * Search items by keyword
  *
  * @route GET /api/shared/items/search?keyword=keyword
@@ -59,13 +103,12 @@ router.get('/search', async (req, res) => {
 });
 
 
-
 /**
- * Get all items
+ * Get all items in a specific category
  *
- * @route GET /api/shared/items/:category_id?keyword=keyword
+ * @route GET /api/shared/items/category/:category_id?keyword=keyword
  */
-router.get('/:category_id', async (req, res) => {
+router.get('/category/:category_id', async (req, res) => {
     // Get the category ID from the request
     const { category_id } = req.params;
     const { keyword } = req.query;

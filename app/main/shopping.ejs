@@ -101,7 +101,7 @@
     // Fetch items based on category ID
     async function fetchItems(categoryId) {
         try {
-            const response = await fetch(`/api/shared/items/${categoryId}`);
+            const response = await fetch(`/api/shared/items/category/${categoryId}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
