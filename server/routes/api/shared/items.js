@@ -5,6 +5,42 @@ const router = express.Router();
 
 
 /**
+ * Search items by keyword
+ *
+ * @route GET /api/shared/items/search?keyword=keyword
+ */
+router.get('/search', async (req, res) => {
+    const { keyword } = req.query
+
+    // Search query
+    let sql = `
+        SELECT items.id                 AS item_id,
+               items.file_path          AS item_image,
+               items.name               AS item_name,
+               items.location           AS item_location,
+               items.price              AS item_price,
+               inventory.stock_quantity AS item_quantity
+        FROM items
+                 JOIN inventory ON items.id = inventory.item_id
+        WHERE name LIKE ?
+    `
+    db.query(sql, [`%${keyword}%`], (err, results) => {
+        if (err) {
+            console.error("Database query error", err)
+            return res.status(500).json({ success: false, message: "Query failed." })
+        }
+
+        console.log('results', results)
+
+        res.status(200).json({
+            success: true,
+            data: results
+        })
+    })
+})
+
+
+/**
  * Get all items
  *
  * @route GET /api/shared/items/:category_id?keyword=keyword
