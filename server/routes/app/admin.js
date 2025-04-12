@@ -64,7 +64,6 @@ router.get("/admin-profile", checkAuth, checkAdmin, async (req, res) => {
 
 
 /**
- * TODO: Refactor this one
  * My Rents
  *
  * @route GET /admin/my-rents
@@ -143,7 +142,6 @@ router.get("/my-items", checkAuth, checkAdmin, async (req, res) => {
 
 
 /**
- * TODO: Refactor this to add item
  * Page for adding new post
  *
  * @route GET /admin/listing

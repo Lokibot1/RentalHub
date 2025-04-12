@@ -176,7 +176,6 @@ router.get('/archives', checkAuth, checkUser, async (req, res) => {
 
 
 /**
- * TODO: Find this page and organize it
  * User Listings
  *
  * @route GET /user/listing
