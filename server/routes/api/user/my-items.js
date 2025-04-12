@@ -176,19 +176,17 @@ router.patch("/rental-requests/approved", (req, res) => {
         if (err) return res.status(500).json({success: false, message: "Transaction initiation failed."});
 
         const selectSql = `
-            SELECT rental_transactions.item_id,
-                   rental_transactions.rental_quantity,
-                   items.name   AS item_name,
+            SELECT rt.item_id, rt.rental_quantity, i.user_id AS item_owner_id, rt.renter_id,
+					i.name   AS item_name,
                    renter.email AS renter_email,
                    owner.email  AS owner_email,
                    owner.contact_number,
                    owner.social_media
-            FROM rental_transactions
-                     JOIN items ON items.id = rental_transactions.item_id
-                     JOIN users AS renter ON renter.id = rental_transactions.renter_id
-                     JOIN users AS owner ON owner.id = items.user_id
-            WHERE rental_transactions.id = ? FOR
-            UPDATE
+            FROM rental_transactions rt
+                   JOIN items i ON rt.item_id = i.id
+                   JOIN users AS renter ON renter.id = rt.renter_id
+                   JOIN users AS owner ON owner.id = i.user_id
+            WHERE rt.id = ? FOR UPDATE;
         `
 
         db.query(selectSql, [rental_transaction_id], (err, results) => {
@@ -226,8 +224,23 @@ router.patch("/rental-requests/approved", (req, res) => {
                         return rollback(res, "Insufficient stock or update failed.")
                     }
 
+                    const subject = 'Rental Request Approved';
+                    const html = `
+                        <p>Your rental request for <strong>${item_name}</strong> has been approved.</p>
+                        <p>Rental Quantity: ${rental_quantity}</p>
+                        <p>Rental Transaction ID: ${rental_transaction_id}</p>
+                        <p>Please contact the item owner using the information below for further details regarding the transaction:</p>
+                        <ul>
+                        <li><strong>Phone Number:</strong> ${ownerContact.contact_number}</li>
+                        <li><strong>Email:</strong> ${ownerContact.email}</li>
+                        <li><strong>Social Media:</strong> ${ownerContact.social_media}</li>
+                        </ul>
+                    `
+
+                    const template = {subject, html}
+
                     // Send approval notification email to item owner
-                    sendNotification(renter_email, item_name, rental_quantity, rental_transaction_id, ownerContact);
+                    sendNotification(renter_email, template);
 
 
                     db.commit((err) => {

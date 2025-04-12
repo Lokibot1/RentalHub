@@ -1,6 +1,7 @@
 import express from "express"
-import {db} from "../../../configs/db.js"
+import { db } from "../../../configs/db.js"
 import jwt from "jsonwebtoken";
+import { sendNotification } from '../../../helpers/send-notification.js'; // Import your mailer utility
 
 const router = express.Router();
 
@@ -21,6 +22,8 @@ router.post("/", async (req, res) => {
         mode_of_delivery
     } = req.body;
 
+    console.log("Request:",req.body)
+
     const total_price = parseFloat(price) * parseInt(rental_quantity, 10);
 
     const insertSql = `
@@ -40,14 +43,66 @@ router.post("/", async (req, res) => {
     ], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Insert query failed."});
+            return res.status(500).json({ success: false, message: "Insert query failed." });
         }
 
-        // Send response only once after both queries are successful
-        res.status(200).json({
-            success: true,
-            message: "Item rental transaction saved"
-        });
+        const rental_transaction_id = results.insertId; // This is the rental_transactions.id
+
+        const selectSql = `
+            SELECT rt.item_id, rt.rental_quantity, i.user_id AS item_owner_id, rt.renter_id,
+				   i.name   AS item_name,
+                   renter.email AS renter_email,
+                   owner.email  AS owner_email,
+                   renter.contact_number,
+                   renter.social_media
+            FROM rental_transactions rt
+                   JOIN items i ON rt.item_id = i.id
+                   JOIN users AS renter ON renter.id = rt.renter_id
+                   JOIN users AS owner ON owner.id = i.user_id
+            WHERE rt.id = ? FOR UPDATE;
+        `
+
+        db.query(selectSql, [rental_transaction_id], (err, results) => {
+            if (err || results.length === 0) {
+                return rollback(res, "Transaction details not found.")
+            }
+
+
+            const { item_id, item_name, rental_quantity, renter_email, contact_number, owner_email, social_media } = results[0];
+
+            const renterContact = {
+                contact_number,
+                email: renter_email,
+                social_media
+            };
+
+            const subject = 'New Rental Request';
+            const html = `
+                                <p>Your item <strong>${item_name}</strong> has a new rental request.</p>
+                                <p>Rental Quantity: ${rental_quantity}</p>
+                                <p>Rental Transaction ID: ${rental_transaction_id}</p>
+                                <p>Please contact the renter using the information below for further details regarding the transaction:</p>
+                                <ul>
+                                <li><strong>Phone Number:</strong> ${renterContact.contact_number}</li>
+                                <li><strong>Email:</strong> ${renterContact.email}</li>
+                                <li><strong>Social Media:</strong> ${renterContact.social_media}</li>
+                                </ul>
+                            `
+
+            const template = { subject, html }
+
+            // Send approval notification email to item owner
+            sendNotification(owner_email, template);
+
+            // Send response only once after both queries are successful
+            res.status(200).json({
+                success: true,
+                message: "Item rental transaction saved"
+            });
+
+        })
+
+
     });
 });
 
@@ -58,7 +113,7 @@ router.post("/", async (req, res) => {
  * @route GET /api/user/my-requests/requests/:user_id
  */
 router.get("/requests/:user_id", async (req, res) => {
-    const {user_id} = req.params
+    const { user_id } = req.params
 
     const sql = `
         SELECT rental_transactions.id                         AS id,
@@ -76,7 +131,7 @@ router.get("/requests/:user_id", async (req, res) => {
     db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Query failed."});
+            return res.status(500).json({ success: false, message: "Query failed." });
         }
 
         res.status(200).json({
@@ -93,7 +148,7 @@ router.get("/requests/:user_id", async (req, res) => {
  * @route DELETE /api/user/my-requests/cancel/:request_id
  */
 router.delete("/cancel/:request_id", (req, res) => {
-    const {request_id} = req.params;
+    const { request_id } = req.params;
 
     const deleteSql = `
         DELETE
@@ -124,7 +179,7 @@ router.delete("/cancel/:request_id", (req, res) => {
  * @route GET /api/user/my-requests/ongoing/:user_id
  */
 router.get("/ongoing/:user_id", async (req, res) => {
-    const {user_id} = req.params
+    const { user_id } = req.params
 
     const sql = `
         SELECT rental_transactions.id                         AS id,
@@ -146,7 +201,7 @@ router.get("/ongoing/:user_id", async (req, res) => {
     db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Query failed."});
+            return res.status(500).json({ success: false, message: "Query failed." });
         }
 
         res.status(200).json({
@@ -159,7 +214,7 @@ router.get("/ongoing/:user_id", async (req, res) => {
 
 // Helper function to rollback transaction
 function rollback(res, message) {
-    db.rollback(() => res.status(400).json({success: false, message}));
+    db.rollback(() => res.status(400).json({ success: false, message }));
 }
 
 /**
@@ -168,15 +223,15 @@ function rollback(res, message) {
  * @route PATCH /api/user/my-requests/return-items/:rent_transaction_id
  */
 router.patch("/return-items/:rent_transaction_id", async (req, res) => {
-    const {rent_transaction_id} = req.params;
-    const {stars, description} = req.body
+    const { rent_transaction_id } = req.params;
+    const { stars, description } = req.body
     const token = req.cookies.token || '';
     const user = jwt.verify(token, process.env.JWT_SECRET);
 
     db.beginTransaction((err) => {
-        if (err) return res.status(500).json({success: false, message: "Transaction initiation failed."});
+        if (err) return res.status(500).json({ success: false, message: "Transaction initiation failed." });
 
-            const selectSql = `
+        const selectSql = `
             SELECT rt.item_id, rt.rental_quantity, i.user_id AS item_owner_id, rt.renter_id
             FROM rental_transactions rt
             JOIN items i ON rt.item_id = i.id
@@ -188,7 +243,7 @@ router.patch("/return-items/:rent_transaction_id", async (req, res) => {
                 return rollback(res, "Transaction details not found.");
             }
 
-            const {item_id, rental_quantity, item_owner_id, renter_id} = results[0];
+            const { item_id, rental_quantity, item_owner_id, renter_id } = results[0];
 
             // Save reviews and star rating
             const createReviewAndStarRatingSql = `
