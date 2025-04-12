@@ -132,7 +132,7 @@
                 //     shoppingContainer.insertBefore(searchMessage, shoppingContainer.firstChild);
                 // }
             } else {
-                shoppingContainer.innerHTML = `<p>No items found matching your search.</p>`;
+                shoppingContainer.innerHTML = `<p>No items found.</p>`;
             }
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -208,8 +208,9 @@
     });
 
     // Clear the search field
-    // TODO: fix bug when clearing the search field
     searchInput.addEventListener('search', function () {
+        const categoryButtons = document.querySelectorAll('.category');
+
         if (searchInput.value === '') {
             // Clear the search input
             searchInput.value = '';
@@ -217,7 +218,16 @@
             // Show the categories container
             categoriesContainer.style.display = 'flex'
 
-            fetchItems(getCategoryId("events-and-parties"))
+            // Clear the active class from all category buttons
+            categoryButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // TODO: Fix this
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('category', 'events-and-parties');
+
+            fetchItems(getCategoryId('events-and-parties'))
         }
     })
 
