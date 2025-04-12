@@ -55,13 +55,13 @@ router.get("/signup", (req, res) => {
 
 /**
  * Shopping page
- * @route GET /shopping/:category
+ *
+ * @route GET /shop
  */
-router.get("/shopping/:category", optionalAuth, (req, res) => {
+router.get("/shop", optionalAuth, (req, res) => {
   res.render("main/shopping", {
     layout: "layouts/main",
-    category: toTitleCase(req.params.category),
-    title: toTitleCase(req.params.category),
+    title: 'Shop',
     isAuthenticated: req.isAuthenticated,
     role: req.role,
   });

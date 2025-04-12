@@ -12,10 +12,10 @@
         <li>
         <li><a href="#How-It-Works">How It Works</a></li>
         <li>
-        <li><a href="/shopping/events-and-parties">Shop</a></li>
+        <li><a href="/shop">Shop</a></li>
 
         <li id="auth-status">
-            <% if (isAuthenticated && role == 'admin') { %>
+            <% if (isAuthenticated && role === 'admin') { %>
                 <a href='/admin/admin-dashboard'>Admin Dashboard</a>
             <% } else if (isAuthenticated && role == 'user') { %>
                 <a href='/user/profile'>User Profile</a>

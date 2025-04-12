@@ -75,7 +75,7 @@
         document.querySelector('[name="location"]').value = item.location
 
         // Set preview values
-        document.querySelector('img#preview').src = item.image
+        document.querySelector('img#preview').src = `/uploads/${item.image}`
         document.querySelector('span#product-name').textContent = item.name
         document.querySelector('span#product-price').textContent = item.price
         document.querySelector('span#product-description').textContent = item.description
@@ -131,7 +131,7 @@
                     .then((response) => response.json())
                     .then((data) => {
                         alert("Item updated!");
-                        window.location.href = `/shopping/${getCategoryName(select.value)}`;
+                        window.location.href = '/shop';
                     })
                     .catch((error) => {
                         console.error("Error:", error);

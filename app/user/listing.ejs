@@ -139,7 +139,7 @@
                     if (data.success) {
                         alert("Item added!");
                         document.getElementById("listingForm").reset(); // Reset form
-                        window.location.href = `/shopping/${getCategoryName(formData.get('categories'))}`; // Redirect to shopping page
+                        window.location.href = '/shop'; // Redirect to shopping page
                     } else {
                         alert("Failed to add item.");
                     }

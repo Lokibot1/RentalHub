@@ -93,123 +93,151 @@
 
 <!--Scripts-->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const searchInput = document.getElementById("search");
-        const searchButton = document.getElementById("search-button");
-        const shoppingContainer = document.getElementById("shopping-container");
-        const category = window.location.pathname.split("/").pop();
+    const searchInput = document.getElementById("search");
+    const searchButton = document.getElementById("search-button");
+    const shoppingContainer = document.getElementById("shopping-container");
+    const categoriesContainer = document.querySelector(".categories-cont");
 
-        async function fetchItems(searchQuery = "") {
-            try {
-                const response = await fetch(`/api/shared/items/${getCategoryId(category)}?keyword=${(searchQuery)}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                shoppingContainer.innerHTML = "";
-
-                if (data.success && data.data.length > 0) {
-                    displayItems(data.data);
-
-                    if (searchQuery) {
-                        const resultCount = data.data.length;
-                        const searchMessage = document.createElement("div");
-                        searchMessage.className = "search-results-message";
-                        searchMessage.innerHTML = `<p>Showing ${resultCount} result${resultCount !== 1 ? 's' : ''} for "${searchQuery}"</p>`;
-
-                        // Clear Search Button
-                        const clearButton = document.createElement("button");
-                        clearButton.className = "clear-search";
-                        clearButton.innerText = "Clear Search";
-                        clearButton.addEventListener("click", function () {
-                            searchInput.value = "";
-                            fetchItems("");
-                        });
-
-                        searchMessage.appendChild(clearButton);
-                        shoppingContainer.insertBefore(searchMessage, shoppingContainer.firstChild);
-                    }
-                } else {
-                    shoppingContainer.innerHTML = `<p>No items found matching your search.</p>`;
-                }
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                shoppingContainer.innerHTML = "<p>Error loading items. Please try again later.</p>";
+    // Fetch items based on category ID
+    async function fetchItems(categoryId) {
+        try {
+            const response = await fetch(`/api/shared/items/${categoryId}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        }
 
+            const data = await response.json();
 
-        function displayItems(items) {
             shoppingContainer.innerHTML = "";
 
-            if (!items.length) {
-                shoppingContainer.innerHTML = "<p>No items found matching your search.</p>";
-                return;
+            if (data.success && data.data.length > 0) {
+                displayItems(data.data);
+
+                // if (searchQuery) {
+                //     const resultCount = data.data.length;
+                //     const searchMessage = document.createElement("div");
+                //     searchMessage.className = "search-results-message";
+                //     searchMessage.innerHTML = `<p>Showing ${resultCount} result${resultCount !== 1 ? 's' : ''} for "${searchQuery}"</p>`;
+                //
+                //     // Clear Search Button
+                //     const clearButton = document.createElement("button");
+                //     clearButton.className = "clear-search";
+                //     clearButton.innerText = "Clear Search";
+                //     clearButton.addEventListener("click", function () {
+                //         searchInput.value = "";
+                //         fetchItems("");
+                //     });
+                //
+                //     searchMessage.appendChild(clearButton);
+                //     shoppingContainer.insertBefore(searchMessage, shoppingContainer.firstChild);
+                // }
+            } else {
+                shoppingContainer.innerHTML = `<p>No items found matching your search.</p>`;
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            shoppingContainer.innerHTML = "<p>Error loading items. Please try again later.</p>";
+        }
+    }
+
+    // Search items based on user input
+    async function searchItems(query) {
+        try {
+            const response = await fetch(`/api/shared/items/search?keyword=${encodeURIComponent(query)}`);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            let shoppingList = document.createElement("ul");
-            shoppingList.className = "shoppingList";
+            const { data: items, success } = await response.json();
 
-            items.forEach(item => {
-                if (item.quantity <= 0) return;
+            if (success && items.length > 0) {
+                displayItems(items)
+            } else {
+                shoppingContainer.innerHTML = "<p>No items found matching your search.</p>";
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            shoppingContainer.innerHTML = "<p>Error loading items. Please try again later.</p>";
+        }
+    }
 
-                console.log("Search result item:", item);
+    function displayItems(items) {
+        shoppingContainer.innerHTML = "";
 
-                let li = document.createElement("li");
-                li.className = "shoppingItem";
-                li.innerHTML = `
-            <img src="${item.image}" alt="Item Image" class="itemImage">
+        if (!items.length) {
+            shoppingContainer.innerHTML = "<p>No items found matching your search.</p>";
+            return;
+        }
+
+        let shoppingList = document.createElement("ul");
+        shoppingList.className = "shoppingList";
+
+        items.forEach(item => {
+            if (item.quantity <= 0) return;
+
+            let li = document.createElement("li");
+            li.className = "shoppingItem";
+            li.innerHTML = `
+            <img src="/uploads/${item.image}" alt="Item Image" class="itemImage">
             <br>
-            ${item.name} 
+            ${item.name}
             <br><br>
             ${item.location}
             <br><br>
             <div class="item-price-quantity">
                 ₱ ${item.price} per day
-                
+
                 <p class="item-quantity"> ${item.quantity} left</p>
             </div>
         `;
 
-                li.addEventListener("click", function () {
-                    localStorage.setItem("selectedItem", JSON.stringify(item));
-                    window.location.href = `/user/view-product/${item.id}`;
-                });
-
-                shoppingList.appendChild(li);
+            li.addEventListener("click", function () {
+                localStorage.setItem("selectedItem", JSON.stringify(item));
+                window.location.href = `/user/view-product/${item.id}`;
             });
 
-            shoppingContainer.appendChild(shoppingList);
-        }
-
-        let debounceTimer;
-        searchInput.addEventListener("input", function () {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => {
-                fetchItems(this.value.trim());
-            }, 100);
+            shoppingList.appendChild(li);
         });
 
-        searchButton.addEventListener("click", function () {
-            fetchItems(searchInput.value.trim());
-        });
+        shoppingContainer.appendChild(shoppingList);
+    }
 
-        searchInput.addEventListener("keypress", function (e) {
-            if (e.key === "Enter") {
-                fetchItems(this.value.trim());
-            }
-        });
-
-        fetchItems();
+    searchButton.addEventListener("click", function () {
+        searchItems(searchInput.value.trim());
     });
+
+    // Clear the search field
+    // TODO: fix bug when clearing the search field
+    searchInput.addEventListener('search', function () {
+        if (searchInput.value === '') {
+            // Clear the search input
+            searchInput.value = '';
+
+            // Show the categories container
+            categoriesContainer.style.display = 'flex'
+
+            fetchItems(getCategoryId("events-and-parties"))
+        }
+    })
+
+    searchInput.addEventListener('keypress', function (e) {
+        if (e.key === "Enter") {
+            // Hide the categories container
+            categoriesContainer.style.display = 'none'
+
+            searchItems(searchInput.value.trim())
+        }
+    });
+
+    // Upon loading display the first category
+    fetchItems(getCategoryId("events-and-parties"))
 
 
     // Tabs Functionality
     function openCategory(categoryName) {
-        // Redirect to the category page with the path
-        window.location.href = `/shopping/${categoryName}`;
+        // Get items for the selected category
+        fetchItems(getCategoryId(categoryName));
     }
 
     // Set the active category based on URL path
@@ -248,13 +276,12 @@
             const defaultCategory = document.querySelector(".category").getAttribute("onclick").match(/'([^']+)'/)[1];
             openCategory(defaultCategory);
         }
-    });
+    })
 
 
     document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("event-and-parties").style.display = "block";
-
-    });
+        document.getElementById("event-and-parties").style.display = "block"
+    })
 
 
     //home to shopping
@@ -277,7 +304,7 @@
                 selectedContainer.style.display = "block";
             }
         }
-    });
+    })
 
     function getCategoryId(categoryValue) {
         let category = categoryValue
