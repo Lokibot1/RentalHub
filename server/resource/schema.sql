@@ -39,6 +39,9 @@ CREATE TABLE IF NOT EXISTS users
 ALTER TABLE users
     ADD COLUMN birth_date DATE NOT NULL DEFAULT '2000-01-01' AFTER last_name;
 
+ALTER TABLE users
+    ADD COLUMN status ENUM ('active', 'inactive') NOT NULL DEFAULT 'active' AFTER email;
+
 -- Note: (Only for development)
 -- Password is '1234567a'
 INSERT INTO users (role_id, first_name, last_name, contact_number, email, password, social_media, address)

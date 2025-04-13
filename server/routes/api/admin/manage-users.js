@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 /**
- * Get transactions data
+ * Get all users
  *
  * @route GET /api/admin/manage-users
  */
@@ -28,6 +28,44 @@ router.get("/", async (req, res) => {
         });
     });
 });
+
+
+/**
+ * Get user details
+ *
+ * @route GET /api/admin/manage-users/:user_id
+ */
+router.get('/:user_id', async (req, res) => {
+    const { user_id } = req.params;
+
+    const selectUserSql = `
+        SELECT DISTINCT
+            users.id,
+            CONCAT(users.first_name, ' ', users.last_name) AS fullname,
+            users.email,
+            users.contact_number,
+            users.status AS account_status,
+            COUNT(items.id) AS total_listing
+        FROM users
+                 JOIN items ON users.id = items.user_id
+        WHERE
+            items.is_archived = 0
+          AND items.is_approved = 1
+          AND users.id = ?
+    `
+    db.query(selectUserSql, [user_id], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({ success: false, message: "Query failed." });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results.length > 0 ? results[0] : null
+        });
+    });
+});
+
 
 /**
  * Search users
@@ -69,5 +107,6 @@ router.get("/search", async (req, res) => {
         });
     });
 });
+
 
 export default router
