@@ -79,7 +79,7 @@ router.get("/approved/:user_id", async (req, res) => {
 
 
 /**
- * Decline rental request and keep the item in the "Rental Requests" tab
+ * ARCHIVE ITEMS
  *
  * @route PATCH /api/user/my-items/archive-item/:item_id
  */
