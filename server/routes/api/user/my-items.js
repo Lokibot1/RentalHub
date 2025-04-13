@@ -322,7 +322,7 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
                rental_transactions.end_date                   AS end_date,
                rental_transactions.mode_of_delivery           AS mode_of_delivery,
                rental_transactions.rental_quantity            AS rental_quantity,
-               status
+               rental_transactions.status
         FROM rental_transactions
                  JOIN users ON users.id = rental_transactions.renter_id
                  JOIN items ON items.id = rental_transactions.item_id

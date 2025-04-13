@@ -198,7 +198,7 @@ router.get("/ongoing/:user_id", async (req, res) => {
                  JOIN items ON items.id = rental_transactions.item_id
                  JOIN users ON users.id = items.user_id
         WHERE rental_transactions.is_approved = 1
-          AND status = 'ongoing'
+          AND rental_transactions.status = 'ongoing'
           AND rental_transactions.is_renter_submit_review = 0
           AND rental_transactions.renter_id = ?
     `
