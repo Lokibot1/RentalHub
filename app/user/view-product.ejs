@@ -963,6 +963,7 @@
             }
 
             reviews.forEach((review) => {
+                const formattedDate = new Date(review.date_posted).toLocaleDateString('en-US');
                 const reviewHTML = `
                     <div class="reviewItem">
                       <br>
@@ -971,6 +972,7 @@
                         <div class="header-info">
                         <h3>${review.renter}</h3>
                         <p>${review.location}</p>
+                        <p>${formattedDate}<p>
                           </div>
                       </div>
                       <div class="review-content">
