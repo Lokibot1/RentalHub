@@ -62,10 +62,11 @@
                             <tr>
                                 <td><%= user.fullname %></td>
                                 <td>
-                                    <a href="#" onclick="viewUserDetail(user.id)">
+                                    <a href="#" onclick="viewUserDetail()">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
                                 </td>
+                            <td> <%= user.id %> </td>
                             </tr>
                         <% }); %>
                     <% } else { %>
@@ -156,7 +157,8 @@
     <div id="restoreToast" class="toast">User Successfully Restored!</div>
 </div>
 
-<script>
+<script src="/js/admin.js"></script>
+<script>    
     document.addEventListener("DOMContentLoaded", function () {
         const searchInput = document.querySelector(".search-bar input");
         const searchButton = document.querySelector(".search-bar button");
@@ -197,6 +199,7 @@
 
                 if (data.success && data.data.length > 0) {
                     displayUsers(data.data);
+                    console.log(data.data);
 
                     // Update search results box visibility
                     searchResultsBox.style.display = searchQuery ? "flex" : "none";
@@ -325,4 +328,3 @@
         document.head.appendChild(style);
     });
 </script>
-<script src="/js/admin.js"></script>

@@ -11,7 +11,7 @@ const router = express.Router();
  */
 router.get("/", async (req, res) => {
     const sql = `
-        SELECT CONCAT(users.first_name, ' ', users.last_name) AS fullname
+        SELECT CONCAT(users.first_name, ' ', users.last_name) AS fullname, users.id
         FROM users
         WHERE users.role_id != 1
     `
