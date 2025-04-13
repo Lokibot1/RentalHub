@@ -88,6 +88,42 @@ router.post("/approve/:item_id", async (req, res) => {
             console.error("Database not connected", err);
             return res.status(500).json({success: false, message: "Update is_approved to true failed."});
         }
+    })
+
+        const selectSql = `
+                    SELECT 
+                        i.id,
+                        i.name AS item_name,
+                        u.email AS owner_email
+                    FROM items AS i
+                    JOIN users AS u ON u.id = i.user_id
+                    WHERE i.id = ?;
+                `
+        
+                db.query(selectSql, [item_id], (err, results) => {
+                    if (err || results.length === 0) {
+                        return rollback(res, "Transaction details not found.")
+                    }
+        
+        
+                    const { item_name, owner_email, } = results[0];
+        
+        
+                    const subject = 'Item Listing Approved';
+                    const html = `
+                                    <p>We’re pleased to inform you that your listing for the item <strong>${item_name}</strong> has been approved.</p>
+                                    <p>Your submission has met our company's guidelines and posting policies.</p>
+                                    <p>Your item is now live and visible to users on the platform.</p>
+                                    <br>
+                                    <br>
+                                    <p>Thank you for being a valued member of our community.</p>
+                                    <p><strong>- Management</strong></p>
+                                    `
+        
+                    const template = { subject, html }
+        
+                    // Send approval notification email to item owner
+                    sendNotification(owner_email, template);
 
         res.status(200).json({
             success: true,
