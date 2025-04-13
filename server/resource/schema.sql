@@ -40,7 +40,7 @@ ALTER TABLE users
     ADD COLUMN birth_date DATE NOT NULL DEFAULT '2000-01-01' AFTER last_name;
 
 ALTER TABLE users
-    ADD COLUMN status ENUM ('active', 'inactive', 'restricted', 'banned') NOT NULL DEFAULT 'active' AFTER email;
+    ADD COLUMN status ENUM ('active', 'inactive', 'reported', 'banned') NOT NULL DEFAULT 'active' AFTER email;
 
 -- Note: (Only for development)
 -- Password is '1234567a'
