@@ -16,14 +16,18 @@ router.get("/:user_id", async (req, res) => {
     const sql = `
     SELECT 
         users.id AS user_id,
-        (SELECT COUNT(*) FROM items WHERE items.user_id = users.id AND is_approved != 1) AS total_pending_posts,
+        (SELECT COUNT(*) FROM items WHERE items.user_id = users.id 
+                               AND is_approved != 1
+                               AND is_declined != 1
+                               AND is_archived != 1) 
+                               AS total_pending_posts,
 
         (SELECT COUNT(*) FROM items WHERE items.user_id = users.id AND is_approved = 1) AS total_items_posted,
 
         (SELECT COUNT(*) FROM rental_transactions rt
                                 LEFT JOIN items i ON rt.item_id = i.id
                          WHERE rt.status = 'ongoing' AND (rt.renter_id = users.id OR i.user_id = users.id)
-                       ) AS total_items_rented,
+                         ) AS total_items_rented,
 
         (SELECT COUNT(*) FROM rental_transactions WHERE is_approved = 0
                               AND status != 'declined'
