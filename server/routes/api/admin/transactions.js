@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
                rental_transactions.end_date,
                CONCAT(renter.first_name, ' ', renter.last_name) AS renter,
                CONCAT(owner.first_name, ' ', owner.last_name)   AS owner,
-               status
+               rental_transactions.status
         FROM rental_transactions
                  JOIN items ON items.id = rental_transactions.item_id
                  JOIN users AS renter ON renter.id = rental_transactions.renter_id -- Getting renter details
