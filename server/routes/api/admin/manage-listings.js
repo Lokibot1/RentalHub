@@ -1,5 +1,6 @@
 import express from "express"
 import { db } from "../../../configs/db.js"
+import { sendNotification } from '../../../helpers/send-notification.js'; // Import your mailer utility
 
 const router = express.Router();
 
@@ -187,6 +188,42 @@ router.patch("/decline-requests/:item_id", async (req, res) => {
                     message: "Decline failed. Please try again."
                 })
         }
+    })
+
+         const selectSql = `
+                    SELECT 
+                        i.id,
+                        i.name AS item_name,
+                        u.email AS owner_email
+                    FROM items AS i
+                    JOIN users AS u ON u.id = i.user_id
+                    WHERE i.id = ?;
+                `
+        
+                db.query(selectSql, [item_id], (err, results) => {
+                    if (err || results.length === 0) {
+                        return rollback(res, "Transaction details not found.")
+                    }
+        
+        
+                    const { item_name, owner_email, } = results[0];
+        
+        
+                    const subject = 'Item Listing Declined';
+                    const html = `
+                                        <p>We regret to inform you that your listing for the item <strong>${item_name}</strong> has been declined.</p>
+                                        <p>Unfortunately, it did not meet our company's guidelines and posting policies.<p>
+                                        <p>We encourage you to review the item details and ensure they comply with our standards before submitting again.</p>
+                                        <br>
+                                        <br>
+                                        <p>Thank you for your understanding.</p>
+                                        <p><strong>- Management</strong><p>
+                                    `
+        
+                    const template = { subject, html }
+        
+                    // Send approval notification email to item owner
+                    sendNotification(owner_email, template);
 
         res.status(200)
             .json({
