@@ -5,6 +5,49 @@ const router = express.Router();
 
 
 /**
+ * Get all items
+ *
+ * @route GET /api/shared/items
+ */
+router.get('/', async (req, res) => {
+
+    const sql = `
+        SELECT items.id,
+               items.file_path                                AS image,
+               items.name,
+               items.description,
+               items.location,
+               items.price,
+               inventory.stock_quantity                       AS quantity,
+               items.user_id                                  AS owner_id,
+               CONCAT(users.first_name, ' ', users.last_name) AS owner,
+               profile_image,
+               ROUND(AVG(reviews.rating), 2)                  AS average_rating
+        FROM items
+                 JOIN inventory ON items.id = inventory.item_id
+                 JOIN users ON users.id = items.user_id
+                 LEFT JOIN reviews ON reviews.item_id = items.id
+        GROUP BY items.id, inventory.stock_quantity, items.user_id, users.first_name, users.last_name, profile_image
+    `
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error("Database query error", err);
+            return res.status(500).json({
+                success: false,
+                message: "Query failed."
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results
+        });
+    });
+});
+
+
+/**
  * Search item by item_id
  *
  * @route GET /api/shared/items/:item_id
