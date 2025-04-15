@@ -82,9 +82,22 @@
     <button class="category" onclick="openCategory('pets-accessories')">
         Pets Accessories
     </button>
+    
     <button class="category" onclick="openCategory('books-and-literature')">
         Books and Literature
     </button>
+</div>
+
+<div class="sort-dropdown">
+    <button class="sort-toggle" onclick="toggleSortOptions()">
+        Sort by <span class="chevron">&#9662;</span>
+    </button>
+    <ul class="sort-options" id="sortOptions">
+        <li onclick="handleSort('newest-first')">Newest First</li>
+        <li onclick="handleSort('alphabetical')">A-Z</li>
+        <li onclick="handleSort('price-low-high')">Price (low to high)</li>
+        <li onclick="handleSort('price-high-low')">Price (high to low)</li>
+    </ul>
 </div>
 
 <!-- Tabs -->
@@ -273,8 +286,6 @@
         }
     });
 
-
-
     // Tabs Functionality
     function openCategory(categoryName) {
         // This updates the URL in the address bar without reloading the page
@@ -346,8 +357,6 @@
     })
 
 
-
-
     //home to shopping
     document.addEventListener("DOMContentLoaded", function () {
         // Get the URL parameters
@@ -405,5 +414,126 @@
         }
         return categoryId;
     }
+
+// Modify the displayItems function to store items globally
+let globalItems = [];
+
+function displayItems(items) {
+    globalItems = [...items];
+    
+    shoppingContainer.innerHTML = "";
+
+    if (!items.length) {
+        shoppingContainer.innerHTML = "<p>No items found matching your search.</p>";
+        return;
+    }
+
+    renderSortedItems(globalItems);
+}
+
+
+function renderSortedItems(items) {
+    let shoppingList = document.createElement("ul");
+    shoppingList.className = "shoppingList";
+
+    items.forEach(item => {
+        if (item.quantity <= 0) return;
+
+        let li = document.createElement("li");
+        li.className = "shoppingItem";
+        li.innerHTML = `
+        <img src="/uploads/${item.image}" alt="Item Image" class="itemImage">
+        <br>
+        ${item.name}
+        <br><br>
+        ${item.location}
+        <br><br>
+        <div class="item-price-quantity">
+            ₱ ${item.price} per day
+
+            <p class="item-quantity"> ${item.quantity} left</p>
+        </div>
+    `;
+
+        li.addEventListener("click", function () {
+            localStorage.setItem("selectedItem", JSON.stringify(item));
+            window.location.href = `/user/view-product/${item.id}`;
+        });
+
+        shoppingList.appendChild(li);
+    });
+
+    shoppingContainer.appendChild(shoppingList);
+}
+
+function toggleSortOptions() {
+    const options = document.getElementById("sortOptions");
+    const isOpen = options.style.display === "block";
+    options.style.display = isOpen ? "none" : "block";
+
+    const chevron = document.querySelector(".chevron");
+    chevron.style.transform = isOpen ? "rotate(0deg)" : "rotate(180deg)";
+}
+
+// Close dropdown when clicking outside
+document.addEventListener("click", function (e) {
+    const dropdown = document.querySelector(".sort-dropdown");
+    const options = document.getElementById("sortOptions");
+    if (!dropdown.contains(e.target)) {
+        options.style.display = "none";
+        document.querySelector(".chevron").style.transform = "rotate(0deg)";
+    }
+});
+
+// Updated handleSort function with newest first option
+function handleSort(option) {
+    let sorted = [...globalItems];
+
+    switch (option) {
+        case 'alphabetical':
+            sorted.sort((a, b) => a.name.localeCompare(b.name));
+            break;
+        case 'price-low-high':
+            sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+            break;
+        case 'price-high-low':
+            sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+            break;
+        case 'newest-first':
+            sorted.sort((a, b) => {
+                if (a.created_at && b.created_at) {
+                    return new Date(b.created_at) - new Date(a.created_at);
+                }
+                return b.id - a.id;
+            });
+            break;
+        default:
+            return;
+    }
+
+    const button = document.querySelector(".sort-toggle");
+    let label = "Sort by";
+    switch (option) {
+        case 'alphabetical':
+            label = "A-Z";
+            break;
+        case 'price-low-high':
+            label = "Price (low to high)";
+            break;
+        case 'price-high-low':
+            label = "Price (high to low)";
+            break;
+        case 'newest-first':
+            label = "Newest First";
+            break;
+    }
+    button.innerHTML = `${label} <span class="chevron">&#9662;</span>`;
+
+    document.getElementById("sortOptions").style.display = "none";
+    document.querySelector(".chevron").style.transform = "rotate(0deg)";
+
+    shoppingContainer.innerHTML = "";
+    renderSortedItems(sorted);
+}
 </script>
 <script src="/js/get-category-id.js"></script>
