@@ -6,106 +6,136 @@
 <!--Navigation Bar-->
 <nav>
     <a href="/">
-        <div class="logo">
-            <h1>Rental <span> Hub</span></h1>
-        </div>
+      <div class="logo">
+        <h1>Rental <span>Hub</span></h1>
+      </div>
     </a>
-
+  
     <div class="search-wrapper">
-        <input type="search" id="search" placeholder="Search for items" class="search-input"/>
-        <button id="search-button"><img src="/images/search.png"/></button>
+      <input
+        type="search"
+        id="search"
+        placeholder="Search for items"
+        class="search-input"
+      />
+      <button id="search-button" aria-label="Search">
+        <img src="/images/wsearch.png" alt="Search icon" />
+      </button>
     </div>
-
-
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li>
-            <% if (isAuthenticated && role === 'admin' ) { %>
-                <a href="/admin/listing">
-                    <img src="/images/blueAdd.png" class="add-icon"/>
-                </a>
-            <% } else if (isAuthenticated && role === 'user' ) { %>
-                <a href="/user/listing">
-                    <img src="/images/blueAdd.png" class="add-icon"/>
-                </a>
-            <% } else { %>
-            <% } %>
-        </li>
-        <li>
-            <% if (isAuthenticated && role === 'admin' ) { %>
-                <a href='/admin/admin-dashboard'>
-                    <img src="/images/blueProfile.png" alt="Profile" class="profile-icon"/>
-                </a>
-            <% } else if (isAuthenticated && role === 'user' ) { %>
-                <a href='/user/profile'>
-                    <img src="/images/blueProfile.png" alt="Profile" class="profile-icon"/>
-                </a>
-            <% } else { %>
-                <a href="/login">
-                    <img src="/images/blueProfile.png" alt="Profile" class="profile-icon"/>
-                </a>
-            <% } %>
-        </li>
+  
+    <div
+      class="hamburger"
+      id="hamburger"
+      aria-label="Toggle navigation"
+      role="button"
+      tabindex="0"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  
+    <ul id="nav-links">
+      <li><a href="/">Home</a></li>
+  
+      <li>
+        <% if (isAuthenticated && role === 'admin') { %>
+        <a href="/admin/listing">
+          <img src="/images/WhiteAdd.png" class="add-icon" />
+        </a>
+        <% } else if (isAuthenticated && role === 'user') { %>
+        <a href="/user/listing">
+          <img src="/images/WhiteAdd.png" class="add-icon" />
+        </a>
+        <% } %>
+      </li>
+  
+      <li>
+        <% if (isAuthenticated && role === 'admin') { %>
+        <a href="/admin/admin-dashboard">
+          <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
+        </a>
+        <% } else if (isAuthenticated && role === 'user') { %>
+        <a href="/user/profile">
+          <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
+        </a>
+        <% } else { %>
+        <a href="/login">
+          <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
+        </a>
+        <% } %>
+      </li>
     </ul>
-</nav>
-
-<!-- Categories -->
-<div class="categories-cont">
+  </nav>
+  
+  
+  
+  
+  <!-- Categories -->
+  <div class="categories-cont">
     <button class="category active" onclick="openCategory('events-and-parties')">
-        Events & Parties
+      Events & Parties
     </button>
-
+  
     <button class="category" onclick="openCategory('tech-and-gadgets')">
-        Tech & Gadgets
+      Tech & Gadgets
     </button>
-
+  
     <button class="category" onclick="openCategory('clothing-and-accessories')">
-        Clothing & Accessories
+      Clothing & Accessories
     </button>
-
+  
     <button class="category" onclick="openCategory('sports-and-outdoor-gear')">
-        Sports & Outdoor Gear
+      Sports & Outdoor Gear
     </button>
-
+  
     <button class="category" onclick="openCategory('tools-and-equipment')">
-        Tools & Equipment
+      Tools & Equipment
     </button>
-
+  
     <button class="category" onclick="openCategory('musical-instruments')">
-        Musical Instruments
+      Musical Instruments
     </button>
-
+  
     <button class="category" onclick="openCategory('home-and-office')">
-        Home & Office
+      Home & Office
     </button>
-
+  
     <button class="category" onclick="openCategory('pets-accessories')">
-        Pets Accessories
+      Pets Accessories
     </button>
-    
     <button class="category" onclick="openCategory('books-and-literature')">
         Books and Literature
     </button>
-</div>
-
-<div class="sort-dropdown">
-    <button class="sort-toggle" onclick="toggleSortOptions()">
-        Sort by <span class="chevron">&#9662;</span>
-    </button>
-    <ul class="sort-options" id="sortOptions">
-        <li onclick="handleSort('newest-first')">Newest First</li>
-        <li onclick="handleSort('alphabetical')">A-Z</li>
-        <li onclick="handleSort('price-low-high')">Price (low to high)</li>
-        <li onclick="handleSort('price-high-low')">Price (high to low)</li>
-    </ul>
-</div>
-
-<!-- Tabs -->
-<div id="shopping-container"></div>
-
-
+  </div>
+  
+  <div class="sort-dropdown">
+      <button class="sort-toggle" onclick="toggleSortOptions()">
+          Sort by <span class="chevron">&#9662;</span>
+      </button>
+      <ul class="sort-options" id="sortOptions">
+          <li onclick="handleSort('newest-first')">Newest First</li>
+          <li onclick="handleSort('alphabetical')">A-Z</li>
+          <li onclick="handleSort('price-low-high')">Price (low to high)</li>
+          <li onclick="handleSort('price-high-low')">Price (high to low)</li>
+      </ul>
+  </div>
+  
+  <!-- Tabs -->
+  <div id="shopping-container"></div>
 <!--Scripts-->
 <script>
+
+    //Hamburger Menu
+
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("nav-links");
+
+    hamburger.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+        hamburger.classList.toggle("open"); 
+    });
+
     const searchInput = document.getElementById("search");
     const searchButton = document.getElementById("search-button");
     const shoppingContainer = document.getElementById("shopping-container");
@@ -226,17 +256,13 @@
             li.className = "shoppingItem";
             li.innerHTML = `
             <img src="/uploads/${item.image}" alt="Item Image" class="itemImage">
-            <br>
-            ${item.name}
-            <br><br>
-            ${item.location}
-            <br><br>
-            <div class="item-price-quantity">
-                ₱ ${item.price} per day
 
-                <p class="item-quantity"> ${item.quantity} left</p>
-            </div>
-        `;
+            <div class="item-details"> 
+            <strong><p >${item.name}</p></strong>
+            <strong>₱ ${item.price} per day</strong>
+            <h5> ${item.location}</h5>
+            <p class="item-quantity"> ${item.quantity} left</p>
+            </div>`;
 
             li.addEventListener("click", function () {
                 localStorage.setItem("selectedItem", JSON.stringify(item));
@@ -443,18 +469,12 @@ function renderSortedItems(items) {
         li.className = "shoppingItem";
         li.innerHTML = `
         <img src="/uploads/${item.image}" alt="Item Image" class="itemImage">
-        <br>
-        ${item.name}
-        <br><br>
-        ${item.location}
-        <br><br>
-        <div class="item-price-quantity">
-            ₱ ${item.price} per day
-
+       <div class="item-details"> 
+            <strong>${item.name}</strong>
+            <strong>₱ ${item.price} per day</strong>
+            <h5> ${item.location}</h5>
             <p class="item-quantity"> ${item.quantity} left</p>
-        </div>
-    `;
-
+            </div>`;
         li.addEventListener("click", function () {
             localStorage.setItem("selectedItem", JSON.stringify(item));
             window.location.href = `/user/view-product/${item.id}`;
