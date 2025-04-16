@@ -114,6 +114,7 @@
           Sort by <span class="chevron">&#9662;</span>
       </button>
       <ul class="sort-options" id="sortOptions">
+          <li onclick="handleSort('default')">All Items</li>
           <li onclick="handleSort('newest-first')">Newest First</li>
           <li onclick="handleSort('alphabetical')">A-Z</li>
           <li onclick="handleSort('price-low-high')">Price (low to high)</li>
@@ -510,6 +511,9 @@ function handleSort(option) {
     let sorted = [...globalItems];
 
     switch (option) {
+        case 'default':
+            sorted = [...globalItems];
+            break;
         case 'alphabetical':
             sorted.sort((a, b) => a.name.localeCompare(b.name));
             break;
@@ -534,6 +538,9 @@ function handleSort(option) {
     const button = document.querySelector(".sort-toggle");
     let label = "Sort by";
     switch (option) {
+        case 'default':
+            label = "All Items";
+            break;
         case 'alphabetical':
             label = "A-Z";
             break;
