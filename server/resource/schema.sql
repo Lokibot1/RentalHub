@@ -152,3 +152,17 @@ CREATE TABLE rental_transactions
     FOREIGN KEY (renter_id) REFERENCES users (id),
     FOREIGN KEY (item_id) REFERENCES items (id)
 );
+
+
+-- reports
+CREATE TABLE IF NOT EXISTS reports
+(
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    item_id     INT NOT NULL,
+    user_id     INT NOT NULL,
+    reasons     JSON NOT NULL,
+    report_text TEXT NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (item_id) REFERENCES items (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);

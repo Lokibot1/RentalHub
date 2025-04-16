@@ -213,4 +213,35 @@ router.get("/ongoing-transactions", async (req, res) => {
 });
 
 
+/**
+ * Create report
+ *
+ * @route POST /api/admin/my-items/reports
+ */
+router.post("/reports", async (req, res) => {
+    const {
+        item_id,
+        user_id,
+        reasons,
+        report_text,
+    } = req.body;
+
+    const sql = `
+        INSERT INTO reports (item_id, user_id, reasons, report_text)
+        VALUES (?, ?, ?, ?)
+    `
+    db.query(sql, [item_id, user_id, JSON.stringify(reasons), report_text], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({success: false, message: "Create report failed."});
+        }
+
+        res.status(201).json({
+            success: true,
+            message: 'Report created successfully.',
+        });
+    });
+});
+
+
 export default router
