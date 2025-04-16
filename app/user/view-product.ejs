@@ -1062,6 +1062,7 @@
             }
 
             items.forEach((item) => {
+                if (item.item_quantity <= 0) return; // Skip items with zero quantity
                 const itemHTML = `
                   <a href="#" onclick="getSelectedItem(${item.item_id})">
                     <div class="shoppingItem">
