@@ -37,10 +37,6 @@
             <button class="tablinks" onclick="openTab(event, 'DeclinedRequests')">
                 Declined Posts
             </button>
-            <button class="tablinks" onclick="openTab(event, 'UpdateRequests')">
-                Update Requests
-            </button>
-
             <!--Tab Content-->
 
         <!-- Pending Posts -->
@@ -143,38 +139,6 @@
                 </table>
             </div>
         </div>
-
-<!-- Update Requests -->
-<div id="UpdateRequests" class="tab-content" style="display: none">
-    <div class="search-bar">
-        <input type="text" id="searchUpdateRequests" placeholder="Search Update Requests...">
-    </div>
-    <div class="user-table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Owner</th>
-                    <th>Item Name</th>
-                    <th>Category</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="updateRequestsTable">
-                <tr>
-                    <td>First Name M. Last Name</td>
-                    <td>Item Name</td>
-                    <td>Category</td>
-                    <td>
-                        <a href="/admin/admin-view-product">
-                            <i class="fa-solid fa-eye"></i>
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
