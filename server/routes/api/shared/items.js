@@ -27,6 +27,8 @@ router.get('/', async (req, res) => {
                  JOIN inventory ON items.id = inventory.item_id
                  JOIN users ON users.id = items.user_id
                  LEFT JOIN reviews ON reviews.item_id = items.id
+        WHERE items.is_approved = 1
+                 AND items.is_declined != 1
         GROUP BY items.id, inventory.stock_quantity, items.user_id, users.first_name, users.last_name, profile_image
     `
 
