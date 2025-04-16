@@ -186,6 +186,7 @@ function rollback(res, message) {
 router.get("/ongoing-transactions", async (req, res) => {
     const sql = `
         SELECT items.id                                         AS id,
+               renter.id                                        AS renter_id, # TODO: Possible owner or renter
                CONCAT(renter.first_name, ' ', renter.last_name) AS renters_name,
                items.file_path                                  AS item_image,
                items.name                                       AS item_name,

@@ -55,24 +55,7 @@
                         <th>Action</th>
                     </tr>
                     </thead>
-                    <tbody>
-
-                    <% if (users.length > 0) { %>
-                        <% users.forEach(function(user) { %>
-                            <tr>
-                                <td><%= user.fullname %></td>
-                                <td>
-                                    <a href="#" onclick="viewUserDetail()">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </a>
-                                </td>
-                            <td> <%= user.id %> </td>
-                            </tr>
-                        <% }); %>
-                    <% } else { %>
-                        <p>No users found.</p>
-                    <% } %>
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
@@ -87,19 +70,7 @@
                         <th>Action</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>First Name M. Last Name</td>
-                        <td>
-                            <a href="/view-users#ReportedAccounts">
-                                <i class="fa-solid fa-eye"></i>
-                            </a>
-                            <a href="#" id="ban">
-                                <i class="fa-solid fa-ban"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    </tbody>
+                    <tbody class="report-accounts-container"></tbody>
                 </table>
             </div>
         </div>
@@ -158,8 +129,8 @@
 </div>
 
 <script src="/js/admin.js"></script>
-<script>    
-    document.addEventListener("DOMContentLoaded", function () {
+<script>
+    document.addEventListener("DOMContentLoaded", async function () {
         const searchInput = document.querySelector(".search-bar input");
         const searchButton = document.querySelector(".search-bar button");
         const userListTab = document.getElementById("UserList");
@@ -326,5 +297,123 @@
         }
     `;
         document.head.appendChild(style);
+
+        // Reported Accounts
+        const reportedAccountsContainer = document.querySelector(".report-accounts-container");
+        const reportedAccounts = document.querySelector(".report-accounts-fullname");
+
+        const response = await fetch("/api/admin/manage-users/reports/all");
+        const { data } = await response.json();
+
+        if (data.length > 0) {
+            reportedAccountsContainer.innerHTML = "";
+            data.forEach(account => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td class="report-accounts-fullname">${account.fullname}</td>
+                    <td>
+                        <a href="#" onclick="viewUserReports(${account.id})">
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
+                        <a href="#" id="ban">
+                            <i class="fa-solid fa-ban"></i>
+                        </a>
+                    </td>
+                `;
+                reportedAccountsContainer.appendChild(row);
+            });
+        } else {
+            reportedAccountsContainer.innerHTML = "<tr><td colspan='2'>No reported accounts found.</td></tr>";
+        }
+
     });
+
+    const viewUserReports = async (accountId) => {
+        const response = await fetch(`/api/admin/manage-users/reports/${accountId}`);
+        const { data } = await response.json();
+
+        console.log('Total Reports:', data.total_reports);
+        console.log('User Reports:', data.reports);
+    }
+
+    // View user details
+    const viewUserDetail = async (userId) => {
+        console.log('Users:', userId);
+
+        const response = await fetch(`http://localhost:8000/api/admin/manage-users/${userId}`);
+        const {data: user, success} = await response.json();
+        console.log('User:', user);
+
+        if (success) {
+
+            document.getElementById('UserList').style.display = 'none';
+
+            let userInfoDetails = document.getElementById('userInfoDetails');
+            if (!userInfoDetails) {
+                userInfoDetails = document.createElement('div');
+                userInfoDetails.id = 'userInfoDetails';
+                document.querySelector('.tab-content').parentNode.appendChild(userInfoDetails);
+            }
+
+            // Populate the user details
+            userInfoDetails.innerHTML = `
+                    <div class="user-detail-container" style="  overflow: auto;
+                                                        height: 58vh;
+                                                        background-color: #ffff;
+                                                        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+                                                        padding: 20px;
+                                                        padding-top: 0;
+                                                        min-height: 300px;
+                                                        border-radius: 0px 10px 10px 10px;">
+                        <div class="back-button">
+                            <a href="#" onclick="returnToUserList()">
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </a>
+
+                        </div>
+
+                        <div class="user-detail-table">
+                            <table style=" width: 100%;
+                                    border-collapse: separate;
+                                    border-spacing: 0px 20px;
+                                    text-align: left;
+                                    font-size: 18px;
+                                    font-weight: 900;">
+                                <tr>
+                                    <td>User ID</td>
+                                    <td>${user.id}</td>
+                                </tr>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>${user.fullname}</td>
+                                </tr>
+                                <tr>
+                                    <td>Email</td>
+                                    <td>${user.email}</td>
+                                </tr>
+                                <tr>
+                                    <td>Contact Number</td>
+                                    <td>${user.contact_number}</td>
+                                </tr>
+                                <tr>
+                                    <td>Account Status</td>
+                                    <td>${user.account_status}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Listings</td>
+                                    <td>${user.total_listing}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                `;
+
+            // Display the user details
+            userInfoDetails.style.display = 'block';
+        } else {
+            // Handle error
+            alert('Error: Could not retrieve user details.');
+        }
+    }
+
 </script>

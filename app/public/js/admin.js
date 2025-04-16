@@ -222,93 +222,15 @@ confirmRestore.addEventListener("click", function () {
 });
 
 
-// View user details
-const viewUserDetail = async (userId) => {
-    
-    console.log('Users:', userId);
 
-    const response = await fetch(`http://localhost:8000/api/admin/manage-users/${userId}`);
-    const {data: user, success} = await response.json();
-    console.log('User:', user);
+function returnToUserList() {
+    // Hide user details
+    document.getElementById('userInfoDetails').style.display = 'none';
 
-        if (success) {
-                
-                document.getElementById('UserList').style.display = 'none';
-                
-                let userInfoDetails = document.getElementById('userInfoDetails');
-                if (!userInfoDetails) {
-                    userInfoDetails = document.createElement('div');
-                    userInfoDetails.id = 'userInfoDetails';
-                    document.querySelector('.tab-content').parentNode.appendChild(userInfoDetails);
-                }
-                
-                // Populate the user details
-                userInfoDetails.innerHTML = `
-                    <div class="user-detail-container" style="  overflow: auto;
-                                                        height: 58vh;
-                                                        background-color: #ffff;
-                                                        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
-                                                        padding: 20px;
-                                                        padding-top: 0;
-                                                        min-height: 300px;
-                                                        border-radius: 0px 10px 10px 10px;">
-                        <div class="back-button">
-                            <a href="#" onclick="returnToUserList()">
-                                <i class="fa-solid fa-arrow-left"></i>
-                            </a>
-                            
-                        </div>
-                        
-                        <div class="user-detail-table">
-                            <table style=" width: 100%;
-                                    border-collapse: separate;
-                                    border-spacing: 0px 20px;
-                                    text-align: left;
-                                    font-size: 18px;
-                                    font-weight: 900;">
-                                <tr>
-                                    <td>User ID</td>
-                                    <td>${user.id}</td>
-                                </tr>
-                                <tr>
-                                    <td>Name</td>
-                                    <td>${user.fullname}</td>
-                                </tr>
-                                <tr>
-                                    <td>Email</td>
-                                    <td>${user.email}</td>
-                                </tr>
-                                <tr>
-                                    <td>Contact Number</td>
-                                    <td>${user.contact_number}</td>
-                                </tr>
-                                <tr>
-                                    <td>Account Status</td>
-                                    <td>${user.account_status}</td>
-                                </tr>
-                                <tr>
-                                    <td>Total Listings</td>
-                                    <td>${user.total_listing}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                `;
-                
-                // Display the user details
-                userInfoDetails.style.display = 'block';
-            } else {
-                // Handle error
-                alert('Error: Could not retrieve user details.');
-            }
-        }
-        function returnToUserList() {
-            // Hide user details
-            document.getElementById('userInfoDetails').style.display = 'none';
-            
-            // Show user list
-            document.getElementById('UserList').style.display = 'block';
-        }
+    // Show user list
+    document.getElementById('UserList').style.display = 'block';
+}
+
 // Ban User Toast Function
 function showBanToast(message) {
     const overlay = document.getElementById("overlay");
