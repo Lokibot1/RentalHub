@@ -26,7 +26,11 @@ router.get("/:user_id", async (req, res) => {
 
         (SELECT COUNT(*) FROM rental_transactions rt
                                 LEFT JOIN items i ON rt.item_id = i.id
-                         WHERE rt.status = 'ongoing' AND (rt.renter_id = users.id OR i.user_id = users.id)
+                         WHERE rt.status = 'ongoing'
+                         AND (
+                         (i.user_id = users.id AND rt.is_owner_submit_review != 1)
+                         OR
+                         (rt.renter_id = users.id AND rt.is_renter_submit_review != 1))
                          ) AS total_items_rented,
 
         (SELECT COUNT(*) FROM rental_transactions WHERE is_approved = 0
