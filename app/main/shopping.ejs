@@ -110,9 +110,11 @@
   </div>
   
   <div class="sort-dropdown">
-      <button class="sort-toggle" onclick="toggleSortOptions()">
-          Sort by <span class="chevron">&#9662;</span>
-      </button>
+    <button class="sort-toggle" onclick="toggleSortOptions()">
+        <img src="/images/filter.png" alt="Filter Icon" class="sort-icon">
+        Sort by 
+        <span class="chevron">&#9662;</span>
+    </button>    
       <ul class="sort-options" id="sortOptions">
           <li onclick="handleSort('default')">All Items</li>
           <li onclick="handleSort('newest-first')">Newest First</li>
@@ -496,7 +498,6 @@ function toggleSortOptions() {
     chevron.style.transform = isOpen ? "rotate(0deg)" : "rotate(180deg)";
 }
 
-// Close dropdown when clicking outside
 document.addEventListener("click", function (e) {
     const dropdown = document.querySelector(".sort-dropdown");
     const options = document.getElementById("sortOptions");
@@ -506,14 +507,36 @@ document.addEventListener("click", function (e) {
     }
 });
 
-// Updated handleSort function with newest first option
 function handleSort(option) {
     let sorted = [...globalItems];
+    const button = document.querySelector(".sort-toggle");
+    const chevron = document.querySelector(".chevron");
+    const sortOptions = document.getElementById("sortOptions");
 
     switch (option) {
         case 'default':
-            sorted = [...globalItems];
-            break;
+            fetch('/api/shared/items')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        displayItems(data.data);
+
+                        button.innerHTML = `All Items <span class="chevron">&#9662;</span>`;
+
+                        sortOptions.style.display = "none";
+                        chevron.style.transform = "rotate(0deg)";
+
+                        const categoryButtons = document.querySelectorAll(".active");
+                        categoryButtons.forEach(btn => btn.classList.remove("active"));
+                    } else {
+                        shoppingContainer.innerHTML = "<p>Failed to load items.</p>";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching all items:', error);
+                    shoppingContainer.innerHTML = "<p>Error fetching items.</p>";
+                });
+            return;
         case 'alphabetical':
             sorted.sort((a, b) => a.name.localeCompare(b.name));
             break;
@@ -535,7 +558,6 @@ function handleSort(option) {
             return;
     }
 
-    const button = document.querySelector(".sort-toggle");
     let label = "Sort by";
     switch (option) {
         case 'default':
