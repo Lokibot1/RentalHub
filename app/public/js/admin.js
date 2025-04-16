@@ -244,7 +244,14 @@ const viewUserDetail = async (userId) => {
                 
                 // Populate the user details
                 userInfoDetails.innerHTML = `
-                    <div class="user-detail-container">
+                    <div class="user-detail-container" style="  overflow: auto;
+                                                        height: 58vh;
+                                                        background-color: #ffff;
+                                                        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+                                                        padding: 20px;
+                                                        padding-top: 0;
+                                                        min-height: 300px;
+                                                        border-radius: 0px 10px 10px 10px;">
                         <div class="back-button">
                             <a href="#" onclick="returnToUserList()">
                                 <i class="fa-solid fa-arrow-left"></i>
@@ -253,7 +260,12 @@ const viewUserDetail = async (userId) => {
                         </div>
                         
                         <div class="user-detail-table">
-                            <table>
+                            <table style=" width: 100%;
+                                    border-collapse: separate;
+                                    border-spacing: 0px 20px;
+                                    text-align: left;
+                                    font-size: 18px;
+                                    font-weight: 900;">
                                 <tr>
                                     <td>User ID</td>
                                     <td>${user.id}</td>

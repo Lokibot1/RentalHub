@@ -286,6 +286,22 @@
                     <label>Reason:</label>
                     <div>
                         <input type="checkbox" id="duplicate" name="reason" value="duplicate"/>
+                        <label for="duplicate">Damage to Item</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="duplicate" name="reason" value="duplicate"/>
+                        <label for="duplicate">Late Return of Item</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="duplicate" name="reason" value="duplicate"/>
+                        <label for="duplicate">Item Not Retured</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="duplicate" name="reason" value="duplicate"/>
+                        <label for="duplicate">No Show</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="duplicate" name="reason" value="duplicate"/>
                         <label for="duplicate">Duplicate</label>
                     </div>
                     <div>
@@ -362,9 +378,17 @@
     </div>
 </div>
 
+<!--Error Modal when archiving cause of ongoung transactions-->
+<div id="errorModal" class="error-modal">
+    <div class="error-content">
+      <p style="color: #800020;">Archive failed due to On Going Transactions for this item</p>
+      <button onclick="closeErrorModal()" class="close-button">I Understand</button>
+    </div>
+</div>
+
 <!-- JavaScript -->
 <script>
-// archive
+// archive function
 document.addEventListener('DOMContentLoaded', function () {
     const deleteButtons = document.querySelectorAll('.itemDelete');
     const archiveModal = document.getElementById('archiveModal');
@@ -372,6 +396,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const overlay = document.getElementById('overlay');
     const confirmButton = document.getElementById('confirmDelete');
     const cancelButton = document.getElementById('cancelDelete');
+    const errorModal = document.getElementById('errorModal');
     let currentItem = null;
     let itemId = 0;
 
@@ -389,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            console.log("Delete button clicked for item ID:", itemId);
+            console.log("Archive button clicked for item ID:", itemId);
             
             // Show the delete confirmation modal
             archiveModal.style.display = 'block';
@@ -397,29 +422,84 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Confirm delete
-    confirmButton.addEventListener('click', async function () {
-        if (currentItem) {
-            currentItem.style.display = 'none'; // Hide item from list
-
-            await fetch(`http://localhost:8000/api/user/my-items/archive-item/${itemId}`, {
+// Confirm archive
+confirmButton.addEventListener('click', async function () {
+    console.log("Archive confirmation button clicked");
+    
+    if (currentItem) {
+        console.log("Current item found:", itemId);
+        try {
+            // First, hide the archive modal
+            console.log("Hiding archive modal");
+            archiveModal.style.display = 'none';
+            
+            console.log("Sending fetch request to archive item:", itemId);
+            const response = await fetch(`http://localhost:8000/api/user/my-items/archive-item/${itemId}`, {
                 method: 'PATCH'
-            })
+            });
 
-            console.log("Item deleted successfully.");
-        } else {
-            console.error("Error: No item selected for deletion.");
-        }
+            console.log("Fetch response received:", response.status);
+            const data = await response.json();
+            console.log("Response data:", data);
+            
+            // Check if the item was actually archived
+            // Make an additional request to check if the item's archive status changed
+            const checkResponse = await fetch(`http://localhost:8000/api/user/my-items/${itemId}`, {
+                method: 'GET'
+            });
+            
+            const itemData = await checkResponse.json();
+            console.log("Item data after archive attempt:", itemData);
+            
+            // If the item has is_archived = 1, it was successfully archived
+            if (data.success && itemData.item && itemData.item.is_archived === 1) {
+                console.log("Archive successful, hiding item");
+                currentItem.style.display = 'none'; // Hide item from list
+                
+                console.log("Showing success modal");
+                successModal.style.display = 'block';
+                overlay.style.display = 'block';
 
-        archiveModal.style.display = 'none';
-        overlay.style.display = 'block';
-        successModal.style.display = 'block';
-
-        setTimeout(() => {
-            overlay.style.display = 'none';
+                setTimeout(() => {
+                    console.log("Timeout: hiding success modal");
+                    overlay.style.display = 'none';
+                    successModal.style.display = 'none';
+                }, 3000);
+            } else {
+                // If the server said success but the item wasn't archived,
+                // it's likely because there's an ongoing transaction
+                console.log("Archive failed due to ongoing transaction");
+                
+                // Ensure success modal is hidden
+                successModal.style.display = 'none';
+                
+                // Show error modal
+                console.log("Showing error modal");
+                document.getElementById('errorModal').style.display = 'flex';
+                overlay.style.display = 'block';
+            }
+        } catch (error) {
+            console.error("Fetch error:", error);
+            
+            // Ensure success modal is hidden
             successModal.style.display = 'none';
-        }, 5000);
-    });
+            
+            // Show error modal
+            console.log("Showing error modal due to exception");
+            document.getElementById('errorModal').style.display = 'flex';
+            overlay.style.display = 'block';
+        }
+    } else {
+        console.error("Error: No item selected for archiving.");
+    }
+});
+
+// Function to close the error modal
+window.closeErrorModal = function() {
+    console.log("Close button is clicked");
+    document.getElementById('errorModal').style.display = 'none';
+    overlay.style.display = 'none';
+}
 
     // Cancel delete
     cancelButton.addEventListener('click', function () {
