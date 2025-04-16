@@ -332,7 +332,7 @@
                 <h3>Are you sure you want to submit this report?</h3>
                 <div class="modal-buttons">
                     <button class="btn-yes" id="confirm-submit">Confirm</button>
-                    <button class="btn-no" id="cancel-confirm">Cancel</button>
+                    <button class="btn-no" id="cancel-confirms">Cancel</button>
                 </div>
             </div>
         </div>        
@@ -658,53 +658,94 @@ window.closeErrorModal = function() {
     });
     //
 
-    //REPORT MODAL FIX ME: NO OVERLAY ON TOAST + NO CONDITIONS
-    document.addEventListener("DOMContentLoaded", function () {
+//Report
+document.addEventListener("DOMContentLoaded", function () {
         const reportBtn = document.getElementById("report-btn");
         const reportModal = document.getElementById("report-modal");
         const modalOverlay = document.getElementById("modal-overlay");
         const submitRprt = document.getElementById("submit-rprt");
         const cancelRprt = document.getElementById("cancel-rprt");
         const toast = document.getElementById("report-toast");
+        const confirmModal = document.getElementById("confirm-modal");
+        const confirmSubmit = document.getElementById("confirm-submit");
+        const cancelConfirm = document.getElementById("cancel-confirms");
 
-        // Function to show modal
+        // Show Report Modal
         function showModal() {
             reportModal.style.display = "block";
             modalOverlay.style.display = "block";
         }
 
-        // Function to hide modal
+        // Hide Report Modal
         function hideModal() {
             reportModal.style.display = "none";
             modalOverlay.style.display = "none";
         }
 
-        // Function to show toast notification
+        // Show Confirm Modal
+        function showConfirmModal() {
+            confirmModal.style.display = "block";
+            modalOverlay.style.display = "block";
+        }
+
+        // Hide Confirm Modal
+        //TODO AYAW GUMANA BUSET
+        function hideConfirmModal() {
+            confirmModal.style.display = "none";
+        }
+
+        // Show Toast Notification
         function showToast() {
+            modalOverlay.style.display = "block";
             toast.classList.add("show");
             setTimeout(() => {
                 toast.classList.remove("show");
-            }, 3000); // Hide toast after 3 seconds
+                modalOverlay.style.display = "none";
+            }, 3000);
         }
 
-        // Event listener for report button
+        // Show Report Modal on Button Click
         if (reportBtn) {
             reportBtn.addEventListener("click", showModal);
         }
 
-        // Event listener for cancel button
+        // Cancel Report
         cancelRprt.addEventListener("click", hideModal);
 
-        // Event listener for submit button
+        // On Submit Report
         submitRprt.addEventListener("click", function (event) {
-            event.preventDefault(); // Prevent form submission
-            hideModal();
-            showToast();
+            event.preventDefault();
+            // Check if at least one checkbox is checked
+            const checkboxes = document.querySelectorAll('input[name="reason"]:checked');
+            if (checkboxes.length > 0) {
+                hideModal();
+                showConfirmModal();
+            } else {
+                alert("Please select at least one reason before confirming.");
+            }
         });
 
-        // Close modal when clicking outside
-        modalOverlay.addEventListener("click", hideModal);
+        // Cancel Confirm
+        cancelConfirm.addEventListener("click", function () {
+            console.log("Cancel confirm clicked");
+            hideConfirmModal();
+            modalOverlay.style.display = "none";
+        });
+
+        // Confirm Submit
+        confirmSubmit.addEventListener("click", function (event) {
+            event.preventDefault();
+            showToast();
+            hideConfirmModal();
+        });
+
+        // Clicking overlay hides all modals
+        modalOverlay.addEventListener("click", function () {
+            hideModal();
+            hideConfirmModal();
+        });
     });
+
 
 
     class RentalRequest {

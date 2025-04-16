@@ -94,6 +94,7 @@
                                 </div>
                             </div>
                             <div class="completeAction">
+                                <button id="report-btn">File a Report</button>
                                 <button class="review-btn" data-id="review-btn-<%= item.id %>">Done</button>
                             </div>
                         </div>
@@ -103,6 +104,66 @@
                 <% } %>
             </div>
         </div>
+
+         <!--Report Modal-->
+         <div id="modal-overlay" class="overlay"></div>
+         <div id="report-modal" class="modal">
+             <div class="modal-content" style="text-align: left">
+                 <h2>Report Renter</h2>
+                 <form id="report-form">
+                     <label>Reason:</label>
+                     <div>
+                         <input type="checkbox" id="damageToItem" name="reason" value="damageToItem"/>
+                         <label for="damageToItem">Damage to Item</label>
+                     </div>
+                     <div>
+                         <input type="checkbox" id="lateReturn" name="reason" value="lateReturn"/>
+                         <label for="lateReturn">Late Return of Item</label>
+                     </div>
+                     <div>
+                         <input type="checkbox" id="notReturned" name="reason" value="notReturned"/>
+                         <label for="notReturned">Item Not Retured</label>
+                     </div>
+                     <div>
+                         <input type="checkbox" id="noShow" name="reason" value="noShow"/>
+                         <label for="noShow">No Show</label>
+                     </div>
+                     <div>
+                         <input type="checkbox" id="duplicate" name="reason" value="duplicate"/>
+                         <label for="duplicate">Duplicate</label>
+                     </div>
+                     <div>
+                         <input type="checkbox" id="inappropriate" name="reason" value="inappropriate"/>
+                         <label for="inappropriate">Inappropriate</label>
+                     </div>
+                     <div>
+                         <input type="checkbox" id="fraudulent" name="reason" value="fraudulent"/>
+                         <label for="fraudulent">Fraudulent</label>
+                     </div>
+                     <br/>
+                     <label for="description">Describe What Happened</label>
+                     <br/>
+                     <textarea id="description" name="description" rows="4" cols="50"></textarea>
+                     <br/>
+                     <button id="submit-rprt" type="submit">Submit</button>
+                     <button id="cancel-rprt" type="button">Cancel</button>
+                 </form>
+             </div>
+         </div>
+
+         <div id="confirm-modal" class="modal">
+            <div class="modal-content">
+                <h3>Are you sure you want to submit this report?</h3>
+                <div class="modal-buttons">
+                    <button class="btn-yes" id="confirm-submit">Confirm</button>
+                    <button class="btn-no" id="cancel-confirms">Cancel</button>
+                </div>
+            </div>
+        </div>       
+ 
+         <!-- Toast Notification -->
+         <div id="report-toast" class="toast">Report Submitted Successfully!</div>
+          
 
         <!-- Modal for Review -->
         <div id="review-modal" class="modal">
@@ -599,4 +660,93 @@
             modal.style.display = "none"; // Hide modal
         });
     });
+
+    //Report
+    document.addEventListener("DOMContentLoaded", function () {
+        const reportBtn = document.getElementById("report-btn");
+        const reportModal = document.getElementById("report-modal");
+        const modalOverlay = document.getElementById("modal-overlay");
+        const submitRprt = document.getElementById("submit-rprt");
+        const cancelRprt = document.getElementById("cancel-rprt");
+        const toast = document.getElementById("report-toast");
+        const confirmModal = document.getElementById("confirm-modal");
+        const confirmSubmit = document.getElementById("confirm-submit");
+        const cancelConfirm = document.getElementById("cancel-confirms");
+
+        // Show Report Modal
+        function showModal() {
+            reportModal.style.display = "block";
+            modalOverlay.style.display = "block";
+        }
+
+        // Hide Report Modal
+        function hideModal() {
+            reportModal.style.display = "none";
+            modalOverlay.style.display = "none";
+        }
+
+        // Show Confirm Modal
+        function showConfirmModal() {
+            confirmModal.style.display = "block";
+            modalOverlay.style.display = "block";
+        }
+
+        // Hide Confirm Modal
+        //TODO AYAW GUMANA BUSET
+        function hideConfirmModal() {
+            confirmModal.style.display = "none";
+        }
+
+        // Show Toast Notification
+        function showToast() {
+            modalOverlay.style.display = "block";
+            toast.classList.add("show");
+            setTimeout(() => {
+                toast.classList.remove("show");
+                modalOverlay.style.display = "none";
+            }, 3000);
+        }
+
+        // Show Report Modal on Button Click
+        if (reportBtn) {
+            reportBtn.addEventListener("click", showModal);
+        }
+
+        // Cancel Report
+        cancelRprt.addEventListener("click", hideModal);
+
+        // On Submit Report
+        submitRprt.addEventListener("click", function (event) {
+            event.preventDefault();
+            // Check if at least one checkbox is checked
+            const checkboxes = document.querySelectorAll('input[name="reason"]:checked');
+            if (checkboxes.length > 0) {
+                hideModal();
+                showConfirmModal();
+            } else {
+                alert("Please select at least one reason before confirming.");
+            }
+        });
+
+        // Cancel Confirm
+        cancelConfirm.addEventListener("click", function () {
+            console.log("Cancel confirm clicked");
+            hideConfirmModal();
+            modalOverlay.style.display = "none";
+        });
+
+        // Confirm Submit
+        confirmSubmit.addEventListener("click", function (event) {
+            event.preventDefault();
+            showToast();
+            hideConfirmModal();
+        });
+
+        // Clicking overlay hides all modals
+        modalOverlay.addEventListener("click", function () {
+            hideModal();
+            hideConfirmModal();
+        });
+    });
+
 </script>
