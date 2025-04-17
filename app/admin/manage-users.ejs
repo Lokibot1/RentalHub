@@ -305,6 +305,8 @@
         const response = await fetch("/api/admin/manage-users/reports/all");
         const { data } = await response.json();
 
+        console.log('data', data)
+
         if (data.length > 0) {
             reportedAccountsContainer.innerHTML = "";
             data.forEach(account => {
@@ -312,7 +314,7 @@
                 row.innerHTML = `
                     <td class="report-accounts-fullname">${account.fullname}</td>
                     <td>
-                        <a href="#" onclick="viewUserReports(${account.id})">
+                        <a href="#" onclick="viewUserReports(${account.reporter_id})">
                             <i class="fa-solid fa-eye"></i>
                         </a>
                         <a href="#" id="ban">
@@ -342,7 +344,6 @@
 
         const response = await fetch(`http://localhost:8000/api/admin/manage-users/${userId}`);
         const {data: user, success} = await response.json();
-        console.log('User:', user);
 
         if (success) {
 

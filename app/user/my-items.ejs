@@ -263,7 +263,11 @@
                                 </div>
                             </div>
                             <div class="completeAction">
-                                <button id="report-btn" data-selected-item-id="<%= item.item_id %>" onclick="setItemId(this)">
+                                <button id="report-btn"
+                                        data-selected-renter-id="<%= item.renter_id %>"
+                                        data-selected-item-id="<%= item.item_id %>"
+                                        onclick="setItemId(this)"
+                                >
                                     File a Report
                                 </button>
                                 <!--FIX ME: width problem, no submit requirements, no darkbg overlay-->
@@ -391,6 +395,7 @@
 <!-- JavaScript -->
 <script>
     let selectedItemId = 0
+    let selectedRenterId = 0
     let currentLoggedInUserId = "<%= user_id %>"
     let selectedReasons = []
     let description = ""
@@ -745,14 +750,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Confirm Submit
         confirmSubmit.addEventListener("click", async function(event) {
-            console.log('Submitting report data:', selectedItemId, currentLoggedInUserId, selectedReasons, description);
-
             // Send the report data to the server
             await fetch('http://localhost:8000/api/user/my-items/reports', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     item_id: selectedItemId,
+                    renter_id: selectedRenterId,
                     reporter_id: currentLoggedInUserId,
                     reasons: selectedReasons,
                     report_text: description
@@ -772,7 +776,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function setItemId(button) {
-        selectedItemId = button.getAttribute('data-selected-item-id'); // Store the selected item ID
+        selectedItemId = button.getAttribute('data-selected-item-id')
+        selectedRenterId = button.getAttribute('data-selected-renter-id')
     }
 
 

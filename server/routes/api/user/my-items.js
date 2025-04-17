@@ -313,6 +313,7 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
     const sql = `
         SELECT rental_transactions.id                         AS rent_transaction_id,
                CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
+               users.id                                       AS renter_id,
                users.address                                  AS renters_address,
                items.file_path                                AS item_image,
                item_id                                        AS item_id,
@@ -355,16 +356,17 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
 router.post("/reports", async (req, res) => {
     const {
         item_id,
+        renter_id,
         reporter_id,
         reasons,
         report_text,
     } = req.body;
 
     const sql = `
-        INSERT INTO reports (item_id, reporter_id, reasons, report_text)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO reports (item_id, renter_id, reporter_id, reasons, report_text)
+        VALUES (?, ?, ?, ?, ?)
     `
-    db.query(sql, [item_id, reporter_id, JSON.stringify(reasons), report_text], (err, results) => {
+    db.query(sql, [item_id, renter_id, reporter_id, JSON.stringify(reasons), report_text], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
             return res.status(500).json({success: false, message: "Create report failed."});

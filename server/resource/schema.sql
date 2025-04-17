@@ -158,8 +158,9 @@ CREATE TABLE rental_transactions
 CREATE TABLE IF NOT EXISTS reports
 (
     id          INT AUTO_INCREMENT PRIMARY KEY,
-    item_id     INT NOT NULL,
-    reporter_id INT NOT NULL,
+    item_id     INT  NOT NULL,
+    renter_id   INT  NOT NULL,
+    reporter_id INT  NOT NULL,
     reasons     JSON NOT NULL,
     report_text TEXT NOT NULL,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
