@@ -443,4 +443,16 @@
         // TODO: @loki, show a confirmation message
         // window.location.reload();
     }
+
+    const viewUserInfo = async (userId) => {
+        console.log('Ban User:', userId);
+        const response = await fetch(`/api/admin/manage-users/ban/view-user/${userId}`);
+        const { data } = await response.json();
+
+        console.log('Response data:', data);
+    }
+
+    const restoreUser = async (userId) => {
+        // TODO: Get the userid and process the request
+    }
 </script>

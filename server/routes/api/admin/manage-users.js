@@ -233,7 +233,6 @@ router.patch("/ban/:user_id", async (req, res) => {
 
 
 /**
- * TODO: Do this not finished
  * View user info by user_id
  *
  * @route GET /api/admin/manage-users/ban/view-user/:user_id
@@ -242,12 +241,16 @@ router.patch("/ban/view-user/:user_id", async (req, res) => {
     const { user_id } = req.params;
 
     const sql = `
-        UPDATE users
-            JOIN reports ON users.id = reports.reported_user_id
-        SET users.status   = 'banned',
-            reports.status = 'banned'
+        SELECT users.id                                                            AS user_id,
+               CONCAT(users.first_name, ' ', users.last_name)                      AS fullname,
+               users.email,
+               users.status,
+               -- Subquery to count items
+               (SELECT COUNT(*) FROM items WHERE items.user_id = users.id)         AS total_items,
+               -- Subquery to average ratings
+               (SELECT AVG(rating) FROM reviews WHERE reviews.for_user = users.id) AS average_rating
+        FROM users
         WHERE users.id = ?
-          AND reports.status = 'reported'
     `
     db.query(sql, [user_id], (err, results) => {
         if (err) {
@@ -257,8 +260,8 @@ router.patch("/ban/view-user/:user_id", async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: 'User banned successfully.',
-        });
+            data: results.length > 0 ? results[0] : null
+        })
     });
 });
 
