@@ -617,7 +617,6 @@ i:hover {
 .complaint-item {
   padding: 20px;
   border-bottom: 1px solid #e0e0e0;
-
 }
 
 /* Updated header style with two columns */
@@ -691,3 +690,6 @@ i:hover {
   overflow-y: auto;
 }
 
+.report-content {
+  padding-bottom: 10px;
+}

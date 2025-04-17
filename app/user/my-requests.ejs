@@ -93,7 +93,8 @@
                                 </div>
                             </div>
                             <div class="completeAction">
-                                <button id="report-btn"
+                                <button data-id="report-btn"
+                                        class="report-btn"
                                         data-selected-user-id="<%= item.item_owner_id %>"
                                         data-selected-item-id="<%= item.item_id %>"
                                         onclick="setItemId(this)"
@@ -677,109 +678,133 @@
         });
     });
 
-    //Report
-    document.addEventListener("DOMContentLoaded", function () {
-        const reportBtn = document.getElementById("report-btn");
-        const reportModal = document.getElementById("report-modal");
-        const modalOverlay = document.getElementById("modal-overlay");
-        const submitRprt = document.getElementById("submit-rprt");
-        const cancelRprt = document.getElementById("cancel-rprt");
-        const toast = document.getElementById("report-toast");
-        const confirmModal = document.getElementById("confirm-modal");
-        const confirmSubmit = document.getElementById("confirm-submit");
-        const cancelConfirm = document.getElementById("cancel-confirms");
+    class ReportManager {
+    constructor(options = {}) {
+        this.reportButtons = document.querySelectorAll('[data-id="report-btn"]');
+        this.reportModal = document.getElementById("report-modal");
+        this.modalOverlay = document.getElementById("modal-overlay");
+        this.submitReportBtn = document.getElementById("submit-rprt");
+        this.cancelReportBtn = document.getElementById("cancel-rprt");
+        this.confirmModal = document.getElementById("confirm-modal");
+        this.confirmSubmitBtn = document.getElementById("confirm-submit");
+        this.cancelConfirmBtn = document.getElementById("cancel-confirms");
+        this.toast = document.getElementById("report-toast");
 
-        // Show Report Modal
-        function showModal() {
-            reportModal.style.display = "block";
-            modalOverlay.style.display = "block";
-        }
+        // Store the logged in user ID from options
+        this.currentLoggedInUserId = options.loggedInUserId || null;
 
-        // Hide Report Modal
-        function hideModal() {
-            reportModal.style.display = "none";
-            modalOverlay.style.display = "none";
-        }
+        this.selectedItemId = null;
+        this.selectedUserId = null;
+        this.selectedReasons = [];
+        this.description = "";
+        this.triggeringButton = null;
 
-        // Show Confirm Modal
-        function showConfirmModal() {
-            confirmModal.style.display = "block";
-            modalOverlay.style.display = "block";
-        }
+        // Initialize event handlers
+        this.initialize();
+    }
 
-        // Hide Confirm Modal
-        //TODO AYAW GUMANA BUSET
-        function hideConfirmModal() {
-            confirmModal.style.display = "none";
-        }
-
-        // Show Toast Notification
-        function showToast() {
-            modalOverlay.style.display = "block";
-            toast.classList.add("show");
-            setTimeout(() => {
-                toast.classList.remove("show");
-                modalOverlay.style.display = "none";
-            }, 3000);
-        }
-
-        // Show Report Modal on Button Click
-        if (reportBtn) {
-            reportBtn.addEventListener("click", showModal);
-        }
-
-        // Cancel Report
-        cancelRprt.addEventListener("click", hideModal);
-
-        // On Submit Report
-        submitRprt.addEventListener("click", function (event) {
-            event.preventDefault();
-            // Check if at least one checkbox is checked
-            const checkboxes = document.querySelectorAll('input[name="reason"]:checked');
-            const descriptionValue = document.querySelector("textarea[name='description']").value;
-
-            if (checkboxes.length > 0) {
-                selectedReasons = Array.from(checkboxes).map(cb => cb.value);
-                description = descriptionValue;
-                hideModal();
-                showConfirmModal();
-            } else {
-                alert("Please select at least one reason before confirming.");
-            }
+    initialize() {
+        this.reportButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                this.setItemIds(button);
+                this.triggeringButton = button;
+                this.showModal();
+            });
         });
 
-        // Cancel Confirm
-        cancelConfirm.addEventListener("click", function () {
-            console.log("Cancel confirm clicked");
-            hideConfirmModal();
-            modalOverlay.style.display = "none";
+        this.submitReportBtn.addEventListener("click", (e) => this.handleFormSubmit(e));
+        this.cancelReportBtn.addEventListener("click", () => this.hideModal());
+
+        this.confirmSubmitBtn.addEventListener("click", (e) => this.submitReport(e));
+        this.cancelConfirmBtn.addEventListener("click", () => {
+            this.hideConfirmModal();
+            this.modalOverlay.style.display = "none";
         });
 
-        // Confirm Submit
-        confirmSubmit.addEventListener("click", async function (event) {
-            // Send the report data to the server
+        this.modalOverlay.addEventListener("click", () => {
+            this.hideModal();
+            this.hideConfirmModal();
+        });
+    }
+
+    setItemIds(button) {
+        this.selectedItemId = button.getAttribute('data-selected-item-id');
+        this.selectedUserId = button.getAttribute('data-selected-user-id');
+    }
+
+    showModal() {
+        this.reportModal.style.display = "block";
+        this.modalOverlay.style.display = "block";
+    }
+
+    hideModal() {
+        this.reportModal.style.display = "none";
+        this.modalOverlay.style.display = "none";
+        
+        // Reset form when hiding modal
+        const checkboxes = document.querySelectorAll('input[name="reason"]:checked');
+        checkboxes.forEach(cb => cb.checked = false);
+        document.querySelector("textarea[name='description']").value = "";
+    }
+
+    showConfirmModal() {
+        this.confirmModal.style.display = "block";
+        this.modalOverlay.style.display = "block";
+    }
+
+    hideConfirmModal() {
+        this.confirmModal.style.display = "none";
+    }
+
+    showToast() {
+        this.modalOverlay.style.display = "block";
+        this.toast.classList.add("show");
+        setTimeout(() => {
+            this.toast.classList.remove("show");
+            this.modalOverlay.style.display = "none";
+        }, 3000);
+    }
+
+    handleFormSubmit(event) {
+        event.preventDefault();
+        const checkboxes = document.querySelectorAll('input[name="reason"]:checked');
+        const descriptionValue = document.querySelector("textarea[name='description']").value;
+
+        if (checkboxes.length > 0) {
+            this.selectedReasons = Array.from(checkboxes).map(cb => cb.value);
+            this.description = descriptionValue;
+            this.hideModal();
+            this.showConfirmModal();
+        } else {
+            alert("Please select at least one reason before confirming.");
+        }
+    }
+
+    async submitReport(event) {
+        event.preventDefault();
+
+        try {
             await fetch('http://localhost:8000/api/user/my-items/reports', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    item_id: selectedItemId,
-                    reported_user_id: selectedUserId,
-                    reporter_id: currentLoggedInUserId,
-                    reasons: selectedReasons,
-                    report_text: description
+                    item_id: this.selectedItemId,
+                    reported_user_id: this.selectedUserId,
+                    reporter_id: this.currentLoggedInUserId,
+                    reasons: this.selectedReasons,
+                    report_text: this.description
                 }),
-            })
+            });
 
-            event.preventDefault();
-            showToast();
-            hideConfirmModal();
-        });
+            this.showToast();
+            this.hideConfirmModal();
+        } catch (error) {
+            console.error("Error submitting report:", error);
+        }
+    }
+}
 
-        // Clicking overlay hides all modals
-        modalOverlay.addEventListener("click", function () {
-            hideModal();
-            hideConfirmModal();
-        });
-    });
-
+document.addEventListener("DOMContentLoaded", () => {
+    const reportManager = new ReportManager({ loggedInUserId: currentLoggedInUserId });
+});
 </script>

@@ -75,24 +75,24 @@
             </div>
         </div>
 
-<!--Complaints Modal-->
-<div id="overlay" class="overlay"></div>
-<div class="complaints-modal" style="display: none;">
-    <div class="modal-header">
-        <div class="modal-back-button" onclick="closeModal()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 12H5"></path>
-                <path d="M12 19l-7-7 7-7"></path>
-            </svg>
+        <!--Complaints Modal-->
+        <div id="overlay" class="overlay"></div>
+        <div class="complaints-modal" style="display: none;">
+            <div class="modal-header">
+                <div class="modal-back-button" onclick="closeModal()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5"></path>
+                        <path d="M12 19l-7-7 7-7"></path>
+                    </svg>
+                </div>
+                <div class="title">All Complaints</div>
+                <div class="total">Total #</div>
+            </div>
+            <!-- Scrollable outer body -->
+            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                <div class="report-content"></div>
+            </div>
         </div>
-        <div class="title">All Complaints</div>
-        <div class="total">Total #</div>
-    </div>
-    <!-- Scrollable outer body -->
-    <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
-        <div class="report-content"></div>
-    </div>
-</div>
 
         <!--Banned Accounts-->
         <div id="BannedAccounts" class="tab-content" style="display: none;">
