@@ -166,3 +166,6 @@ CREATE TABLE IF NOT EXISTS reports
     FOREIGN KEY (item_id) REFERENCES items (id),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
+
+ALTER TABLE reports
+RENAME COLUMN user_id TO reporter_id;

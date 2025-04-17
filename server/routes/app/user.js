@@ -125,6 +125,7 @@ router.get('/my-items', checkAuth, checkUser, async (req, res) => {
             approvedPosts: approvedPosts.data,
             rentalRequests: rentalRequests.data,
             ongoingTransactions: ongoingTransactions.data,
+            user_id: req.user.id,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
         })
@@ -138,6 +139,7 @@ router.get('/my-items', checkAuth, checkUser, async (req, res) => {
             approvedPosts: [],
             rentalRequests: [],
             ongoingTransactions: [],
+            user_id: 0,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
         })

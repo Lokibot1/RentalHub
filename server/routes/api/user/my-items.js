@@ -315,6 +315,7 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
                CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
                users.address                                  AS renters_address,
                items.file_path                                AS item_image,
+               item_id                                        AS item_id,
                items.name                                     AS item_name,
                items.location                                 AS item_location,
                rental_transactions.created_at,
@@ -344,6 +345,37 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
         })
     })
 })
+
+
+/**
+ * Create report
+ *
+ * @route POST /api/user/my-items/reports
+ */
+router.post("/reports", async (req, res) => {
+    const {
+        item_id,
+        reporter_id,
+        reasons,
+        report_text,
+    } = req.body;
+
+    const sql = `
+        INSERT INTO reports (item_id, reporter_id, reasons, report_text)
+        VALUES (?, ?, ?, ?)
+    `
+    db.query(sql, [item_id, reporter_id, JSON.stringify(reasons), report_text], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({success: false, message: "Create report failed."});
+        }
+
+        res.status(201).json({
+            success: true,
+            message: 'Report created successfully.',
+        });
+    });
+});
 
 
 /**
