@@ -130,7 +130,46 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         console.log('Loaded here...')
+
+        // Automatically open the category based on the URL query parameter
+        const params = new URLSearchParams(window.location.search);
+        const category = params.get("category");
+
+        if (category) {
+            setTimeout(() => {
+            openCategory(category);
+        }, 0);
+        } else {
+            // Default to the first category if no category is specified
+            openCategory('events-and-parties');
+        }
     })
+
+    function openCategory(categoryName) {
+        // Update the URL in the address bar without reloading the page
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('category', categoryName);
+        window.history.replaceState({}, '', currentUrl);
+
+        // Add active class to the clicked button
+        const categoryButtons = document.querySelectorAll('.category');
+        categoryButtons.forEach(button => {
+            const onclickAttr = button.getAttribute('onclick');
+            const match = onclickAttr && onclickAttr.match(/openCategory\('(.+)'\)/);
+
+            if (match) {
+                const buttonCategory = match[1];
+                if (buttonCategory === categoryName) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            }
+        });
+
+        // Fetch items for the selected category
+        fetchItems(getCategoryId(categoryName));
+    }
 
     //Hamburger Menu
 
