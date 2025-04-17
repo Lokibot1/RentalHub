@@ -167,5 +167,3 @@ CREATE TABLE IF NOT EXISTS reports
     FOREIGN KEY (item_id) REFERENCES items (id),
     FOREIGN KEY (reporter_id) REFERENCES users (id)
 );
-
-DROP TABLE IF EXISTS reports;
