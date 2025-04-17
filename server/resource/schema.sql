@@ -159,13 +159,10 @@ CREATE TABLE IF NOT EXISTS reports
 (
     id          INT AUTO_INCREMENT PRIMARY KEY,
     item_id     INT NOT NULL,
-    user_id     INT NOT NULL,
+    reporter_id INT NOT NULL,
     reasons     JSON NOT NULL,
     report_text TEXT NOT NULL,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (item_id) REFERENCES items (id),
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (reporter_id) REFERENCES users (id)
 );
-
-ALTER TABLE reports
-RENAME COLUMN user_id TO reporter_id;
