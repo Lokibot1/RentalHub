@@ -153,7 +153,7 @@ router.get("/reports/:user_id", async (req, res) => {
         FROM reports
                  JOIN items ON reports.item_id = items.id
                  JOIN users ON reports.reporter_id = users.id
-        WHERE reports.reporter_id = ?
+        WHERE reports.reported_user_id = ?
     `
 
     db.query(sql, [user_id], (err, results) => {

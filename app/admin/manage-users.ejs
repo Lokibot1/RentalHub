@@ -303,7 +303,7 @@
                 row.innerHTML = `
                     <td class="report-accounts-fullname">${account.fullname}</td>
                     <td>
-                        <a href="#" onclick="viewUserReports(${account.reporter_id})">
+                        <a href="#" onclick="viewUserReports(${account.reported_user_id})">
                             <i class="fa-solid fa-eye"></i>
                         </a>
                         <a href="#" id="ban" onclick="banUser(${account.reported_user_id})">
