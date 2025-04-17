@@ -205,24 +205,19 @@ router.get("/banned-users/all", async (req, res) => {
 /**
  * Ban by user_id
  *
- * @route GET /api/admin/manage-users/ban/:user_id
+ * @route PATCH /api/admin/manage-users/ban/:user_id
  */
-router.get("/ban/:user_id", async (req, res) => {
+router.patch("/ban/:user_id", async (req, res) => {
     const { user_id } = req.params;
 
     const sql = `
-        SELECT reports.id,
-               items.name                                     AS item_name,
-               reports.created_at                             AS report_created,
-               CONCAT(users.first_name, ' ', users.last_name) AS reporter_name,
-               reports.reasons                                AS report_reasons,
-               reports.report_text                            AS description
-        FROM reports
-                 JOIN items ON reports.item_id = items.id
-                 JOIN users ON reports.reporter_id = users.id
-        WHERE reports.reporter_id = ?
+        UPDATE users
+            JOIN reports ON users.id = reports.reported_user_id
+        SET users.status   = 'banned',
+            reports.status = 'banned'
+        WHERE users.id = ?
+          AND reports.status = 'reported'
     `
-
     db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database query error", err);
@@ -231,10 +226,7 @@ router.get("/ban/:user_id", async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: {
-                total_reports: results.length,
-                reports: results
-            }
+            message: 'User banned successfully.',
         });
     });
 });

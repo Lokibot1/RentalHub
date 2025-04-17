@@ -324,6 +324,7 @@
 
         console.log('bannedData', bannedData)
 
+        // TODO: viewUserInfo and restoreUser
         if (bannedData.length > 0) {
             bannedAccountsContainer.innerHTML = "";
             bannedData.forEach(account => {
@@ -356,7 +357,12 @@
 
     const banUser = async (userId) => {
         console.log('Ban User:', userId);
-        const response = await fetch(`/api/admin/manage-users/ban/${userId}`);
+        const response = await fetch(`/api/admin/manage-users/ban/${userId}`, { method: 'PATCH' });
+        const { message } = await response.json();
+
+        console.log('Message:', message);
+        // TODO: @loki, show a confirmation message
+        // window.location.reload();
     }
 
     // View user details
