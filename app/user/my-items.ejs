@@ -749,7 +749,6 @@
         setTimeout(() => {
             this.toast.classList.remove("show");
             this.modalOverlay.style.display = "none";
-            this.removeItemFromDOM(); // 👈 Remove the item after toast disappears
         }, 3000);
     }
 
@@ -785,15 +784,6 @@
 
         this.showToast();
         this.hideConfirmModal();
-    }
-
-    removeItemFromDOM() {
-        if (!this.triggeringButton) return;
-
-        const itemElement = this.triggeringButton.closest(".rentalItem"); // adjust selector
-        if (itemElement) {
-            itemElement.remove();
-        }
     }
 }
 

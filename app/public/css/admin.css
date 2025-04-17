@@ -542,3 +542,152 @@ i:hover {
   background: rgba(0, 0, 0, 0.5);
   z-index: 999; 
 }
+
+/* Modal styling */
+.complaints-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  width: 90%;
+  max-width: 800px;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: white;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Overlay styling */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+}
+
+/* Update the back button styling */
+.modal-back-button {
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.modal-back-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.modal-back-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #900;
+}
+
+.total {
+  font-size: 18px;
+  font-weight: bold;
+  color: #900;
+}
+
+/* Complaint items styling */
+.complaint-item {
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+
+}
+
+/* Updated header style with two columns */
+.complaint-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.complaint-left {
+  flex: 1;
+}
+
+.complaint-right {
+  text-align: right;
+  min-width: 200px;
+}
+
+.complaint-body {
+  margin-top: 15px;
+}
+
+.label {
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.detail {
+  font-weight: normal;
+  font-size: 16px;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.date-label {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.detail.date {
+  color: #800020;
+}
+
+/* Bullet point styling */
+.reasons-list {
+  list-style-type: disc;
+  margin: 5px 0 15px 25px;
+  padding-left: 10px;
+  color: #800020;
+}
+
+.reasons-list li {
+  margin-bottom: 5px;
+  padding-left: 5px;
+}
+
+.description {
+  font-style: italic;
+  line-height: 1.5;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  white-space: pre-wrap;
+  color: #800020;
+}
+
+/* Modal body with scroll */
+.modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+

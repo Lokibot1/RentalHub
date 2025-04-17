@@ -75,6 +75,25 @@
             </div>
         </div>
 
+<!--Complaints Modal-->
+<div id="overlay" class="overlay"></div>
+<div class="complaints-modal" style="display: none;">
+    <div class="modal-header">
+        <div class="modal-back-button" onclick="closeModal()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5"></path>
+                <path d="M12 19l-7-7 7-7"></path>
+            </svg>
+        </div>
+        <div class="title">All Complaints</div>
+        <div class="total">Total #</div>
+    </div>
+    <!-- Scrollable outer body -->
+    <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+        <div class="report-content"></div>
+    </div>
+</div>
+
         <!--Banned Accounts-->
         <div id="BannedAccounts" class="tab-content" style="display: none;">
             <div class="user-table">
@@ -119,6 +138,13 @@
 
 <script src="/js/admin.js"></script>
 <script>
+    //close modal
+function closeModal() {
+    const modal = document.querySelector('.complaints-modal');
+    const overlay = document.getElementById("overlay");
+    modal.style.display = "none";
+    overlay.style.display = "none";
+}
     document.addEventListener("DOMContentLoaded", async function () {
         const searchInput = document.querySelector(".search-bar input");
         const searchButton = document.querySelector(".search-bar button");
@@ -287,35 +313,139 @@
     `;
         document.head.appendChild(style);
 
-        // Reported Accounts
-        const reportedAccountsContainer = document.querySelector(".report-accounts-container");
-        const reportedAccounts = document.querySelector(".report-accounts-fullname");
+       // Reported Accounts
+    const reportedAccountsContainer = document.querySelector(".report-accounts-container");
+    const overlay = document.getElementById("overlay");
+    const response = await fetch("/api/admin/manage-users/reports/all");
+    const { data } = await response.json();
 
-        const response = await fetch("/api/admin/manage-users/reports/all");
-        const { data } = await response.json();
+    console.log('data', data);
 
-        console.log('data', data)
-
-        if (data.length > 0) {
-            reportedAccountsContainer.innerHTML = "";
-            data.forEach(account => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td class="report-accounts-fullname">${account.fullname}</td>
-                    <td>
-                        <a href="#" onclick="viewUserReports(${account.reporter_id})">
-                            <i class="fa-solid fa-eye"></i>
-                        </a>
-                        <a href="#" id="ban" onclick="banUser(${account.reported_user_id})">
-                            <i class="fa-solid fa-ban"></i>
-                        </a>
-                    </td>
-                `;
-                reportedAccountsContainer.appendChild(row);
+    if (data.length > 0) {
+        reportedAccountsContainer.innerHTML = "";
+        data.forEach(account => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td class="report-accounts-fullname">${account.fullname}</td>
+                <td>
+                    <a href="#" class="view-reports" data-reporter-id="${account.reporter_id}">
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                    <a href="#" id="ban" onclick="banUser(${account.reported_user_id})">
+                        <i class="fa-solid fa-ban"></i>
+                    </a>
+                </td>
+            `;
+            reportedAccountsContainer.appendChild(row);
+        });
+        
+        // Add event listeners to the eye icons after they're created
+        document.querySelectorAll('.view-reports').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const reporterId = this.getAttribute('data-reporter-id');
+                viewUserReports(reporterId);
             });
-        } else {
-            reportedAccountsContainer.innerHTML = "<tr><td colspan='2'>No reported accounts found.</td></tr>";
+        });
+    } else {
+        reportedAccountsContainer.innerHTML = "<tr><td colspan='2'>No reported accounts found.</td></tr>";
+    }
+
+// Show complaints modal and inject data
+async function viewUserReports(reporter_id) {
+    const modal = document.querySelector('.complaints-modal');
+    const modalContent = document.querySelector('.report-content');
+    const total = document.querySelector('.total');
+    const modalBackButton = document.querySelector('.modal-back-button');
+    const overlay = document.getElementById("overlay");
+    const title = document.querySelector('.title');
+
+    try {
+        const res = await fetch(`/api/admin/manage-users/reports/${reporter_id}`);
+        const response = await res.json();
+        
+        // Check if response is successful and has data
+        if (!response.success || !response.data) {
+            throw new Error("Invalid response format");
         }
+        
+        // Access the nested data structure
+        const { total_reports, reports } = response.data;
+        
+        // Clear previous complaints
+        modalContent.innerHTML = "";
+
+        if (reports && reports.length > 0) {
+            reports.forEach(report => {
+                const complaintItem = document.createElement("div");
+                complaintItem.classList.add("complaint-item");
+                
+                // Format the date to be more readable
+                let formattedDate = "N/A";
+                if (report.report_created) {
+                    const date = new Date(report.report_created);
+                    formattedDate = date.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                }
+                
+                // Clean and format the reasons as bullet points
+                let cleanedReasons = '';
+                if (report.report_reasons) {
+                    // Remove brackets, quotes, and backslashes
+                    const cleanText = report.report_reasons.replace(/[\[\]"\\]/g, '');
+                    
+                    // Split by commas or other separators
+                    const reasons = cleanText.split(',').map(reason => reason.trim());
+                    
+                    // Create bullet points
+                    cleanedReasons = reasons.map(reason => 
+                        `<li>${reason}</li>`
+                    ).join('');
+                }
+                
+                complaintItem.innerHTML = `
+                    <div class="complaint-header"> 
+                        <div class="complaint-left">
+                            <div class="label">Item Name: <span class="detail">${report.item_name}</span></div>
+                            <div class="label">Reported By: <span class="detail">${report.reporter_name}</span></div>
+                        </div>
+                        <div class="complaint-right">
+                            <div class="date-label">Date Submitted: <span class="detail date">${formattedDate}</span></div>
+                        </div>
+                    </div>
+                    <div class="complaint-body">
+                        <div class="label">Reasons:</div>
+                        <ul class="reasons-list">
+                            ${cleanedReasons}
+                        </ul>
+                        <div class="label">Description:</div>
+                        <div class="description">${report.description || 'No description provided'}</div>
+                    </div>
+                `;
+                modalContent.appendChild(complaintItem);
+            });
+
+            total.textContent = `Total Reports: ${total_reports}`;
+        } else {
+            modalContent.innerHTML = "<p>No complaints found.</p>";
+            total.textContent = "Total 0";
+        }
+
+        // Show modal
+        modal.style.display = "block";
+        overlay.style.display = "block";
+
+    } catch (err) {
+        console.error("Error fetching user reports:", err);
+        modalContent.innerHTML = "<p>Error loading complaints.</p>";
+        total.textContent = "Total 0";
+        modal.style.display = "block"; // Still show the modal with error message
+    }
+}
+
 
         // Banned Accounts
         const bannedAccountsContainer = document.getElementById("banned-accounts-container");
