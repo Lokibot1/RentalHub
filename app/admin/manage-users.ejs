@@ -355,16 +355,6 @@
         console.log('User Reports:', data.reports);
     }
 
-    const banUser = async (userId) => {
-        console.log('Ban User:', userId);
-        const response = await fetch(`/api/admin/manage-users/ban/${userId}`, { method: 'PATCH' });
-        const { message } = await response.json();
-
-        console.log('Message:', message);
-        // TODO: @loki, show a confirmation message
-        // window.location.reload();
-    }
-
     // View user details
     const viewUserDetail = async (userId) => {
         console.log('Users:', userId);
@@ -444,4 +434,13 @@
         }
     }
 
+    const banUser = async (userId) => {
+        console.log('Ban User:', userId);
+        const response = await fetch(`/api/admin/manage-users/ban/${userId}`, { method: 'PATCH' });
+        const { message } = await response.json();
+
+        console.log('Message:', message);
+        // TODO: @loki, show a confirmation message
+        // window.location.reload();
+    }
 </script>

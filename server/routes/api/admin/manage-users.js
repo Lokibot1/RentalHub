@@ -232,4 +232,35 @@ router.patch("/ban/:user_id", async (req, res) => {
 });
 
 
+/**
+ * TODO: Do this not finished
+ * View user info by user_id
+ *
+ * @route GET /api/admin/manage-users/ban/view-user/:user_id
+ */
+router.patch("/ban/view-user/:user_id", async (req, res) => {
+    const { user_id } = req.params;
+
+    const sql = `
+        UPDATE users
+            JOIN reports ON users.id = reports.reported_user_id
+        SET users.status   = 'banned',
+            reports.status = 'banned'
+        WHERE users.id = ?
+          AND reports.status = 'reported'
+    `
+    db.query(sql, [user_id], (err, results) => {
+        if (err) {
+            console.error("Database query error", err);
+            return res.status(500).json({success: false, message: "Query failed."});
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'User banned successfully.',
+        });
+    });
+});
+
+
 export default router

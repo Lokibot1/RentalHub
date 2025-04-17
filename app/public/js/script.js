@@ -380,6 +380,6 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
 });
 
 function openCategory(category) {
-    window.location.href = `/shop`;
+    window.location.href = `/shop?category=${category}`;
 }
   
