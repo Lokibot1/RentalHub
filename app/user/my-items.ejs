@@ -263,7 +263,8 @@
                                 </div>
                             </div>
                             <div class="completeAction">
-                                <button id="report-btn"
+                                <button data-id="report-btn"
+                                        class="report-btn"
                                         data-selected-renter-id="<%= item.renter_id %>"
                                         data-selected-item-id="<%= item.item_id %>"
                                         onclick="setItemId(this)"
@@ -670,115 +671,136 @@
     });
     //
 
-//Report
-document.addEventListener("DOMContentLoaded", function () {
-        const reportBtn = document.getElementById("report-btn");
-        const reportModal = document.getElementById("report-modal");
-        const modalOverlay = document.getElementById("modal-overlay");
-        const submitRprt = document.getElementById("submit-rprt");
-        const cancelRprt = document.getElementById("cancel-rprt");
-        const toast = document.getElementById("report-toast");
-        const confirmModal = document.getElementById("confirm-modal");
-        const confirmSubmit = document.getElementById("confirm-submit");
-        const cancelConfirm = document.getElementById("cancel-confirms");
+    class ReportModalHandler {
+    constructor() {
+        this.reportButtons = document.querySelectorAll('[data-id="report-btn"]');
+        this.reportModal = document.getElementById("report-modal");
+        this.modalOverlay = document.getElementById("modal-overlay");
+        this.submitRprt = document.getElementById("submit-rprt");
+        this.cancelRprt = document.getElementById("cancel-rprt");
+        this.toast = document.getElementById("report-toast");
+        this.confirmModal = document.getElementById("confirm-modal");
+        this.confirmSubmit = document.getElementById("confirm-submit");
+        this.cancelConfirm = document.getElementById("cancel-confirms");
 
-        // Show Report Modal
-        function showModal() {
-            reportModal.style.display = "block";
-            modalOverlay.style.display = "block";
-        }
+        this.selectedItemId = null;
+        this.selectedUserId = null;
+        this.selectedReasons = [];
+        this.description = "";
+        this.triggeringButton = null;
 
-        // Hide Report Modal
-        function hideModal() {
-            reportModal.style.display = "none";
-            modalOverlay.style.display = "none";
-        }
-
-        // Show Confirm Modal
-        function showConfirmModal() {
-            confirmModal.style.display = "block";
-            modalOverlay.style.display = "block";
-        }
-
-        // Hide Confirm Modal
-        //TODO AYAW GUMANA BUSET
-        function hideConfirmModal() {
-            confirmModal.style.display = "none";
-        }
-
-        // Show Toast Notification
-        function showToast() {
-            modalOverlay.style.display = "block";
-            toast.classList.add("show");
-            setTimeout(() => {
-                toast.classList.remove("show");
-                modalOverlay.style.display = "none";
-            }, 3000);
-        }
-
-        // Show Report Modal on Button Click
-        if (reportBtn) {
-            reportBtn.addEventListener("click", showModal);
-        }
-
-        // Cancel Report
-        cancelRprt.addEventListener("click", hideModal);
-
-        // On Submit Report
-        submitRprt.addEventListener("click", function (event) {
-            event.preventDefault();
-            // Check if at least one checkbox is checked
-            const checkboxes = document.querySelectorAll('input[name="reason"]:checked');
-            const descriptionValue = document.querySelector("textarea[name='description']").value;
-
-            if (checkboxes.length > 0) {
-                selectedReasons = Array.from(checkboxes).map(cb => cb.value);
-                description = descriptionValue;
-                hideModal();
-                showConfirmModal();
-            } else {
-                alert("Please select at least one reason before confirming.");
-            }
-        });
-
-        // Cancel Confirm
-        cancelConfirm.addEventListener("click", function () {
-            console.log("Cancel confirm clicked");
-            hideConfirmModal();
-            modalOverlay.style.display = "none";
-        });
-
-        // Confirm Submit
-        confirmSubmit.addEventListener("click", async function(event) {
-            // Send the report data to the server
-            await fetch('http://localhost:8000/api/user/my-items/reports', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    item_id: selectedItemId,
-                    reported_user_id: selectedUserId,
-                    reporter_id: currentLoggedInUserId,
-                    reasons: selectedReasons,
-                    report_text: description
-                }),
-            })
-
-            event.preventDefault();
-            showToast();
-            hideConfirmModal();
-        });
-
-        // Clicking overlay hides all modals
-        modalOverlay.addEventListener("click", function () {
-            hideModal();
-            hideConfirmModal();
-        });
-    });
-
-    function setItemId(button) {
-        selectedItemId = button.getAttribute('data-selected-item-id')
-        selectedUserId = button.getAttribute('data-selected-renter-id')
+        this.init();
     }
+
+    init() {
+        this.reportButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                this.setItemIds(btn);
+                this.triggeringButton = btn; // save the button for later use
+                this.showModal();
+            });
+        });
+
+        this.cancelRprt.addEventListener("click", () => this.hideModal());
+
+        this.submitRprt.addEventListener("click", (event) => this.handleReportSubmit(event));
+
+        this.cancelConfirm.addEventListener("click", () => {
+            this.hideConfirmModal();
+            this.modalOverlay.style.display = "none";
+        });
+
+        this.confirmSubmit.addEventListener("click", (event) => this.confirmReport(event));
+
+        this.modalOverlay.addEventListener("click", () => {
+            this.hideModal();
+            this.hideConfirmModal();
+        });
+    }
+
+    setItemIds(button) {
+        this.selectedItemId = button.getAttribute('data-selected-item-id');
+        this.selectedUserId = button.getAttribute('data-selected-renter-id');
+    }
+
+    showModal() {
+        this.reportModal.style.display = "block";
+        this.modalOverlay.style.display = "block";
+    }
+
+    hideModal() {
+        this.reportModal.style.display = "none";
+        this.modalOverlay.style.display = "none";
+    }
+
+    showConfirmModal() {
+        this.confirmModal.style.display = "block";
+        this.modalOverlay.style.display = "block";
+    }
+
+    hideConfirmModal() {
+        this.confirmModal.style.display = "none";
+    }
+
+    showToast() {
+        this.modalOverlay.style.display = "block";
+        this.toast.classList.add("show");
+
+        setTimeout(() => {
+            this.toast.classList.remove("show");
+            this.modalOverlay.style.display = "none";
+            this.removeItemFromDOM(); // 👈 Remove the item after toast disappears
+        }, 3000);
+    }
+
+    handleReportSubmit(event) {
+        event.preventDefault();
+        const checkboxes = document.querySelectorAll('input[name="reason"]:checked');
+        const descriptionValue = document.querySelector("textarea[name='description']").value;
+
+        if (checkboxes.length > 0) {
+            this.selectedReasons = Array.from(checkboxes).map(cb => cb.value);
+            this.description = descriptionValue;
+            this.hideModal();
+            this.showConfirmModal();
+        } else {
+            alert("Please select at least one reason before confirming.");
+        }
+    }
+
+    async confirmReport(event) {
+        event.preventDefault();
+
+        await fetch('http://localhost:8000/api/user/my-items/reports', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                item_id: this.selectedItemId,
+                reported_user_id: this.selectedUserId,
+                reporter_id: currentLoggedInUserId,
+                reasons: this.selectedReasons,
+                report_text: this.description
+            }),
+        });
+
+        this.showToast();
+        this.hideConfirmModal();
+    }
+
+    removeItemFromDOM() {
+        if (!this.triggeringButton) return;
+
+        const itemElement = this.triggeringButton.closest(".rentalItem"); // adjust selector
+        if (itemElement) {
+            itemElement.remove();
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    new ReportModalHandler();
+});
+
 
 
     class RentalRequest {
