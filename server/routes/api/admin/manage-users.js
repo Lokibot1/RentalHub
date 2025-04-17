@@ -237,7 +237,7 @@ router.patch("/ban/:user_id", async (req, res) => {
  *
  * @route GET /api/admin/manage-users/ban/view-user/:user_id
  */
-router.patch("/ban/view-user/:user_id", async (req, res) => {
+router.get("/ban/view-user/:user_id", async (req, res) => {
     const { user_id } = req.params;
 
     const sql = `
@@ -248,7 +248,7 @@ router.patch("/ban/view-user/:user_id", async (req, res) => {
                -- Subquery to count items
                (SELECT COUNT(*) FROM items WHERE items.user_id = users.id)         AS total_items,
                -- Subquery to average ratings
-               (SELECT AVG(rating) FROM reviews WHERE reviews.for_user = users.id) AS average_rating
+               (SELECT ROUND(AVG(rating),1) FROM reviews WHERE reviews.for_user = users.id) AS average_rating
         FROM users
         WHERE users.id = ?
     `
