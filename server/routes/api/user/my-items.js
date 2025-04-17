@@ -356,17 +356,17 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
 router.post("/reports", async (req, res) => {
     const {
         item_id,
-        renter_id,
+        reported_user_id,
         reporter_id,
         reasons,
         report_text,
     } = req.body;
 
     const sql = `
-        INSERT INTO reports (item_id, renter_id, reporter_id, reasons, report_text)
+        INSERT INTO reports (item_id, reported_user_id, reporter_id, reasons, report_text)
         VALUES (?, ?, ?, ?, ?)
     `
-    db.query(sql, [item_id, renter_id, reporter_id, JSON.stringify(reasons), report_text], (err, results) => {
+    db.query(sql, [item_id, reported_user_id, reporter_id, JSON.stringify(reasons), report_text], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
             return res.status(500).json({success: false, message: "Create report failed."});

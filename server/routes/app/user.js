@@ -80,6 +80,7 @@ router.get('/my-requests', checkAuth, checkUser, async (req, res) => {
         res.render('user/my-requests', {
             layout: 'layouts/user',
             title: 'My Rents',
+            user_id: req.user.id,
             rentRequestItems: rentRequests.data,
             ongoingRentItems: ongoingRentItems.data,
             isAuthenticated: req.isAuthenticated,
@@ -90,6 +91,7 @@ router.get('/my-requests', checkAuth, checkUser, async (req, res) => {
         res.render('user/my-requests', {
             layout: 'layouts/user',
             title: 'My Rents',
+            user_id: 0,
             rentRequestItems: [],
             ongoingRentItems: [],
             isAuthenticated: req.isAuthenticated,

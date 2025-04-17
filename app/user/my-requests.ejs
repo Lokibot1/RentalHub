@@ -71,7 +71,7 @@
         <div class="overlay" id="modal-overlay"></div>
         <div id="cancelToast" class="toast">Request Cancelled Successfully!</div>
 
-        <!-- <pre><%= JSON.stringify(ongoingRentItems, null, 2) %></pre> -->
+         <pre><%= JSON.stringify(ongoingRentItems, null, 2) %></pre>
         <!-- On Going Modal -->
         <div id="On Going" class="tab-content">
             <div class="RentalList">
@@ -94,7 +94,13 @@
                                 </div>
                             </div>
                             <div class="completeAction">
-                                <button id="report-btn">File a Report</button>
+                                <button id="report-btn"
+                                        data-selected-user-id="<%= item.item_owner_id %>"
+                                        data-selected-item-id="<%= item.item_id %>"
+                                        onclick="setItemId(this)"
+                                >
+                                    File a Report
+                                </button>
                                 <button class="review-btn" data-id="review-btn-<%= item.id %>">Done</button>
                             </div>
                         </div>
@@ -109,35 +115,35 @@
          <div id="modal-overlay" class="overlay"></div>
          <div id="report-modal" class="modal">
              <div class="modal-content" style="text-align: left">
-                 <h2>Report Renter</h2>
+                 <h2>Report Owner</h2>
                  <form id="report-form">
                      <label>Reason:</label>
                      <div>
-                         <input type="checkbox" id="damageToItem" name="reason" value="damageToItem"/>
+                         <input type="checkbox" id="damageToItem" name="reason" value="Damage to Item"/>
                          <label for="damageToItem">Damage to Item</label>
                      </div>
                      <div>
-                         <input type="checkbox" id="lateReturn" name="reason" value="lateReturn"/>
+                         <input type="checkbox" id="lateReturn" name="reason" value="Late Return of Item"/>
                          <label for="lateReturn">Late Return of Item</label>
                      </div>
                      <div>
-                         <input type="checkbox" id="notReturned" name="reason" value="notReturned"/>
-                         <label for="notReturned">Item Not Retured</label>
+                         <input type="checkbox" id="notReturned" name="reason" value="Item Not Returned"/>
+                         <label for="notReturned">Item Not Returned</label>
                      </div>
                      <div>
-                         <input type="checkbox" id="noShow" name="reason" value="noShow"/>
+                         <input type="checkbox" id="noShow" name="reason" value="No Show"/>
                          <label for="noShow">No Show</label>
                      </div>
                      <div>
-                         <input type="checkbox" id="duplicate" name="reason" value="duplicate"/>
+                         <input type="checkbox" id="duplicate" name="reason" value="Duplicate"/>
                          <label for="duplicate">Duplicate</label>
                      </div>
                      <div>
-                         <input type="checkbox" id="inappropriate" name="reason" value="inappropriate"/>
+                         <input type="checkbox" id="inappropriate" name="reason" value="Inappropriate"/>
                          <label for="inappropriate">Inappropriate</label>
                      </div>
                      <div>
-                         <input type="checkbox" id="fraudulent" name="reason" value="fraudulent"/>
+                         <input type="checkbox" id="fraudulent" name="reason" value="Fraudulent"/>
                          <label for="fraudulent">Fraudulent</label>
                      </div>
                      <br/>
@@ -241,6 +247,12 @@
 
 <!--JavaScript-->
 <script>
+    let selectedItemId = 0
+    let selectedUserId = 0
+    let currentLoggedInUserId = "<%= user_id %>"
+    let selectedReasons = []
+    let description = ""
+
     class RentalRequest {
         constructor(id) {
             this.id = id;
@@ -424,6 +436,11 @@
             }, 3000);
 
         }
+    }
+
+    function setItemId(button) {
+        selectedItemId = button.getAttribute('data-selected-item-id')
+        selectedUserId = button.getAttribute('data-selected-user-id')
     }
 
     // Initialize rental requests for existing items
@@ -720,7 +737,11 @@
             event.preventDefault();
             // Check if at least one checkbox is checked
             const checkboxes = document.querySelectorAll('input[name="reason"]:checked');
+            const descriptionValue = document.querySelector("textarea[name='description']").value;
+
             if (checkboxes.length > 0) {
+                selectedReasons = Array.from(checkboxes).map(cb => cb.value);
+                description = descriptionValue;
                 hideModal();
                 showConfirmModal();
             } else {
@@ -736,7 +757,20 @@
         });
 
         // Confirm Submit
-        confirmSubmit.addEventListener("click", function (event) {
+        confirmSubmit.addEventListener("click", async function (event) {
+            // Send the report data to the server
+            await fetch('http://localhost:8000/api/user/my-items/reports', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    item_id: selectedItemId,
+                    reported_user_id: selectedUserId,
+                    reporter_id: currentLoggedInUserId,
+                    reasons: selectedReasons,
+                    report_text: description
+                }),
+            })
+
             event.preventDefault();
             showToast();
             hideConfirmModal();

@@ -114,10 +114,10 @@ router.get("/reports/all", async (req, res) => {
 
     const sql = `
         SELECT DISTINCT reports.reporter_id,
-                        reports.renter_id,
+                        reports.reported_user_id,
                         CONCAT(users.first_name, ' ', users.last_name) AS fullname
         FROM reports
-                 JOIN users ON reports.renter_id = users.id
+                 JOIN users ON reports.reported_user_id = users.id
     `
 
     db.query(sql, (err, results) => {

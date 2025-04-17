@@ -157,13 +157,15 @@ CREATE TABLE rental_transactions
 -- reports
 CREATE TABLE IF NOT EXISTS reports
 (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    item_id     INT  NOT NULL,
-    renter_id   INT  NOT NULL,
-    reporter_id INT  NOT NULL,
-    reasons     JSON NOT NULL,
-    report_text TEXT NOT NULL,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id               INT AUTO_INCREMENT PRIMARY KEY,
+    item_id          INT  NOT NULL,
+    reported_user_id INT  NOT NULL,
+    reporter_id      INT  NOT NULL,
+    reasons          JSON NOT NULL,
+    report_text      TEXT NOT NULL,
+    created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (item_id) REFERENCES items (id),
     FOREIGN KEY (reporter_id) REFERENCES users (id)
 );
+
+DROP TABLE IF EXISTS reports;

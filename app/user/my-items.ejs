@@ -395,7 +395,7 @@
 <!-- JavaScript -->
 <script>
     let selectedItemId = 0
-    let selectedRenterId = 0
+    let selectedUserId = 0
     let currentLoggedInUserId = "<%= user_id %>"
     let selectedReasons = []
     let description = ""
@@ -756,7 +756,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     item_id: selectedItemId,
-                    renter_id: selectedRenterId,
+                    reported_user_id: selectedUserId,
                     reporter_id: currentLoggedInUserId,
                     reasons: selectedReasons,
                     report_text: description
@@ -777,7 +777,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function setItemId(button) {
         selectedItemId = button.getAttribute('data-selected-item-id')
-        selectedRenterId = button.getAttribute('data-selected-renter-id')
+        selectedUserId = button.getAttribute('data-selected-renter-id')
     }
 
 
