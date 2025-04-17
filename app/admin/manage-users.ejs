@@ -85,18 +85,7 @@
                         <th>Action</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>First Name M. Last Name</td>
-                        <td>
-                            <a href="/view-users#BannedAccounts">
-                                <i class="fa-solid fa-eye"></i>
-                            </a>
-                            <a href="#" id="restore">
-                                <i class="fa-solid fa-repeat"></i>
-                            </a>
-                        </td>
-                    </tr>
+                    <tbody id="banned-accounts-container">
                     </tbody>
                 </table>
             </div>
@@ -317,7 +306,7 @@
                         <a href="#" onclick="viewUserReports(${account.reporter_id})">
                             <i class="fa-solid fa-eye"></i>
                         </a>
-                        <a href="#" id="ban">
+                        <a href="#" id="ban" onclick="banUser(${account.reported_user_id})">
                             <i class="fa-solid fa-ban"></i>
                         </a>
                     </td>
@@ -328,6 +317,33 @@
             reportedAccountsContainer.innerHTML = "<tr><td colspan='2'>No reported accounts found.</td></tr>";
         }
 
+        // Banned Accounts
+        const bannedAccountsContainer = document.getElementById("banned-accounts-container");
+        const bannedResponse = await fetch("/api/admin/manage-users/banned-users/all");
+        const { data: bannedData } = await bannedResponse.json();
+
+        console.log('bannedData', bannedData)
+
+        if (bannedData.length > 0) {
+            bannedAccountsContainer.innerHTML = "";
+            bannedData.forEach(account => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td class="banned-accounts-fullname">${account.fullname}</td>
+                    <td>
+                        <a href="#" onclick="viewUserInfo(${account.user_id})">
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
+                        <a href="#" id="restore" onclick="restoreUser(${account.user_id})">
+                             <i class="fa-solid fa-repeat"></i>
+                         </a>
+                    </td>
+                `;
+                bannedAccountsContainer.appendChild(row);
+            });
+        } else {
+            bannedAccountsContainer.innerHTML = "<tr><td colspan='2'>No banned accounts found.</td></tr>";
+        }
     });
 
     const viewUserReports = async (accountId) => {
@@ -336,6 +352,11 @@
 
         console.log('Total Reports:', data.total_reports);
         console.log('User Reports:', data.reports);
+    }
+
+    const banUser = async (userId) => {
+        console.log('Ban User:', userId);
+        const response = await fetch(`/api/admin/manage-users/ban/${userId}`);
     }
 
     // View user details

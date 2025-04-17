@@ -163,7 +163,8 @@ CREATE TABLE IF NOT EXISTS reports
     reporter_id      INT  NOT NULL,
     reasons          JSON NOT NULL,
     report_text      TEXT NOT NULL,
-    created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status           ENUM ('reported', 'banned') DEFAULT 'reported',
+    created_at       TIMESTAMP                   DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (item_id) REFERENCES items (id),
     FOREIGN KEY (reporter_id) REFERENCES users (id)
 );

@@ -118,6 +118,7 @@ router.get("/reports/all", async (req, res) => {
                         CONCAT(users.first_name, ' ', users.last_name) AS fullname
         FROM reports
                  JOIN users ON reports.reported_user_id = users.id
+        WHERE reports.status = 'reported'
     `
 
     db.query(sql, (err, results) => {
@@ -140,6 +141,73 @@ router.get("/reports/all", async (req, res) => {
  * @route GET /api/admin/manage-users/reports/:user_id
  */
 router.get("/reports/:user_id", async (req, res) => {
+    const { user_id } = req.params;
+
+    const sql = `
+        SELECT reports.id,
+               items.name                                     AS item_name,
+               reports.created_at                             AS report_created,
+               CONCAT(users.first_name, ' ', users.last_name) AS reporter_name,
+               reports.reasons                                AS report_reasons,
+               reports.report_text                            AS description
+        FROM reports
+                 JOIN items ON reports.item_id = items.id
+                 JOIN users ON reports.reporter_id = users.id
+        WHERE reports.reporter_id = ?
+    `
+
+    db.query(sql, [user_id], (err, results) => {
+        if (err) {
+            console.error("Database query error", err);
+            return res.status(500).json({success: false, message: "Query failed."});
+        }
+
+        res.status(200).json({
+            success: true,
+            data: {
+                total_reports: results.length,
+                reports: results
+            }
+        });
+    });
+});
+
+
+/**
+ * Banned users
+ *
+ * @route GET /api/admin/manage-users/banned-users
+ */
+router.get("/banned-users/all", async (req, res) => {
+    const sql = `
+        SELECT users.id                                       AS user_id,
+               CONCAT(users.first_name, ' ', users.last_name) AS fullname
+        FROM users
+                 JOIN reports ON users.id = reports.reported_user_id
+        WHERE users.status = 'banned'
+          AND reports.status = 'banned'
+    `
+
+    db.query(sql,  (err, results) => {
+        if (err) {
+            console.error("Database query error", err);
+            return res.status(500).json({success: false, message: "Query failed."});
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results
+        });
+    });
+});
+
+
+/**
+ * Ban by user_id
+ *
+ * @route GET /api/admin/manage-users/ban/:user_id
+ */
+router.get("/ban/:user_id", async (req, res) => {
     const { user_id } = req.params;
 
     const sql = `
