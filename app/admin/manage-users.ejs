@@ -113,16 +113,16 @@
 
     <!--Confirmation Modal-->
     <div id="overlay" class="overlay"></div>
-    <div id="banModal" class="modal">
+    <div id="restrictModal" class="restrict-confirm-modal">
         <div class="modal-content">
-            <h3>Are you sure you want to <span>ban</span> this Account?</h3>
+            <h3>Are you sure you want to <span>restrict</span> this user?</h3>
             <div class="modal-buttons">
-                <button class="btn-yes" id="confirmBan">Confirm</button>
-                <button class="btn-no" id="cancelBtn">Cancel</button>
+                <button class="restrict-confirm" id="confirmRestrict">Confirm</button>
+                <button class="restrict-cancel" id="cancelRestrict">Cancel</button>
             </div>
         </div>
     </div>
-    <div id="banToast" class="toast">User Successfully Banned!</div>
+    <div id="restrictedToast" class="toast">User Successfully Restricted!</div>
 
     <div id="restoreModal" class="modal">
         <div class="modal-content">
@@ -313,7 +313,7 @@ function closeModal() {
     `;
         document.head.appendChild(style);
 
-       // Reported Accounts
+    // Reported Accounts
     const reportedAccountsContainer = document.querySelector(".report-accounts-container");
     const overlay = document.getElementById("overlay");
     const response = await fetch("/api/admin/manage-users/reports/all");
@@ -331,7 +331,7 @@ function closeModal() {
                     <a href="#" class="view-reports" data-reporter-id="${account.reporter_id}">
                         <i class="fa-solid fa-eye"></i>
                     </a>
-                    <a href="#" id="ban" onclick="banUser(${account.reported_user_id})">
+                    <a href="#" id="ban-btn" data-userid="${account.reported_user_id}")">
                         <i class="fa-solid fa-ban"></i>
                     </a>
                 </td>
@@ -564,15 +564,137 @@ async function viewUserReports(reporter_id) {
         }
     }
 
-    const banUser = async (userId) => {
-        console.log('Ban User:', userId);
-        const response = await fetch(`/api/admin/manage-users/ban/${userId}`, { method: 'PATCH' });
-        const { message } = await response.json();
+    document.addEventListener("DOMContentLoaded", function () {
+    let selectedUserId = null;
+    let selectedUserElement = null;
+    
+    // Confirm: perform ban
+    document.getElementById("confirmRestrict").addEventListener("click", async () => {
+        if (!selectedUserId) return;
+        
+        try {
+            const response = await fetch(`/api/admin/manage-users/ban/${selectedUserId}`, {
+                method: 'PATCH',
+            });
 
-        console.log('Message:', message);
-        // TODO: @loki, show a confirmation message
-        // window.location.reload();
+            const { message } = await response.json();
+            console.log('Message:', message);
+
+            document.getElementById("restrictModal").style.display = "none";
+            
+            const overlay = document.getElementById("overlay");
+            if (overlay) {
+                overlay.style.cssText = `
+                    display: block !important;
+                    position: fixed !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    width: 100% !important;
+                    height: 100% !important;
+                    background-color: rgba(0, 0, 0, 0.5) !important;
+                    z-index: 9998 !important;
+                `;
+            }
+
+            // Get toast and make it visible
+            const restrictedToast = document.getElementById("restrictedToast");
+            console.log("Toast element found:", restrictedToast);
+            
+            if (restrictedToast) {
+                restrictedToast.style.cssText = `
+                    display: block !important; 
+                    position: fixed !important; 
+                    top: 50% !important;
+                    left: 50% !important;
+                    transform: translate(-50%, -50%) !important;
+                    z-index: 9999 !important;
+                    background-color: #f5f5f5;
+                    color: #1b2e3d;
+                    padding: 20px;
+                    border-radius: 20px;
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                    text-align: center;
+                    transition: opacity 0.5s ease-in-out, bottom 0.5s ease-in-out;
+                `;
+                
+                console.log("Toast should be visible now with styles:", restrictedToast.style.cssText);
+            }
+
+            if (selectedUserElement) {
+                console.log("Removing user element:", selectedUserElement);
+                
+                selectedUserElement.style.transition = "opacity 0.5s ease";
+                selectedUserElement.style.opacity = "0";
+                
+                setTimeout(() => {
+                    selectedUserElement.remove();
+                    console.log("User element removed from DOM");
+                    
+                    updateUserCounters();
+                }, 500);
+            }
+
+            setTimeout(() => {
+                if (restrictedToast) restrictedToast.style.display = "none";
+                if (overlay) overlay.style.display = "none";
+            }, 3000);
+
+        } catch (err) {
+            console.error("Error banning user:", err);
+        }
+    });
+
+    document.addEventListener("click", function (e) {
+        const banBtn = e.target.closest("a[data-userid]"); 
+        if (banBtn && banBtn.querySelector(".fa-ban")) {
+            e.preventDefault();
+
+            selectedUserId = banBtn.getAttribute("data-userid");
+            
+            // Find the correct user element - look for different possible parent structures
+            selectedUserElement = document.getElementById(`user-${selectedUserId}`);
+            
+            // If the user element wasn't found by ID, try to find by traversing the DOM from the clicked button
+            if (!selectedUserElement) {
+                // Try to find the closest user container - adapt this selector to match your HTML structure
+                selectedUserElement = banBtn.closest('.user-item, .user-container, .user-row, tr');
+                console.log("Found user element by traversing up:", selectedUserElement);
+            }
+
+            document.getElementById("restrictModal").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
+        }
+    });
+
+    // Cancel: just hide modal
+    document.getElementById("cancelRestrict").addEventListener("click", () => {
+        document.getElementById("restrictModal").style.display = "none";
+        document.getElementById("overlay").style.display = "none";
+    });
+    
+    // Helper function to update any user counters after removal
+    function updateUserCounters() {
+        // Update total user count if such element exists
+        const userCountElement = document.querySelector('.user-count, .total-users');
+        if (userCountElement) {
+            const currentCount = parseInt(userCountElement.textContent, 10);
+            if (!isNaN(currentCount)) {
+                userCountElement.textContent = currentCount - 1;
+            }
+        }
+        
+        // Check if users list is empty and show a message if needed
+        const usersList = document.querySelector('.users-list, .users-table tbody');
+        if (usersList && usersList.children.length === 0) {
+            const emptyMessage = document.createElement('div');
+            emptyMessage.className = 'empty-state';
+            emptyMessage.textContent = 'No users found.';
+            usersList.parentNode.appendChild(emptyMessage);
+        }
     }
+});
 
     const viewUserInfo = async (userId) => {
         console.log('Ban User:', userId);
