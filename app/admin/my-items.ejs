@@ -17,7 +17,7 @@
             >
                 Pending Posts
             </button> -->
-            <button class="tablinks" onclick="openTab(event, 'Items')">
+            <button class="tablinks active" onclick="openTab(event, 'Items')">
                 Posted Items
             </button>
             <button class="tablinks" onclick="openTab(event, 'RentalRequests')">
@@ -36,7 +36,7 @@
             </div>
 
             <!--Items Post-->
-            <div id="Items" class="tab-content" style="display: none">
+            <div id="Items" class="tab-content" style="display: block">
                 <div class="shoppingList">
 
                     <% if (adminItems.length > 0) { %>

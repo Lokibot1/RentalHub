@@ -308,6 +308,7 @@ nav button {
   box-shadow: none;
 }
 .tab-content {
+  display: none;
   overflow: auto;
   height: 58vh;
   background-color: #ffff;
