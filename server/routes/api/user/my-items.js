@@ -102,18 +102,22 @@ router.patch("/archive-item/:item_id", (req, res) => {
               AND rental_transactions.item_id IS NULL
               AND items.id = ?
         `
-        db.query(updateTransactionSql, [item_id], (err) => {
+        db.query(updateTransactionSql, [item_id], (err, result) => {
             if (err) return rollback(res, "Failed to archive items because it has an existing rental transaction.");
-
+        
+            if (result.affectedRows === 0) {
+                return rollback(res, "Archive failed due to ongoing transactions.");
+            }
+        
             db.commit((err) => {
                 if (err) return res.status(500).json({success: false, message: "Archive failed."});
-
+        
                 res.status(200).json({
                     success: true,
                     message: 'Archived successfully!'
                 });
             });
-        });
+        });        
     });
 });
 
