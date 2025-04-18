@@ -256,7 +256,6 @@ nav span {
   flex-direction: column;
   gap: 0.5rem;
   padding: 1rem 2rem;
-  overflow-y: auto;
 }
 .product-details h1 {
   font-size: 1.3rem;
@@ -272,6 +271,9 @@ nav span {
   font-size: 1rem;
   color: #880000;
   font-weight: 500;
+}
+.product-description {
+  overflow-y: auto;
 }
 .product-details h3 {
   font-size: 1rem;
@@ -913,8 +915,14 @@ nav span {
     color: #880000;
   }
   .itemDetails strong {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-weight: 600;
   }
   .itemDetails h5 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-weight: 100;
   }

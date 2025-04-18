@@ -320,6 +320,9 @@ button {
   
 }
 .item-details strong {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   font-weight: 600;
 }
 .item-details h5 {

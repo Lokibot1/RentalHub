@@ -34,21 +34,16 @@
                             <a href="/user/view-pending/<%= item.product_id %>">
                                 <div class="shoppingItem">
                                     <img src="/uploads/<%= item.product_image %>" alt="" class="itemImage"/>
-                                    <hr/>
-                                    <strong class="itemName">
-                                        <%= item.product_name %>
-                                    </strong>
-                                    <br/>
-                                    <div class="item-price-quantity">
-                                        <strong class="itemPrice">$<%= item.product_price %></strong>
-                                        <br/>
-                                        <strong>
-                                            <p class="itemQuantity"><%= item.product_quantity %> left</p>
+                                    <div class="item-details">
+                                        <strong class="itemName">
+                                            <%= item.product_name %>
                                         </strong>
+                                            <strong class="itemPrice">₱<%= item.product_price %></strong>
+                                            <h5 class="itemLocation" title="<%= item.owner_location %>">
+                                                <%= item.owner_location %>
+                                            </h5>
+                                                <p class="itemQuantity">Quantity: <%= item.product_quantity %></p> 
                                     </div>
-                                    <strong class="itemLocation">
-                                        <%= item.owner_location %>
-                                    </strong>
                                 </div>
                             </a>
                         <% }); %>
@@ -66,25 +61,21 @@
                         <% approvedPosts.forEach(function(item) { %>
                             <div class="shoppingItem">
                                 <!-- Delete Icon with data-item-id -->
+                                <div class="itemDelete-wrapper">
                                 <img src="/images/trashcan.png"
                                      alt="Delete"
                                      class="itemDelete"
                                      data-item-id="<%= item.item_id %>"/>
-
                                 <a href="/user/update-listing/<%= item.item_id %>">
-                                    <hr/>
                                     <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
-                                    <hr/>
-                                    <strong class="itemName"><%= item.item_name %></strong>
-                                    <br/>
-                                    <strong class="itemLocation"><%= item.item_location %></strong>
-                                    <div class="item-price-quantity">
+                                    <div class="item-details">
+                                        <strong class="itemName" title="<%= item.item_name %>"><%= item.item_name %></strong>
                                         <strong class="itemPrice">₱ <%= item.item_price %></strong>
-                                        <strong>
-                                            <p class="itemQuantity"><%= item.item_quantity %> left</p>
-                                        </strong>
+                                        <h5 class="itemLocation" title="<%= item.item_location %>"><%= item.item_location %></h5>
+                                        <p class="itemQuantity"><%= item.item_quantity %> left</p>
                                     </div>
                                 </a>
+                                </div>  
                             </div>
                         <% }); %>
                     <% } else { %>

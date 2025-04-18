@@ -303,10 +303,10 @@
             <img src="/uploads/${item.image}" alt="Item Image" class="itemImage">
 
             <div class="item-details"> 
-            <strong><p >${item.name}</p></strong>
+           <p > <strong title="${item.name}" >${item.name}</strong></p>
             <strong>₱ ${item.price} per day</strong>
-            <h5> ${item.location}</h5>
-            <p class="item-quantity"> ${item.quantity} left</p>
+            <h5 title="${item.location}"> ${item.location}</h5>
+            <p class="item-quantity"> ${item.quantity}items left</p>
             </div>`;
 
             li.addEventListener("click", function () {
@@ -518,7 +518,7 @@ function renderSortedItems(items) {
             <strong>${item.name}</strong>
             <strong>₱ ${item.price} per day</strong>
             <h5> ${item.location}</h5>
-            <p class="item-quantity"> ${item.quantity} left</p>
+            <p class="item-quantity"> ${item.quantity} items left</p>
             </div>`;
         li.addEventListener("click", function () {
             localStorage.setItem("selectedItem", JSON.stringify(item));
