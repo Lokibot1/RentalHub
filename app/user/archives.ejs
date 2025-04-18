@@ -76,40 +76,38 @@
 
         // Confirm Restore
         confirmBan.addEventListener("click", async function () {
-            if (!currentItemId) {
-                console.error("Error: No item selected for restoration.");
-                return;
-            }
+    if (!currentItemId) {
+        console.error("Error: No item selected for restoration.");
+        return;
+    }
 
-            try {
-                const response = await fetch(`/api/user/archives/restore-item/${currentItemId}`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                });
-
-                if (!response.ok) {
-                    throw new Error("Error restoring item.");
-                }
-
-                console.log('Item restored successfully');
-
-                
-                const restoredItem = document.querySelector(`.restore-btn[data-id="${currentItemId}"]`).parentElement;
-                if (restoredItem) {
-                    restoredItem.remove(); 
-                }
-
-                
-                showRestoreToast("Item restored successfully!");
-
-            } catch (error) {
-                console.error("Error:", error);
-                showRestoreToast("Failed to restore item.");
-            }
-
-            restoreModal.style.display = "none";
-            overlay.style.display = "none";
+    try {
+        const response = await fetch(`/api/user/archives/restore-item/${currentItemId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
         });
+
+        if (!response.ok) {
+            throw new Error("Error restoring item.");
+        }
+
+        console.log('Item restored successfully');
+
+        const restoredItem = document.querySelector(`.restore-btn[data-id="${currentItemId}"]`).parentElement;
+        if (restoredItem) {
+            restoredItem.remove();
+        }
+
+        showRestoreToast("Item restored successfully!");
+
+    } catch (error) {
+        console.error("Error:", error);
+        showRestoreToast("Failed to restore item.");
+    }
+
+    restoreModal.style.display = "none";
+});
+
 
         // Cancel Restore
         document.getElementById("cancelBtn").addEventListener("click", function () {
@@ -129,8 +127,10 @@
         function showRestoreToast(message) {
             restoreToast.textContent = message;
             restoreToast.classList.add("show");
+            overlay.style.display = "block";
             setTimeout(() => {
                 restoreToast.classList.remove("show");
+                overlay.style.display = "none";
             }, 3000);
         }
     });
