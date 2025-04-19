@@ -393,9 +393,9 @@ async function viewUserReports(reporter_id) {
                 
                 // Clean and format the reasons as bullet points
                 let cleanedReasons = '';
-                if (report.report_reasons) {
+                if (report.reasons) {
                     // Remove brackets, quotes, and backslashes
-                    const cleanText = report.report_reasons.replace(/[\[\]"\\]/g, '');
+                    const cleanText = report.reasons.replace(/[\[\]"\\]/g, '');
                     
                     // Split by commas or other separators
                     const reasons = cleanText.split(',').map(reason => reason.trim());
