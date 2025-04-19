@@ -1,46 +1,6 @@
 <link rel="stylesheet" href="/css/view-product.css"/>
 <link rel="web icon" type="png" href="/images/webicon.png"/>
 
-<!--Navigation Bar-->
-<nav>
-    <a href="/">
-        <div class="logo">
-            <h1>Rental <span> Hub</span></h1>
-        </div>
-    </a>
-    <ul>
-        <li><a href="/shop">Shop</a></li>
-        <li>
-            <a href="/user/listing"
-            ><img src="/images/WhiteAdd.png" class="add-icon"
-                /></a>
-        </li>
-        <li>
-            <% if (isAuthenticated && role === 'admin' ) { %>
-                <a href="/admin/admin-dashboard">
-                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
-                </a>
-            <% } else if (isAuthenticated && role === 'user' ) { %>
-                <a href="/user/profile">
-                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
-                </a>
-            <% } else { %>
-                <a href="/login">
-                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
-                </a>
-            <% } %>
-        </li>
-    </ul>
-</nav>
-<br/><br/><br/><br/>
-
-<% if (is_owner) { %>
-    <div style="display: flex; justify-content: center;">
-        <button class="request-btn" onclick="window.location.href='/user/update-listing/<%= item_id %>'">
-            Update
-        </button>
-    </div>
-<% } %>
 <!-- Main container for product view -->
 <div class="view-product-container">
     <!-- Left Section: Product Image + Details (Stacked) -->
@@ -60,7 +20,7 @@
         </div>
 
         <!-- Owner Info -->
-        <div class="owner-info" onclick="openForm()">
+        <div class="owner-info">
             <h2>Posted by</h2>
             <br>
             <hr/>
@@ -77,68 +37,8 @@
         </div>
     </div>
 
-    <!-- Modal for Owner Information -->
-    <div id="modalOverlay" class="modal-overlay"></div>
-    <div id="myForm">
-        <button class="close-btn" onclick="closeForm()">X</button>
 
-        <!--Profile Details-->
-        <div class="side-profile">
-            <div class="profile">
-                <img id="profile-image" src="" alt=""/>
-            </div>
-            <hr/>
-            <h3 id="owners-fullname">*Owner's Name*</h3>
-            <p id="contact-number">*Contact Info*</p>
-            <p id="social-media">
-                <a id="social-media-link" href="#" target="_blank"
-                >*Social Media Link*</a
-                >
-            </p>
-            <p id="location">*Location*</p>
-            <p id="owner-rating">*Rating*</p>
-        </div>
-
-        <!-- Right Side-->
-        <div class="side-info">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab(event, 'items')">
-                    Items
-                </button>
-                <button class="tab-btn" onclick="switchTab(event, 'reviews')">
-                    Reviews
-                </button>
-            </div>
-            <div class="pop-content">
-                <div
-                        id="items"
-                        class="tab-content active"
-                >
-                    <div id="approvedItemsList" class="shoppingList"></div>
-                </div>
-                <div id="reviews" class="tab-content">
-                    <br>
-                    <h3>Reviewed As:</h3>
-                    <div class="toggle-wrapper">
-                        <div class="toggle-container">
-                            <button id="renterBtn" class="toggle-btn">Renter</button>
-                            <button id="ownerBtn" class="toggle-btn">Owner</button>
-                            <div class="toggle-slider"></div>
-                        </div>
-                    </div>
-                    <br>
-                    <hr>
-                    <div id="renterContent" class="content-box">
-
-
-                    </div>
-                    <div id="ownerContent" class="content-box" style="display: none">
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
+        
     </div>
 
      <!-- Right Section: Rental Options -->
@@ -177,14 +77,13 @@
                         <button type="button" id="delivery-btn">Delivery</button>
                     </div>
                     <% if (isAuthenticated && role === 'admin' || role === 'user' ) { %>
-                        <button type="submit" id="request-btn">Request</button>
+                        <button type="submit" id="request-btn">Submit</button>
                     <% } else { %>
-                        <a href="/login?redirect=/user/view-product/<%= item_id %>" class="request-btn">
-                            Request
-                        </a>
+                        <button class="request-btn" onclick="window.location.href='/login?redirect=/user/view-product/<%= item_id %>'"><!--ALISIN YUNG HREF-->
+                            Submit
+                        </button>
                     <% } %>
                     <br>
-                    <p>For reservation <a href ="/app/user/inquirepage.ejs<%= item_id %>"> Inquire Now!</a></p>
                 </form>
         </div>
     </div>
@@ -192,126 +91,12 @@
 </div>
 
 <script>
-    let selectedItem = null;
-
-    window.addEventListener("load", function () {
-        document.getElementById("myForm").style.display = "none";
-        document.getElementById("modalOverlay").style.display = "none";
-    });
-
-    // Open Form (Show overlay & form)
-    async function openForm() {
-        const item = JSON.parse(localStorage.getItem("selectedItem"));
-        const response = await fetch(
-            `http://localhost:8000/api/user/view-product/posted-by/${item.id}`
-        );
-        const data = await response.json();
-        const {
-            id,
-            profile_image,
-            owner_id,
-            owner,
-            contact_number,
-            social_media,
-            location,
-            average_rating,
-        } = data.data;
-
-        document.querySelector("#profile-image").src = `/uploads/${profile_image}`;
-        document.querySelector("#owners-fullname").textContent = owner;
-        document.querySelector("#contact-number").textContent = contact_number;
-
-        // Update the link and text
-        const socialMediaLink = document.querySelector("#social-media-link");
-        socialMediaLink.textContent = social_media;
-        socialMediaLink.href = social_media; // Set the href attribute
-        document.querySelector("#location").textContent = location;
-        document.querySelector(
-            "p#owner-rating"
-        ).textContent = selectedItem.average_rating ? `⭐ ${selectedItem.average_rating}` : 'No Ratings'
-
-        document.getElementById("myForm").style.display = "flex";
-        document.getElementById("modalOverlay").style.display = "block"; // Show the overlay
-    }
-
-    // Close Form (Hide overlay & form)
-    function closeForm() {
-        document.getElementById("myForm").style.display = "none";
-        document.getElementById("modalOverlay").style.display = "none"; // Hide the overlay
-    }
-
-    // Switch Tabs
-    function switchTab(event, tabName) {
-        // Remove active class from all buttons
-        document
-            .querySelectorAll(".tab-btn")
-            .forEach((btn) => btn.classList.remove("active"));
-
-        // Hide all content sections
-        document
-            .querySelectorAll(".tab-content")
-            .forEach((content) => content.classList.remove("active"));
-
-        // Add active class to the clicked button
-        event.currentTarget.classList.add("active");
-
-        // Show the selected tab content
-        document.getElementById(tabName).classList.add("active");
-    }
-
-    // Function to load the selected product details
-    async function loadSelectedProduct() {
-        selectedItem = JSON.parse(localStorage.getItem("selectedItem"));
-        console.log("selectedItem", selectedItem);
-        if (selectedItem) {
-            document.getElementById("product-image").src =
-                `/uploads/${selectedItem.image}` || "default.jpg";
-            document.getElementById("product-name").innerText = selectedItem.name;
-            document.getElementById(
-                "product-price"
-            ).innerText = `₱${selectedItem.price} per day`;
-            document.getElementById("product-description").innerText =
-                selectedItem.description;
-
-            document.getElementById("product-quantity").innerText =
-            ` ${ selectedItem.quantity} Items left ` ;
-
-            const rentalQuantity = document.querySelector("[name='rental_quantity']");
-            if (rentalQuantity) {
-                rentalQuantity.setAttribute("max", selectedItem.quantity);
-            }
-
-            // Owner Info
-            document.getElementById("owner-name").textContent =
-                selectedItem.name || "Unknown Owner";
-
-            document.querySelector(
-                "#owner-image"
-            ).src = `/uploads/${selectedItem.profile_image}`;
-            document.querySelector("#owner-name").textContent = selectedItem.owner;
-
-            document.getElementById("owner-location").textContent =
-                selectedItem.location || "Unknown Location";
-            document.querySelector(
-                "#owner-rating"
-            ).textContent = selectedItem.average_rating ? `⭐ ${selectedItem.average_rating}` : 'No Ratings'
-        } else {
-            alert("No product selected!");
-            window.location.href = ".shopping";
-        }
-    }
-
-    // Call function when page loads
-    loadSelectedProduct();
-
-    // Function to convert rating number to stars
     function generateStars(rating) {
         if (rating === "No Ratings") return rating;
         let stars = "⭐".repeat(Math.floor(rating)); // Full stars
         return stars + ` (${rating})`; // Show the average rating value
     }
 
-    //CALENDRRRRRRRRRRRRRRRRRRRRRRRRRRRR
     //calendar functionssssss
     document.addEventListener("DOMContentLoaded", function () {
         const datesGrid = document.getElementById("dates-grid");
@@ -523,7 +308,7 @@
         });
     });
 
-    //FUNCTION FOR REQUEST BUTTON!!!!
+    //@almerleoalmazan @codeut182 TODO: Replace function to send email to the owner
     document.addEventListener("DOMContentLoaded", function () {
         const requestBtn = document.getElementById("request-btn");
         const meetupBtn = document.getElementById("meetup-btn");
@@ -795,7 +580,7 @@
             modal.style.fontWeight = "bold";
             modal.style.fontSize = "30px";
             modal.style.fontFamily = "Poppins, sans-serif";
-            modal.innerHTML = `<p>Rental request submitted successfully!</p>`;
+            modal.innerHTML = `<p>Inquiry Submitted Successfully!</p>`;
             modal.style.width = "40%";
 
             modalOverlay.appendChild(modal);
@@ -863,215 +648,4 @@
         qtyInput.value = newQty;
     }
 
-    // Toggle between renter and owner
-    document.addEventListener("DOMContentLoaded", function () {
-        const renterBtn = document.getElementById("renterBtn");
-        const ownerBtn = document.getElementById("ownerBtn");
-        const slider = document.querySelector(".toggle-slider");
-        const renterContent = document.getElementById("renterContent");
-        const ownerContent = document.getElementById("ownerContent");
-
-        // Default state: Show "For Renters" and position the slider
-        slider.style.transform = "translateX(0%)";
-        renterBtn.style.color = "#12263f";
-        ownerBtn.style.color = "white";
-        renterContent.style.display = "block"; // Show renters section
-        ownerContent.style.display = "none"; // Hide owners section
-
-        renterBtn.addEventListener("click", function () {
-            slider.style.transform = "translateX(0%)";
-            renterBtn.style.color = "#12263f";
-            ownerBtn.style.color = "white";
-            renterContent.style.display = "block"; // Show renters section
-            ownerContent.style.display = "none"; // Hide owners section
-        });
-
-        ownerBtn.addEventListener("click", function () {
-            slider.style.transform = "translateX(100%)";
-            ownerBtn.style.color = "#12263f";
-            renterBtn.style.color = "white";
-            renterContent.style.display = "none"; // Hide renters section
-            ownerContent.style.display = "block"; // Show owners section
-        });
-    });
-
-    // Fetch and display reviews
-    document.addEventListener("DOMContentLoaded", () => {
-        const userId = JSON.parse(localStorage.getItem("selectedItem"))?.owner_id;
-        const renterBtn = document.getElementById("renterBtn");
-        const ownerBtn = document.getElementById("ownerBtn");
-        const renterContent = document.getElementById("renterContent");
-        const ownerContent = document.getElementById("ownerContent");
-
-        renterBtn.addEventListener("click", () => {
-            renterContent.style.display = "block";
-            ownerContent.style.display = "none";
-            console.log("Renter ID used:", userId);
-            fetchReviews(userId, "renter", renterContent);
-        });
-
-        ownerBtn.addEventListener("click", () => {
-            ownerContent.style.display = "block";
-            renterContent.style.display = "none";
-            console.log("Owner ID used:", userId);
-            fetchReviews(userId, "owner", ownerContent);
-        });
-
-        async function fetchReviews(userId, role, container) {
-            try {
-                const apiUrl = `http://localhost:8000/api/user/profile/reviews/${userId}?role=${role}`;
-                console.log("Fetching data from:", apiUrl);
-
-                const response = await fetch(apiUrl);
-                const {data, success} = await response.json();
-
-                if (!response.ok) {
-                    console.error(`HTTP error! status: ${response.status}`);
-                    container.innerHTML = `<p>Error: Failed to fetch reviews (HTTP ${response.status})</p>`;
-                    return;
-                }
-
-                if (success) {
-                    console.log("Fetched reviews:", data);
-                    renderReviews(data, container);
-                } else {
-                    console.error("Failed to load reviews:", data?.message || "Unknown error");
-                    container.innerHTML = "<p>Error loading reviews</p>";
-                }
-            } catch (error) {
-                console.error("Error fetching reviews:", error.message);
-                container.innerHTML = "<p>Connection error while loading reviews</p>";
-            }
-        }
-
-        function renderReviews(reviews, container) {
-            container.innerHTML = "";
-
-            if (!reviews || reviews.length === 0) {
-                container.innerHTML = "<p>No reviews found.</p>";
-                return;
-            }
-
-            reviews.forEach((review) => {
-                const formattedDate = new Date(review.date_posted).toLocaleDateString('en-US');
-                const reviewHTML = `
-                    <div class="reviewItem">
-                      <br>
-                      <div class="review-header">
-                        <img class="itemImage" src="/uploads/${review.profile_image}" alt="${review.renter}" />
-                        <div class="header-info">
-                        <h3>${review.renter}</h3>
-                        <p>${review.location}</p>
-                        <p>${formattedDate}<p>
-                          </div>
-                      </div>
-                      <div class="review-content">
-                        <div class="item-rate">
-                          <span> ${generateStars(review.stars)}</span>
-                          <strong><p>${review.item_name}</p></strong>
-                          </div>
-                        <p><strong>Review:</strong> ${review.review_text}</p>
-                      </div>
-                      <br>
-                      <hr>
-                    </div>
-                `;
-                container.innerHTML += reviewHTML;
-            });
-        }
-
-        // Get Stars
-        function generateStars(rating) {
-            let stars = "";
-            for (let i = 1; i <= rating; i++) {
-                stars += "⭐"
-            }
-            return stars;
-        }
-
-        renterBtn.click(); //para sa autoshow ng reviews
-    });
-
-
-    async function getSelectedItem(item_id) {
-        const response = await fetch(
-            `http://localhost:8000/api/shared/items/search-by/${item_id}`
-        );
-        const {data} = await response.json();
-        localStorage.setItem('selectedItem', JSON.stringify(data));
-
-        // Then change the url to the view-product page
-        window.location.href = `/user/view-product/${item_id}`;
-    }
-
-
-    //Function to get items
-    document.addEventListener("DOMContentLoaded", () => {
-        const approvedItemsList = document.getElementById("approvedItemsList");
-        const selectedItem = JSON.parse(localStorage.getItem("selectedItem"));
-        const userId = selectedItem?.owner_id;
-
-
-        async function fetchApprovedItems() {
-            try {
-                const apiUrl = `http://localhost:8000/api/user/my-items/approved/${userId}`;
-                const response = await fetch(apiUrl);
-
-                if (!response.ok) {
-                    console.error(`HTTP error! status: ${response.status}`);
-                    approvedItemsList.innerHTML = `<p>Error: Failed to fetch approved items (HTTP ${response.status})</p>`;
-                    return;
-                }
-
-                const {data, success} = await response.json();
-
-                if (success) {
-                    console.log("Approved items data:", data);
-                    renderApprovedItems(data);
-                } else {
-                    console.error(
-                        "Failed to load approved items:",
-                        data ? data.message || "Unknown error" : "Empty response"
-                    );
-                    approvedItemsList.innerHTML = "<p>Error loading approved items</p>";
-                }
-            } catch (error) {
-                console.error("Error fetching approved items:", error);
-                approvedItemsList.innerHTML =
-                    "<p>Connection error while loading items</p>";
-            }
-        }
-
-
-        function renderApprovedItems(items) {
-            approvedItemsList.innerHTML = "";
-
-            if (!items || items.length === 0) {
-                approvedItemsList.innerHTML = "<p>No approved items found.</p>";
-                return;
-            }
-
-            items.forEach((item) => {
-                if (item.item_quantity <= 0) return; // Skip items with zero quantity
-                const itemHTML = `
-                  <a href="#" onclick="getSelectedItem(${item.item_id})">
-                    <div class="shoppingItem">
-                      <div>
-                        <img class="itemImage" src="/uploads/${item.item_image}" alt = "${item.item_name}" />
-                      </div>
-                      <div class="itemDetails">
-                        <strong title="${item.item_name}">${item.item_name}</strong>
-                        <strong>₱ :  ${item.item_price} per day</strong>
-                        <h5>${item.item_location}</h5>
-                        <p> ${item.item_quantity} Items Left</p>
-                      </div>
-                    </div>
-                  </a>
-                `;
-                approvedItemsList.innerHTML += itemHTML;
-            });
-        }
-
-        fetchApprovedItems();
-    });
 </script>

@@ -326,6 +326,7 @@ nav span {
   margin-bottom: 15px;
   border-radius: 50%;
   gap: 3px;
+  height: 2.5rem;
 }
 
 #meetup-btn {
@@ -335,17 +336,17 @@ nav span {
   padding: 5px 20px;
   border-radius: 50px 0px 0px 50px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 #delivery-btn {
   background-color: #121212;
   color: white;
   border: none;
-  padding: 13px 20px;
+  padding: 5px 20px;
   border-radius: 0px 50px 50px 0px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 #meetup-btn.pressed,
@@ -355,17 +356,16 @@ nav span {
 }
 
 #request-btn,
-.request-btn, #inquire-btn {
+.request-btn {
   border: 2px solid black;
   background: white;
-  padding: 10px 65px;
+  padding: 5px 65px;
   font-weight: bold;
   border-radius: 20px;
   cursor: pointer;
-  font-size: 16px;
-}
-#inquire-btn {
-  margin-top: 15px;
+  font-size: 1rem;
+  height: 2.5rem;
+  margin-bottom: 1rem;
 }
 
 #meetup-btn:hover {
@@ -455,7 +455,7 @@ nav span {
   margin: 0 auto;
   border: #121212 solid 1px;
   border-radius: 5px;
-  height: 20rem;
+  height: 23rem;
 }
 
 .month {
@@ -734,8 +734,9 @@ nav span {
     align-items: center;
     gap: 5px;
     font-family: Arial, sans-serif;
-    font-size: 1.4rem;
-    margin-top: 15px;
+    font-size: 1.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .quantity-container button {
