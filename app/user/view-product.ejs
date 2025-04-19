@@ -52,8 +52,10 @@
                 <h2 id="product-name"></h2>
                 <h1 id="product-price"></h1>
                 <h4 id="product-quantity"></h4>
-                <h3>Product Description</h3>
+                <div class="product-description">
+                    <h3>Product Description</h3>
                 <p id="product-description"></p>
+                </div>
             </div>
         </div>
 
@@ -107,7 +109,7 @@
                     Reviews
                 </button>
             </div>
-            <div class="content">
+            <div class="pop-content">
                 <div
                         id="items"
                         class="tab-content active"
@@ -115,6 +117,7 @@
                     <div id="approvedItemsList" class="shoppingList"></div>
                 </div>
                 <div id="reviews" class="tab-content">
+                    <br>
                     <h3>Reviewed As:</h3>
                     <div class="toggle-wrapper">
                         <div class="toggle-container">
@@ -123,6 +126,7 @@
                             <div class="toggle-slider"></div>
                         </div>
                     </div>
+                    <br>
                     <hr>
                     <div id="renterContent" class="content-box">
 
@@ -181,6 +185,7 @@
                             Request
                         </a>
                     <% } %>
+                    <button type="submit" id="inquire-btn">Inquire</button>
                     <br>
                 </form>
         </div>
@@ -271,7 +276,7 @@
                 selectedItem.description;
 
             document.getElementById("product-quantity").innerText =
-            ` ${ selectedItem.quantity} left ` ;
+            ` ${ selectedItem.quantity} Items left ` ;
 
             const rentalQuantity = document.querySelector("[name='rental_quantity']");
             if (rentalQuantity) {
@@ -992,7 +997,7 @@
 
     async function getSelectedItem(item_id) {
         const response = await fetch(
-            `http://localhost:8000/api/shared/items/${item_id}`
+            `http://localhost:8000/api/shared/items/search-by/${item_id}`
         );
         const {data} = await response.json();
         localStorage.setItem('selectedItem', JSON.stringify(data));
@@ -1057,10 +1062,10 @@
                         <img class="itemImage" src="/uploads/${item.item_image}" alt = "${item.item_name}" />
                       </div>
                       <div class="itemDetails">
-                        <h3><strong>${item.item_name}</strong></h3>
-                        <p><strong>₱ :</strong> ${item.item_price}</p>
-                        <p><strong>Loc:</strong> ${item.item_location}</p>
-                        <p><strong>Qty:</strong> ${item.item_quantity}</p>
+                        <strong title="${item.item_name}">${item.item_name}</strong>
+                        <strong>₱ :  ${item.item_price} per day</strong>
+                        <h5>${item.item_location}</h5>
+                        <p> ${item.item_quantity} Items Left</p>
                       </div>
                     </div>
                   </a>

@@ -100,6 +100,8 @@ nav button {
   background: #e9003a;
 }
 
+
+
 /*Main Section*/
 .main {
   display: flex;
@@ -317,8 +319,7 @@ nav button {
 .product-name {
   font-size: 25px;
 }
-.cancel-btn,
-.restore-btn {
+.cancel-btn {
   cursor: pointer;
   border: none;
   padding: 8px 20px;
@@ -331,9 +332,6 @@ nav button {
 }
 .cancel-btn {
   background-color: #800020;
-}
-.restore-btn {
-  background-color: #009959;
 }
 .cancel-btn:hover {
   opacity: 0.8;
@@ -379,13 +377,17 @@ nav button {
   box-shadow: none;
 }
 .tab-content {
+  display: none;
   overflow-y: auto;
-  height: 70vh;
+  height: 35rem;
   background-color: #f5f5f5;
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
   padding: 20px;
   min-height: 300px;
   border-radius: 0 0 10px 10px;
+}
+.userInfoDetails{
+  display: none;
 }
 
 /* Pending Post */
@@ -395,72 +397,101 @@ nav button {
   font-family: "Poppins", sans-serif;
 }
 .shoppingList {
-  height: 58vh;
+  height: auto;
   list-style: none;
-  padding: 10px;
+  padding: 1rem;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 11px;
+  justify-items: center;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
   overflow-y: auto;
 }
-
 /* Item Container */
 .shoppingItem1,
 .shoppingItem {
   cursor: pointer;
-  width: 290px;
-  font-size: 20px;
-  margin-bottom: 10px;
-  background: #f5f5f5;
-  border-radius: 10px;
-  box-shadow: 2px 5px 7px #888888;
-  padding: 5px;
+  width: 13rem;
+  height: 17.5rem;
+  font: 1rem sans-serif;
+  background: transparent;
+  box-shadow: 0rem 0rem 0.7rem #888;
+  backdrop-filter: blur(5rem);
   word-wrap: break-word;
+  border-radius: 1.5rem;
   overflow-wrap: break-word;
   text-overflow: ellipsis;
   align-items: center;
-  overflow-x: hidden;
+  text-align: left;
+  overflow-y: hidden;
+  margin-bottom: 1.5rem;
   transition: transform 0.3s ease-in-out;
-  position: relative;
-  height: 410px;
 }
-.shoppingItem:hover, .shoppingItem1:hover {
+.shoppingItem:hover,
+.shoppingItem1:hover {
   transform: scale(1.05);
 }
 .itemImage {
-  border-radius: 50px 0px 50px 0px;
-  width: 276px;
-  height: 200px;
+  width: 13rem;
+  height: 10rem;
 }
-.itemDelete {
-  top: 10px;
-  right: 10px;
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  z-index: 10;
-}
-/*Item Name*/
-.shoppingItem strong {
-  font-size: 20px;
-  font-weight: 900;
-  text-align: left;
-  color: #1b2e3d;
-  font-family: "Poppins", sans-serif;
+.itemDelete-wrapper, .itemRestore-wrapper {
+  position: relative;
   width: 100%;
 }
-.shoppingItem hr {
-  border: none;
-  height: 1px;
-  background: #ccc;
-  margin: 10px 0;
+.itemDelete, .restore-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+   background-color: #f5f5f5;
+  border-radius: 50%;
+  padding: 5px; 
+  z-index: 2;
+}
+.restore-btn{
+  padding: 0; 
+  background-color: #009959;
+}
+.material-symbols-outlined{
+  font-weight: 100;
+  color: #f5f5f5;
+}
+.item-details {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5rem;
+  padding: 0.5rem;
+  text-align: left;
+  color: #121212;
+  font-family: "Work Sans", sans-serif;
+}
+.item-details strong {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+.item-dateils title{
+  color: #009959;
+}
+.item-details h5 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 100;
+}
+.item-details p {
+  font-size: 0.875rem;
+  color: #880000;
 }
 
 /* Confirmation Modal */
 .modal {
   display: none;
   position: fixed;
-  z-index: 1000;
+  z-index: 10000;
   left: 0;
   top: 0;
   width: 100%;
@@ -527,7 +558,7 @@ nav button {
   border-radius: 30px;
   padding: 20px;
   position: fixed;
-  z-index: 1000;
+  z-index: 10000;
   justify-content: center;
   font-size: 20px;
   font-weight: 900;
@@ -556,8 +587,9 @@ nav button {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
+  z-index: 9999; /* stays lower than restore modal */
 }
+
 
 /*Rental Request*/
 .rentalItem {
@@ -1113,4 +1145,18 @@ nav button {
   font-size: 1.3rem;
   font-weight: bolder;
 
+}
+
+.archiveContainer {
+  flex: 1;
+  width: 100%;
+  padding: 20px;
+  flex-direction: row;
+  display: none;
+  overflow-y: auto;
+  height: 35rem;
+  background-color: #f5f5f5;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+  min-height: 300px;
+  border-radius: 0 0 10px 10px;
 }

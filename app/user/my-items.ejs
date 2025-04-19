@@ -22,10 +22,11 @@
             <button class="tablinks" onclick="openTab(event, 'OnTransactions')">
                 On Going Transactions
             </button>
+        </div>
 
             <!--Tab Content-->
             <!--Pending Post-->
-            <div id="PendingPosts" class="tab-content">
+            <div id="PendingPosts" class="tab-content" style="display: block">
                 <div class="shoppingList">
 
                     <% if (pendingPosts.length > 0) { %>
@@ -33,21 +34,16 @@
                             <a href="/user/view-pending/<%= item.product_id %>">
                                 <div class="shoppingItem">
                                     <img src="/uploads/<%= item.product_image %>" alt="" class="itemImage"/>
-                                    <hr/>
-                                    <strong class="itemName">
-                                        <%= item.product_name %>
-                                    </strong>
-                                    <br/>
-                                    <div class="item-price-quantity">
-                                        <strong class="itemPrice">$<%= item.product_price %></strong>
-                                        <br/>
-                                        <strong>
-                                            <p class="itemQuantity"><%= item.product_quantity %> left</p>
+                                    <div class="item-details">
+                                        <strong class="itemName">
+                                            <%= item.product_name %>
                                         </strong>
+                                            <strong class="itemPrice">₱<%= item.product_price %></strong>
+                                            <h5 class="itemLocation" title="<%= item.owner_location %>">
+                                                <%= item.owner_location %>
+                                            </h5>
+                                                <p class="itemQuantity">Quantity: <%= item.product_quantity %></p> 
                                     </div>
-                                    <strong class="itemLocation">
-                                        <%= item.owner_location %>
-                                    </strong>
                                 </div>
                             </a>
                         <% }); %>
@@ -65,25 +61,21 @@
                         <% approvedPosts.forEach(function(item) { %>
                             <div class="shoppingItem">
                                 <!-- Delete Icon with data-item-id -->
+                                <div class="itemDelete-wrapper">
                                 <img src="/images/trashcan.png"
                                      alt="Delete"
                                      class="itemDelete"
                                      data-item-id="<%= item.item_id %>"/>
-
                                 <a href="/user/update-listing/<%= item.item_id %>">
-                                    <hr/>
                                     <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
-                                    <hr/>
-                                    <strong class="itemName"><%= item.item_name %></strong>
-                                    <br/>
-                                    <strong class="itemLocation"><%= item.item_location %></strong>
-                                    <div class="item-price-quantity">
+                                    <div class="item-details">
+                                        <strong class="itemName" title="<%= item.item_name %>"><%= item.item_name %></strong>
                                         <strong class="itemPrice">₱ <%= item.item_price %></strong>
-                                        <strong>
-                                            <p class="itemQuantity"><%= item.item_quantity %> left</p>
-                                        </strong>
+                                        <h5 class="itemLocation" title="<%= item.item_location %>"><%= item.item_location %></h5>
+                                        <p class="itemQuantity"><%= item.item_quantity %> left</p>
                                     </div>
                                 </a>
+                                </div>  
                             </div>
                         <% }); %>
                     <% } else { %>
@@ -221,7 +213,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        
 
         <!-- Decline Confirmation Modal -->
         <div id="decline-confirmation-modal1" class="confirmation-modal1">
@@ -263,7 +255,7 @@
                                 </div>
                             </div>
                             <div class="completeAction">
-                                <button data-id="report-btn"
+                                    <button data-id="report-btn"
                                         class="report-btn"
                                         data-selected-renter-id="<%= item.renter_id %>"
                                         data-selected-item-id="<%= item.item_id %>"
@@ -282,6 +274,7 @@
                     <p>No On Going Transactions available.</p>
                 <% } %>
             </div>
+        </div>
         </div>
 
         <!--Report Modal-->
@@ -401,7 +394,7 @@
     let selectedReasons = []
     let description = ""
 
-    // archive function
+    // archive function eto yung bago pero di gumagana.
     document.addEventListener('DOMContentLoaded', function () {
         const deleteButtons = document.querySelectorAll('.itemDelete');
         const archiveModal = document.getElementById('archiveModal');
@@ -416,11 +409,11 @@
         // Show delete confirmation modal when trash icon is clicked
         deleteButtons.forEach(button => {
             button.addEventListener('click', function (e) {
-                e.preventDefault();  // Stop any link redirection
-                e.stopPropagation(); // Stop event from bubbling
+                e.preventDefault();  
+                e.stopPropagation(); 
 
-                itemId = this.getAttribute('data-item-id'); // Get item ID
-                currentItem = this.closest('.shoppingItem'); // Get the whole item block
+                itemId = this.getAttribute('data-item-id'); 
+                currentItem = this.closest('.shoppingItem'); 
 
                 if (!currentItem) {
                     console.error("Error: Could not find the parent '.shoppingItem' element.");
@@ -436,76 +429,49 @@
         });
 
 // Confirm archive
-        confirmButton.addEventListener('click', async function () {
-            console.log("Archive confirmation button clicked");
+confirmButton.addEventListener('click', async function () {
+    console.log("Archive confirmation button clicked");
 
-            if (currentItem) {
-                console.log("Current item found:", itemId);
-                try {
-                    // First, hide the archive modal
-                    console.log("Hiding archive modal");
-                    archiveModal.style.display = 'none';
+    if (currentItem) {
+        try {
+            archiveModal.style.display = 'none';
 
-                    console.log("Sending fetch request to archive item:", itemId);
-                    const response = await fetch(`http://localhost:8000/api/user/my-items/archive-item/${itemId}`, {
-                        method: 'PATCH'
-                    });
+            console.log("Sending PATCH request to archive item:", itemId);
+            const response = await fetch(`http://localhost:8000/api/user/my-items/archive-item/${itemId}`, {
+                method: 'PATCH'
+            });
 
-                    console.log("Fetch response received:", response.status);
-                    const data = await response.json();
-                    console.log("Response data:", data);
+            const data = await response.json();
+            console.log("Archive Response:", data);
 
-                    // Check if the item was actually archived
-                    // Make an additional request to check if the item's archive status changed
-                    const checkResponse = await fetch(`http://localhost:8000/api/user/my-items/${itemId}`, {
-                        method: 'GET'
-                    });
+            if (data.success) {
+                // Archive successful
+                currentItem.style.display = 'none';
+                overlay.style.display = 'block';
+                successModal.style.display = 'block';
 
-                    const itemData = await checkResponse.json();
-                    console.log("Item data after archive attempt:", itemData);
-
-                    // If the item has is_archived = 1, it was successfully archived
-                    if (data.success && itemData.item && itemData.item.is_archived === 1) {
-                        console.log("Archive successful, hiding item");
-                        currentItem.style.display = 'none'; // Hide item from list
-
-                        console.log("Showing success modal");
-                        successModal.style.display = 'block';
-                        overlay.style.display = 'block';
-
-                        setTimeout(() => {
-                            console.log("Timeout: hiding success modal");
-                            overlay.style.display = 'none';
-                            successModal.style.display = 'none';
-                        }, 3000);
-                    } else {
-                        // If the server said success but the item wasn't archived,
-                        // it's likely because there's an ongoing transaction
-                        console.log("Archive failed due to ongoing transaction");
-
-                        // Ensure success modal is hidden
-                        successModal.style.display = 'none';
-
-                        // Show error modal
-                        console.log("Showing error modal");
-                        document.getElementById('errorModal').style.display = 'flex';
-                        overlay.style.display = 'block';
-                    }
-                } catch (error) {
-                    console.error("Fetch error:", error);
-
-                    // Ensure success modal is hidden
+                setTimeout(() => {
+                    overlay.style.display = 'none';
                     successModal.style.display = 'none';
-
-                    // Show error modal
-                    console.log("Showing error modal due to exception");
-                    document.getElementById('errorModal').style.display = 'flex';
-                    overlay.style.display = 'block';
-                }
+                }, 3000);
             } else {
-                console.error("Error: No item selected for archiving.");
+                // Archive failed, likely due to ongoing transaction
+                overlay.style.display = 'block';
+                errorModal.style.display = 'flex';
+
+                console.warn("Archive failed: ", data.message || "Unknown error");
             }
-        });
+
+        } catch (error) {
+            console.error("Fetch error:", error);
+            overlay.style.display = 'block';
+            errorModal.style.display = 'flex';
+        }
+    } else {
+        console.error("No item selected.");
+    }
+});
+
 
 // Function to close the error modal
         window.closeErrorModal = function () {
@@ -749,7 +715,6 @@
         setTimeout(() => {
             this.toast.classList.remove("show");
             this.modalOverlay.style.display = "none";
-            this.removeItemFromDOM(); // 👈 Remove the item after toast disappears
         }, 3000);
     }
 
@@ -786,21 +751,11 @@
         this.showToast();
         this.hideConfirmModal();
     }
-
-    removeItemFromDOM() {
-        if (!this.triggeringButton) return;
-
-        const itemElement = this.triggeringButton.closest(".rentalItem"); // adjust selector
-        if (itemElement) {
-            itemElement.remove();
-        }
-    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     new ReportModalHandler();
 });
-
 
 
     class RentalRequest {

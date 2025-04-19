@@ -256,7 +256,6 @@ nav span {
   flex-direction: column;
   gap: 0.5rem;
   padding: 1rem 2rem;
-  overflow-y: auto;
 }
 .product-details h1 {
   font-size: 1.3rem;
@@ -272,6 +271,9 @@ nav span {
   font-size: 1rem;
   color: #880000;
   font-weight: 500;
+}
+.product-description {
+  overflow-y: auto;
 }
 .product-details h3 {
   font-size: 1rem;
@@ -292,6 +294,10 @@ nav span {
   padding: 1rem 0rem;
 }
 .rental-options {
+  display: flex;
+  height: 40rem;
+  flex-direction: column;
+  gap: .5rem;
   background: white;
   border-radius: 25px;
   padding: 20px;
@@ -303,15 +309,15 @@ nav span {
 
 .pickdate {
   margin-top: 0px;
-  margin-bottom: 10px;
+  margin-bottom: px;
 }
 
 .mod {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .rental-options h3 {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
 }
 
 .delivery-options {
@@ -349,7 +355,7 @@ nav span {
 }
 
 #request-btn,
-.request-btn {
+.request-btn, #inquire-btn {
   border: 2px solid black;
   background: white;
   padding: 10px 65px;
@@ -357,7 +363,9 @@ nav span {
   border-radius: 20px;
   cursor: pointer;
   font-size: 16px;
-  margin-top: 20px;
+}
+#inquire-btn {
+  margin-top: 15px;
 }
 
 #meetup-btn:hover {
@@ -378,26 +386,27 @@ nav span {
 #delivery-btn:active {
   transform: scale(0.2);
 }
-
+#inquire-btn:hover,
 #request-btn:hover {
   opacity: 0.8;
   transition: opacity 0.3s ease;
   transform: scale(1.1);
   transition: transform 0.3s ease;
 }
-
+#inquire-btn:hover,
 #request-btn:hover {
   opacity: 0.8;
   transition: opacity 0.3s ease;
-  transform: scale(1.1);
+  transform: scale(1. 1);
   transition: transform 0.3s ease;
 }
 
 /* Right Section: Owner Info */
 .owner-info {
+  height: 12rem;
   border: 1px solid #121212;
   border-radius: 25px;
-  padding: 2rem;
+  padding: 1.5rem;
 }
 
 /* Product Details */
@@ -418,10 +427,10 @@ nav span {
   display: flex;
   align-items: center;
   gap: 50px;
-  padding: 20px;
+  padding: 15px;
 }
 .o-details{
-    line-height: 1.5rem;
+    line-height: 2rem;
 }
 
 /* Profile Picture */
@@ -441,11 +450,12 @@ nav span {
 /*PUTANGINANG KALENDARYO TO*/
 .calendar {
   width: 100%;
-  max-width: 300px;
-  padding: 20px;
+  max-width: 330px;
+  padding: 10px 20px;
   margin: 0 auto;
   border: #121212 solid 1px;
   border-radius: 5px;
+  height: 20rem;
 }
 
 .month {
@@ -467,14 +477,14 @@ nav span {
   grid-template-columns: repeat(7, 1fr);
   text-align: center;
   margin-bottom: 10px;
-  font-size: 14px;
+  font-size: 1rem;
   color: #666;
 }
 
 #dates-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
+  gap: .5rem;
   max-width: 350px;
   margin-top: 10px;
 }
@@ -489,11 +499,11 @@ nav span {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 25px; /* Adjust to fit your design */
-  height: 30px;
-  padding: 5px; /* Add padding */
-  border-radius: 50%; /* Make it circular */
-  border: 1px solid #ddd; /* Add spacing */
+  width: 35px; 
+  height: 35px;
+  padding: 5px; 
+  border-radius: 50%; 
+  border: 1px solid #ddd; 
   cursor: pointer;
 }
 
@@ -543,7 +553,7 @@ nav span {
 #instruction-text {
   font-size: 14px;
   color: #555;
-  margin-top: 25px;
+  margin-top: .5rem;
 }
 
 #reset-selection {
@@ -562,7 +572,7 @@ nav span {
     position: fixed;
     top: 0;
     left: 0;
-    width: 50rem;
+    width: 100rem;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     display: none; /* Keep this as none */
@@ -658,10 +668,10 @@ nav span {
 /* Side Info*/
 .side-info {
     flex: 1;
-
+    width: 100%;
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    padding: 5px;
     overflow: auto;
 }
 
@@ -725,7 +735,7 @@ nav span {
     gap: 5px;
     font-family: Arial, sans-serif;
     font-size: 1.4rem;
-    margin-top: 30px;
+    margin-top: 15px;
 }
 
 .quantity-container button {
@@ -786,9 +796,9 @@ nav span {
   
   .toggle-container {
     display: flex;
-    background-color: #12263f;
+    background-color: #121212;
     border-radius: 30px;
-    padding: 10px;
+    padding: 1.2rem .5rem;
     width: 150px; 
     height: 30px;
     position: relative;
@@ -804,16 +814,17 @@ nav span {
     background: none;
     color: white;
     font-weight: bold;
-    font-size: 15px; 
+    font-size: 1rem; 
     cursor: pointer;
     position: relative;
+    justify-items: center;
     z-index: 2;
   }
   
   .toggle-slider {
     position: absolute;
     width: 45%;
-    height: 35px;
+    height: 1.5rem;
     background: white;
     border-radius: 35px;
     transition: transform 0.3s ease-in-out;
@@ -857,37 +868,61 @@ nav span {
   }
   
   /* Item Container */
+  .pop-content {
+    width: 100%;
+    padding: 5px;
+    background: #f8f8f8;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
   .shoppingItem {
     cursor: pointer;
-    height: 250px;
-    width: 180px;
-    font-size: 20px;
-    background: #f5f5f5;
-    border-radius: 10px;
-    box-shadow: 2px 5px 7px #888888;
-    padding: 5px;
+    width: 13rem;
+    height: 17rem;
+    font: 1rem sans-serif;
+    background: transparent;
+    box-shadow: 0rem 0rem 0.7rem #888;
+    backdrop-filter: blur(5rem);
     word-wrap: break-word;
+    border-radius: 1.5rem;
     overflow-wrap: break-word;
     text-overflow: ellipsis;
     align-items: center;
-    overflow-x: hidden;
+    text-align: left;
+    overflow-y: hidden;
+    margin-bottom: 1rem;
     transition: transform 0.3s ease-in-out;
-    font-weight: 799;
-    color: #1b2e3d;
   }
   .shoppingItem:hover {
     transform: scale(1.05);
   }
   .itemImage {
-    border-radius: 40;
-    width: 180px;
-    height: 90px;
+    width: 13rem;
+    height: 10rem;
   }
   
   .itemDetails {
-    font-size: 10px;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.5rem;
+    padding: 0.5rem;
+    text-align: left;
+    color: #121212;
+    font-family: "Work Sans", sans-serif;
+  }
+  .itemDetails p {
+    font-size: 0.875rem;
+    color: #880000;
   }
   .itemDetails strong {
-    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+  }
+  .itemDetails h5 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 100;
   }
