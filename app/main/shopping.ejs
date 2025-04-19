@@ -137,8 +137,8 @@
 
         if (category) {
             setTimeout(() => {
-            openCategory(category);
-        }, 0);
+                openCategory(category);
+            }, 0);
         } else {
             // Default to the first category if no category is specified
             fetchItems();
@@ -294,6 +294,16 @@
             });
 
             selectedCategory = currentUrl.searchParams.get('category')
+
+            // Automatically open the category based on the URL query parameter
+            const params = new URLSearchParams(window.location.search);
+            const category = params.get("category");
+
+            if (category) {
+                setTimeout(() => {
+                    openCategory(category);
+                }, 0);
+            }
 
             searchItems(searchInput.value.trim(), selectedCategory);
         } else {
