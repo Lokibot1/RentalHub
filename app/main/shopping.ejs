@@ -224,25 +224,6 @@
 
             if (data.success && data.data.length > 0) {
                 displayItems(data.data);
-
-                // if (searchQuery) {
-                //     const resultCount = data.data.length;
-                //     const searchMessage = document.createElement("div");
-                //     searchMessage.className = "search-results-message";
-                //     searchMessage.innerHTML = `<p>Showing ${resultCount} result${resultCount !== 1 ? 's' : ''} for "${searchQuery}"</p>`;
-                //
-                //     // Clear Search Button
-                //     const clearButton = document.createElement("button");
-                //     clearButton.className = "clear-search";
-                //     clearButton.innerText = "Clear Search";
-                //     clearButton.addEventListener("click", function () {
-                //         searchInput.value = "";
-                //         fetchItems("");
-                //     });
-                //
-                //     searchMessage.appendChild(clearButton);
-                //     shoppingContainer.insertBefore(searchMessage, shoppingContainer.firstChild);
-                // }
             } else {
                 shoppingContainer.innerHTML = `<p>No items found.</p>`;
             }
@@ -263,11 +244,11 @@
     })
 
     // Search items based on user input
-    async function searchItems(query) {
-        console.log('from searchItems function:', query)
+    async function searchItems(query, category = '') {
+        console.log('category:', category)
 
         try {
-            const response = await fetch(`/api/shared/items/search?keyword=${encodeURIComponent(query)}`);
+            const response = await fetch(`/api/shared/items/search?keyword=${encodeURIComponent(query)}&category=${category}`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -286,51 +267,15 @@
         }
     }
 
-    // function displayItems(items) {
-    //     shoppingContainer.innerHTML = "";
-    //
-    //     if (!items.length) {
-    //         shoppingContainer.innerHTML = "<p>No items found matching your search.</p>";
-    //         return;
-    //     }
-    //
-    //     let shoppingList = document.createElement("ul");
-    //     shoppingList.className = "shoppingList";
-    //
-    //     items.forEach(item => {
-    //         if (item.quantity <= 0) return;
-    //
-    //         let li = document.createElement("li");
-    //         li.className = "shoppingItem";
-    //         li.innerHTML = `
-    //         <img src="/uploads/${item.image}" alt="Item Image" class="itemImage">
-    //
-    //         <div class="item-details">
-    //        <p > <strong title="${item.name}" >${item.name}</strong></p>
-    //         <strong>₱ ${item.price} per day</strong>
-    //         <h5 title="${item.location}"> ${item.location}</h5>
-    //         <p class="item-quantity"> ${item.quantity}items left</p>
-    //         </div>`;
-    //
-    //         li.addEventListener("click", function () {
-    //             localStorage.setItem("selectedItem", JSON.stringify(item));
-    //             window.location.href = `/user/view-product/${item.id}`;
-    //         });
-    //
-    //         shoppingList.appendChild(li);
-    //     });
-    //
-    //     shoppingContainer.appendChild(shoppingList);
-    // }
 
-    // searchButton.addEventListener("click", function () {
-    //     searchItems(searchInput.value.trim());
-    // });
 
     // Clear the search field
     searchInput.addEventListener('search', function () {
-        console.log('initiate search....')
         const categoryButtons = document.querySelectorAll('.category');
+
+        // Create a new URL object from the current window location
+        const currentUrl = new URL(window.location.href);
+        let selectedCategory = null
 
         if (searchInput.value === '') {
             // Clear the search input
@@ -344,57 +289,30 @@
                 button.classList.remove('active');
             });
 
-            // TODO: Fix this
-            const currentUrl = new URL(window.location.href);
             currentUrl.searchParams.set('category', 'events-and-parties');
 
             fetchItems(getCategoryId('events-and-parties'))
         } else {
-            console.log('searching....', searchInput.value.trim())
-            searchItems(searchInput.value.trim());
+            selectedCategory = currentUrl.searchParams.get('category')
+
+            searchItems(searchInput.value.trim(), selectedCategory);
         }
     })
 
     searchInput.addEventListener('keypress', function (e) {
+        // Create a new URL object from the current window location
+        const currentUrl = new URL(window.location.href);
+        let selectedCategory = null
+
         if (e.key === "Enter") {
             // Hide the categories container
             categoriesContainer.style.display = 'none'
 
-            searchItems(searchInput.value.trim())
+            selectedCategory = currentUrl.searchParams.get('category')
+            searchItems(searchInput.value.trim(), selectedCategory)
         }
     });
 
-    // Tabs Functionality 2nd
-    // function openCategory(categoryName) {
-    //     // This updates the URL in the address bar without reloading the page
-    //     const currentUrl = new URL(window.location.href);
-    //     currentUrl.searchParams.set('category', categoryName);
-    //
-    //     window.history.replaceState({}, '', currentUrl);
-    //
-    //     // Add active class to the clicked button when the category name in url matches
-    //     const currentCategory = currentUrl.searchParams.get('category');
-    //
-    //     const categoryButtons = document.querySelectorAll('.category');
-    //
-    //     categoryButtons.forEach(button => {
-    //         const onclickAttr = button.getAttribute('onclick');
-    //         const match = onclickAttr.match(/openCategory\('(.+)'\)/);
-    //
-    //         if (match) {
-    //             const buttonCategory = match[1];
-    //
-    //             if (buttonCategory === currentCategory) {
-    //                 button.classList.add('active');
-    //             } else {
-    //                 button.classList.remove('active');
-    //             }
-    //         }
-    //     });
-    //
-    //     // Get items for the selected category
-    //     fetchItems(getCategoryId(categoryName));
-    // }
 
     // Set the active category based on URL path
     document.addEventListener("DOMContentLoaded", function () {
