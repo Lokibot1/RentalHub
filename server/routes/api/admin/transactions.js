@@ -46,31 +46,30 @@ router.get("/", async (req, res) => {
  * @route GET /api/admin/transactions/search
  */
 router.get("/search", async (req, res) => {
-    const searchQuery = req.query.search || "";
-
-    if (!searchQuery) {
-        return res.status(400).json({ success: false, message: "Search query is required." });
-    }
+    const { keyword } = req.query
 
     const sql = `
-        SELECT rental_transactions.id                           AS transaction_id,
-               items.name                                       AS item_name,
+        SELECT rental_transactions.id AS transaction_id,
+               items.name AS item_name,
                rental_transactions.start_date,
                rental_transactions.end_date,
                CONCAT(renter.first_name, ' ', renter.last_name) AS renter,
-               CONCAT(owner.first_name, ' ', owner.last_name)   AS owner,
-               status
+               CONCAT(owner.first_name, ' ', owner.last_name) AS owner,
+               rental_transactions.status
         FROM rental_transactions
                  JOIN items ON items.id = rental_transactions.item_id
                  JOIN users AS renter ON renter.id = rental_transactions.renter_id
                  JOIN users AS owner ON owner.id = items.user_id
         WHERE rental_transactions.is_approved = 1
-          AND (rental_transactions.status = 'ongoing' OR rental_transactions.status = 'done')
-          AND (items.name LIKE ? OR renter.first_name LIKE ? OR renter.last_name LIKE ? OR owner.first_name LIKE ? OR
-               owner.last_name LIKE ?)
-    `;
-
-    const params = Array(5).fill(`%${searchQuery}%`);
+          AND (? = '' OR
+               items.name LIKE CONCAT('%', ?, '%') OR
+               renter.first_name LIKE CONCAT('%', ?, '%') OR
+               renter.last_name LIKE CONCAT('%', ?, '%') OR
+               owner.first_name LIKE CONCAT('%', ?, '%') OR
+               owner.last_name LIKE CONCAT('%', ?, '%') OR
+               rental_transactions.status LIKE CONCAT('%', ?, '%'))
+    `
+    const params = Array(7).fill(keyword);
 
     db.query(sql, params, (err, results) => {
         if (err) {
