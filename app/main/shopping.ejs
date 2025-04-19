@@ -145,6 +145,7 @@
         }
     })
 
+    // First
     function openCategory(categoryName) {
         // Update the URL in the address bar without reloading the page
         const currentUrl = new URL(window.location.href);
@@ -283,42 +284,42 @@
         }
     }
 
-    function displayItems(items) {
-        shoppingContainer.innerHTML = "";
-
-        if (!items.length) {
-            shoppingContainer.innerHTML = "<p>No items found matching your search.</p>";
-            return;
-        }
-
-        let shoppingList = document.createElement("ul");
-        shoppingList.className = "shoppingList";
-
-        items.forEach(item => {
-            if (item.quantity <= 0) return;
-
-            let li = document.createElement("li");
-            li.className = "shoppingItem";
-            li.innerHTML = `
-            <img src="/uploads/${item.image}" alt="Item Image" class="itemImage">
-
-            <div class="item-details"> 
-           <p > <strong title="${item.name}" >${item.name}</strong></p>
-            <strong>₱ ${item.price} per day</strong>
-            <h5 title="${item.location}"> ${item.location}</h5>
-            <p class="item-quantity"> ${item.quantity}items left</p>
-            </div>`;
-
-            li.addEventListener("click", function () {
-                localStorage.setItem("selectedItem", JSON.stringify(item));
-                window.location.href = `/user/view-product/${item.id}`;
-            });
-
-            shoppingList.appendChild(li);
-        });
-
-        shoppingContainer.appendChild(shoppingList);
-    }
+    // function displayItems(items) {
+    //     shoppingContainer.innerHTML = "";
+    //
+    //     if (!items.length) {
+    //         shoppingContainer.innerHTML = "<p>No items found matching your search.</p>";
+    //         return;
+    //     }
+    //
+    //     let shoppingList = document.createElement("ul");
+    //     shoppingList.className = "shoppingList";
+    //
+    //     items.forEach(item => {
+    //         if (item.quantity <= 0) return;
+    //
+    //         let li = document.createElement("li");
+    //         li.className = "shoppingItem";
+    //         li.innerHTML = `
+    //         <img src="/uploads/${item.image}" alt="Item Image" class="itemImage">
+    //
+    //         <div class="item-details">
+    //        <p > <strong title="${item.name}" >${item.name}</strong></p>
+    //         <strong>₱ ${item.price} per day</strong>
+    //         <h5 title="${item.location}"> ${item.location}</h5>
+    //         <p class="item-quantity"> ${item.quantity}items left</p>
+    //         </div>`;
+    //
+    //         li.addEventListener("click", function () {
+    //             localStorage.setItem("selectedItem", JSON.stringify(item));
+    //             window.location.href = `/user/view-product/${item.id}`;
+    //         });
+    //
+    //         shoppingList.appendChild(li);
+    //     });
+    //
+    //     shoppingContainer.appendChild(shoppingList);
+    // }
 
     searchButton.addEventListener("click", function () {
         searchItems(searchInput.value.trim());
@@ -357,37 +358,37 @@
         }
     });
 
-    // Tabs Functionality
-    function openCategory(categoryName) {
-        // This updates the URL in the address bar without reloading the page
-        const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.set('category', categoryName);
-
-        window.history.replaceState({}, '', currentUrl);
-
-        // Add active class to the clicked button when the category name in url matches
-        const currentCategory = currentUrl.searchParams.get('category');
-
-        const categoryButtons = document.querySelectorAll('.category');
-
-        categoryButtons.forEach(button => {
-            const onclickAttr = button.getAttribute('onclick');
-            const match = onclickAttr.match(/openCategory\('(.+)'\)/);
-
-            if (match) {
-                const buttonCategory = match[1];
-
-                if (buttonCategory === currentCategory) {
-                    button.classList.add('active');
-                } else {
-                    button.classList.remove('active');
-                }
-            }
-        });
-
-        // Get items for the selected category
-        fetchItems(getCategoryId(categoryName));
-    }
+    // Tabs Functionality 2nd
+    // function openCategory(categoryName) {
+    //     // This updates the URL in the address bar without reloading the page
+    //     const currentUrl = new URL(window.location.href);
+    //     currentUrl.searchParams.set('category', categoryName);
+    //
+    //     window.history.replaceState({}, '', currentUrl);
+    //
+    //     // Add active class to the clicked button when the category name in url matches
+    //     const currentCategory = currentUrl.searchParams.get('category');
+    //
+    //     const categoryButtons = document.querySelectorAll('.category');
+    //
+    //     categoryButtons.forEach(button => {
+    //         const onclickAttr = button.getAttribute('onclick');
+    //         const match = onclickAttr.match(/openCategory\('(.+)'\)/);
+    //
+    //         if (match) {
+    //             const buttonCategory = match[1];
+    //
+    //             if (buttonCategory === currentCategory) {
+    //                 button.classList.add('active');
+    //             } else {
+    //                 button.classList.remove('active');
+    //             }
+    //         }
+    //     });
+    //
+    //     // Get items for the selected category
+    //     fetchItems(getCategoryId(categoryName));
+    // }
 
     // Set the active category based on URL path
     document.addEventListener("DOMContentLoaded", function () {
