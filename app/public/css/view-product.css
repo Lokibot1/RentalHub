@@ -522,6 +522,8 @@ nav span {
   border-radius: 50%; 
   border: 1px solid #ddd; 
   cursor: pointer;
+  position: relative;
+  z-index: 1;
 }
 
 .date-cell:hover:not(.disabled) {
@@ -560,6 +562,8 @@ nav span {
   height: 32px;
   border: none;
   border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
 }
 
 .empty-cell {
