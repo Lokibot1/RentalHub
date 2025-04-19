@@ -50,11 +50,65 @@ router.get('/', async (req, res) => {
 
 
 /**
+ * Search items by keyword
+ *
+ * @route GET /api/shared/items/search?keyword=keyword
+ */
+router.get('/search', async (req, res) => {
+    console.log('keyword', req.query)
+    const { keyword } = req.query;
+
+    // If keyword is missing or empty string, return empty array
+    if (!keyword || keyword.trim() === '') {
+        return res.status(200).json({
+            success: true,
+            data: [] // return empty result set
+        });
+    }
+
+    const sql = `
+        SELECT items.id,
+               items.file_path          AS image,
+               items.name,
+               items.description,
+               items.location,
+               items.price,
+               inventory.stock_quantity AS quantity,
+               items.user_id                                  AS owner_id,
+               CONCAT(users.first_name, ' ', users.last_name) AS owner,
+               profile_image,
+               ROUND(AVG(reviews.rating), 2)                  AS average_rating
+        FROM items
+                 JOIN inventory ON items.id = inventory.item_id
+                 JOIN users ON users.id = items.user_id
+                 LEFT JOIN reviews ON reviews.item_id = items.id
+        WHERE (name LIKE ? OR description LIKE ?)
+        GROUP BY items.id, inventory.stock_quantity, items.user_id, users.first_name, users.last_name, profile_image
+    `
+
+    db.query(sql, [`%${keyword}%`, `%${keyword}%`], (err, results) => {
+        if (err) {
+            console.error("Database query error", err);
+            return res.status(500).json({
+                success: false,
+                message: "Query failed."
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results
+        });
+    });
+});
+
+
+/**
  * Search item by item_id
  *
- * @route GET /api/shared/items/:item_id
+ * @route GET /api/shared/items/search-by/:item_id
  */
-router.get('/:item_id', async (req, res) => {
+router.get('/search-by/:item_id', async (req, res) => {
     const { item_id } = req.params;
 
     const sql = `
@@ -89,60 +143,6 @@ router.get('/:item_id', async (req, res) => {
         res.status(200).json({
             success: true,
             data: results.length > 0 ? results[0] : null
-        });
-    });
-});
-
-/**
- * Search items by keyword
- *
- * @route GET /api/shared/items/search?keyword=keyword
- */
-router.get('/search', async (req, res) => {
-    const { keyword } = req.query;
-
-    // If keyword is missing or empty string, return empty array
-    if (!keyword || keyword.trim() === '') {
-        return res.status(200).json({
-            success: true,
-            data: [] // return empty result set
-        });
-    }
-
-    const sql = `
-        SELECT items.id,
-               items.file_path          AS image,
-               items.name,
-               items.description,
-               items.location,
-               items.price,
-               inventory.stock_quantity AS quantity,
-               items.user_id                                  AS owner_id,
-               CONCAT(users.first_name, ' ', users.last_name) AS owner,
-               profile_image,
-               ROUND(AVG(reviews.rating), 2)                  AS average_rating
-        FROM items
-                 JOIN inventory ON items.id = inventory.item_id
-                 JOIN users ON users.id = items.user_id
-                 LEFT JOIN reviews ON reviews.item_id = items.id
-        WHERE (name LIKE ? OR description LIKE ?)
-          AND name IS NOT NULL AND name <> ''
-          AND description IS NOT NULL AND description <> ''
-        GROUP BY items.id, inventory.stock_quantity, items.user_id, users.first_name, users.last_name, profile_image
-    `;
-
-    db.query(sql, [`%${keyword}%`, `%${keyword}%`], (err, results) => {
-        if (err) {
-            console.error("Database query error", err);
-            return res.status(500).json({
-                success: false,
-                message: "Query failed."
-            });
-        }
-
-        res.status(200).json({
-            success: true,
-            data: results
         });
     });
 });
@@ -224,7 +224,6 @@ router.get('/category/:category_id', async (req, res) => {
         });
     });
 });
-
 
 
 export default router

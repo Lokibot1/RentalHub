@@ -264,6 +264,8 @@
 
     // Search items based on user input
     async function searchItems(query) {
+        console.log('from searchItems function:', query)
+
         try {
             const response = await fetch(`/api/shared/items/search?keyword=${encodeURIComponent(query)}`);
 
@@ -321,12 +323,13 @@
     //     shoppingContainer.appendChild(shoppingList);
     // }
 
-    searchButton.addEventListener("click", function () {
-        searchItems(searchInput.value.trim());
-    });
+    // searchButton.addEventListener("click", function () {
+    //     searchItems(searchInput.value.trim());
+    // });
 
     // Clear the search field
     searchInput.addEventListener('search', function () {
+        console.log('initiate search....')
         const categoryButtons = document.querySelectorAll('.category');
 
         if (searchInput.value === '') {
@@ -346,6 +349,9 @@
             currentUrl.searchParams.set('category', 'events-and-parties');
 
             fetchItems(getCategoryId('events-and-parties'))
+        } else {
+            console.log('searching....', searchInput.value.trim())
+            searchItems(searchInput.value.trim());
         }
     })
 

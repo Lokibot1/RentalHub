@@ -997,7 +997,7 @@
 
     async function getSelectedItem(item_id) {
         const response = await fetch(
-            `http://localhost:8000/api/shared/items/${item_id}`
+            `http://localhost:8000/api/shared/items/search-by/${item_id}`
         );
         const {data} = await response.json();
         localStorage.setItem('selectedItem', JSON.stringify(data));
