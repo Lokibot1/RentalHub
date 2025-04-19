@@ -126,12 +126,15 @@ router.get("/approved/:user_id", async (req, res) => {
                items.price              AS item_price,
                items.location           AS item_location,
                items.file_path          AS item_image,
-               inventory.stock_quantity AS item_quantity
+               inventory.stock_quantity AS item_quantity,
+               COUNT(CASE WHEN reviews.for_user = items.user_id THEN 1 END) AS reviews_count
         FROM items
                  JOIN inventory ON inventory.item_id = items.id
+                 LEFT JOIN reviews ON reviews.item_id = items.id
         WHERE is_approved = 1
           AND is_archived = 0
           AND user_id = ?
+        GROUP BY items.id, items.name, items.price, items.location, items.file_path, inventory.stock_quantity
         ORDER BY items.created_at DESC
     `
     db.query(sql, [user_id], (err, results) => {

@@ -22,7 +22,8 @@ router.get('/', async (req, res) => {
                items.user_id                                  AS owner_id,
                CONCAT(users.first_name, ' ', users.last_name) AS owner,
                profile_image,
-               ROUND(AVG(reviews.rating), 2)                  AS average_rating
+               ROUND(AVG(reviews.rating), 2)                  AS average_rating,
+               COUNT(CASE WHEN reviews.for_user = items.user_id THEN 1 END) AS reviews_count
         FROM items
                  JOIN inventory ON items.id = inventory.item_id
                  JOIN users ON users.id = items.user_id
