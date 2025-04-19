@@ -47,19 +47,12 @@
                                          onclick="showDeleteModal()"/>
                                     <!--To Fix: Same Function sya nung sa posted items na trashcan sa user-->
                                     <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
-                                    <hr/>
+                                    <div class="item-details">
                                     <strong class="itemName"><%= item.name %></strong>
-                                    <br/>
-                                    <div class="item-price-quantity">
                                         <strong class="itemPrice">$<%= item.price %></strong>
-                                        <br/>
-                                        <p class="itemQuantity">
-                                            <strong>
-                                                <%= item.stock_quantity %> Left
-                                            </strong>
-                                        </p>
+                                        <h5 class="itemLocation"><%= item.location %></h5>
+                                        <p class="itemQuantity"> <%= item.stock_quantity %> Left </p>
                                     </div>
-                                    <strong class="itemLocation"><%= item.location %></strong>
                                 </div>
                             </a>
                         <% }); %>

@@ -167,6 +167,123 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+//NavScroll Effect
+window.addEventListener("scroll", function () {
+    const navbar = document.getElementById("navbar");
+    const hero = document.getElementById("Hero");
+  
+    const heroBottom = hero.offsetTop + hero.offsetHeight;
+  
+    if (window.scrollY >= heroBottom) {
+      navbar.classList.add("scrolled");
+    } else {
+      navbar.classList.remove("scrolled");
+    }
+  });
+  
+  //Hamburger Menu
+  const hamburger = document.getElementById("hamburger");
+  const navLinks = document.getElementById("nav-links");
+  
+  hamburger.addEventListener("click", () => {
+    navLinks.classList.toggle("active");
+    hamburger.classList.toggle("open"); // added for animation
+  });
+  
+  // Carousel Function
+  const carousel = document.getElementById("carousel");
+  const prevBtn = document.getElementById("prevPage");
+  const nextBtn = document.getElementById("nextPage");
+  const categories = carousel.querySelectorAll(".category");
+  const paginationContainer = document.getElementById("paginationDots");
+  
+  let currentIndex = 0;
+  const visibleCards = 1;
+  const totalCards = categories.length;
+  
+  // Initialize pagination dots
+  for (let i = 0; i < totalCards; i++) {
+    const dot = document.createElement("span");
+    dot.classList.add("dot");
+    if (i === 0) dot.classList.add("active");
+    dot.addEventListener("click", () => goToCard(i));
+    paginationContainer.appendChild(dot);
+  }
+  
+  const updateCarousel = () => {
+    const cardWidth = categories[0].offsetWidth + 40;
+    const track = document.querySelector(".carousel-track");
+    const offset = -(
+      cardWidth * currentIndex -
+      (carousel.offsetWidth - cardWidth) / 2
+    );
+  
+    track.style.transform = `translateX(${offset}px)`;
+  
+    categories.forEach((card, index) => {
+      card.classList.remove("active", "side");
+      if (index === currentIndex) {
+        card.classList.add("active");
+      } else {
+        card.classList.add("side");
+      }
+    });
+  
+    document.querySelectorAll(".dot").forEach((dot, i) => {
+      dot.classList.toggle("active", i === currentIndex);
+    });
+  };
+  
+  const goToCard = (index) => {
+    currentIndex = Math.max(0, Math.min(index, totalCards - 1));
+    updateCarousel();
+  };
+  
+  prevBtn.addEventListener("click", () => {
+    currentIndex = currentIndex > 0 ? currentIndex - 1 : totalCards - 1;
+    updateCarousel();
+  });
+  
+  nextBtn.addEventListener("click", () => {
+    currentIndex = (currentIndex + 1) % totalCards;
+    updateCarousel();
+  });
+  
+  // Initial setup
+  updateCarousel();
+  
+  // Drag support
+  let isDragging = false;
+  let startX;
+  let scrollLeft;
+  
+  carousel.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    startX = e.pageX - carousel.offsetLeft;
+    scrollLeft = carousel.scrollLeft;
+    carousel.classList.add("dragging");
+  });
+  
+  carousel.addEventListener("mouseleave", () => {
+    isDragging = false;
+    carousel.classList.remove("dragging");
+  });
+  
+  carousel.addEventListener("mouseup", () => {
+    isDragging = false;
+    carousel.classList.remove("dragging");
+  });
+  
+  carousel.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - carousel.offsetLeft;
+    const walk = (x - startX) * 2;
+    carousel.scrollLeft = scrollLeft - walk;
+  });
+  
+  
+
 // Toggle between renter and owner
 document.addEventListener("DOMContentLoaded", function () {
     const renterBtn = document.getElementById("renterBtn");
@@ -177,23 +294,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Default state: Show "For Renters" and position the slider
     slider.style.transform = "translateX(0%)";
-    renterBtn.style.color = "#12263f";
-    ownerBtn.style.color = "white";
+    renterBtn.style.color = "#f5f5f5";
+    ownerBtn.style.color = "#880000";
     renterContent.style.display = "block";
     ownerContent.style.display = "none";
 
     renterBtn.addEventListener("click", function () {
         slider.style.transform = "translateX(0%)";
-        renterBtn.style.color = "#12263f";
-        ownerBtn.style.color = "white";
+        renterBtn.style.color = "#f5f5f5";
+        ownerBtn.style.color = "#880000";
         renterContent.style.display = "block";
         ownerContent.style.display = "none";
     });
 
     ownerBtn.addEventListener("click", function () {
         slider.style.transform = "translateX(100%)";
-        ownerBtn.style.color = "#12263f";
-        renterBtn.style.color = "white";
+        ownerBtn.style.color = "#f5f5f5";
+        renterBtn.style.color = "#880000";
         renterContent.style.display = "none";
         ownerContent.style.display = "block";
     });
@@ -247,19 +364,6 @@ document.getElementById("ownerBtn").addEventListener("click", () => {
     document.getElementById("ownerContent").style.display = "block";
 });
 
-//Active button
-var header = document.querySelector(".categories-cont");
-var btns = header.getElementsByClassName("category");
-
-for (var i = 0; i < btns.length; i++) {
-    btns[i].addEventListener("click", function () {
-        var current = document.querySelector(".category.active");
-        if (current) {
-            current.classList.remove("active");
-        }
-        this.classList.add("active");
-    });
-}
 
 //For Listings
 //Shopping Side(Display)
