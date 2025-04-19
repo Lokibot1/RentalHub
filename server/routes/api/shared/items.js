@@ -29,6 +29,7 @@ router.get('/', async (req, res) => {
                  LEFT JOIN reviews ON reviews.item_id = items.id
         WHERE items.is_approved = 1
           AND items.is_declined != 1
+          AND items.is_archived != 1
         GROUP BY items.id, inventory.stock_quantity, items.user_id, users.first_name, users.last_name, profile_image
     `
 
@@ -74,11 +75,15 @@ router.get('/search', async (req, res) => {
             JOIN users ON users.id = items.user_id
             JOIN categories ON categories.id = items.category_id
             LEFT JOIN reviews ON reviews.item_id = items.id
-        
-    `;
+    `
 
     const conditions = [];
     const params = [];
+
+    // Always exclude declined and archived items
+    conditions.push('items.is_approved = 1')
+    conditions.push('items.is_declined != 1')
+    conditions.push('items.is_archived != 1')
 
     // Add search condition if keyword is provided
     if (keyword && keyword.trim() !== '') {
@@ -94,7 +99,7 @@ router.get('/search', async (req, res) => {
 
     // Add WHERE clause if we have any conditions
     if (conditions.length > 0) {
-        baseSQL += ` WHERE ${conditions.join(' AND ')} AND items.is_declined != 1`;
+        baseSQL += ` WHERE ${conditions.join(' AND ')}`;
     }
 
     // Add GROUP BY clause for AVG and grouping
