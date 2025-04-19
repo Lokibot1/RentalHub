@@ -284,5 +284,44 @@ router.get('/view-pending/:item_id', optionalAuth, async (req, res) => {
     })
 })
 
+/**
+ * Inquiry Form Page
+ *
+ * @route GET /user/inquire/:item_id
+ */
+router.get('/inquire/:item_id', optionalAuth, async (req, res) => {
+    const { item_id } = req.params;
+
+    let renter_id = 0;
+    if (!item_id) {
+        return res.status(400).send("Missing item_id");
+    }
+
+    if (req.user !== undefined) {
+        renter_id = req.user.id;
+    }
+
+    try {
+        const response = await fetch(`${process.env.BASE_URL}/api/user/is-owner/${renter_id}/item-id/${item_id}`);
+        const user = await response.json();
+
+        const isOwner = user?.data?.is_owner === 1;
+
+        res.render('user/inquire', {
+            layout: 'layouts/user',
+            title: 'Inquiry Form',
+            isAuthenticated: req.isAuthenticated,
+            is_owner: isOwner,
+            item_id,
+            renter_id,
+            role: req.role,
+        });
+    } catch (error) {
+        console.error("Error fetching ownership status:", error);
+        res.status(500).send("Server Error");
+    }
+});
+
+
 
 export default router

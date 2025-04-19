@@ -38,9 +38,6 @@
     </div>
 
 
-        
-    </div>
-
      <!-- Right Section: Rental Options -->
     <% if (!is_owner) { %>
         <div class="right-section">
@@ -90,7 +87,38 @@
     <% } %>
 </div>
 
+
+
 <script>
+
+    //Function to get items
+    document.addEventListener("DOMContentLoaded", () => {
+        const approvedItemsList = document.getElementById("approvedItemsList");
+        const selectedItem = JSON.parse(localStorage.getItem("selectedItem"));
+        const userId = selectedItem?.owner_id;
+
+    // Function to load selected item data from localStorage
+    function loadSelectedItem() {
+        const selectedItem = localStorage.getItem("selectedItem");
+        if (selectedItem) {
+        const item = JSON.parse(selectedItem);
+            document.getElementById("product-image").src = `/uploads/${item.image}` || "default.jpg";
+            document.getElementById("product-name").innerText = item.name;
+            document.getElementById("product-price").textContent = `₱${item.price}`;
+            document.getElementById("product-quantity").textContent = `Available: ${item.quantity}`;
+            document.getElementById("product-description").textContent = item.description;
+
+            document.getElementById("owner-image").src = `/uploads/${item.profile_image}` || "default-owner.jpg";
+            document.getElementById("owner-name").textContent = item.owner;
+            document.getElementById("owner-location").textContent = item.location;
+            document.getElementById("owner-rating").innerHTML = item.average_rating ? `⭐ ${item.average_rating}` : 'No Ratings'
+        } else {
+            console.warn("No selected item found in localStorage.");
+        }
+    }
+    loadSelectedItem();
+})
+
     function generateStars(rating) {
         if (rating === "No Ratings") return rating;
         let stars = "⭐".repeat(Math.floor(rating)); // Full stars
