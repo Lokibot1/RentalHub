@@ -70,10 +70,11 @@ router.get('/search', async (req, res) => {
                profile_image,
                ROUND(AVG(reviews.rating), 2)                  AS average_rating
         FROM items
-        JOIN inventory ON items.id = inventory.item_id
-        JOIN users ON users.id = items.user_id
-        JOIN categories ON categories.id = items.category_id
-        LEFT JOIN reviews ON reviews.item_id = items.id
+            JOIN inventory ON items.id = inventory.item_id
+            JOIN users ON users.id = items.user_id
+            JOIN categories ON categories.id = items.category_id
+            LEFT JOIN reviews ON reviews.item_id = items.id
+        
     `;
 
     const conditions = [];
@@ -93,7 +94,7 @@ router.get('/search', async (req, res) => {
 
     // Add WHERE clause if we have any conditions
     if (conditions.length > 0) {
-        baseSQL += ` WHERE ${conditions.join(' AND ')}`;
+        baseSQL += ` WHERE ${conditions.join(' AND ')} AND items.is_declined != 1`;
     }
 
     // Add GROUP BY clause for AVG and grouping
