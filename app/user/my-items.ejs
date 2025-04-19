@@ -72,7 +72,8 @@
                                         <strong class="itemName" title="<%= item.item_name %>"><%= item.item_name %></strong>
                                         <strong class="itemPrice">₱ <%= item.item_price %></strong>
                                         <h5 class="itemLocation" title="<%= item.item_location %>"><%= item.item_location %></h5>
-                                        <p class="itemQuantity"><%= item.item_quantity %> left | <span style="color:#333333"><%= item.reviews_count > 0 ? item.reviews_count + " reviews" : "No reviews yet" %></span></p>
+                                        <p class="itemQuantity"><%= item.item_quantity %> left | <span style="color:#333333">
+                                            <%= item.reviews_count > 0 ? item.reviews_count + " reviews" : "No reviews yet" %></span></p>
                                     </div>
                                 </a>
                                 </div>  

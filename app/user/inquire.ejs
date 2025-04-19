@@ -1,5 +1,5 @@
-<link rel="stylesheet" href="/css/view-product.css"/>
-<link rel="web icon" type="png" href="/images/webicon.png"/>
+<link rel="stylesheet" href="/css/view-product.css" />
+<link rel="web icon" type="png" href="/images/webicon.png" />
 
 <!-- Main container for product view -->
 <div class="view-product-container">
@@ -7,14 +7,14 @@
     <div class="left-section">
         <!-- Product Image -->
         <div class="product">
-            <img id="product-image" src="" alt="Product Image"/>
+            <img id="product-image" src="" alt="Product Image" />
             <div class="product-details">
                 <h2 id="product-name"></h2>
                 <h1 id="product-price"></h1>
                 <h4 id="product-quantity"></h4>
                 <div class="product-description">
                     <h3>Product Description</h3>
-                <p id="product-description"></p>
+                    <p id="product-description"></p>
                 </div>
             </div>
         </div>
@@ -23,14 +23,14 @@
         <div class="owner-info">
             <h2>Posted by</h2>
             <br>
-            <hr/>
+            <hr />
             <div class="owner-details">
                 <div class="pfp">
-                    <img id="owner-image" src="" alt="Owner Image"/>
+                    <img id="owner-image" src="" alt="Owner Image" />
                 </div>
                 <div class="o-details">
-                    <strong id="owner-name">Loading...</strong><br/>
-                    <span id="owner-location">Loading...</span> <br/>
+                    <strong id="owner-name">Loading...</strong><br />
+                    <span id="owner-location">Loading...</span> <br />
                     <span id="owner-rating">⭐ Loading...</span>
                 </div>
             </div>
@@ -38,7 +38,7 @@
     </div>
 
 
-     <!-- Right Section: Rental Options -->
+    <!-- Right Section: Rental Options -->
     <% if (!is_owner) { %>
         <div class="right-section">
             <div class="rental-options">
@@ -73,18 +73,20 @@
                         <button type="button" id="meetup-btn">Meet Up</button>
                         <button type="button" id="delivery-btn">Delivery</button>
                     </div>
-                    <% if (isAuthenticated && role === 'admin' || role === 'user' ) { %>
-                        <button type="submit" id="request-btn">Submit</button>
-                    <% } else { %>
-                        <button class="request-btn" onclick="window.location.href='/login?redirect=/user/view-product/<%= item_id %>'"><!--ALISIN YUNG HREF-->
-                            Submit
-                        </button>
-                    <% } %>
-                    <br>
+                    <% if (isAuthenticated && role==='admin' || role==='user' ) { %>
+                        <button type="submit" id="request-btn" class="request-btn">Submit</button>
+                        <% } else { %>
+                            <button class="request-btn">
+                                <a href="/login?redirect=/user/inquire/<%= item_id %>" style="color: black">
+                                    Submit
+                                </a>
+                            </button>
+                            <% } %>
+                                <br>
                 </form>
+            </div>
         </div>
-    </div>
-    <% } %>
+        <% } %>
 </div>
 
 
@@ -97,27 +99,27 @@
         const selectedItem = JSON.parse(localStorage.getItem("selectedItem"));
         const userId = selectedItem?.owner_id;
 
-    // Function to load selected item data from localStorage
-    function loadSelectedItem() {
-        const selectedItem = localStorage.getItem("selectedItem");
-        if (selectedItem) {
-        const item = JSON.parse(selectedItem);
-            document.getElementById("product-image").src = `/uploads/${item.image}` || "default.jpg";
-            document.getElementById("product-name").innerText = item.name;
-            document.getElementById("product-price").textContent = `₱${item.price}`;
-            document.getElementById("product-quantity").textContent = `Available: ${item.quantity}`;
-            document.getElementById("product-description").textContent = item.description;
+        // Function to load selected item data from localStorage
+        function loadSelectedItem() {
+            const selectedItem = localStorage.getItem("selectedItem");
+            if (selectedItem) {
+                const item = JSON.parse(selectedItem);
+                document.getElementById("product-image").src = `/uploads/${item.image}` || "default.jpg";
+                document.getElementById("product-name").innerText = item.name;
+                document.getElementById("product-price").textContent = `₱${item.price}`;
+                document.getElementById("product-quantity").textContent = `Available: ${item.quantity}`;
+                document.getElementById("product-description").textContent = item.description;
 
-            document.getElementById("owner-image").src = `/uploads/${item.profile_image}` || "default-owner.jpg";
-            document.getElementById("owner-name").textContent = item.owner;
-            document.getElementById("owner-location").textContent = item.location;
-            document.getElementById("owner-rating").innerHTML = item.average_rating ? `⭐ ${item.average_rating}` : 'No Ratings'
-        } else {
-            console.warn("No selected item found in localStorage.");
+                document.getElementById("owner-image").src = `/uploads/${item.profile_image}` || "default-owner.jpg";
+                document.getElementById("owner-name").textContent = item.owner;
+                document.getElementById("owner-location").textContent = item.location;
+                document.getElementById("owner-rating").innerHTML = item.average_rating ? `⭐ ${item.average_rating}` : 'No Ratings'
+            } else {
+                console.warn("No selected item found in localStorage.");
+            }
         }
-    }
-    loadSelectedItem();
-})
+        loadSelectedItem();
+    })
 
     function generateStars(rating) {
         if (rating === "No Ratings") return rating;
@@ -313,8 +315,9 @@
         renderCalendar();
     });
 
-    //PRESSED FUNCTION SA Mode of Payment
+    //@almerleoalmazan @codeut182 TODO: Replace function to send email to the owner
     document.addEventListener("DOMContentLoaded", function () {
+        const requestBtn = document.getElementById("request-btn");
         const meetupBtn = document.getElementById("meetup-btn");
         const deliveryBtn = document.getElementById("delivery-btn");
 
@@ -327,37 +330,24 @@
             }, 200);
         }
 
-        meetupBtn.addEventListener("click", function () {
-            addPressEffect(meetupBtn);
-        });
-
-        deliveryBtn.addEventListener("click", function () {
-            addPressEffect(deliveryBtn);
-        });
-    });
-
-    //@almerleoalmazan @codeut182 TODO: Replace function to send email to the owner
-    document.addEventListener("DOMContentLoaded", function () {
-        const requestBtn = document.getElementById("request-btn");
-        const meetupBtn = document.getElementById("meetup-btn");
-        const deliveryBtn = document.getElementById("delivery-btn");
-
-        let selectedDeliveryMethod = null;
-
         // Get access to the calendar's date variables
         const calendar = document.querySelector(".calendar");
 
         // Handle delivery method selection
         meetupBtn.addEventListener("click", function () {
             selectedDeliveryMethod = "Meetup";
+            localStorage.setItem("deliveryMode", "Meetup");
             meetupBtn.classList.add("selected");
             deliveryBtn.classList.remove("selected");
+            console.log("Selected delivery method: Meetup");  // Log the selection
         });
 
         deliveryBtn.addEventListener("click", function () {
             selectedDeliveryMethod = "Delivery";
+            localStorage.setItem("deliveryMode", "Delivery");
             deliveryBtn.classList.add("selected");
             meetupBtn.classList.remove("selected");
+            console.log("Selected delivery method: Delivery");  // Log the selection
         });
 
         // ✅ Handle Request Button Click
@@ -387,6 +377,62 @@
             }
 
             showConfirmationModal(startDate, endDate, selectedDeliveryMethod);
+        });
+
+
+        // Function to submit email inquiry
+        async function sendInquiryEmailToOwner() {
+            const selectedItem = JSON.parse(localStorage.getItem("selectedItem"));
+            const startDate = localStorage.getItem("startDate");
+            const endDate = localStorage.getItem("endDate");
+            const quantity = document.getElementById("quantity").value;
+            const mode = localStorage.getItem("deliveryMode");
+
+            if (!startDate || !endDate) {
+                showErrorMessage("Please select both start and end dates for your rental period.");
+                return;
+            }
+
+            if (!mode) {
+                showErrorMessage("Please select a mode of delivery (Meet Up or Delivery).");
+                return;
+            }
+
+            const inquiryData = {
+                item_id: selectedItem.id,
+                item_name: selectedItem.name,
+                item_location: selectedItem.location,
+                rental_quantity: quantity,
+                start_date: startDate,
+                end_date: endDate,
+                mode: mode
+            };
+
+            console.log("Inquiry Data:", inquiryData);  // Log the inquiry data to check if mode is included
+
+            try {
+                const response = await fetch("/api/send-inquiry", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(inquiryData),
+                });
+
+                if (response.ok) {
+                    showSuccessMessage("Inquiry email sent to item owner!");
+                } else {
+                    const error = await response.json();
+                    showErrorMessage(error.message || "Failed to send inquiry email.");
+                }
+            } catch (error) {
+                console.error("Error sending inquiry email:", error);
+                showErrorMessage("An error occurred while sending the inquiry.");
+            }
+        }
+
+        // ✅ Attach submit event to the form (better than button click)
+        document.getElementById("rent-form").addEventListener("submit", (event) => {
+            event.preventDefault();
+            sendInquiryEmailToOwner();
         });
 
         // Function to show confirmation modal
@@ -540,6 +586,7 @@
 
                     // Add data from current localStorage item
                     const selectedItem = localStorage.getItem("selectedItem");
+                    const selected = JSON.parse(selectedItem); // ✅ define this before using it
 
                     startDate = new Date(startDate);
                     const formattedStartDate = startDate.toISOString().split("T")[0];
@@ -548,27 +595,31 @@
 
                     formObject = {
                         ...formObject,
+                        item_id: selected.id, // ✅ correctly renamed
                         start_date: formattedStartDate,
                         end_date: formattedEndDate,
                         mode_of_delivery: selectedDeliveryMethod,
-                        ...JSON.parse(selectedItem),
+                        ...selected,
                         renter_id: "<%= renter_id %>",
                     };
 
                     try {
-                        const response = await fetch(`/api/user/my-requests`, {
+                        const response = await fetch(`/api/user/view-product/send-inquiry`, {
                             method: "POST",
-                            headers: {"Content-Type": "application/json"},
+                            headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(formObject),
                         });
                         if (response.ok) {
-                            alert("Requesting to rent item in-progress...");
+                            alert("Inquiry email sent successfully!");
                             setTimeout(() => {
                                 window.location.href = "/shop";
                             }, 2000);
+                        } else {
+                            const error = await response.json();
+                            console.error("Error sending inquiry:", error);
                         }
                     } catch (error) {
-                        console.error("Error canceling rent:", error);
+                        console.error("Error submitting inquiry:", error);
                     }
 
                     console.log("formObject:", formObject);
