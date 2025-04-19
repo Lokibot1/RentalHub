@@ -179,12 +179,14 @@
                     <% if (isAuthenticated && role === 'admin' || role === 'user' ) { %>
                         <button type="submit" id="request-btn">Request</button>
                     <% } else { %>
-                        <a href="/login?redirect=/user/view-product/<%= item_id %>" class="request-btn">
+                    <button class="request-btn">
+                        <a href="/login?redirect=/user/view-product/<%= item_id %>" style="color: black">
                             Request
                         </a>
+                    </button>
                     <% } %>
                     <br>
-                    <p>For reservation <a href ="/app/user/inquirepage.ejs<%= item_id %>"> Inquire Now!</a></p>
+                    <p class="inquire">For reservation <a href ="/app/user/inquirepage.ejs<%= item_id %>" class="inquire-link"> Inquire Now!</a></p>
                 </form>
         </div>
     </div>
