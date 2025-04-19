@@ -457,7 +457,7 @@ function renderSortedItems(items) {
             <strong>${item.name}</strong>
             <strong>₱ ${item.price} per day</strong>
             <h5> ${item.location}</h5>
-            <p class="item-quantity"> ${item.quantity} items left</p>
+            <p class="item-quantity"> ${item.quantity} items left | <span style="color:#333333;">${item.no_of_reviews} reviews </span> </p> 
             </div>`;
         li.addEventListener("click", function () {
             localStorage.setItem("selectedItem", JSON.stringify(item));
