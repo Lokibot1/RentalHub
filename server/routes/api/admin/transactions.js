@@ -25,6 +25,7 @@ router.get("/", async (req, res) => {
         WHERE rental_transactions.is_approved = 1
             AND rental_transactions.status = 'ongoing'
            OR rental_transactions.status = 'done'
+           
     `
 
     db.query(sql, (err, results) => {
@@ -61,6 +62,7 @@ router.get("/search", async (req, res) => {
                  JOIN users AS renter ON renter.id = rental_transactions.renter_id
                  JOIN users AS owner ON owner.id = items.user_id
         WHERE rental_transactions.is_approved = 1
+            AND rental_transactions.status != 'pending'
           AND (? = '' OR
                items.name LIKE CONCAT('%', ?, '%') OR
                renter.first_name LIKE CONCAT('%', ?, '%') OR
