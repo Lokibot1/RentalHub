@@ -1,6 +1,6 @@
 import express from "express"
 import jwt from "jsonwebtoken"
-import {db} from "../../../configs/db.js"
+import { db } from "../../../configs/db.js"
 import { sendNotification } from '../../../helpers/send-notification.js'; // Import your mailer utility
 
 const router = express.Router()
@@ -12,7 +12,7 @@ const router = express.Router()
  * @route GET /api/user/my-items/pending/:user_id
  */
 router.get("/pending/:user_id", async (req, res) => {
-    const {user_id} = req.params
+    const { user_id } = req.params
 
     const sql = `
         SELECT items.id                 AS product_id,
@@ -31,7 +31,7 @@ router.get("/pending/:user_id", async (req, res) => {
     db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Query failed."})
+            return res.status(500).json({ success: false, message: "Query failed." })
         }
 
         res.status(200).json({
@@ -43,12 +43,82 @@ router.get("/pending/:user_id", async (req, res) => {
 
 
 /**
+ * Get pending item
+ *
+ * @route GET /api/user/my-items/pending-item/:item_id
+ */
+router.get("/pending-item/:item_id", async (req, res) => {
+    const { item_id } = req.params
+
+    const sql = `
+            SELECT
+                items.id AS product_id,
+                items.file_path AS product_image,
+                items.name AS product_name,
+                items.location AS product_location,
+                items.price AS product_price,
+                items.description AS product_description,
+                inventory.stock_quantity AS product_quantity
+            FROM items
+                JOIN inventory ON inventory.item_id = items.id
+                JOIN users ON items.user_id = users.id
+            WHERE items.id = ?
+            AND items.is_approved = 0
+            AND is_archived = 0
+            AND is_declined = 0 
+    `
+    db.query(sql, [item_id], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err)
+            return res.status(500).json({ success: false, message: "Query failed." })
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results.length > 0 ? results[0] : null
+        })
+    })
+})
+
+
+/**
+ * Get pending item
+ *
+ * @route DELETE /api/user/my-items/delete/pending-item/:item_id
+ */
+router.delete("/delete-pending-item/:item_id", async (req, res) => {
+    const { item_id } = req.params
+
+    const sql = `
+        DELETE FROM items
+        WHERE id = ?
+          AND is_approved = 0
+          AND is_archived = 0
+          AND is_declined = 0
+    `
+    db.query(sql, [item_id], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err)
+            return res.status(500).json({ success: false, message: "Query failed." })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Item deleted successfully."
+        })
+    })
+})
+
+
+
+
+/**
  * Get all approved items
  *
  * @route GET /api/user/my-items/approved/:user_id
  */
 router.get("/approved/:user_id", async (req, res) => {
-    const {user_id} = req.params
+    const { user_id } = req.params
 
     const sql = `
         SELECT items.id                 AS item_id,
@@ -67,7 +137,7 @@ router.get("/approved/:user_id", async (req, res) => {
     db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err)
-            return res.status(500).json({success: false, message: "Query failed."})
+            return res.status(500).json({ success: false, message: "Query failed." })
         }
 
         res.status(200).json({
@@ -84,14 +154,14 @@ router.get("/approved/:user_id", async (req, res) => {
  * @route PATCH /api/user/my-items/archive-item/:item_id
  */
 router.patch("/archive-item/:item_id", (req, res) => {
-    const {item_id} = req.params;
+    const { item_id } = req.params;
 
     if (!item_id) {
-        return res.status(400).json({success: false, message: "Missing item id"});
+        return res.status(400).json({ success: false, message: "Missing item id" });
     }
 
     db.beginTransaction((err) => {
-        if (err) return res.status(500).json({success: false, message: "Transaction initiation failed."});
+        if (err) return res.status(500).json({ success: false, message: "Transaction initiation failed." });
 
         // Update rental transaction to declined status (is_approved = -1)
         const updateTransactionSql = `
@@ -104,20 +174,20 @@ router.patch("/archive-item/:item_id", (req, res) => {
         `
         db.query(updateTransactionSql, [item_id], (err, result) => {
             if (err) return rollback(res, "Failed to archive items because it has an existing rental transaction.");
-        
+
             if (result.affectedRows === 0) {
                 return rollback(res, "Archive failed due to ongoing transactions.");
             }
-        
+
             db.commit((err) => {
-                if (err) return res.status(500).json({success: false, message: "Archive failed."});
-        
+                if (err) return res.status(500).json({ success: false, message: "Archive failed." });
+
                 res.status(200).json({
                     success: true,
                     message: 'Archived successfully!'
                 });
             });
-        });        
+        });
     });
 });
 
@@ -127,7 +197,7 @@ router.patch("/archive-item/:item_id", (req, res) => {
  * @route GET /api/user/my-items/rental-requests/:user_id
  */
 router.get("/rental-requests/:user_id", async (req, res) => {
-    const {user_id} = req.params
+    const { user_id } = req.params
 
     const sql = `
         SELECT rental_transactions.id                         AS rent_transaction_id,
@@ -152,7 +222,7 @@ router.get("/rental-requests/:user_id", async (req, res) => {
     db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Query failed."})
+            return res.status(500).json({ success: false, message: "Query failed." })
         }
 
         // Send back the results (the rental requests that are pending)
@@ -170,14 +240,14 @@ router.get("/rental-requests/:user_id", async (req, res) => {
  * @route PATCH /api/user/my-items/rental-requests/approved
  */
 router.patch("/rental-requests/approved", (req, res) => {
-    const {rental_transaction_id} = req.body
+    const { rental_transaction_id } = req.body
 
     if (!rental_transaction_id) {
-        return res.status(400).json({success: false, message: "Missing rental_transaction_id"});
+        return res.status(400).json({ success: false, message: "Missing rental_transaction_id" });
     }
 
     db.beginTransaction((err) => {
-        if (err) return res.status(500).json({success: false, message: "Transaction initiation failed."});
+        if (err) return res.status(500).json({ success: false, message: "Transaction initiation failed." });
 
         const selectSql = `
             SELECT rt.item_id, rt.rental_quantity, i.user_id AS item_owner_id, rt.renter_id,
@@ -204,7 +274,7 @@ router.patch("/rental-requests/approved", (req, res) => {
                 contact_number,
                 email: owner_email,
                 social_media
-              };
+            };
 
             // Approve rental request
             const updateTransactionSql = `
@@ -241,14 +311,14 @@ router.patch("/rental-requests/approved", (req, res) => {
                         </ul>
                     `
 
-                    const template = {subject, html}
+                    const template = { subject, html }
 
                     // Send approval notification email to item owner
                     sendNotification(renter_email, template);
 
 
                     db.commit((err) => {
-                        if (err) return res.status(500).json({success: false, message: "Commit failed."});
+                        if (err) return res.status(500).json({ success: false, message: "Commit failed." });
 
                         res.status(200).json({
                             success: true,
@@ -268,13 +338,13 @@ router.patch("/rental-requests/approved", (req, res) => {
  * @route PATCH /api/user/my-items/rental-requests/declined
  */
 router.patch("/rental-requests/declined", (req, res) => {
-    const {rental_transaction_id} = req.body;
+    const { rental_transaction_id } = req.body;
     if (!rental_transaction_id) {
-        return res.status(400).json({success: false, message: "Missing rental_transaction_id"});
+        return res.status(400).json({ success: false, message: "Missing rental_transaction_id" });
     }
 
     db.beginTransaction((err) => {
-        if (err) return res.status(500).json({success: false, message: "Transaction initiation failed."});
+        if (err) return res.status(500).json({ success: false, message: "Transaction initiation failed." });
 
         // Update rental transaction to declined status (is_approved = -1)
         const updateTransactionSql = `
@@ -288,7 +358,7 @@ router.patch("/rental-requests/declined", (req, res) => {
             if (err) return rollback(res, "Failed to decline rental transaction.");
 
             db.commit((err) => {
-                if (err) return res.status(500).json({success: false, message: "Declined failed."});
+                if (err) return res.status(500).json({ success: false, message: "Declined failed." });
 
                 res.status(200).json({
                     success: true,
@@ -302,7 +372,7 @@ router.patch("/rental-requests/declined", (req, res) => {
 
 // Helper function to rollback transaction
 function rollback(res, message) {
-    db.rollback(() => res.status(400).json({success: false, message}));
+    db.rollback(() => res.status(400).json({ success: false, message }));
 }
 
 
@@ -312,7 +382,7 @@ function rollback(res, message) {
  * @route GET /api/user/my-items/ongoing-transactions/:user_id
  */
 router.get("/ongoing-transactions/:user_id", async (req, res) => {
-    const {user_id} = req.params
+    const { user_id } = req.params
 
     const sql = `
         SELECT rental_transactions.id                         AS rent_transaction_id,
@@ -341,7 +411,7 @@ router.get("/ongoing-transactions/:user_id", async (req, res) => {
     db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Query failed."})
+            return res.status(500).json({ success: false, message: "Query failed." })
         }
 
         res.status(200).json({
@@ -373,7 +443,7 @@ router.post("/reports", async (req, res) => {
     db.query(sql, [item_id, reported_user_id, reporter_id, JSON.stringify(reasons), report_text], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Create report failed."});
+            return res.status(500).json({ success: false, message: "Create report failed." });
         }
 
         res.status(201).json({

@@ -257,5 +257,32 @@ router.get('/setup-profile', checkAuth, (req, res) => {
     })
 })
 
+/**
+ * View Pending Item Page
+ *
+ * @route GET /user/view-pending/:item_id
+ */
+router.get('/view-pending/:item_id', optionalAuth, async (req, res) => {
+    // Set the user_id
+    let renter_id = 0
+    if (req.user !== undefined) {
+        renter_id = req.user.id
+    }
+
+    const response = await fetch(`${process.env.BASE_URL}/api/user/my-items/pending-item/${req.params.item_id}`)
+    const results = await response.json()
+
+    console.log('results', results)
+
+    res.render('user/view-pending', {
+        layout: 'layouts/user',
+        title: 'View Pending Item',
+        pendingPost: results.data,
+        isAuthenticated: req.isAuthenticated,
+        item_id: req.params.item_id,
+        role: req.role,
+    })
+})
+
 
 export default router
