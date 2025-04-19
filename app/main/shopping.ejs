@@ -245,6 +245,7 @@
 
     // Search items based on user input
     async function searchItems(query, category = '') {
+        console.log('keyword:', query)
         console.log('category:', category)
 
         try {
@@ -277,6 +278,9 @@
         const currentUrl = new URL(window.location.href);
         let selectedCategory = null
 
+        console.log('selected keyword:', searchInput.value === '')
+        console.log('selected category:', selectedCategory)
+
         if (searchInput.value === '') {
             // Clear the search input
             searchInput.value = '';
@@ -289,9 +293,9 @@
                 button.classList.remove('active');
             });
 
-            currentUrl.searchParams.set('category', 'events-and-parties');
+            selectedCategory = currentUrl.searchParams.get('category')
 
-            fetchItems(getCategoryId('events-and-parties'))
+            searchItems(searchInput.value.trim(), selectedCategory);
         } else {
             selectedCategory = currentUrl.searchParams.get('category')
 

@@ -57,13 +57,6 @@ router.get('/', async (req, res) => {
 router.get('/search', async (req, res) => {
     const { keyword, category } = req.query;
 
-    if (!keyword || keyword.trim() === '') {
-        return res.status(200).json({
-            success: true,
-            data: []
-        });
-    }
-
     let baseSQL = `
         SELECT items.id,
                items.file_path                                AS image,
@@ -86,25 +79,30 @@ router.get('/search', async (req, res) => {
     const conditions = [];
     const params = [];
 
-    // Add search conditions
-    conditions.push('(items.name LIKE ? OR items.description LIKE ?)');
-    params.push(`%${keyword}%`, `%${keyword}%`);
+    // Add search condition if keyword is provided
+    if (keyword && keyword.trim() !== '') {
+        conditions.push('(items.name LIKE ? OR items.description LIKE ?)');
+        params.push(`%${keyword}%`, `%${keyword}%`);
+    }
 
-    // Add category condition if valid
-    if (category && category !== 'null') {
+    // Add category filter if it's not 'null' or empty
+    if (category && category !== 'null' && category.trim() !== '') {
         conditions.push('categories.keyword = ?');
         params.push(category);
     }
 
-    // Append WHERE clause if any conditions exist
+    // Add WHERE clause if we have any conditions
     if (conditions.length > 0) {
         baseSQL += ` WHERE ${conditions.join(' AND ')}`;
     }
 
-    // Add GROUP BY clause (always needed for aggregation)
+    // Add GROUP BY clause for AVG and grouping
     baseSQL += `
         GROUP BY items.id, inventory.stock_quantity, items.user_id, users.first_name, users.last_name, profile_image
     `;
+
+    console.log('Final SQL:', baseSQL);
+    console.log('Params:', params);
 
     db.query(baseSQL, params, (err, results) => {
         if (err) {
