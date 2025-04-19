@@ -398,22 +398,23 @@
                 return;
             }
 
-            if (!startDate) {
+            if (!startDate || (startDate && endDate)) {
+                // Always reset if full selection already exists
                 startDate = selectedDate;
+                endDate = null;
                 localStorage.setItem("startDate", dateStr);
+                localStorage.removeItem("endDate");
                 instructionText.textContent = "Now select an end date for your rental.";
                 resetBtn.style.display = "block";
-                highlightSelectedDates();
             } else if (!endDate && selectedDate >= startDate) {
                 endDate = selectedDate;
                 localStorage.setItem("endDate", dateStr);
-                instructionText.textContent = `Rental period: ${formatDate(
-                    startDate
-                )} to ${formatDate(endDate)}.`;
-                highlightSelectedDates();
+                instructionText.textContent = `Rental period: ${formatDate(startDate)} to ${formatDate(endDate)}.`;
             } else {
                 resetSelection();
+                return;
             }
+            highlightSelectedDates();
         }
 
         function highlightSelectedDates() {
