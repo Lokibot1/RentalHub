@@ -181,7 +181,7 @@
                     <% if (isAuthenticated && role === 'admin' || role === 'user' ) { %>
                         <button type="submit" id="request-btn">Request</button>
                     <% } else { %>
-                        <a href="/login?redirect=/user/view-product" class="request-btn">
+                        <a href="/login?redirect=/user/view-product/<%= item_id %>" class="request-btn">
                             Request
                         </a>
                     <% } %>
