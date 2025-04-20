@@ -18,7 +18,8 @@ nav {
   height: 5rem;
   width: 100%;
   background-color: #121212f1;
-  position: fixed;
+  top: 0;
+  position: sticky;
   z-index: 1000;
   display: flex;
   justify-content: space-between;
@@ -219,12 +220,12 @@ nav span {
 .categories-cont {
   display: flex;
   position: sticky;
-  top: 0.2rem;
+  top: 5rem;
   gap: 1rem;
   z-index: 999;
   overflow-x: auto;
   justify-items: center;
-  padding: 6.25rem 0rem 2.1875rem .85rem;
+  padding: 1rem 0rem 1rem .85rem;
   background: linear-gradient(to right, #f5f5f5, #fff);
 }
 .categories-cont::-webkit-scrollbar {
@@ -354,8 +355,8 @@ button {
     z-index: 999; 
     display: flex;
     justify-content: flex-end;
-    margin-top: .3rem;
-    margin-bottom: .3rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     width: 100%;
 }
 
@@ -364,7 +365,7 @@ button {
     background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 14px;
+    font-size: .8rem;
     padding: 8px 12px;
     display: flex;
     align-items: center;
@@ -387,7 +388,7 @@ button {
 .sort-options {
     display: none;
     position: absolute;
-    right: 0;
+    right: 1.25rem;
     top: 100%;
     margin-top: 5px;
     background: #121212f1;
