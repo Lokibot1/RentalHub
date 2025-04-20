@@ -57,6 +57,8 @@ router.post("/send-inquiry", async (req, res) => {
       start_date,
       end_date,
     } = req.body;
+
+    console.log("Request Body Received:", req.body);
   
     try {
       const token = req.cookies.token || '';
@@ -107,23 +109,35 @@ router.post("/send-inquiry", async (req, res) => {
       // Compose email
       const subject = `Rental Inquiry: ${item.item_name}`;
       const html = `
-        <p>You have received a rental inquiry for the following item:</p>
+        <p>Dear ${item.owner_name},</p>
+
+        <p>You have received a rental booking request for the following item:</p>
+
         <ul>
           <li><strong>Item Name:</strong> ${item.item_name}</li>
-          <li><strong>Quantity:</strong> ${rental_quantity}</li>
           <li><strong>Location:</strong> ${item.item_location}</li>
-          <li><strong>Mode:</strong> ${mode}</li>
-          <li><strong>Rental Start Date:</strong> ${start_date}</li>
-          <li><strong>Rental End Date:</strong> ${end_date}</li>
+          <li><strong>Requested Quantity:</strong> ${rental_quantity}</li>
+          <li><strong>Mode of Transaction:</strong> ${mode}</li>
+          <li><strong>Requested Rental Period:</strong> ${start_date} to ${end_date}</li>
         </ul>
-        <p><strong>Renter Information:</strong></p>
+
+        <p>The prospective renter has expressed interest in reserving the above dates. Please find their details below:</p>
+
         <ul>
-          <li><strong>Name:</strong> ${renter.renter_name}</li>
+          <li><strong>Full Name:</strong> ${renter.renter_name}</li>
           <li><strong>Address:</strong> ${renter.renter_address}</li>
           <li><strong>Email:</strong> ${renter.renter_email}</li>
           <li><strong>Contact Number:</strong> ${renter.renter_contact_number}</li>
+          <li><strong>Social Media Profile:</strong> ${renter.renter_social_media}</li>
         </ul>
-        <p><strong>Social Media Contact:</strong> ${renter.renter_social_media}</p>
+
+        <p>Kindly review the request and reach out to the renter to confirm availability and coordinate the next steps. 
+        This message serves as an initial booking inquiry and does not constitute a confirmed reservation until finalized between both parties.</p>
+
+        <p>If you have any questions or need assistance, feel free to contact our support team.</p>
+
+        <p>Warm regards,<br>
+        RentalHub Team</p>
       `;
   
       const template = { subject, html };
