@@ -110,25 +110,41 @@ router.get("/search", async (req, res) => {
 
 
 /**
- * Get all reports
+ * Get all reports + search
  *
  * @route GET /api/admin/manage-users/reports/all
  */
 router.get("/reports/all", async (req, res) => {
+    const { keyword } = req.query;
 
-    const sql = `
+    let sql = `
         SELECT DISTINCT reports.reporter_id,
                         reports.reported_user_id,
                         CONCAT(users.first_name, ' ', users.last_name) AS fullname
         FROM reports
-                 JOIN users ON reports.reported_user_id = users.id
+        JOIN users ON reports.reported_user_id = users.id
         WHERE reports.status = 'reported'
-    `
+    `;
 
-    db.query(sql, (err, results) => {
+    const params = [];
+
+    // Add keyword filter if provided
+    if (keyword) {
+        sql += `
+            AND (
+                users.first_name LIKE ? OR
+                users.last_name LIKE ? OR
+                CONCAT(users.first_name, ' ', users.last_name) LIKE ?
+            )
+        `;
+        const keywordParam = `%${keyword}%`;
+        params.push(keywordParam, keywordParam, keywordParam);
+    }
+
+    db.query(sql, params, (err, results) => {
         if (err) {
             console.error("Database query error", err);
-            return res.status(500).json({success: false, message: "Query failed."});
+            return res.status(500).json({ success: false, message: "Query failed." });
         }
 
         res.status(200).json({
@@ -137,6 +153,7 @@ router.get("/reports/all", async (req, res) => {
         });
     });
 });
+
 
 
 /**

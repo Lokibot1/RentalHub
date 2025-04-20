@@ -44,7 +44,7 @@
         <!--User List-->
         <div id="UserList" class="tab-content" style="display: block;">
             <div class="user-table">
-                <div class="search-bar">
+                <div class="user-search-bar">
                     <input type="text" placeholder="Looking for...">
                     <button><img src="/images/search.png"/></button>
                 </div>
@@ -62,8 +62,8 @@
 
         <!--Reported Accounts-->
         <div id="ReportedAccounts" class="tab-content" style="display: none;">
-            <div class="user-table">
-                <div class="search-bar">
+            <div class="reported-accounts-table">
+                <div class="reported-accounts-search-bar">
                     <input type="text" placeholder="Looking for...">
                     <button><img src="/images/search.png"/></button>
                 </div>
@@ -101,8 +101,8 @@
 
         <!--Banned Accounts-->
         <div id="BannedAccounts" class="tab-content" style="display: none;">
-            <div class="user-table">
-                <div class="search-bar">
+            <div class="banned-accounts-table">
+                <div class="banned-accounts-search-bar">
                     <input type="text" placeholder="Looking for...">
                     <button><img src="/images/search.png"/></button>
                 </div>
@@ -156,8 +156,8 @@
     }
 
     document.addEventListener("DOMContentLoaded", async function () {
-        const searchInput = document.querySelector(".search-bar input");
-        const searchButton = document.querySelector(".search-bar button");
+        const userSearchInput = document.querySelector(".user-search-bar input");
+        const userSearchButton = document.querySelector(".user-search-bar button");
         const userListTab = document.getElementById("UserList");
         const userTableBody = userListTab.querySelector("table tbody");
 
@@ -205,7 +205,7 @@
                         clearButton.className = "clear-search";
                         clearButton.innerText = "Clear Search";
                         clearButton.addEventListener("click", function () {
-                            searchInput.value = "";
+                            userSearchInput.value = "";
                             fetchUsers("");
                         });
 
@@ -242,21 +242,21 @@
         }
 
         let debounceTimer;
-        searchInput.addEventListener("input", function () {
+        userSearchInput.addEventListener("input", function () {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
                 fetchUsers(this.value.trim());
             }, 300);
         });
 
-        searchInput.addEventListener("keypress", function (e) {
+        userSearchInput.addEventListener("keypress", function (e) {
             if (e.key === "Enter") {
                 fetchUsers(this.value.trim());
             }
         });
 
-        searchButton.addEventListener("click", function () {
-            fetchUsers(searchInput.value.trim());
+        userSearchButton.addEventListener("click", function () {
+            fetchUsers(userSearchInput.value.trim());
         });
 
         // Initialize users list
@@ -318,29 +318,80 @@
     `;
         document.head.appendChild(style);
 
+
+
         // Reported Accounts
         const reportedAccountsContainer = document.querySelector(".report-accounts-container");
         const overlay = document.getElementById("overlay");
-        const response = await fetch("/api/admin/manage-users/reports/all");
-        const {data} = await response.json();
+        const reportedAccountsSearchInput = document.querySelector(".reported-accounts-search-bar input");
+        const reportedAccountsSearchButton = document.querySelector(".reported-accounts-search-bar button");
+        const reportedAccountsTab = document.getElementById("ReportedAccounts");
+        const reportedAccountsTableBody = reportedAccountsTab.querySelector("table tbody");
 
-        console.log('data', data);
+        async function fetchReportedAccounts(searchQuery = "") {
+            try {
+                searchMessage.innerHTML = searchQuery ? `<p>Searching for results...</p>` : "";
+                reportedAccountsTableBody.innerHTML = "<tr><td colspan='2'>Searching for users...</td></tr>";
 
-        if (data.length > 0) {
+                const response = await fetch(`/api/admin/manage-users/reports/all?keyword=${encodeURIComponent(searchQuery)}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                reportedAccountsTableBody.innerHTML = "";
+
+                if (data.success && data.data.length > 0) {
+                    displayReportedAccounts(data.data);
+
+                    // Update search results box visibility
+                    searchResultsBox.style.display = searchQuery ? "flex" : "none";
+
+                    searchMessage.innerHTML = searchQuery
+                        ? `<p>Showing ${data.data.length} result${data.data.length !== 1 ? 's' : ''} for "<strong>${searchQuery}</strong>"</p>`
+                        : "";
+
+                    // Clear Search Button
+                    if (searchQuery) {
+                        let clearButton = document.createElement("button");
+                        clearButton.className = "clear-search";
+                        clearButton.innerText = "Clear Search";
+                        clearButton.addEventListener("click", function () {
+                            reportedAccountsSearchInput.value = "";
+                            fetchReportedAccounts("");
+                        });
+
+                        searchMessage.appendChild(clearButton);
+                    }
+                } else {
+                    reportedAccountsTableBody.innerHTML = `<tr><td colspan='2'>No users found.</td></tr>`;
+
+                    // Update search results box visibility
+                    searchResultsBox.style.display = searchQuery ? "flex" : "none";
+                    searchMessage.innerHTML = searchQuery ? `<p>No results found for "<strong>${searchQuery}</strong>"</p>` : "";
+                }
+            } catch (error) {
+                console.error("Error fetching reported accoutns:", error);
+                reportedAccountsTableBody.innerHTML = "<tr><td colspan='2'>Error loading reported accounts.</td></tr>";
+            }
+        }
+
+        function displayReportedAccounts(reportedAccounts) {
             reportedAccountsContainer.innerHTML = "";
-            data.forEach(account => {
+
+            reportedAccounts.forEach(account => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                <td class="report-accounts-fullname">${account.fullname}</td>
-                <td>
-                    <a href="#" class="view-reports" data-reporter-id="${account.reported_user_id}">
-                        <i class="fa-solid fa-eye"></i>
-                    </a>
-                    <a href="#" id="ban-btn" data-userid="${account.reported_user_id}")">
-                        <i class="fa-solid fa-ban"></i>
-                    </a>
-                </td>
-            `;
+                    <td class="report-accounts-fullname">${account.fullname}</td>
+                    <td>
+                        <a href="#" class="view-reports" data-reporter-id="${account.reported_user_id}">
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
+                        <a href="#" id="ban-btn" data-userid="${account.reported_user_id}")">
+                            <i class="fa-solid fa-ban"></i>
+                        </a>
+                    </td>
+                `;
                 reportedAccountsContainer.appendChild(row);
             });
 
@@ -352,11 +403,9 @@
                     viewUserReports(reporterId);
                 });
             });
-        } else {
-            reportedAccountsContainer.innerHTML = "<tr><td colspan='2'>No reported accounts found.</td></tr>";
         }
 
-// Show complaints modal and inject data
+        // Show complaints modal and inject data
         async function viewUserReports(reporter_id) {
             const modal = document.querySelector('.complaints-modal');
             const modalContent = document.querySelector('.report-content');
@@ -412,24 +461,25 @@
                         }
 
                         complaintItem.innerHTML = `
-                    <div class="complaint-header"> 
-                        <div class="complaint-left">
-                            <div class="label">Item Name: <span class="detail">${report.item_name}</span></div>
-                            <div class="label">Reported By: <span class="detail">${report.reporter_name}</span></div>
-                        </div>
-                        <div class="complaint-right">
-                            <div class="date-label">Date Submitted: <span class="detail date">${formattedDate}</span></div>
-                        </div>
-                    </div>
-                    <div class="complaint-body">
-                        <div class="label">Reasons:</div>
-                        <ul class="reasons-list">
-                            ${cleanedReasons}
-                        </ul>
-                        <div class="label">Description:</div>
-                        <div class="description">${report.description || 'No description provided'}</div>
-                    </div>
-                `;
+                            <div class="complaint-header">
+                                <div class="complaint-left">
+                                    <div class="label">Item Name: <span class="detail">${report.item_name}</span></div>
+                                    <div class="label">Reported By: <span class="detail">${report.reporter_name}</span></div>
+                                </div>
+                                <div class="complaint-right">
+                                    <div class="date-label">Date Submitted: <span class="detail date">${formattedDate}</span></div>
+                                </div>
+                            </div>
+                            <div class="complaint-body">
+                                <div class="label">Reasons:</div>
+                                <ul class="reasons-list">
+                                    ${cleanedReasons}
+                                </ul>
+                                <div class="label">Description:</div>
+                                <div class="description">${report.description || 'No description provided'}</div>
+                            </div>
+                        `
+
                         modalContent.appendChild(complaintItem);
                     });
 
@@ -450,6 +500,62 @@
                 modal.style.display = "block"; // Still show the modal with error message
             }
         }
+
+
+        let debounceReportedAccountsTimer;
+        reportedAccountsSearchInput.addEventListener("input", function () {
+            clearTimeout(debounceReportedAccountsTimer);
+            debounceReportedAccountsTimer = setTimeout(() => {
+                fetchReportedAccounts(this.value.trim());
+            }, 300);
+        });
+
+        reportedAccountsSearchInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                fetchReportedAccounts(this.value.trim());
+            }
+        });
+
+        reportedAccountsSearchButton.addEventListener("click", function () {
+            fetchReportedAccounts(reportedAccountsSearchInput.value.trim());
+        });
+
+        // Initialize reported accounts list
+        await fetchReportedAccounts();
+
+
+
+        // if (data.length > 0) {
+        //     reportedAccountsContainer.innerHTML = "";
+        //     data.forEach(account => {
+        //         const row = document.createElement("tr");
+        //         row.innerHTML = `
+        //             <td class="report-accounts-fullname">${account.fullname}</td>
+        //             <td>
+        //                 <a href="#" class="view-reports" data-reporter-id="${account.reported_user_id}">
+        //                     <i class="fa-solid fa-eye"></i>
+        //                 </a>
+        //                 <a href="#" id="ban-btn" data-userid="${account.reported_user_id}")">
+        //                     <i class="fa-solid fa-ban"></i>
+        //                 </a>
+        //             </td>
+        //         `;
+        //         reportedAccountsContainer.appendChild(row);
+        //     });
+        //
+        //     // Add event listeners to the eye icons after they're created
+        //     document.querySelectorAll('.view-reports').forEach(link => {
+        //         link.addEventListener('click', function (e) {
+        //             e.preventDefault();
+        //             const reporterId = this.getAttribute('data-reporter-id');
+        //             viewUserReports(reporterId);
+        //         });
+        //     });
+        // } else {
+        //     reportedAccountsContainer.innerHTML = "<tr><td colspan='2'>No reported accounts found.</td></tr>";
+        // }
+
+
 
 
         // Banned Accounts
