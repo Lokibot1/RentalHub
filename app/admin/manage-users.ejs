@@ -321,8 +321,6 @@
 
 
         // Reported Accounts
-        const reportedAccountsContainer = document.querySelector(".report-accounts-container");
-        const overlay = document.getElementById("overlay");
         const reportedAccountsSearchInput = document.querySelector(".reported-accounts-search-bar input");
         const reportedAccountsSearchButton = document.querySelector(".reported-accounts-search-bar button");
         const reportedAccountsTab = document.getElementById("ReportedAccounts");
@@ -377,7 +375,7 @@
         }
 
         function displayReportedAccounts(reportedAccounts) {
-            reportedAccountsContainer.innerHTML = "";
+            reportedAccountsTableBody.innerHTML = "";
 
             reportedAccounts.forEach(account => {
                 console.log('Account:', account);
@@ -393,18 +391,21 @@
                         </a>
                     </td>
                 `;
-                reportedAccountsContainer.appendChild(row);
+                reportedAccountsTableBody.appendChild(row);
+
+                console.log('Reported Accounts:', reportedAccountsTableBody);
+            });
+
+            // Add event listeners to the eye icons after they're created
+            document.querySelectorAll('.view-reports').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const reporterId = this.getAttribute('data-reporter-id');
+                    viewUserReports(reporterId);
+                });
             });
         }
 
-        // Add event listeners to the eye icons after they're created
-        document.querySelectorAll('.view-reports').forEach(link => {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-                const reporterId = this.getAttribute('data-reporter-id');
-                viewUserReports(reporterId);
-            });
-        });
 
         // Show complaints modal and inject data
         async function viewUserReports(reporter_id) {
@@ -576,8 +577,8 @@
                     searchMessage.innerHTML = searchQuery ? `<p>No results found for "<strong>${searchQuery}</strong>"</p>` : "";
                 }
             } catch (error) {
-                console.error("Error fetching reported accoutns:", error);
-                bannedAccountsTableBody.innerHTML = "<tr><td colspan='2'>Error loading reported accounts.</td></tr>";
+                console.error("Error fetching banned accounts:", error);
+                bannedAccountsTableBody.innerHTML = "<tr><td colspan='2'>Error loading banned accounts.</td></tr>";
             }
         }
 
@@ -598,9 +599,9 @@
                     </td>
                 `;
                 bannedAccountsContainer.appendChild(row);
-            });
 
-            console.log('bannedAccountsContainer:', bannedAccountsContainer);
+                console.log('bannedAccounts:', bannedAccountsContainer);
+            });
 
             // Add event listeners to the eye icons after they're created
             document.querySelectorAll('.view-reports').forEach(link => {
@@ -729,38 +730,8 @@
 
         // Initialize reported accounts list
         await fetchBannedAccounts();
-
-
-        // TODO: viewUserInfo and restoreUser
-        // if (bannedData.length > 0) {
-        //     bannedAccountsContainer.innerHTML = "";
-        //     bannedData.forEach(account => {
-        //         const row = document.createElement("tr");
-        //         row.innerHTML = `
-        //             <td class="banned-accounts-fullname">${account.fullname}</td>
-        //             <td>
-        //                 <a href="#" onclick="viewUserInfo(${account.user_id})">
-        //                     <i class="fa-solid fa-eye"></i>
-        //                 </a>
-        //                 <a href="#" id="restore" onclick="restoreUser(${account.user_id})">
-        //                      <i class="fa-solid fa-repeat"></i>
-        //                  </a>
-        //             </td>
-        //         `;
-        //         bannedAccountsContainer.appendChild(row);
-        //     });
-        // } else {
-        //     bannedAccountsContainer.innerHTML = "<tr><td colspan='2'>No banned accounts found.</td></tr>";
-        // }
     });
 
-    // const viewUserReports = async (accountId) => {
-    //     const response = await fetch(`/api/admin/manage-users/reports/${accountId}`);
-    //     const {data} = await response.json();
-    //
-    //     console.log('Total Reports:', data.total_reports);
-    //     console.log('User Reports:', data.reports);
-    // }
 
     // View user details
     const viewUserDetail = async (userId) => {

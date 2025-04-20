@@ -320,6 +320,7 @@ nav button {
 }
 
 /* Search Bar */
+.search-bar,
 .user-search-bar,
 .reported-accounts-search-bar,
 .banned-accounts-search-bar {
@@ -328,6 +329,7 @@ nav button {
   margin-bottom: 7px;
   margin-top: 7px;
 }
+.search-bar input,
 .user-search-bar input,
 .reported-accounts-search-bar input,
 .banned-accounts-search-bar input {
@@ -339,6 +341,7 @@ nav button {
   height: 50px;
   width: 300px;
 }
+.search-bar img,
 .user-search-bar img,
 .reported-accounts-search-bar img,
 .banned-accounts-search-bar img {
