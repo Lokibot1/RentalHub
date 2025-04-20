@@ -33,9 +33,9 @@ router.get("/", async (req, res) => {
 /**
  * Get user details
  *
- * @route GET /api/admin/manage-users/:user_id
+ * @route GET /api/admin/manage-users/get-user-by-id/:user_id
  */
-router.get('/:user_id', async (req, res) => {
+router.get('/get-user-by-id/:user_id', async (req, res) => {
     const {user_id} = req.params;
 
     const selectUserSql = `
@@ -71,38 +71,42 @@ router.get('/:user_id', async (req, res) => {
  * @route GET /api/admin/manage-users/search
  */
 router.get("/search", async (req, res) => {
-    const searchQuery = req.query.search;
+    const { keyword } = req.query
 
-    if (!searchQuery) {
-        return res.status(400).json({success: false, message: "Search query is required."});
-    }
-
-    const sql = `
+    let sql = `
         SELECT users.id,
                CONCAT(users.first_name, ' ', users.last_name) AS fullname
         FROM users
         WHERE users.role_id != 1
-          AND (
-                    users.first_name LIKE ? OR
-                    users.last_name LIKE ? OR
-                    CONCAT(users.first_name, ' ', users.last_name) LIKE ?
+    `
+
+    const params = []
+
+    // Only add search conditions if keyword exists
+    if (keyword) {
+        sql += `
+            AND (
+                users.first_name LIKE ? OR
+                users.last_name LIKE ? OR
+                CONCAT(users.first_name, ' ', users.last_name) LIKE ?
             )
-    `;
+        `
+        const keywordParam = `%${keyword}%`
+        params.push(keywordParam, keywordParam, keywordParam)
+    }
 
-    const searchParam = `%${searchQuery}%`;
-
-    db.query(sql, [searchParam, searchParam, searchParam], (err, results) => {
+    db.query(sql, params, (err, results) => {
         if (err) {
             console.error("Database query error", err);
-            return res.status(500).json({success: false, message: "Query failed."});
+            return res.status(500).json({ success: false, message: "Query failed." })
         }
 
         res.status(200).json({
             success: true,
             data: results
-        });
-    });
-});
+        })
+    })
+})
 
 
 /**

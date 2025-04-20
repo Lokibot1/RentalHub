@@ -84,7 +84,8 @@
         <div class="complaints-modal" style="display: none;">
             <div class="modal-header">
                 <div class="modal-back-button" onclick="closeModal()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="M19 12H5"></path>
                         <path d="M12 19l-7-7 7-7"></path>
                     </svg>
@@ -147,12 +148,13 @@
 <script src="/js/admin.js"></script>
 <script>
     //close modal
-function closeModal() {
-    const modal = document.querySelector('.complaints-modal');
-    const overlay = document.getElementById("overlay");
-    modal.style.display = "none";
-    overlay.style.display = "none";
-}
+    function closeModal() {
+        const modal = document.querySelector('.complaints-modal');
+        const overlay = document.getElementById("overlay");
+        modal.style.display = "none";
+        overlay.style.display = "none";
+    }
+
     document.addEventListener("DOMContentLoaded", async function () {
         const searchInput = document.querySelector(".search-bar input");
         const searchButton = document.querySelector(".search-bar button");
@@ -179,11 +181,7 @@ function closeModal() {
                 searchMessage.innerHTML = searchQuery ? `<p>Searching for results...</p>` : "";
                 userTableBody.innerHTML = "<tr><td colspan='2'>Searching for users...</td></tr>";
 
-                const endpoint = searchQuery
-                    ? `/api/admin/manage-users/search?search=${encodeURIComponent(searchQuery)}`
-                    : "/api/admin/manage-users";
-
-                const response = await fetch(endpoint);
+                const response = await fetch(`/api/admin/manage-users/search?keyword=${encodeURIComponent(searchQuery)}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -193,7 +191,6 @@ function closeModal() {
 
                 if (data.success && data.data.length > 0) {
                     displayUsers(data.data);
-                    console.log(data.data);
 
                     // Update search results box visibility
                     searchResultsBox.style.display = searchQuery ? "flex" : "none";
@@ -263,7 +260,7 @@ function closeModal() {
         });
 
         // Initialize users list
-        fetchUsers();
+        await fetchUsers();
 
         // TODO: @Loki, move this to a separate css rule
         // Add CSS for the search results box and message
@@ -321,19 +318,19 @@ function closeModal() {
     `;
         document.head.appendChild(style);
 
-    // Reported Accounts
-    const reportedAccountsContainer = document.querySelector(".report-accounts-container");
-    const overlay = document.getElementById("overlay");
-    const response = await fetch("/api/admin/manage-users/reports/all");
-    const { data } = await response.json();
+        // Reported Accounts
+        const reportedAccountsContainer = document.querySelector(".report-accounts-container");
+        const overlay = document.getElementById("overlay");
+        const response = await fetch("/api/admin/manage-users/reports/all");
+        const {data} = await response.json();
 
-    console.log('data', data);
+        console.log('data', data);
 
-    if (data.length > 0) {
-        reportedAccountsContainer.innerHTML = "";
-        data.forEach(account => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
+        if (data.length > 0) {
+            reportedAccountsContainer.innerHTML = "";
+            data.forEach(account => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
                 <td class="report-accounts-fullname">${account.fullname}</td>
                 <td>
                     <a href="#" class="view-reports" data-reporter-id="${account.reported_user_id}">
@@ -344,77 +341,77 @@ function closeModal() {
                     </a>
                 </td>
             `;
-            reportedAccountsContainer.appendChild(row);
-        });
-        
-        // Add event listeners to the eye icons after they're created
-        document.querySelectorAll('.view-reports').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const reporterId = this.getAttribute('data-reporter-id');
-                viewUserReports(reporterId);
+                reportedAccountsContainer.appendChild(row);
             });
-        });
-    } else {
-        reportedAccountsContainer.innerHTML = "<tr><td colspan='2'>No reported accounts found.</td></tr>";
-    }
+
+            // Add event listeners to the eye icons after they're created
+            document.querySelectorAll('.view-reports').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const reporterId = this.getAttribute('data-reporter-id');
+                    viewUserReports(reporterId);
+                });
+            });
+        } else {
+            reportedAccountsContainer.innerHTML = "<tr><td colspan='2'>No reported accounts found.</td></tr>";
+        }
 
 // Show complaints modal and inject data
-async function viewUserReports(reporter_id) {
-    const modal = document.querySelector('.complaints-modal');
-    const modalContent = document.querySelector('.report-content');
-    const total = document.querySelector('.total');
-    const modalBackButton = document.querySelector('.modal-back-button');
-    const overlay = document.getElementById("overlay");
-    const title = document.querySelector('.title');
+        async function viewUserReports(reporter_id) {
+            const modal = document.querySelector('.complaints-modal');
+            const modalContent = document.querySelector('.report-content');
+            const total = document.querySelector('.total');
+            const modalBackButton = document.querySelector('.modal-back-button');
+            const overlay = document.getElementById("overlay");
+            const title = document.querySelector('.title');
 
-    try {
-        const res = await fetch(`/api/admin/manage-users/reports/${reporter_id}`);
-        const response = await res.json();
-        
-        // Check if response is successful and has data
-        if (!response.success || !response.data) {
-            throw new Error("Invalid response format");
-        }
-        
-        // Access the nested data structure
-        const { total_reports, reports } = response.data;
-        
-        // Clear previous complaints
-        modalContent.innerHTML = "";
+            try {
+                const res = await fetch(`/api/admin/manage-users/reports/${reporter_id}`);
+                const response = await res.json();
 
-        if (reports && reports.length > 0) {
-            reports.forEach(report => {
-                const complaintItem = document.createElement("div");
-                complaintItem.classList.add("complaint-item");
-                
-                // Format the date to be more readable
-                let formattedDate = "N/A";
-                if (report.report_created) {
-                    const date = new Date(report.report_created);
-                    formattedDate = date.toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
+                // Check if response is successful and has data
+                if (!response.success || !response.data) {
+                    throw new Error("Invalid response format");
                 }
-                
-                // Clean and format the reasons as bullet points
-                let cleanedReasons = '';
-                if (report.reasons) {
-                    // Remove brackets, quotes, and backslashes
-                    const cleanText = report.reasons.replace(/[\[\]"\\]/g, '');
-                    
-                    // Split by commas or other separators
-                    const reasons = cleanText.split(',').map(reason => reason.trim());
-                    
-                    // Create bullet points
-                    cleanedReasons = reasons.map(reason => 
-                        `<li>${reason}</li>`
-                    ).join('');
-                }
-                
-                complaintItem.innerHTML = `
+
+                // Access the nested data structure
+                const {total_reports, reports} = response.data;
+
+                // Clear previous complaints
+                modalContent.innerHTML = "";
+
+                if (reports && reports.length > 0) {
+                    reports.forEach(report => {
+                        const complaintItem = document.createElement("div");
+                        complaintItem.classList.add("complaint-item");
+
+                        // Format the date to be more readable
+                        let formattedDate = "N/A";
+                        if (report.report_created) {
+                            const date = new Date(report.report_created);
+                            formattedDate = date.toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+                        }
+
+                        // Clean and format the reasons as bullet points
+                        let cleanedReasons = '';
+                        if (report.reasons) {
+                            // Remove brackets, quotes, and backslashes
+                            const cleanText = report.reasons.replace(/[\[\]"\\]/g, '');
+
+                            // Split by commas or other separators
+                            const reasons = cleanText.split(',').map(reason => reason.trim());
+
+                            // Create bullet points
+                            cleanedReasons = reasons.map(reason =>
+                                `<li>${reason}</li>`
+                            ).join('');
+                        }
+
+                        complaintItem.innerHTML = `
                     <div class="complaint-header"> 
                         <div class="complaint-left">
                             <div class="label">Item Name: <span class="detail">${report.item_name}</span></div>
@@ -433,32 +430,32 @@ async function viewUserReports(reporter_id) {
                         <div class="description">${report.description || 'No description provided'}</div>
                     </div>
                 `;
-                modalContent.appendChild(complaintItem);
-            });
+                        modalContent.appendChild(complaintItem);
+                    });
 
-            total.textContent = `Total Reports: ${total_reports}`;
-        } else {
-            modalContent.innerHTML = "<p>No complaints found.</p>";
-            total.textContent = "Total 0";
+                    total.textContent = `Total Reports: ${total_reports}`;
+                } else {
+                    modalContent.innerHTML = "<p>No complaints found.</p>";
+                    total.textContent = "Total 0";
+                }
+
+                // Show modal
+                modal.style.display = "block";
+                overlay.style.display = "block";
+
+            } catch (err) {
+                console.error("Error fetching user reports:", err);
+                modalContent.innerHTML = "<p>Error loading complaints.</p>";
+                total.textContent = "Total 0";
+                modal.style.display = "block"; // Still show the modal with error message
+            }
         }
-
-        // Show modal
-        modal.style.display = "block";
-        overlay.style.display = "block";
-
-    } catch (err) {
-        console.error("Error fetching user reports:", err);
-        modalContent.innerHTML = "<p>Error loading complaints.</p>";
-        total.textContent = "Total 0";
-        modal.style.display = "block"; // Still show the modal with error message
-    }
-}
 
 
         // Banned Accounts
         const bannedAccountsContainer = document.getElementById("banned-accounts-container");
         const bannedResponse = await fetch("/api/admin/manage-users/banned-users/all");
-        const { data: bannedData } = await bannedResponse.json();
+        const {data: bannedData} = await bannedResponse.json();
 
         console.log('bannedData', bannedData)
 
@@ -487,7 +484,7 @@ async function viewUserReports(reporter_id) {
 
     const viewUserReports = async (accountId) => {
         const response = await fetch(`/api/admin/manage-users/reports/${accountId}`);
-        const { data } = await response.json();
+        const {data} = await response.json();
 
         console.log('Total Reports:', data.total_reports);
         console.log('User Reports:', data.reports);
@@ -497,7 +494,7 @@ async function viewUserReports(reporter_id) {
     const viewUserDetail = async (userId) => {
         console.log('Users:', userId);
 
-        const response = await fetch(`http://localhost:8000/api/admin/manage-users/${userId}`);
+        const response = await fetch(`http://localhost:8000/api/admin/manage-users/get-user-by-id/${userId}`);
         const {data: user, success} = await response.json();
 
         if (success) {
@@ -572,26 +569,26 @@ async function viewUserReports(reporter_id) {
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-    let selectedUserId = null;
-    let selectedUserElement = null;
-    
-    // Confirm: perform ban
-    document.getElementById("confirmRestrict").addEventListener("click", async () => {
-        if (!selectedUserId) return;
-        
-        try {
-            const response = await fetch(`/api/admin/manage-users/ban/${selectedUserId}`, {
-                method: 'PATCH',
-            });
+        let selectedUserId = null;
+        let selectedUserElement = null;
 
-            const { message } = await response.json();
-            console.log('Message:', message);
+        // Confirm: perform ban
+        document.getElementById("confirmRestrict").addEventListener("click", async () => {
+            if (!selectedUserId) return;
 
-            document.getElementById("restrictModal").style.display = "none";
-            
-            const overlay = document.getElementById("overlay");
-            if (overlay) {
-                overlay.style.cssText = `
+            try {
+                const response = await fetch(`/api/admin/manage-users/ban/${selectedUserId}`, {
+                    method: 'PATCH',
+                });
+
+                const {message} = await response.json();
+                console.log('Message:', message);
+
+                document.getElementById("restrictModal").style.display = "none";
+
+                const overlay = document.getElementById("overlay");
+                if (overlay) {
+                    overlay.style.cssText = `
                     display: block !important;
                     position: fixed !important;
                     top: 0 !important;
@@ -601,14 +598,14 @@ async function viewUserReports(reporter_id) {
                     background-color: rgba(0, 0, 0, 0.5) !important;
                     z-index: 9998 !important;
                 `;
-            }
+                }
 
-            // Get toast and make it visible
-            const restrictedToast = document.getElementById("restrictedToast");
-            console.log("Toast element found:", restrictedToast);
-            
-            if (restrictedToast) {
-                restrictedToast.style.cssText = `
+                // Get toast and make it visible
+                const restrictedToast = document.getElementById("restrictedToast");
+                console.log("Toast element found:", restrictedToast);
+
+                if (restrictedToast) {
+                    restrictedToast.style.cssText = `
                     display: block !important; 
                     position: fixed !important; 
                     top: 50% !important;
@@ -625,88 +622,88 @@ async function viewUserReports(reporter_id) {
                     text-align: center;
                     transition: opacity 0.5s ease-in-out, bottom 0.5s ease-in-out;
                 `;
-                
-                console.log("Toast should be visible now with styles:", restrictedToast.style.cssText);
-            }
 
-            if (selectedUserElement) {
-                console.log("Removing user element:", selectedUserElement);
-                
-                selectedUserElement.style.transition = "opacity 0.5s ease";
-                selectedUserElement.style.opacity = "0";
-                
+                    console.log("Toast should be visible now with styles:", restrictedToast.style.cssText);
+                }
+
+                if (selectedUserElement) {
+                    console.log("Removing user element:", selectedUserElement);
+
+                    selectedUserElement.style.transition = "opacity 0.5s ease";
+                    selectedUserElement.style.opacity = "0";
+
+                    setTimeout(() => {
+                        selectedUserElement.remove();
+                        console.log("User element removed from DOM");
+
+                        updateUserCounters();
+                    }, 500);
+                }
+
                 setTimeout(() => {
-                    selectedUserElement.remove();
-                    console.log("User element removed from DOM");
-                    
-                    updateUserCounters();
-                }, 500);
+                    if (restrictedToast) restrictedToast.style.display = "none";
+                    if (overlay) overlay.style.display = "none";
+                }, 3000);
+
+            } catch (err) {
+                console.error("Error banning user:", err);
+            }
+        });
+
+        document.addEventListener("click", function (e) {
+            const banBtn = e.target.closest("a[data-userid]");
+            if (banBtn && banBtn.querySelector(".fa-ban")) {
+                e.preventDefault();
+
+                selectedUserId = banBtn.getAttribute("data-userid");
+
+                // Find the correct user element - look for different possible parent structures
+                selectedUserElement = document.getElementById(`user-${selectedUserId}`);
+
+                // If the user element wasn't found by ID, try to find by traversing the DOM from the clicked button
+                if (!selectedUserElement) {
+                    // Try to find the closest user container - adapt this selector to match your HTML structure
+                    selectedUserElement = banBtn.closest('.user-item, .user-container, .user-row, tr');
+                    console.log("Found user element by traversing up:", selectedUserElement);
+                }
+
+                document.getElementById("restrictModal").style.display = "block";
+                document.getElementById("overlay").style.display = "block";
+            }
+        });
+
+        // Cancel: just hide modal
+        document.getElementById("cancelRestrict").addEventListener("click", () => {
+            document.getElementById("restrictModal").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        });
+
+        // Helper function to update any user counters after removal
+        function updateUserCounters() {
+            // Update total user count if such element exists
+            const userCountElement = document.querySelector('.user-count, .total-users');
+            if (userCountElement) {
+                const currentCount = parseInt(userCountElement.textContent, 10);
+                if (!isNaN(currentCount)) {
+                    userCountElement.textContent = currentCount - 1;
+                }
             }
 
-            setTimeout(() => {
-                if (restrictedToast) restrictedToast.style.display = "none";
-                if (overlay) overlay.style.display = "none";
-            }, 3000);
-
-        } catch (err) {
-            console.error("Error banning user:", err);
-        }
-    });
-
-    document.addEventListener("click", function (e) {
-        const banBtn = e.target.closest("a[data-userid]"); 
-        if (banBtn && banBtn.querySelector(".fa-ban")) {
-            e.preventDefault();
-
-            selectedUserId = banBtn.getAttribute("data-userid");
-            
-            // Find the correct user element - look for different possible parent structures
-            selectedUserElement = document.getElementById(`user-${selectedUserId}`);
-            
-            // If the user element wasn't found by ID, try to find by traversing the DOM from the clicked button
-            if (!selectedUserElement) {
-                // Try to find the closest user container - adapt this selector to match your HTML structure
-                selectedUserElement = banBtn.closest('.user-item, .user-container, .user-row, tr');
-                console.log("Found user element by traversing up:", selectedUserElement);
-            }
-
-            document.getElementById("restrictModal").style.display = "block";
-            document.getElementById("overlay").style.display = "block";
-        }
-    });
-
-    // Cancel: just hide modal
-    document.getElementById("cancelRestrict").addEventListener("click", () => {
-        document.getElementById("restrictModal").style.display = "none";
-        document.getElementById("overlay").style.display = "none";
-    });
-    
-    // Helper function to update any user counters after removal
-    function updateUserCounters() {
-        // Update total user count if such element exists
-        const userCountElement = document.querySelector('.user-count, .total-users');
-        if (userCountElement) {
-            const currentCount = parseInt(userCountElement.textContent, 10);
-            if (!isNaN(currentCount)) {
-                userCountElement.textContent = currentCount - 1;
+            // Check if users list is empty and show a message if needed
+            const usersList = document.querySelector('.users-list, .users-table tbody');
+            if (usersList && usersList.children.length === 0) {
+                const emptyMessage = document.createElement('div');
+                emptyMessage.className = 'empty-state';
+                emptyMessage.textContent = 'No users found.';
+                usersList.parentNode.appendChild(emptyMessage);
             }
         }
-        
-        // Check if users list is empty and show a message if needed
-        const usersList = document.querySelector('.users-list, .users-table tbody');
-        if (usersList && usersList.children.length === 0) {
-            const emptyMessage = document.createElement('div');
-            emptyMessage.className = 'empty-state';
-            emptyMessage.textContent = 'No users found.';
-            usersList.parentNode.appendChild(emptyMessage);
-        }
-    }
-});
+    });
 
     const viewUserInfo = async (userId) => {
         console.log('Ban User:', userId);
         const response = await fetch(`/api/admin/manage-users/ban/view-user/${userId}`);
-        const { data } = await response.json();
+        const {data} = await response.json();
 
         console.log('Response data:', data);
     }
