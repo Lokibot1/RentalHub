@@ -230,13 +230,13 @@
             users.forEach(user => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                <td>${user.fullname}</td>
-                <td>
-                    <a href="#" onclick="viewUserDetail(${user.id})">
-                        <i class="fa-solid fa-eye"></i>
-                    </a>
-                </td>
-            `;
+                    <td>${user.fullname}</td>
+                    <td>
+                        <a href="#" onclick="viewUserDetail(${user.id})">
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
+                    </td>
+                `;
                 userTableBody.appendChild(row);
             });
         }
@@ -371,7 +371,7 @@
                     searchMessage.innerHTML = searchQuery ? `<p>No results found for "<strong>${searchQuery}</strong>"</p>` : "";
                 }
             } catch (error) {
-                console.error("Error fetching reported accoutns:", error);
+                console.error("Error fetching reported accounts:", error);
                 reportedAccountsTableBody.innerHTML = "<tr><td colspan='2'>Error loading reported accounts.</td></tr>";
             }
         }
@@ -380,6 +380,7 @@
             reportedAccountsContainer.innerHTML = "";
 
             reportedAccounts.forEach(account => {
+                console.log('Account:', account);
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td class="report-accounts-fullname">${account.fullname}</td>
@@ -394,16 +395,16 @@
                 `;
                 reportedAccountsContainer.appendChild(row);
             });
-
-            // Add event listeners to the eye icons after they're created
-            document.querySelectorAll('.view-reports').forEach(link => {
-                link.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const reporterId = this.getAttribute('data-reporter-id');
-                    viewUserReports(reporterId);
-                });
-            });
         }
+
+        // Add event listeners to the eye icons after they're created
+        document.querySelectorAll('.view-reports').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const reporterId = this.getAttribute('data-reporter-id');
+                viewUserReports(reporterId);
+            });
+        });
 
         // Show complaints modal and inject data
         async function viewUserReports(reporter_id) {
@@ -525,55 +526,70 @@
 
 
 
-        // if (data.length > 0) {
-        //     reportedAccountsContainer.innerHTML = "";
-        //     data.forEach(account => {
-        //         const row = document.createElement("tr");
-        //         row.innerHTML = `
-        //             <td class="report-accounts-fullname">${account.fullname}</td>
-        //             <td>
-        //                 <a href="#" class="view-reports" data-reporter-id="${account.reported_user_id}">
-        //                     <i class="fa-solid fa-eye"></i>
-        //                 </a>
-        //                 <a href="#" id="ban-btn" data-userid="${account.reported_user_id}")">
-        //                     <i class="fa-solid fa-ban"></i>
-        //                 </a>
-        //             </td>
-        //         `;
-        //         reportedAccountsContainer.appendChild(row);
-        //     });
-        //
-        //     // Add event listeners to the eye icons after they're created
-        //     document.querySelectorAll('.view-reports').forEach(link => {
-        //         link.addEventListener('click', function (e) {
-        //             e.preventDefault();
-        //             const reporterId = this.getAttribute('data-reporter-id');
-        //             viewUserReports(reporterId);
-        //         });
-        //     });
-        // } else {
-        //     reportedAccountsContainer.innerHTML = "<tr><td colspan='2'>No reported accounts found.</td></tr>";
-        // }
-
-
-
-
         // Banned Accounts
         const bannedAccountsContainer = document.getElementById("banned-accounts-container");
-        const bannedResponse = await fetch("/api/admin/manage-users/banned-users/all");
-        const {data: bannedData} = await bannedResponse.json();
+        const bannedAccountsSearchInput = document.querySelector(".banned-accounts-search-bar input");
+        const bannedAccountsSearchButton = document.querySelector(".banned-accounts-search-bar button");
+        const bannedAccountsTab = document.getElementById("ReportedAccounts");
+        const bannedAccountsTableBody = bannedAccountsTab.querySelector("table tbody");
 
-        console.log('bannedData', bannedData)
+        async function fetchBannedAccounts(searchQuery = "") {
+            try {
+                searchMessage.innerHTML = searchQuery ? `<p>Searching for results...</p>` : "";
+                bannedAccountsTableBody.innerHTML = "<tr><td colspan='2'>Searching for users...</td></tr>";
 
-        // TODO: viewUserInfo and restoreUser
-        if (bannedData.length > 0) {
+                const response = await fetch(`/api/admin/manage-users/banned-users/all?keyword=${encodeURIComponent(searchQuery)}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                bannedAccountsTableBody.innerHTML = "";
+
+                if (data.success && data.data.length > 0) {
+                    displayBannedAccounts(data.data);
+
+                    // Update search results box visibility
+                    searchResultsBox.style.display = searchQuery ? "flex" : "none";
+
+                    searchMessage.innerHTML = searchQuery
+                        ? `<p>Showing ${data.data.length} result${data.data.length !== 1 ? 's' : ''} for "<strong>${searchQuery}</strong>"</p>`
+                        : "";
+
+                    // Clear Search Button
+                    if (searchQuery) {
+                        let clearButton = document.createElement("button");
+                        clearButton.className = "clear-search";
+                        clearButton.innerText = "Clear Search";
+                        clearButton.addEventListener("click", function () {
+                            bannedAccountsSearchInput.value = "";
+                            fetchBannedAccounts("");
+                        });
+
+                        searchMessage.appendChild(clearButton);
+                    }
+                } else {
+                    bannedAccountsTableBody.innerHTML = `<tr><td colspan='2'>No users found.</td></tr>`;
+
+                    // Update search results box visibility
+                    searchResultsBox.style.display = searchQuery ? "flex" : "none";
+                    searchMessage.innerHTML = searchQuery ? `<p>No results found for "<strong>${searchQuery}</strong>"</p>` : "";
+                }
+            } catch (error) {
+                console.error("Error fetching reported accoutns:", error);
+                bannedAccountsTableBody.innerHTML = "<tr><td colspan='2'>Error loading reported accounts.</td></tr>";
+            }
+        }
+
+        function displayBannedAccounts(bannedAccounts) {
             bannedAccountsContainer.innerHTML = "";
-            bannedData.forEach(account => {
+
+            bannedAccounts.forEach(account => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td class="banned-accounts-fullname">${account.fullname}</td>
                     <td>
-                        <a href="#" onclick="viewUserInfo(${account.user_id})">
+                        <a href="#" onclick="viewUserBannedInfo(${account.user_id})">
                             <i class="fa-solid fa-eye"></i>
                         </a>
                         <a href="#" id="restore" onclick="restoreUser(${account.user_id})">
@@ -583,18 +599,168 @@
                 `;
                 bannedAccountsContainer.appendChild(row);
             });
-        } else {
-            bannedAccountsContainer.innerHTML = "<tr><td colspan='2'>No banned accounts found.</td></tr>";
+
+            console.log('bannedAccountsContainer:', bannedAccountsContainer);
+
+            // Add event listeners to the eye icons after they're created
+            document.querySelectorAll('.view-reports').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const reporterId = this.getAttribute('data-reporter-id');
+                    viewUserReports(reporterId);
+                });
+            });
         }
+
+        // Show complaints modal and inject data
+        // async function viewUserBanned(reporter_id) {
+        //     const modal = document.querySelector('.complaints-modal');
+        //     const modalContent = document.querySelector('.report-content');
+        //     const total = document.querySelector('.total');
+        //     const modalBackButton = document.querySelector('.modal-back-button');
+        //     const overlay = document.getElementById("overlay");
+        //     const title = document.querySelector('.title');
+        //
+        //     try {
+        //         const res = await fetch(`/api/admin/manage-users/reports/${reporter_id}`);
+        //         const response = await res.json();
+        //
+        //         // Check if response is successful and has data
+        //         if (!response.success || !response.data) {
+        //             throw new Error("Invalid response format");
+        //         }
+        //
+        //         // Access the nested data structure
+        //         const {total_reports, reports} = response.data;
+        //
+        //         // Clear previous complaints
+        //         modalContent.innerHTML = "";
+        //
+        //         if (reports && reports.length > 0) {
+        //             reports.forEach(report => {
+        //                 const complaintItem = document.createElement("div");
+        //                 complaintItem.classList.add("complaint-item");
+        //
+        //                 // Format the date to be more readable
+        //                 let formattedDate = "N/A";
+        //                 if (report.report_created) {
+        //                     const date = new Date(report.report_created);
+        //                     formattedDate = date.toLocaleDateString('en-US', {
+        //                         year: 'numeric',
+        //                         month: 'long',
+        //                         day: 'numeric'
+        //                     });
+        //                 }
+        //
+        //                 // Clean and format the reasons as bullet points
+        //                 let cleanedReasons = '';
+        //                 if (report.reasons) {
+        //                     // Remove brackets, quotes, and backslashes
+        //                     const cleanText = report.reasons.replace(/[\[\]"\\]/g, '');
+        //
+        //                     // Split by commas or other separators
+        //                     const reasons = cleanText.split(',').map(reason => reason.trim());
+        //
+        //                     // Create bullet points
+        //                     cleanedReasons = reasons.map(reason =>
+        //                         `<li>${reason}</li>`
+        //                     ).join('');
+        //                 }
+        //
+        //                 complaintItem.innerHTML = `
+        //                     <div class="complaint-header">
+        //                         <div class="complaint-left">
+        //                             <div class="label">Item Name: <span class="detail">${report.item_name}</span></div>
+        //                             <div class="label">Reported By: <span class="detail">${report.reporter_name}</span></div>
+        //                         </div>
+        //                         <div class="complaint-right">
+        //                             <div class="date-label">Date Submitted: <span class="detail date">${formattedDate}</span></div>
+        //                         </div>
+        //                     </div>
+        //                     <div class="complaint-body">
+        //                         <div class="label">Reasons:</div>
+        //                         <ul class="reasons-list">
+        //                             ${cleanedReasons}
+        //                         </ul>
+        //                         <div class="label">Description:</div>
+        //                         <div class="description">${report.description || 'No description provided'}</div>
+        //                     </div>
+        //                 `
+        //
+        //                 modalContent.appendChild(complaintItem);
+        //             });
+        //
+        //             total.textContent = `Total Reports: ${total_reports}`;
+        //         } else {
+        //             modalContent.innerHTML = "<p>No complaints found.</p>";
+        //             total.textContent = "Total 0";
+        //         }
+        //
+        //         // Show modal
+        //         modal.style.display = "block";
+        //         overlay.style.display = "block";
+        //
+        //     } catch (err) {
+        //         console.error("Error fetching user reports:", err);
+        //         modalContent.innerHTML = "<p>Error loading complaints.</p>";
+        //         total.textContent = "Total 0";
+        //         modal.style.display = "block"; // Still show the modal with error message
+        //     }
+        // }
+
+
+        let debounceBannedAccountsTimer;
+        bannedAccountsSearchInput.addEventListener("input", function () {
+            clearTimeout(debounceBannedAccountsTimer);
+            debounceBannedAccountsTimer = setTimeout(() => {
+                fetchBannedAccounts(this.value.trim());
+            }, 300);
+        });
+
+        bannedAccountsSearchInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                fetchBannedAccounts(this.value.trim());
+            }
+        });
+
+        bannedAccountsSearchButton.addEventListener("click", function () {
+            fetchBannedAccounts(bannedAccountsSearchInput.value.trim());
+        });
+
+        // Initialize reported accounts list
+        await fetchBannedAccounts();
+
+
+        // TODO: viewUserInfo and restoreUser
+        // if (bannedData.length > 0) {
+        //     bannedAccountsContainer.innerHTML = "";
+        //     bannedData.forEach(account => {
+        //         const row = document.createElement("tr");
+        //         row.innerHTML = `
+        //             <td class="banned-accounts-fullname">${account.fullname}</td>
+        //             <td>
+        //                 <a href="#" onclick="viewUserInfo(${account.user_id})">
+        //                     <i class="fa-solid fa-eye"></i>
+        //                 </a>
+        //                 <a href="#" id="restore" onclick="restoreUser(${account.user_id})">
+        //                      <i class="fa-solid fa-repeat"></i>
+        //                  </a>
+        //             </td>
+        //         `;
+        //         bannedAccountsContainer.appendChild(row);
+        //     });
+        // } else {
+        //     bannedAccountsContainer.innerHTML = "<tr><td colspan='2'>No banned accounts found.</td></tr>";
+        // }
     });
 
-    const viewUserReports = async (accountId) => {
-        const response = await fetch(`/api/admin/manage-users/reports/${accountId}`);
-        const {data} = await response.json();
-
-        console.log('Total Reports:', data.total_reports);
-        console.log('User Reports:', data.reports);
-    }
+    // const viewUserReports = async (accountId) => {
+    //     const response = await fetch(`/api/admin/manage-users/reports/${accountId}`);
+    //     const {data} = await response.json();
+    //
+    //     console.log('Total Reports:', data.total_reports);
+    //     console.log('User Reports:', data.reports);
+    // }
 
     // View user details
     const viewUserDetail = async (userId) => {
@@ -806,7 +972,7 @@
         }
     });
 
-    const viewUserInfo = async (userId) => {
+    const viewUserBannedInfo = async (userId) => {
         console.log('Ban User:', userId);
         const response = await fetch(`/api/admin/manage-users/ban/view-user/${userId}`);
         const {data} = await response.json();

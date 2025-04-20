@@ -112,7 +112,7 @@ router.get("/search", async (req, res) => {
 /**
  * Get all reports + search
  *
- * @route GET /api/admin/manage-users/reports/all
+ * @route GET /api/admin/manage-users/reports/all?keyword=search_keyword
  */
 router.get("/reports/all", async (req, res) => {
     const { keyword } = req.query;
@@ -197,22 +197,39 @@ router.get("/reports/:user_id", async (req, res) => {
 /**
  * Banned users
  *
- * @route GET /api/admin/manage-users/banned-users
+ * @route GET /api/admin/manage-users/banned-users?keyword=search_keyword
  */
 router.get("/banned-users/all", async (req, res) => {
-    const sql = `
+    const { keyword } = req.query;
+
+    let sql = `
         SELECT users.id                                       AS user_id,
                CONCAT(users.first_name, ' ', users.last_name) AS fullname
         FROM users
-                 JOIN reports ON users.id = reports.reported_user_id
+        JOIN reports ON users.id = reports.reported_user_id
         WHERE users.status = 'banned'
           AND reports.status = 'banned'
-    `
+    `;
 
-    db.query(sql,  (err, results) => {
+    const params = [];
+
+    // Add keyword filtering if provided
+    if (keyword) {
+        sql += `
+            AND (
+                users.first_name LIKE ? OR
+                users.last_name LIKE ? OR
+                CONCAT(users.first_name, ' ', users.last_name) LIKE ?
+            )
+        `;
+        const keywordParam = `%${keyword}%`;
+        params.push(keywordParam, keywordParam, keywordParam);
+    }
+
+    db.query(sql, params, (err, results) => {
         if (err) {
             console.error("Database query error", err);
-            return res.status(500).json({success: false, message: "Query failed."});
+            return res.status(500).json({ success: false, message: "Query failed." });
         }
 
         res.status(200).json({
@@ -221,6 +238,7 @@ router.get("/banned-users/all", async (req, res) => {
         });
     });
 });
+
 
 
 /**
