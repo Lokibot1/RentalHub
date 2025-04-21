@@ -456,7 +456,7 @@ function renderSortedItems(items) {
        <div class="item-details"> 
             <strong>${item.name}</strong>
             <strong>₱ ${item.price} per day</strong>
-            <h5> ${item.location}</h5>
+            <h5 title="${item.location}"> ${item.location}</h5>
             <p class="item-quantity"> ${item.quantity} items left | <span style="color:#333333;">${item.reviews_count > 0 ? item.reviews_count + ' reviews' : 'No review'}</span> </p> 
             </div>`;
         li.addEventListener("click", function () {

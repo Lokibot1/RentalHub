@@ -328,6 +328,8 @@ button {
 }
 .item-details h5 {
   font-weight: 100;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .item-details p {
   font-size: 0.875rem;
