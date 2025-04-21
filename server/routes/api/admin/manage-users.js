@@ -1,5 +1,5 @@
 import express from "express"
-import {db} from "../../../configs/db.js"
+import { db } from "../../../configs/db.js"
 
 const router = express.Router();
 
@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
     db.query(sql, (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Query failed."});
+            return res.status(500).json({ success: false, message: "Query failed." });
         }
 
         res.status(200).json({
@@ -36,25 +36,27 @@ router.get("/", async (req, res) => {
  * @route GET /api/admin/manage-users/get-user-by-id/:user_id
  */
 router.get('/get-user-by-id/:user_id', async (req, res) => {
-    const {user_id} = req.params;
+    const { user_id } = req.params;
 
     const selectUserSql = `
-        SELECT DISTINCT users.id,
-                        CONCAT(users.first_name, ' ', users.last_name) AS fullname,
-                        users.email,
-                        users.contact_number,
-                        users.status                                   AS account_status,
-                        COUNT(items.id)                                AS total_listing
+        SELECT users.id,
+            CONCAT(users.first_name, ' ', users.last_name) AS fullname,
+            users.email,
+            users.contact_number,
+            users.status AS account_status,
+            COUNT(items.id) AS total_listing
         FROM users
-                 JOIN items ON users.id = items.user_id
-        WHERE items.is_archived = 0
-          AND items.is_approved = 1
-          AND users.id = ?
+        LEFT JOIN items 
+            ON users.id = items.user_id 
+            AND items.is_archived = 0 
+            AND items.is_approved = 1
+        WHERE users.id = ?
+        GROUP BY users.id;
     `
     db.query(selectUserSql, [user_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Query failed."});
+            return res.status(500).json({ success: false, message: "Query failed." });
         }
 
         res.status(200).json({
@@ -180,7 +182,7 @@ router.get("/reports/:user_id", async (req, res) => {
     db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database query error", err);
-            return res.status(500).json({success: false, message: "Query failed."});
+            return res.status(500).json({ success: false, message: "Query failed." });
         }
 
         res.status(200).json({
@@ -260,7 +262,7 @@ router.patch("/ban/:user_id", async (req, res) => {
     db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database query error", err);
-            return res.status(500).json({success: false, message: "Query failed."});
+            return res.status(500).json({ success: false, message: "Query failed." });
         }
 
         res.status(200).json({
@@ -294,7 +296,7 @@ router.get("/ban/view-user/:user_id", async (req, res) => {
     db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database query error", err);
-            return res.status(500).json({success: false, message: "Query failed."});
+            return res.status(500).json({ success: false, message: "Query failed." });
         }
 
         res.status(200).json({
