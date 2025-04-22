@@ -319,9 +319,10 @@ document.addEventListener("DOMContentLoaded", function () {
 // Slideshow for Renters and Owners
 // Image arrays for Renters and Owners
 const renterImages = [
-    "magnifying-glass.png",
-    "receive.png",
+    "wsearch.png",
     "request.png",
+    "receive.png",
+    "return.png",
 ];
 
 const ownerImages = [
