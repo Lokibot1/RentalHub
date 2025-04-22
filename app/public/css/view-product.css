@@ -977,3 +977,8 @@ nav span {
     text-overflow: ellipsis;
     font-weight: 100;
   }
+
+  .note {
+    color: #880000;
+    font-size: 1.2rem;
+  }

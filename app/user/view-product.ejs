@@ -594,81 +594,53 @@
             const modal = document.createElement("div");
             modal.className = "modal";
             modal.innerHTML = `
-              <p><strong>Confirm rental request for: </strong><br>
+              <p><strong>Confirm rental request</strong><br>
               <strong>From:</strong> ${formatDate(startDate)}<br>
               <strong>To:</strong> ${formatDate(endDate)}<br>
               <strong>Delivery Method:</strong> ${deliveryMethod}</p><br>
-              <strong>Note: Please contact the owner for the transaction settlement.</strong>
-              <h3>Terms and Condition</h3>
+              <strong class="note">Note: Please contact the owner for the transaction settlement.</strong>
+              <br>
+              <br>
+              <h3>Damage and Loss Liability Terms</h3>
+              <br>
+              <p>Once the item is in the User's possession, they assume full responsibility for its care and security until it is returned to the Owner.<br>
+                Legal Reference: Article 1667 - Civil Code of the Philippines, Book IV, Title VIII.
+             </p>
+             <br>
                   <p>
-                  <strong>1. General Terms:</strong><br>
-                  By requesting an item on Rental Hub, both renters and owners agree to these terms and conditions to ensure secure, fair, and seamless transactions. Rental Hub reserves the right to update these terms at any time.
+                  <strong>1. Major Damage / Irreversible Damage:</strong><br>
+                  Penalty: Three (3) times the listed price of the item.<br>
+                  Legal Reference: Article 1671 - Civil Code of the Philippines, Book IV, Title VIII
               </p>
-
+              <br>
               <p>
-                  <strong>2. Responsibilities of Owners:</strong><br>
-                  - Owners must provide accurate descriptions and images of the item.<br>
-                  - Items must be in proper working condition before handing them over.<br>
-                  - Any existing defects or issues must be disclosed before the transaction.<br>
-                  - Owners may require security deposits and must return them upon receiving the item in its original condition.<br>
-                  - Owners have the right to decline rental requests from users with a history of late returns or damages.<br>
+                  <strong>2.Minor Damage:</strong><br>
+                  Penalty: 50% of the listed price for inconvenience.<br>
+                  Legal Reference: Articles 1657 & 1671 - Civil Code of the Philippines, Book IV<br>
               </p>
-
+              <br>
               <p>
-                  <strong>3. Responsibilities of Renters:</strong><br>
-                  - Renters must inspect the item upon receipt and report any damages immediately.<br>
-                  - The item must be used responsibly and returned on time in its original condition.<br>
-                  - Any delays, damages, or losses may result in additional charges or deductions from the security deposit.<br>
-                  - If an extension is needed, the renter must request approval from the owner before the due date.<br>
+                  <strong>3. Lost or Unreturned Items:</strong><br>
+                  Penalty: Full replacement value is based on the current market price or purchase invoice.<br>
+                  Legal Reference: Articles 1161 & 1657 - Civil Code of the Philippines.<br>
               </p>
-
+              <br>
               <p>
-                  <strong>4. Minimum Rental Period:</strong><br>
-                  - The minimum rental period for any item is **two (2) days**.<br>
-                  - Rental extensions must be requested in advance and approved by the owner.<br>
+                  <strong>4.  Late Return Fee:</strong><br>
+                  If the item is not returned by the agreed date, the User shall continue to pay the full daily rental rate until the item is returned.<br>
+                  Users must communicate any delays with the Owner. Failure to do so may lead to further penalties or platform suspension.<br>
               </p>
-
+              <br>
               <p>
-                  <strong>5. Penalties for Damages or Loss:</strong><br>
-                  - <strong>Major Damage / Irreversible Damage:</strong> Renters will be charged **three (3) times** the listed price of the item.<br>
-                  - <strong>Classification:</strong> Includes severe physical damage affecting functionality, structure, or usability (e.g., broken parts, water/fire damage, permanent stains, or unauthorized modifications).<br><br>
-                  - <strong>Minor Damage:</strong> Renters will be charged **50% of the listed price** for inconvenience.<br>
-                  - <strong>Classification:</strong> Includes cosmetic issues that do not affect functionality but impact appearance (e.g., scratches, small dents, removable stains, or minor loose parts).<br>
-                  - <strong>Lost or Unreturned Items:</strong> Renters will be charged the full replacement value of the item.<br>
+                  <strong>5. Payment Terms:</strong><br>
+                  The Owner (Lessor) and User (Lessee) shall independently agree on and handle all payment arrangements. RENTALHUB is not responsible for payment processing and acts solely as a facilitator.
               </p>
-
+              <br>
               <p>
-                  <strong>6. Payment and Fees:</strong><br>
-                  - Payments must be made through Rental Hub’s designated payment methods.<br>
-                  - Service fees may apply to cover platform maintenance and transaction security.<br>
-                  - Rental Hub is not responsible for payment disputes between users but may offer mediation if needed.<br>
-              </p>
-
-              <p>
-                  <strong>7. Cancellations and Refunds:</strong><br>
-                  - Cancellation policies depend on the owner’s terms.<br>
-                  - Cancellations made after the rental period has begun are not eligible for refunds.<br>
-                  - If an owner cancels a confirmed request, the renter will receive a full refund.<br>
-              </p>
-
-              <p>
-                  <strong>8. Dispute Resolution:</strong><br>
-                  - Disputes related to item condition, security deposits, or late fees should first be settled between both parties.<br>
-                  - If unresolved, Rental Hub’s support team will review relevant evidence, including rental agreements, item photos, and communication logs.<br>
-                  - Rental Hub’s final decision on disputes will be binding.<br>
-              </p>
-
-              <p>
-                  <strong>9. Liability Disclaimer:</strong><br>
-                  - Rental Hub facilitates transactions but does not guarantee the condition, functionality, or safety of rented items.<br>
-                  - Users are responsible for ensuring fair transactions and inspecting items before accepting them.<br>
-                  - Rental Hub is not liable for damages, losses, or conflicts arising outside the platform.<br>
-              </p>
-
-              <p>
-                  <strong>10. Acceptance of Terms:</strong><br>
+                  <strong>6. Acceptance of Terms:</strong><br>
                   By requesting an item on Rental Hub, users confirm that they have read, understood, and agreed to these terms. Non-compliance may result in penalties, account restrictions, or removal from the platform.
               </p>
+              <br>
               <div class="modal-buttons">
                   <button id="confirm-btn">Yes</button>
                   <button id="cancel-btn">No</button>
@@ -694,8 +666,8 @@
             modal.style.padding = "20px";
             modal.style.borderRadius = "10px";
             modal.style.minWidth = "300px";
-            modal.style.Width = "80%";
-            modal.style.maxWidth = "450px";
+            modal.style.Width = "100%";
+            modal.style.maxWidth = "600px";
             modal.style.maxHeight = "80vh";
             modal.style.overflowY = "auto";
             modal.style.top = "50%";
