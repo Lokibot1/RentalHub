@@ -294,6 +294,34 @@ nav span {
   gap: 1rem;
   padding: 1rem 0rem;
 }
+
+.update-container {
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  height: 40rem;
+  top: 50px;
+  gap: 5rem;
+  background: white;
+  box-shadow: 0rem 0rem 0.4rem #888;
+  border-radius: 25px;
+  padding: 5.5rem 2rem;
+  text-align: center;
+  align-items: center;
+}
+.update-container h1{
+  font-size: 2rem;
+  color: #FFAA00;
+  margin-bottom: 30px;
+  font-weight: 900;
+}
+.update-container p{
+    font-size: 1.2rem;
+  font-weight: 500;
+  color: #1b2e3d;
+  margin-bottom: 30px;
+  line-height: 2;
+}
 .rental-options {
   display: flex;
   height: 40rem;
