@@ -186,6 +186,8 @@
     const searchButton = document.getElementById("search-button");
     const shoppingContainer = document.getElementById("shopping-container");
     const categoriesContainer = document.querySelector(".categories-cont");
+    const sortDropDown = document.querySelector(".sort-dropdown");
+
 
     // Fetch items based on category ID
     async function fetchAllItems() {
@@ -321,6 +323,10 @@
         if (e.key === "Enter") {
             // Hide the categories container
             categoriesContainer.style.display = 'none'
+            sortDropDown.style.top = '3.5rem'
+
+
+
 
             selectedCategory = currentUrl.searchParams.get('category')
             searchItems(searchInput.value.trim(), selectedCategory)
