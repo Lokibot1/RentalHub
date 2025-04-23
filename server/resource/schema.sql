@@ -66,8 +66,9 @@ VALUES ('Events & Parties', 'events-and-parties'),
        ('Musical Instruments', 'musical-instruments'),
        ('Home & Office', 'home-and-office'),
        ('Pets Accessories', 'pets-accessories'),
-       ('Books and Literature', 'books-and-literature');
-
+       ('Books and Literature', 'books-and-literature'),
+       ('Staycations', 'staycations'),
+       ('Vehicles', 'vehicles');
 
 -- roles
 CREATE TABLE IF NOT EXISTS roles

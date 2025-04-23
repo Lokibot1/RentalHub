@@ -154,6 +154,16 @@
                 return;
             }
 
+            let itemWeekPrice = parseFloat(
+                document.querySelector("input[name='item_week_price']").value
+            );
+
+            // Validate price
+            if (itemPrice <= 0 || isNaN(itemPrice)) {
+                alert("Please enter a valid price greater than zero.");
+                return;
+            }
+
             let formData = new FormData(this);
 
             fetch("/api/shared/listing", {
