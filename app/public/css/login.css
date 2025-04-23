@@ -264,6 +264,25 @@ input[type="password"]::-ms-clear {
     .navbar {
         padding: 10px;
     }
+    .modal-content {
+        width: 70%;
+        padding: 20px;
+        font-size: 14px;
+    }
+
+    .close-modal {
+        font-size: 24px;
+    }
+
+    .flower {
+        width: 30px;
+        height: 30px;
+    }
+
+    .petal {
+        width: 10px;
+        height: 16px;
+    }
 }
 
 /*  Tablets (481px - 768px) */
