@@ -171,7 +171,7 @@ router.get("/reports/:user_id", async (req, res) => {
                items.name                                     AS item_name,
                reports.created_at                             AS report_created,
                CONCAT(users.first_name, ' ', users.last_name) AS reporter_name,
-               reports.reasons                                AS report_reasons,
+               reports.reasons                                AS reasons,
                reports.report_text                            AS description
         FROM reports
                  JOIN items ON reports.item_id = items.id

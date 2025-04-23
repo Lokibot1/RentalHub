@@ -399,19 +399,39 @@
                             });
                         }
 
+                        // // Clean and format the reasons as bullet points
+                        // let cleanedReasons = '';
+                        // if (report.reasons) {
+                        //     // Remove brackets, quotes, and backslashes
+                        //     const cleanText = report.reasons.replace(/[\[\]"\\]/g, '');
+
+                        //     // Split by commas or other separators
+                        //     const reasons = cleanText.split(',').map(reason => reason.trim());
+
+                        //     // Create bullet points
+                        //     cleanedReasons = reasons.map(reason =>
+                        //         `<li>${reason}</li>`
+                        //     ).join('');
+                        // }
+
                         // Clean and format the reasons as bullet points
                         let cleanedReasons = '';
-                        if (report.reasons) {
-                            // Remove brackets, quotes, and backslashes
-                            const cleanText = report.reasons.replace(/[\[\]"\\]/g, '');
+                        console.log("Raw reasons:", report.reasons); // for debugging
 
-                            // Split by commas or other separators
-                            const reasons = cleanText.split(',').map(reason => reason.trim());
+                        try {
+                            // Parse if it's a string, otherwise use as-is
+                            const parsedReasons = typeof report.reasons === 'string'
+                                ? JSON.parse(report.reasons)
+                                : report.reasons;
 
-                            // Create bullet points
-                            cleanedReasons = reasons.map(reason =>
-                                `<li>${reason}</li>`
-                            ).join('');
+                            if (Array.isArray(parsedReasons)) {
+                                cleanedReasons = parsedReasons
+                                    .map(reason => `<li>${reason}</li>`)
+                                    .join('');
+                            }
+                        } catch (e) {
+                            console.warn("Failed to parse report reasons:", e);
+                            cleanedReasons = '<li>Unable to display reasons</li>';
                         }
 
                         complaintItem.innerHTML = `
