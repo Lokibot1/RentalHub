@@ -169,11 +169,14 @@ router.patch("/archive-item/:item_id", (req, res) => {
         // Update rental transaction to declined status (is_approved = -1)
         const updateTransactionSql = `
             UPDATE items
-                LEFT JOIN rental_transactions ON items.id = rental_transactions.item_id
-            SET items.is_archived = 1
-            WHERE items.is_approved = 1
-              AND rental_transactions.item_id IS NULL
-              AND items.id = ?
+            SET is_archived = 1
+            WHERE is_approved = 1
+              AND id = ?
+              AND NOT EXISTS (
+                  SELECT 1 FROM rental_transactions
+                  WHERE rental_transactions.item_id = items.id
+                    AND rental_transactions.status = 'ongoing'
+              )
         `
         db.query(updateTransactionSql, [item_id], (err, result) => {
             if (err) return rollback(res, "Failed to archive items because it has an existing rental transaction.");
