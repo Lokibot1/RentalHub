@@ -68,8 +68,11 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        let selectedItem = localStorage.getItem('selectedItem')
-        let item = JSON.parse(selectedItem)
+        // let selectedItem = localStorage.getItem('selectedItem')
+        // let item = JSON.parse(selectedItem)
+
+         const item = JSON.parse('<%- JSON.stringify(item) %>');
+         console.log("Loaded item:", item);
 
         // Set values upon load
         document.querySelector('[name="item_name"]').value = item.name
@@ -80,7 +83,7 @@
         document.querySelector('[name="location"]').value = item.location
 
         // Set preview values
-        document.querySelector('img#preview').src = `/uploads/${item.image}`
+        document.querySelector('img#preview').src = `/uploads/${item.file_path}`
         document.querySelector('span#product-name').textContent = item.name
         document.querySelector('span#product-price').textContent = item.price
         document.querySelector('span#product-week-price').textContent = item.price_per_week

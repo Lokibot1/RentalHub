@@ -12,10 +12,19 @@ const router = express.Router();
 router.get("/:item_id", async (req, res) => {
     const { item_id } = req.params
 
+    // const sql = `
+    //     SELECT *
+    //     FROM items
+    //     WHERE items.id = ?
+    // `
+
     const sql = `
-        SELECT *
-        FROM items
-        WHERE items.id = ?
+                SELECT 
+                items.*, 
+                inventory.stock_quantity AS quantity
+            FROM items
+            JOIN inventory ON inventory.item_id = items.id
+            WHERE items.id = ?;
     `
 
     db.query(sql, [item_id], (err, results) => {
