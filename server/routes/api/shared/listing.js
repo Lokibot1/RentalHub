@@ -32,7 +32,7 @@ const upload = multer({storage: storage});
  * @route POST /api/shared/listing
  */
 router.post("/", checkAuth, upload.single('item_file'), async (req, res) => {
-    const {item_name, item_price, item_description, item_quantity, location, categories} = req.body;
+    const {item_name, item_price, item_week_price, item_description, item_quantity, location, categories} = req.body;
     const item_file = req.file; // Access the uploaded file
     let isApproved = false
 
@@ -50,8 +50,8 @@ router.post("/", checkAuth, upload.single('item_file'), async (req, res) => {
         }
 
         // Insert item into `items` table
-        const insertItemSql = "INSERT INTO items (name, price, description, location, file_path, category_id, user_id, is_approved) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        db.query(insertItemSql, [item_name, item_price, item_description, location, item_file.filename, categories, req.user.id, isApproved], (err, result) => {
+        const insertItemSql = "INSERT INTO items (name, price, price_per_week, description, location, file_path, category_id, user_id, is_approved) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        db.query(insertItemSql, [item_name, item_price, item_week_price, item_description, location, item_file.filename, categories, req.user.id, isApproved], (err, result) => {
             if (err) {
                 console.error("Item insertion failed:", err);
                 return db.rollback(() => {
