@@ -51,7 +51,7 @@ body {
 
 h3 {
     text-align: center;
-    font-size: 50px;
+    font-size: 30px;
     font-weight: bold;
     margin-bottom: 20px;
     color: #1B2E3C;
@@ -78,8 +78,8 @@ h3 {
 }
 
 #profileImage {
-    width: 350px;
-    height: 250px;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
     border-radius: 10px;
     cursor: pointer;
@@ -316,4 +316,50 @@ h3 {
 
 .suggestions-list li:hover {
     background: #f5f5f5;
+}
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        padding: 40px;
+        border-radius: 15px;
+    }
+
+    .uploadButton {
+        width: 100%;
+        font-size: 16px;
+    }
+
+    .name-inputs {
+        flex-direction: column;
+    }
+
+    .MI-input,
+    .suffix-input {
+        width: 100%;
+    }
+
+    .address-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .half-input,
+    .postalCode,
+    .barangay-input {
+        width: 100%;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .modal-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .modal-btn {
+        width: 100%;
+    }
 }

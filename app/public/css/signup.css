@@ -6,8 +6,9 @@ body {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background: linear-gradient(to right, #ffffff, #303d74);
+    background: linear-gradient(to right, #ffffff, #121212);
     margin: 0;
+    overflow: hidden;
 }
 
 h2 {
@@ -239,7 +240,8 @@ p {
     .container {
         width: 90%;
         height: auto;
-        padding: 15px;
+        padding: 3rem;
+        margin-top: 10rem;
     }
 
     h2 {
@@ -258,6 +260,11 @@ p {
 
     .navbar {
         padding: 10px;
+    }
+    .input-group{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
     }
 }
 

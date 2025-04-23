@@ -1,14 +1,17 @@
 /* Login Page Styling */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-
+*{
+    margin: 0;
+    padding: 0;
+}
 body {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background: linear-gradient(to right, #ffffff, #303d74);
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to right, #ffffff, #121212);
     margin: 0;
     overflow: hidden;
 }
@@ -235,6 +238,9 @@ input[type="password"]::-ms-clear {
 /* RESPONSIVE SHIT */
 /*  Mobile (Up to 480px) */
 @media screen and (max-width: 480px) {
+    body{
+        padding: 0 2rem;
+    }
     .container {
         width: 90%;
         height: auto;
@@ -262,8 +268,11 @@ input[type="password"]::-ms-clear {
 
 /*  Tablets (481px - 768px) */
 @media screen and (max-width: 768px) {
+    body{
+        padding: 0 2rem;
+    }
     .container {
-        width: 80%;
+        width: 50%;
         height: auto;
     }
 
