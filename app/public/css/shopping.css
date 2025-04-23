@@ -200,6 +200,9 @@ nav span {
     padding: 0.3125rem;
     margin: 0.3125rem 0;
   }
+  .hamburger{
+    display: flex;
+  }
 }
 
 /*scroll bar*/
@@ -258,7 +261,7 @@ button {
 @media (max-width: 768px) {
   .categories-cont {
     gap: 0.5rem;
-    padding: 5.5rem 0.5rem 1.5rem 0.5rem;
+    padding: 1rem 0.5rem 1.5rem 0.5rem;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
   }
@@ -299,7 +302,7 @@ button {
   text-overflow: ellipsis;
   align-items: center;
   text-align: left;
-  overflow-y: hidden;
+  overflow: hidden;
   margin-bottom: 1rem;
   transition: transform 0.3s ease-in-out;
 }
@@ -327,30 +330,16 @@ button {
   font-weight: 600;
 }
 .item-details h5 {
-  font-weight: 100;
-  text-overflow: ellipsis;
   white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-weight: 100;
+
 }
 .item-details p {
   font-size: 0.875rem;
   color: #880000;
 }
-@media (max-width: 768px) {
-  .shoppingList {
-    grid-template-columns: repeat(2, 1fr);
-    padding: 1rem;
-  }
-  .shoppingItem {
-    width: 10rem;
-    height: 15rem;
-  }
-  .itemImage {
-    width: 10rem;
-    height: 8rem;
-  }
-}
-
-
 .sort-dropdown {
     position: sticky;
     top: 12rem;
@@ -361,8 +350,6 @@ button {
     margin-bottom: 1rem;
     width: 100%;
 }
-
-
 .sort-toggle {
     background: transparent;
     border: none;
@@ -411,4 +398,23 @@ button {
 
 .sort-options li:hover {
     background-color: rgba(136, 0, 0, 0.7);
+}
+
+@media (max-width: 768px) {
+  .shoppingList {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 1rem;
+  }
+  .shoppingItem {
+    width: 10rem;
+    height: 15rem;
+  }
+  .itemImage {
+    width: 10rem;
+    height: 8rem;
+  }
+  .sort-dropdown{
+    top: 15rem;
+    padding: 0 0 1rem;
+  }
 }
