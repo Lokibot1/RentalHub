@@ -35,7 +35,7 @@
                 Reported Accounts
             </button>
             <button class="tablinks" onclick="openTab(event, 'BannedAccounts')">
-                Banned Accounts
+                Restricted Accounts
             </button>
         </div>
 
@@ -976,12 +976,105 @@
     });
 
     const viewUserBannedInfo = async (userId) => {
-        console.log('Ban User:', userId);
+    console.log('Ban User:', userId);
+    
+    try {
         const response = await fetch(`/api/admin/manage-users/ban/view-user/${userId}`);
-        const {data} = await response.json();
-
-        console.log('Response data:', data);
+        const {data: user, success} = await response.json();
+        
+        console.log('Response data:', user);
+        
+        if (success) {
+            // Hide the banned accounts list - use the correct ID
+            document.getElementById('BannedAccounts').style.display = 'none';
+            
+            // Create or get the banned user details container
+            let bannedUserInfoDetails = document.getElementById('bannedUserInfoDetails');
+            if (!bannedUserInfoDetails) {
+                bannedUserInfoDetails = document.createElement('div');
+                bannedUserInfoDetails.id = 'bannedUserInfoDetails';
+                // Append to the same parent as BannedAccounts
+                document.getElementById('BannedAccounts').parentNode.appendChild(bannedUserInfoDetails);
+            }
+            
+            // Populate the banned user details
+            bannedUserInfoDetails.innerHTML = `
+                <div class="user-detail-container" style="overflow: hidden;
+                                                height: 58vh;
+                                                background-color: #ffff;
+                                                box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+                                                padding: 20px;
+                                                padding-top: 0;
+                                                min-height: 300px;
+                                                border-radius: 0px 10px 10px 10px;">
+                    <div class="back-button">
+                        <a href="#" onclick="returnToBannedUserList()">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="user-detail-table">
+                        <table style="width: 100%;
+                                border-spacing: 0px 20px;
+                                text-align: left;
+                                font-size: 1rem;
+                                font-weight: normal;">
+                            <tr>
+                                <td>User ID</td>
+                                <td>${user.user_id}</td>
+                            </tr>
+                            <tr>
+                                <td>Name</td>
+                                <td style="padding: 10px;">${user.fullname}</td>
+                            </tr>
+                            <tr>
+                                <td>Email</td>
+                                <td style="padding: 10px;">${user.email}</td>
+                            </tr>
+                            <tr>
+                                <td>Account Status</td>
+                                <td style="padding: 10px;">${user.status}</td>
+                            </tr>
+                            <tr>
+                                <td>Total Listings</td>
+                                <td style="padding: 10px;">${user.total_items || 'No Items Posted'}</td>
+                            </tr>
+                            <tr>
+                                <td>Average Rating</td>
+                                <td style="padding: 10px;">${user.average_rating || 'Unrated'}</td>
+                            </tr>
+                            <tr>
+                                <td>Banned Date</td>
+                                <td style="padding: 10px;">${user.banned_date}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            `;
+            
+            // Display the banned user details
+            bannedUserInfoDetails.style.display = 'block';
+        } else {
+            // Handle error
+            alert('Error: Could not retrieve banned user details.');
+        }
+    } catch (error) {
+        console.error("Error fetching banned user details:", error);
+        alert('Error: Could not retrieve banned user details.');
     }
+};
+
+// Function to return to the banned user list
+const returnToBannedUserList = () => {
+    // Hide the banned user details
+    const bannedUserInfoDetails = document.getElementById('bannedUserInfoDetails');
+    if (bannedUserInfoDetails) {
+        bannedUserInfoDetails.style.display = 'none';
+    }
+    
+    // Show the banned accounts list - use the correct ID
+    document.getElementById('BannedAccounts').style.display = 'block';
+};
 
     const restoreUser = async (userId) => {
         // TODO: Get the userid and process the request
