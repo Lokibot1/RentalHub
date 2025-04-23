@@ -32,7 +32,7 @@ const upload = multer({storage: storage});
  * @route PATCH /api/shared/update-product/:item_id
  */
 router.patch("/:item_id", checkAuth, upload.single('item_file'), async (req, res) => {
-    const { item_name, item_price, item_description, item_quantity, location, categories } = req.body;
+    const { item_name, item_price, item_week_price, item_description, item_quantity, location, categories } = req.body;
     const item_id = req.params.item_id;
     const item_file = req.file; // Access the uploaded file
     let isApproved = false
@@ -49,6 +49,7 @@ router.patch("/:item_id", checkAuth, upload.single('item_file'), async (req, res
         SET
             items.name = ?,
             items.price = ?,
+            items.price_per_week = ?,
             items.description = ?,
             inventory.stock_quantity = ?,
             items.location = ?,
@@ -63,6 +64,7 @@ router.patch("/:item_id", checkAuth, upload.single('item_file'), async (req, res
     db.query(sql, [
         item_name,
         item_price,
+        item_week_price,
         item_description,
         item_quantity,
         location,

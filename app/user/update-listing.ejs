@@ -29,7 +29,7 @@
                 required />
             <input type="number" name="item_price" id="itemPrice" placeholder="Enter item price"
                 oninput="updatePreview()" required />
-                <input type="number" name="item_week_price" id="itemWeekPrice" placeholder="Enter item priceper week"
+                <input type="number" name="item_week_price" id="itemWeekPrice" placeholder="Enter item price per week"
                 oninput="updatePreview()" required />
             <textarea name="item_description" id="itemDescription" placeholder="Enter item description"
                 oninput="updatePreview()" required></textarea>
@@ -74,7 +74,7 @@
         // Set values upon load
         document.querySelector('[name="item_name"]').value = item.name
         document.querySelector('[name="item_price"]').value = item.price
-        document.querySelector('[name="item_week_price"]').value = item.week.price
+        document.querySelector('[name="item_week_price"]').value = item.price_per_week
         document.querySelector('[name="item_description"]').value = item.description
         document.querySelector('[name="item_quantity"]').value = item.quantity
         document.querySelector('[name="location"]').value = item.location
@@ -83,7 +83,7 @@
         document.querySelector('img#preview').src = `/uploads/${item.image}`
         document.querySelector('span#product-name').textContent = item.name
         document.querySelector('span#product-price').textContent = item.price
-        document.querySelector('span#product-week-price').textContent = item.week.price
+        document.querySelector('span#product-week-price').textContent = item.price_per_week
         document.querySelector('span#product-description').textContent = item.description
         document.querySelector('span#item-quantity').textContent = item.quantity
 
