@@ -8,7 +8,7 @@
             <h1>Rental <span> Hub</span></h1>
         </div>
     </a>
-    <ul>
+    <ul id="nav-links">
         <li><a href="/shop">Shop</a></li>
         <li>
             <a href="/user/listing"
@@ -31,6 +31,18 @@
             <% } %>
         </li>
     </ul>
+
+    <div
+      class="hamburger"
+      id="hamburger"
+      aria-label="Toggle navigation"
+      role="button"
+      tabindex="0"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
 </nav>
 <!-- Main container for product view -->
 <div class="view-product-container">
@@ -201,6 +213,15 @@
 </div>
 
 <script>
+    //Hamburger Menu
+
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("nav-links");
+
+    hamburger.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+        hamburger.classList.toggle("open"); 
+    });
     let selectedItem = null;
 
     window.addEventListener("load", function () {

@@ -162,9 +162,6 @@ nav span {
 /*Mobile Responsive*/
 @media (max-width: 48rem) {
   /* 768px */
-  .logo {
-    display: none;
-  }
   .hamburger {
     display: flex;
   }
@@ -286,6 +283,83 @@ nav span {
   color: #888;
   font-style: italic;
   font-weight: 100;
+}
+
+
+/* Right Section: Owner Info */
+.owner-info {
+  height: 12rem;
+  box-shadow: 0rem 0rem 0.4rem #888;
+  border-radius: 25px;
+  padding: 1.5rem;
+}
+
+/* Product Details */
+.product-details {
+  border-radius: 10px;
+}
+
+.posted-by {
+  border: 2px solid #354f52;
+  padding: 15px;
+  border-radius: 10px;
+  background: #ffffff;
+  margin-top: .5rem; 
+}
+
+/* Owner Details */
+.owner-details {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  padding: 15px;
+}
+.o-details{
+    line-height: 2rem;
+}
+
+/* Profile Picture */
+.owner-details img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+/* Rating */
+.rating {
+  color: #880000;
+  font-size: 18px;
+  margin-top: 5px;
+}
+@media screen and (max-width: 768px) {
+  .view-product-container{
+    padding: 0;
+    flex-direction: column;
+    align-items: center;
+  }
+  .left-section{
+    width: 100%;
+    padding: 0;
+  }
+  .product{
+    height: auto;
+    padding: 0;
+    flex-direction: column;
+    background-color: transparent;
+    box-shadow: none;
+  }
+  .product img{
+    width: 100%;
+    height: 100%;
+  }
+  .product-details{
+    width: 100%;
+    height: 100%;
+  }
+  .owner-info{
+    width: 100%;
+    height: 100%;
+  }
 }
 
 /* Rental options */
@@ -447,52 +521,31 @@ nav span {
   transition: transform 0.3s ease;
 }
 
-/* Right Section: Owner Info */
-.owner-info {
-  height: 12rem;
-  border: 1px solid #121212;
-  border-radius: 25px;
-  padding: 1.5rem;
+@media screen and (max-width: 768px) {
+  .right-section{
+    width: 90%;
+    padding: 0;
+  }
+  .rental-options{
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    gap: 0;
+    position: static;
+  }
+  
+  .calendar {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px;
+    margin: 0 auto;
+  }
+  .dates{
+    gap: 1rem;
+  }
 }
-
-/* Product Details */
-.product-details {
-  border-radius: 10px;
-}
-
-.posted-by {
-  border: 2px solid #354f52;
-  padding: 15px;
-  border-radius: 10px;
-  background: #ffffff;
-  margin-top: .5rem; 
-}
-
-/* Owner Details */
-.owner-details {
-  display: flex;
-  align-items: center;
-  gap: 50px;
-  padding: 15px;
-}
-.o-details{
-    line-height: 2rem;
-}
-
-/* Profile Picture */
-.owner-details img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-}
-
-/* Rating */
-.rating {
-  color: #880000;
-  font-size: 18px;
-  margin-top: 5px;
-}
-
 /*PUTANGINANG KALENDARYO TO*/
 .calendar {
   width: 100%;
@@ -982,3 +1035,62 @@ nav span {
     color: #880000;
     font-size: 1.2rem;
   }
+  @media screen and (max-width: 768px) {
+    #myForm {
+      width: 90%;
+      height: 100%;
+      flex-direction: column;
+    }
+    .side-profile{
+      width: 100%;
+      height: 30%;
+      padding: 5px;
+      box-shadow: none;
+      border-radius: 0px;
+      line-height: 1.5rem;
+    }
+    .side-profile h3, .side-profile p{
+      font-size: .8rem;
+    }
+    .profile {
+      margin: auto;
+      padding: 1rem;
+      width: 100px;
+      height: 100px;
+  }
+  .profile img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+  }
+  #social-media {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .shoppingItem{
+    width: 8rem;
+    height: 13rem;
+  }
+  .itemImage {
+    width: 8rem;
+    height: 7rem;
+  }
+  .itemDetails{
+    padding: 0.1rem;
+    line-height: 1.2rem;
+    text-align: left;
+    color: #121212;
+    font-family: "Work Sans", sans-serif;
+  }
+  .itemDetails strong {
+    font-size: .8rem;
+  }
+  .itemDetails h5 {
+    font-size: 0.6rem;
+  }
+  .itemDetails p {
+    font-size: 0.6rem;
+  }
+}
