@@ -30,6 +30,12 @@ function getCategoryName(categoryValue) {
         case "9":
             categoryName = "books-and-literature";
             break;
+        case "10":
+            categoryName = "staycations";
+            break;
+        case "11":
+            categoryName = "vehicles";
+            break;
     }
     return categoryName;
 }

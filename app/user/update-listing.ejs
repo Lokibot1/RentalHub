@@ -29,6 +29,8 @@
                 required />
             <input type="number" name="item_price" id="itemPrice" placeholder="Enter item price"
                 oninput="updatePreview()" required />
+                <input type="number" name="item_week_price" id="itemWeekPrice" placeholder="Enter item priceper week"
+                oninput="updatePreview()" required />
             <textarea name="item_description" id="itemDescription" placeholder="Enter item description"
                 oninput="updatePreview()" required></textarea>
 
@@ -55,6 +57,8 @@
             <hr>
             <label>Price per day: <span id="product-price"></span></label>
             <hr>
+            <label>Price per week: <span id="product-week-price"></span></label>
+            <hr>
             <label>Item Description: <span id="product-description"></span></label>
             <hr>
             <label>No. of Item Quantity: <span id="item-quantity"></span></label>
@@ -70,6 +74,7 @@
         // Set values upon load
         document.querySelector('[name="item_name"]').value = item.name
         document.querySelector('[name="item_price"]').value = item.price
+        document.querySelector('[name="item_week_price"]').value = item.week.price
         document.querySelector('[name="item_description"]').value = item.description
         document.querySelector('[name="item_quantity"]').value = item.quantity
         document.querySelector('[name="location"]').value = item.location
@@ -78,6 +83,7 @@
         document.querySelector('img#preview').src = `/uploads/${item.image}`
         document.querySelector('span#product-name').textContent = item.name
         document.querySelector('span#product-price').textContent = item.price
+        document.querySelector('span#product-week-price').textContent = item.week.price
         document.querySelector('span#product-description').textContent = item.description
         document.querySelector('span#item-quantity').textContent = item.quantity
 
@@ -89,7 +95,10 @@
             { value: 5, text: "Tools & Equipment" },
             { value: 6, text: "Musical Instruments" },
             { value: 7, text: "Home & Office" },
-            { value: 8, text: "Pets Accessories" }
+            { value: 8, text: "Pets Accessories" },
+            { value: 9, text: "Books and Literature" },
+            { value: 10, text: "Staycations" },
+            { value: 11, text: "Vehicles" },
         ];
 
         const select = document.getElementById("categories");
@@ -142,6 +151,7 @@
         function updatePreview() {
             document.getElementById("product-name").textContent = document.getElementById("itemName").value;
             document.getElementById("product-price").textContent = document.getElementById("itemPrice").value;
+            document.getElementById("product-week-price").textContent = document.getElementById("itemWeekPrice").value;
 
             document.getElementById("itemDescription").addEventListener("input", function () {
                 document.getElementById("product-description").innerHTML = this.value.replace(/\n/g, "<br>");
@@ -170,6 +180,7 @@
         // Attach event listeners to inputs for live preview
         document.getElementById("itemName").addEventListener("input", updatePreview);
         document.getElementById("itemPrice").addEventListener("input", updatePreview);
+        document.getElementById("itemWeekPrice").addEventListener("input", updatePreview);
         document.getElementById("itemDescription").addEventListener("input", updatePreview);
         document.getElementById("img").addEventListener("change", previewImage);
         document.getElementById("itemQuantity").addEventListener("change", updatePreview);
@@ -204,6 +215,15 @@
                 break;
             case "8":
                 categoryName = "pets-accessories";
+                break;
+            case "9":
+                categoryName = "books-and-literature";
+                break;
+            case "10":
+                categoryName = "staycations";
+                break;
+            case "11":
+                categoryName = "vehicles";
                 break;
         }
         return categoryName;

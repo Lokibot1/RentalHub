@@ -25,6 +25,14 @@
                     oninput="updatePreview()"
                     required
             />
+            <input
+                    type="number"
+                    name="item_week_price"
+                    id="itemWeekPrice"
+                    placeholder="Enter item price per week"
+                    oninput="updatePreview()"
+                    required
+            />
             <textarea
                     name="item_description"
                     id="itemDescription"
@@ -87,6 +95,12 @@
                 <option value="9">
                     Books and Literature
                 </option>
+                <option value="10">
+                    Staycations
+                </option>
+                <option value="11">
+                    Vehicles
+                </option>
             </select>
 
             <button type="submit">Add Listing</button>
@@ -103,6 +117,8 @@
             <hr>
             <label>Price per day: <span id="product-price"></span></label>
             <hr>
+            <label>Price per week: <span id="product-week-price"></span></label>
+            <hr>
             <label>Item Description: <span id="product-description"></span></label>
             <hr>
             <label>No. of Item Quantity: <span id="item-quantity"></span></label>
@@ -112,6 +128,15 @@
 
 <!--Script-->
 <script>
+    //Hamburger Menu
+
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("nav-links");
+
+    hamburger.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+        hamburger.classList.toggle("open"); 
+    });
     //Listing Functionality
     document
         .getElementById("listingForm")
@@ -152,6 +177,7 @@
     function updatePreview() {
         document.getElementById("product-name").textContent = document.getElementById("itemName").value;
         document.getElementById("product-price").textContent = document.getElementById("itemPrice").value;
+        document.getElementById("product-week-price").textContent = document.getElementById("itemWeekPrice").value;
     
         document.getElementById("itemDescription").addEventListener("input", function () {
             document.getElementById("product-description").innerHTML = this.value.replace(/\n/g, "<br>");
@@ -180,6 +206,7 @@
     // Attach event listeners to inputs for live preview
     document.getElementById("itemName").addEventListener("input", updatePreview);
     document.getElementById("itemPrice").addEventListener("input", updatePreview);
+    document.getElementById("itemWeekPrice").addEventListener("input", updatePreview);
     document.getElementById("itemDescription").addEventListener("input", updatePreview);
     document.getElementById("img").addEventListener("change", previewImage);
     document.getElementById("itemQuantity").addEventListener("input", updatePreview);

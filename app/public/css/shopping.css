@@ -240,6 +240,9 @@ nav span {
   height: 2.5rem;
   display: flex;
   align-items: center;
+  justify-content: center;
+  justify-items: center;
+  text-align: center;
   font-size: 0.9rem;
   padding: 0.5rem;
   font-weight: bold;

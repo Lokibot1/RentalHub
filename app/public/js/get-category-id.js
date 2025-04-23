@@ -30,6 +30,12 @@ function getCategoryId(categoryValue) {
         case "books-and-literature":
             categoryId = 9;
             break;
+        case "staycations":
+            categoryId = 10;
+            break;
+        case "vehicles":
+            categoryId = 11;
+            break;
     }
     return categoryId;
 }
