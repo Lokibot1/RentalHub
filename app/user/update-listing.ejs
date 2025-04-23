@@ -45,7 +45,7 @@
 
             <button type="submit">Update Listing</button>
         </form>
-    </div>
+    </div>  
 
     <!--Preview Section-->
     <div class="preview">
@@ -63,6 +63,21 @@
             <hr>
             <label>No. of Item Quantity: <span id="item-quantity"></span></label>
         </div>
+    </div>
+</div>
+
+<!--Error Modal when updating cause of ongoung transactions-->
+<div id="errorModal" class="error-modal">
+    <div class="error-content">
+        <p style="color: #800020;">Update failed due to On Going Transactions for this item</p>
+        <button onclick="closeErrorModal()" class="close-button">I Understand</button>
+    </div>
+</div>
+
+<div id="overlay" class="overlay"></div>
+<div id="updateConfirmModal" class="update-confirm-modal">
+    <div class="error-content">
+        <p>Item Updated Successfully</p>
     </div>
 </div>
 
@@ -124,31 +139,56 @@
 
         //Listing Functionality
         document
-            .getElementById("listingForm")
-            .addEventListener("submit", async function (e) {
-                e.preventDefault();
+    .getElementById("listingForm")
+    .addEventListener("submit", async function (e) {
+        e.preventDefault();
 
-                // Get the current URL last segment
-                let url = window.location.href;
-                let itemId = url.substring(url.lastIndexOf("/") + 1);
+        // Get the current URL last segment to extract itemId
+        let url = window.location.href;
+        let itemId = url.substring(url.lastIndexOf("/") + 1);
 
-                const formData = new FormData(this);
 
-                console.log('submitting form', this);
-
-                await fetch(`/api/shared/update-product/${itemId}`, {
-                    method: "PATCH",
-                    body: formData,
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        alert("Item updated!");
-                        window.location.href = '/shop';
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                    });
+        try {
+            const response = await fetch(`/api/shared/update-product/${itemId}`, {
+                method: "PATCH",
             });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Show success modal
+                document.getElementById("updateConfirmModal").style.display = "flex";
+                document.getElementById("overlay").style.display = "block";
+                setTimeout(() => {
+                    document.getElementById("updateConfirmModal").style.display = "none";
+                    document.getElementById("overlay").style.display = "none";
+                }, 3000);
+                window.location.href = '/shop';
+            } else {
+                // If update failed due to an ongoing transaction
+                if (data.message && data.message.includes("ongoing transaction")) {
+                    document.getElementById("errorModal").style.display = "flex";
+                    document.getElementById("overlay").style.display = "block";
+                    setTimeout(() => {
+                        document.getElementById("errorModal").style.display = "none";
+                        document.getElementById("overlay").style.display = "none";
+                    }, 3000);
+                } else {
+                    alert("Update failed: " + (data.message || "Unknown error"));
+                }
+            }
+        } catch (error) {
+            console.error("Update request error:", error);
+            document.getElementById("errorModal").style.display = "flex";
+        }
+    });
+
+// Function to close the error modal
+window.closeErrorModal = function () {
+            console.log("Close button is clicked");
+            document.getElementById('errorModal').style.display = 'none';
+            overlay.style.display = 'none';
+        }
 
         // Preview Functionality
         function updatePreview() {
