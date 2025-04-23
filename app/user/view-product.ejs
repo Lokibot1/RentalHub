@@ -56,6 +56,7 @@
             <div class="product-details">
                 <h2 id="product-name"></h2>
                 <h1 id="product-price"></h1>
+                <h1 id="product-week-price"></h1>
                 <h4 id="product-quantity"></h4>
                 <div class="product-description">
                     <h3>Product Description</h3>
@@ -300,6 +301,9 @@
             document.getElementById(
                 "product-price"
             ).innerText = `₱${selectedItem.price} per day`;
+            document.getElementById(
+                "product-week-price"
+            ).innerText = `₱${selectedItem.week_price} per week`;
             document.getElementById("product-description").innerText =
                 selectedItem.description;
 
