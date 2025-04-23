@@ -26,61 +26,132 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage});
 
 
-/**
- * Add New Item
- *
- * @route POST /api/shared/listing
- */
+// /**
+//  * Add New Item
+//  *
+//  * @route POST /api/shared/listing
+//  */
+// router.post("/", checkAuth, upload.single('item_file'), async (req, res) => {
+//     const {item_name, item_price, item_week_price, item_description, item_quantity, location, categories} = req.body;
+//     const item_file = req.file; // Access the uploaded file
+//     let isApproved = false
+
+//     if (!item_file) {
+//         return res.status(400).json({success: false, message: "File upload failed."});
+//     }
+
+//     isApproved = req.user.role === 'admin';
+
+//     // Begin transaction
+//     db.beginTransaction((err) => {
+//         if (err) {
+//             console.error("Transaction initiation failed:", err);
+//             return res.status(500).json({success: false, message: "Transaction error."});
+//         }
+
+//         // Insert item into `items` table
+//         const insertItemSql = "INSERT INTO items (name, price, price_per_week, description, location, file_path, category_id, user_id, is_approved) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//         db.query(insertItemSql, [item_name, item_price, item_week_price, item_description, location, item_file.filename, categories, req.user.id, isApproved], (err, result) => {
+//             if (err) {
+//                 console.error("Item insertion failed:", err);
+//                 return db.rollback(() => {
+//                     res.status(500).json({success: false, message: "Failed to add item."});
+//                 });
+//             }
+
+//             const itemId = result.insertId; // Get the inserted item ID
+
+//             // Insert stock data into `inventory` table
+//             const insertInventorySql = "INSERT INTO inventory (item_id, stock_quantity) VALUES (?, ?)";
+//             db.query(insertInventorySql, [itemId, item_quantity], (err) => {
+//                 if (err) {
+//                     console.error("Inventory insertion failed:", err);
+//                     return db.rollback(() => {
+//                         res.status(500).json({success: false, message: "Failed to add item inventory."});
+//                     });
+//                 }
+
+//                 // Commit transaction
+//                 db.commit((err) => {
+//                     if (err) {
+//                         console.error("Transaction commit failed:", err);
+//                         return db.rollback(() => {
+//                             res.status(500).json({success: false, message: "Transaction error."});
+//                         });
+//                     }
+
+//                     res.status(201).json({success: true, message: "Item added successfully with inventory."});
+//                 });
+//             });
+//         });
+//     });
+// });
+
+// /**test route**/
 router.post("/", checkAuth, upload.single('item_file'), async (req, res) => {
-    const {item_name, item_price, item_week_price, item_description, item_quantity, location, categories} = req.body;
-    const item_file = req.file; // Access the uploaded file
-    let isApproved = false
+    const { item_name, item_price, item_week_price, item_description, item_quantity, location, categories } = req.body;
+    const item_file = req.file;
+    let isApproved = false;
 
     if (!item_file) {
-        return res.status(400).json({success: false, message: "File upload failed."});
+        return res.status(400).json({ success: false, message: "File upload failed." });
     }
 
-    isApproved = req.user.role === 'admin';
-
-    // Begin transaction
-    db.beginTransaction((err) => {
+    // Check if user is banned
+    const userId = req.user.id;
+    const checkUserSql = "SELECT status FROM users WHERE id = ?";
+    db.query(checkUserSql, [userId], (err, results) => {
         if (err) {
-            console.error("Transaction initiation failed:", err);
-            return res.status(500).json({success: false, message: "Transaction error."});
+            console.error("User status check failed:", err);
+            return res.status(500).json({ success: false, message: "Server error." });
         }
 
-        // Insert item into `items` table
-        const insertItemSql = "INSERT INTO items (name, price, price_per_week, description, location, file_path, category_id, user_id, is_approved) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        db.query(insertItemSql, [item_name, item_price, item_week_price, item_description, location, item_file.filename, categories, req.user.id, isApproved], (err, result) => {
+        if (results.length === 0 || results[0].status === 'banned') {
+            console.log(`Blocked attempt: User ${userId} is banned and tried to add a listing.`);
+            return res.status(403).json({ success: false, message: "You are banned and cannot add a new listing." });
+        }
+
+        isApproved = req.user.role === 'admin';
+
+        // Begin transaction
+        db.beginTransaction((err) => {
             if (err) {
-                console.error("Item insertion failed:", err);
-                return db.rollback(() => {
-                    res.status(500).json({success: false, message: "Failed to add item."});
-                });
+                console.error("Transaction initiation failed:", err);
+                return res.status(500).json({ success: false, message: "Transaction error." });
             }
 
-            const itemId = result.insertId; // Get the inserted item ID
-
-            // Insert stock data into `inventory` table
-            const insertInventorySql = "INSERT INTO inventory (item_id, stock_quantity) VALUES (?, ?)";
-            db.query(insertInventorySql, [itemId, item_quantity], (err) => {
+            // Insert item into `items` table
+            const insertItemSql = "INSERT INTO items (name, price, price_per_week, description, location, file_path, category_id, user_id, is_approved) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            db.query(insertItemSql, [item_name, item_price, item_week_price, item_description, location, item_file.filename, categories, userId, isApproved], (err, result) => {
                 if (err) {
-                    console.error("Inventory insertion failed:", err);
+                    console.error("Item insertion failed:", err);
                     return db.rollback(() => {
-                        res.status(500).json({success: false, message: "Failed to add item inventory."});
+                        res.status(500).json({ success: false, message: "Failed to add item." });
                     });
                 }
 
-                // Commit transaction
-                db.commit((err) => {
+                const itemId = result.insertId;
+
+                // Insert stock data into `inventory` table
+                const insertInventorySql = "INSERT INTO inventory (item_id, stock_quantity) VALUES (?, ?)";
+                db.query(insertInventorySql, [itemId, item_quantity], (err) => {
                     if (err) {
-                        console.error("Transaction commit failed:", err);
+                        console.error("Inventory insertion failed:", err);
                         return db.rollback(() => {
-                            res.status(500).json({success: false, message: "Transaction error."});
+                            res.status(500).json({ success: false, message: "Failed to add item inventory." });
                         });
                     }
 
-                    res.status(201).json({success: true, message: "Item added successfully with inventory."});
+                    db.commit((err) => {
+                        if (err) {
+                            console.error("Transaction commit failed:", err);
+                            return db.rollback(() => {
+                                res.status(500).json({ success: false, message: "Transaction error." });
+                            });
+                        }
+
+                        res.status(201).json({ success: true, message: "Item added successfully with inventory." });
+                    });
                 });
             });
         });
