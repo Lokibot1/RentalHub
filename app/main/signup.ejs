@@ -28,19 +28,21 @@
         <p id="email-error" class="error-message"></p>
 
         <div class="input-group">
-            <div>
-                <input type="password" id="signup-password" placeholder="Password" 
+            <div style="position: relative; width: 48%;">
+                <input type="password" id="signup-password" placeholder="Password" required 
                        oninput="handlePasswordInput('signup-password')" 
                        oncopy="return false" onpaste="return false" oncut="return false">
                 <span class="toggle-password" onclick="togglePassword('signup-password')" id="toggle-signup-password"></span>
             </div>
-            <div>
-                <input type="password" id="confirm-password" placeholder="Re-enter Password"
+            <div style="position: relative; width: 48%;"> <!-- ✅ Added relative positioning -->
+                <input type="password" id="confirm-password" placeholder="Re-enter Password" required 
                        oninput="handlePasswordInput('confirm-password')" 
                        oncopy="return false" onpaste="return false" oncut="return false">
                 <span class="toggle-password" onclick="togglePassword('confirm-password')" id="toggle-confirm-password"></span>
             </div>
         </div>
+        <p id="password-error" class="error-message"></p>
+        
         <p id="password-error" class="error-message"></p>
         
 
@@ -59,127 +61,136 @@
                 <span class="close-btn">&times;</span>
                 <p class="termsandcondi">
                 <h3>Terms and Conditions</h3>
-                <p>Welcome to RentalHub! By confirming a rental through RENTALHUB, both the Owner and the User (collectively
-                    referred to as the "Parties") agree to the following Terms and Conditions, governed by the applicable laws of the 
-                    Republic of the Philippines, including but not limited to: <br> <br>
-                    - Republic Act No. 10173 - Data Privacy Act of 2012 <br>
-                    -  Republic Act No. 7394 - Consumer Act of the Philippines <br>
-                    -  Republic Act No. 8792 - E-Commerce Act of 2000 <br>
+                <h5><strong>Last Updated: </strong>April 23, 2025</h5>
+                <p>Welcome to Rental Hub, a digital rental marketplace accessible on desktop, laptop, and mobile devices within the Philippines. By creating an account or using the Platform, you agree to these legally binding Terms and Conditions ("Terms"). If you do not agree with any part of these Terms, please do not proceed with registration or use of the Platform. <br>
+                    These Terms are governed by the laws of the Republic of the Philippines, including but not limited to the following laws and regulations:
+                     <br> <br>
+                    <strong>Republic Act No. 10173 –</strong>  Data Privacy Act of 2012 <br>
+                    <strong>Republic Act No. 10173 –</strong>  Consumer Act of the Philippines <br>
+                    <strong>Republic Act No. 8792 –</strong>  E-Commerce Act of 2000 <br>
+                    <strong>Civil Code of the Philippines –</strong>  Book IV, Title VIII (Lease) <br>
+                     
                     
                 </p>
 
-                <p><strong>1.  Governing Law</strong><br>
-                    These terms are established under the laws of the Republic of the 
-                    Philippines to ensure a fair, lawful, and secure rental transaction.
+                <p><strong>1.  Eligibility and User Registration</strong><br>
+                    TOnly individuals 18 years old and above are eligible to register. <br>
+                    Registration is limited to residents of the Philippines. <br>
+                    A valid and verifiable email address is required. Verification will be conducted through a One-Time Password (OTP). <br>
+                    Users must provide accurate, current, and complete information and update their profiles as needed. <br>
+                    Multiple accounts or impersonation of others is strictly prohibited. <br>
+                    
                 </p>
                 <br>
-                <p><strong>2. Eligibility</strong><br>
-                    Users must be at least 18 years old. <br>
-                    Users must be residents of the Philippines. <br>
-                    Users must be legally capable of entering into binding agreements. <br><br>
-                    Legal Reference: <br>
-                    Article 1327, Civil Code of the Philippines – Persons disqualified to give consent (e.g., minors) cannot enter into contracts. <br>
-                    Republic Act No. 6809 – Emancipation of minors: Legal age of majority is 18 years. <br>
+                <p><strong>2. Account Security and Access</strong><br>
+                    Users are responsible for safeguarding their account credentials. <br>
+                    Sharing login details with third parties is not allowed. <br>
+                    Passwords may be reset using the "Forgot Password" feature with email OTP verification. <br>
+                    Rental Hub is not liable for losses arising from user negligence in securing their credentials. <br>
                     </p>
                     <br>
 
-                <p><strong>3. Responsibility of Care</strong><br>
-                    Once the item is in the User's possession, they assume full responsibility for
-                     its care and security until it is returned to the Owner.<br> <br>
-
-                    Legal Reference: <br>
-                    Article 1667 - Civil Code of the Philippines, Book IV, Title VIII
+                <p><strong>3.  Profile Management</strong><br>
+                    Users must create a profile with personal details and may upload a profile photo. <br>
+                    Registered names are final and cannot be changed. <br>
+                    Contact details and profile images can be updated through the account settings page. <br>
                     </p>
                     <br>
 
-                <p><strong>4. Penalties for Damages or Loss</strong><br>
-                    <strong>4.1  Major Damage / Irreversible Damage</strong>
-                    <p>Penalty: Three (3) times the listed price of the item. <br>
-                        Examples: Broken parts, water/fire damage, permanent stains, unauthorized modifications.
-                        <br><br>
-                        Legal Reference: Article 1671 - Civil Code of the Philippines, Book IV, Title VIII
-                        </p>
-                        <strong>4.2 Minor Damage</strong>
-                    <p>Penalty: 50% of the listed price for inconvenience.<br>
-                        Examples: Scratches, Small Dents, Removable Stains, and Minor loose parts.
-                        <br><br>
-                        Legal Reference: Articles 1657 & 1671 - Civil Code of the Philippines, Book IV
-                        </p>
-                        <strong>4.3 Lost or Unreturned Items</strong>
-                        <p>Penalty: Full replacement value is based on the current market price or purchase invoice.
-                            <br><br>
-                            Legal Reference: Articles 1161 & 1657 - Civil Code of the Philippines
-                            </p>
+                <p><strong>4. Listing and Item Management</strong><br>
+                    Users may list items for rent with images, descriptions, pricing, and availability. <br>
+                    Only image files (JPG, PNG) are allowed; videos are not supported. <br>
+                    Listings must conform to approved categories and are subject to admin review before publication. <br>
+                    Users may update, archive, or restore listings at any time. <br>
                     </p>
                     <br>
-                    <p><strong>5. Late Return Fee</strong><br>
-                        The Owner (Lessor) and User (Lessee) shall independently agree on and handle all payment arrangements. RENTALHUB is not
-                        responsible for payment processing and acts solely as a facilitator.
-                        </p>
-                        <br>
-                        <p><strong>6. Payment Terms</strong><br>
-                            If the item is not returned by the agreed date, the User 
-                            shall continue to pay the full daily rental rate until the item is returned. <br>
-                            Users must communicate any delays with the Owner. Failure 
-                            to do so may lead to further penalties or platform suspension.
+                    <p><strong>5.  Rental Transactions</strong><br>
+                        TRental requests can be initiated through the platform. <br>
+                        Owners reserve the right to accept or decline requests. <br>
+                        Status updates are shown in "My Requests" and "Ongoing" dashboards. <br>
+                        Inquiries may be submitted through a form, with notifications sent to owners via email. <br>
                             </p>
                             <br>
-                        <p><strong>7. Termination and Legal Remedies</strong><br>
-                            <strong>7.1 Termination by Owner</strong>
-                            <p>Permitted in cases of late return, item misuse, or platform policy violations.</p>
-                                <br>
-                                <strong>7.2 Termination by User</strong>
-                            <p>Permitted in cases of misrepresented items, non-delivery, or safety issues.</p>
-                                <br>
-                                <strong>7.3 Mutual Termination</strong>
-                                <p> Allowed upon agreement or due to force majeure.
+                        <p><strong>6. Ratings and Reviews</strong><br>
+                            After a completed rental, both parties may leave text-based reviews. <br>
+                            Reviews help establish reputation but must not include images or videos.
                             </p>
                             <br>
-                            <p><strong>8. Limitation of Liability</strong><br>
-                                RENTALHUB is not liable for any damages or disputes arising
-                                from rentals. It functions only as a digital platform connecting users.
+                            <p><strong>7. Reporting Violations</strong><br>
+                                Users may report other users via text-only reports. <br> 
+                                Reports against items are not accepted. <br>
+                                All reports are reviewed by admins who may take appropriate action.
+
                                 </p>
                                 <br>
-                                <p><strong>9. Communication and Delivery Disclaimer</strong><br>
-                                    All communications between the Owner and the Renter, including inquiries, confirmations, and payment arrangements, are conducted outside the RENTALHUB platform. <br>
-                                    RENTALHUB shall not be held liable for miscommunications or disputes resulting from these external interactions. <br>
-                                    RENTALHUB is not responsible for courier handling, delivery delays, damages, or loss during shipment. <br>
-                                    Delivery logistics and disputes are solely the responsibility of the Owner and Renter.
+                                <p><strong>8. Admin Roles and Moderation</strong><br>
+                                    Admins have full oversight and control over: <br>
+                                    User records (including restricted or reported users) <br>
+                                    Listings (pending, approved, archived, or declined) <br>
+                                    Rental transactions (ongoing or completed) <br>
+                                    Reports and flagged accounts <br>
+                                    Admins can approve or reject listings, manage users, and monitor platform usage.
                                     </p>
                                     <br>
-                                    <p><strong>10. User Conduct</strong><br>
-                                        Users agree to abide by all laws, RENTALHUB policies, and not misuse the platform. <br>
-                                        Activities such as fraud, misrepresentation, and harassment are strictly prohibited. <br> <br>
-                                        Legal Reference: <br>
-                                        Article 1306, Civil Code of the Philippines – Parties may establish terms as long as they are not contrary to law or public policy. <br>
-                                        Article 19 & 20, Civil Code – Prohibits abuse of rights and actions that are contrary to morals or good customs.
+                                    <p><strong>9. Notifications</strong><br>
+                                        Users will receive email alerts for: <br>
+                                        Email verification success <br>
+                                        Listing status updates <br>
+                                        Rental request activity (received/accepted)
                                     </p>
                                     <br>
-                                    <p><strong>11. Force Majeure</strong><br>
-                                        Neither party is liable for failures caused by events beyond control, such as natural disasters, government actions, or platform outages.
+                                    <p><strong>10. Limitations and Exclusions</strong><br>
+                                        Rental Hub does not support: <br>
+                                            In-app messaging or chat <br>
+                                            Logistics, delivery, or tracking services <br>
+                                            Integrated payment systems (e.g., GCash, Maya, bank transfers) <br>
+                                            Discounts, vouchers, or promotional tools <br>
+                                            Cart, wishlist, or recommended item features <br>
+                                            Video content in listings or reviews <br>
+                                            Location-based item or user search <br><br>
+                                            Additional notes: <br>
+                                            Registered names are unchangeable <br>
+                                            Shop users are not searchable <br>
+                                            Reports and reviews must be text-based only <br>
+                                            Rental Hub does not mediate disputes <br>
+                                            Rental Hub is not affiliated with external entities or services
                                     </p>
                                     <br>
-                                    <p><strong>12. Insurance Notice</strong><br>
-                                         Owners are encouraged to insure high-value items. RENTALHUB does not offer or manage insurance services.
+                                    <p><strong>11. User Conduct</strong><br>
+                                        Users must: <br>
+                                        Follow applicable laws and these Terms <br>
+                                        Avoid posting false or unlawful information <br>
+                                        Respect others' privacy and platform integrity <br>
+                                        Violations may lead to suspension or permanent account termination.                                        
                                     </p>
                                     <br>
-                                    <p><strong>13. Data Privacy</strong><br>
-                                        By signing up, the User consents to the lawful collection and processing of their personal data. <br>
-                                        Data collected includes identity, contact details, and other relevant account information. <br>
-                                        The information will be used solely for verification, communication, and rental-related services. <br> <br>
-                                        Legal Reference: <br>
-                                        Republic Act No. 10173 – Data Privacy Act of 2012 <br>
-                                        Section 12: Criteria for Lawful Processing of Personal Information <br>
-                                        Section 16: Rights of the Data Subject
+                                    <p><strong>12. Intellectual Property Rights</strong><br>
+                                        All content and branding on Rental Hub is protected intellectual property. <br>
+                                        Reproduction or redistribution without written consent is prohibited.
                                     </p>
                                     <br>
-                                    <p><strong>14. Acceptance of Terms</strong><br>
-                                        By clicking Sign Up, the User confirms that they: <br>
-                                        Have read and understood the Terms and Conditions <br>
-                                        Consent to the use of their data under RA 10173 <br>
-                                        Are eligible to create an account <br>
-                                        Will comply with all RENTALHUB platform rules and responsibilities
+                                    <p><strong>13. Disclaimers and Limitation of Liability</strong><br>
+                                        Rental Hub is a neutral digital facilitator and not a party to rental agreements. <br>
+                                        It assumes no liability for: <br>
+                                        Rental issues such as damage, theft, or fraud <br>
+                                        Financial loss or disputes between users <br>
+                                        Platform misuse or errors beyond its control <br>
+
                                         </p>
+                                    <p><strong>14. Termination of Use</strong><br>
+                                        Rental Hub may suspend or terminate accounts for Terms violations or suspicious activity. <br>
+                                        Users may request deletion of their account by contacting platform administrators.
+                                    </p>
+                                    <p><strong>15. Amendments to Term</strong><br>
+                                        Rental Hub may modify these Terms at any time. <br>
+                                        Significant changes will be communicated via email or platform alerts.
+                                    </p>
+                                    <p><strong>16. Governing Law</strong><br>
+                                        These Terms are governed under Philippine law. <br>
+                                        Legal disputes must be filed within the appropriate jurisdiction of the Philippines. <br>
+                                        By registering and using Rental Hub, you confirm that you have read, understood, and agree to these Terms and Conditions in their entirety.
+
+                                    </p>
             </div>
         </div>
 

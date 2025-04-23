@@ -200,6 +200,11 @@ nav button {
 .preview:hover {
   transform: scale(1.02);
 }
+.form span{
+  color: #880000;
+  font-size: .8rem;
+  font-weight: 900;
+}
 h2 {
   font-size: 50px;
   text-align: center;

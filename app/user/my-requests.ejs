@@ -63,7 +63,7 @@
                 <h3>Are you sure you want to cancel this request?</h3>
                 <div class="modal-buttons">
                     <button class="btn-yes" id="cancel-submit">Confirm</button>
-                    <button class="btn-no" id="cancel-confirm">Cancel</button>
+                    <button class="btn-no" id="cancel-confirmss">Cancel</button>
                 </div>
             </div>
         </div>
@@ -247,6 +247,9 @@
 
 <!--JavaScript-->
 <script>
+            const cancelModal = document.getElementById("cancel-modal");
+            const modalOverlay = document.getElementById("modal-overlay");
+
     let selectedItemId = 0
     let selectedUserId = 0
     let currentLoggedInUserId = "<%= user_id %>"
@@ -270,8 +273,9 @@
             this.submitReviewButton = document.getElementById('submit-rev')
             this.cancelReviewButton = document.getElementById('cancel-rev')
 
-            this.cancelConfirmButton = document.querySelector('#cancel-confirm')
+            this.cancelConfirmButton = document.querySelector('#cancel-confirmss')
             this.confimModal = document.querySelector('#confirm-modal')
+
 
             // Getting the current data-id
             this.dataId = 0
@@ -330,6 +334,8 @@
             if (this.cancelConfirmButton) {
                 this.cancelConfirmButton.addEventListener('click', () => {
                     confirmModal.style.display = "none";
+                    modalOverlay.style.display = "none";
+                    cancelModal.style.display = "none";
                 })
 
                 // cancelConfirm.addEventListener("click", function () {
@@ -583,7 +589,6 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         const cancelBtns = document.querySelectorAll(".cancel-btn");
-        const cancelModal = document.getElementById("cancel-modal");
         const cancelSubmit = document.getElementById("cancel-submit");
         // const cancelConfirm = document.getElementById("cancel-confirm");
         const modalOverlay = document.getElementById("modal-overlay");
@@ -687,7 +692,7 @@
         this.cancelReportBtn = document.getElementById("cancel-rprt");
         this.confirmModal = document.getElementById("confirm-modal");
         this.confirmSubmitBtn = document.getElementById("confirm-submit");
-        this.cancelConfirmBtn = document.getElementById("cancel-confirms");
+        this.cancelConfirmBtn = document.getElementById("cancel-confirm");
         this.toast = document.getElementById("report-toast");
 
         // Store the logged in user ID from options

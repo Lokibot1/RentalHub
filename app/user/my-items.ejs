@@ -191,7 +191,6 @@
                     <!-- Modal for Renter Information -->
     <div id="modalOverlay" class="modal-overlay"></div>
     <div id="myForm">
-        <div class="myform-content">
         <button class="close-btn" onclick="closeForm()">X</button>
 
         <!--Profile Details-->
@@ -231,7 +230,9 @@
                             <div class="toggle-sliders"></div>
                         </div>
                     </div>
-                    <div id="renterContent" class="content-box">
+                    <br>
+                    <hr>    
+                    <div id="renterContent" class="content-box" style="display: block">
                         <div class="reviewItem">
                             <br>
                             <div class="review-header">
@@ -284,7 +285,6 @@
             </div>
             </div>
         </div>
-    </div>
     </div>
 
                     <!-- Accept Confirmation Modal -->
@@ -609,11 +609,8 @@ async function openForm(transactionId) {
 
     document.getElementById("myForm").style.display = "flex";
     document.getElementById("modalOverlay").style.display = "block";
+    document.getElementById("renterBtn").click();
 }
-
-
-
-
 
 
 // // Fetch and display reviews
