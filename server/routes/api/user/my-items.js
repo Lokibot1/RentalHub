@@ -206,6 +206,7 @@ router.get("/rental-requests/:user_id", async (req, res) => {
         SELECT rental_transactions.id                         AS rent_transaction_id,
                CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
                users.address                                  AS renters_address,
+               users.profile_image                            AS renters_profile_image,
                items.location                                 AS item_location,
                items.file_path                                AS item_image,
                items.name                                     AS item_name,
@@ -235,6 +236,48 @@ router.get("/rental-requests/:user_id", async (req, res) => {
         })
     })
 })
+
+
+/**
+ * Get dashboard data
+ *
+ * @route GET /api/user/my-items/renter-info/:item_id
+ */
+router.get("/renter-info/:item_id", async (req, res) => {
+    const { item_id } = req.params
+    console.log("Incoming item_id:", item_id);
+
+    const sql = `
+        SELECT
+            users.id AS renter_id,
+            users.profile_image AS renter_profile_image,
+            CONCAT(users.first_name, ' ', users.last_name) AS renter,
+            users.contact_number as contact_number,
+            users.social_media as social_media,
+            users.city as city,
+            AVG(reviews.rating) AS average_rating
+        FROM rental_transactions
+        JOIN users ON rental_transactions.renter_id = users.id
+        LEFT JOIN reviews ON reviews.item_id = rental_transactions.item_id
+        WHERE rental_transactions.item_id = ?
+        GROUP BY users.id, users.profile_image, users.first_name, users.last_name, users.contact_number, users.social_media, users.city
+
+    `
+
+    db.query(sql, [item_id], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({ success: false, message: "Query failed." });
+        }
+
+        console.log("SQL Query Results:", results);
+
+        res.status(200).json({
+            success: true,
+            data: results.length > 0 ? results[0] : null
+        });
+    });
+});
 
 
 /**
