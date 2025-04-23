@@ -202,6 +202,48 @@ router.get("/reviews/:user_id", async (req, res) => {
         FROM reviews
                  LEFT JOIN items ON reviews.item_id = items.id
                  LEFT JOIN users AS users_owner ON reviews.item_owner_id = users_owner.id
+                 LEFT JOIN users AS users_renter ON reviews.item_renter_id = users_renter.id
+                 LEFT JOIN users AS users_reviewer ON reviews.reviewer_id = users_reviewer.id
+                 LEFT JOIN rental_transactions ON reviews.item_renter_id = rental_transactions.id
+        WHERE reviews.for_user = ?
+          AND reviews.role = ?
+        ORDER BY reviews.created_at DESC
+    `
+    db.query(sql, [user_id, role], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({success: false, message: "Query failed."});
+        }
+
+        res.status(200).json({
+            success: true,
+            data: results
+        })
+    })
+})
+
+/**
+ * Get Review for Owner or Renter
+ *
+ * @route GET /api/user/profile/renter-info/:user_id
+ */
+router.get("/renter-info/:user_id", async (req, res) => {
+    const {user_id} = req.params
+    const {role} = req.query
+
+    const sql = `
+        SELECT reviews.id                                                                             AS id,
+               users_reviewer.profile_image                                                           AS profile_image,
+               CONCAT(users_reviewer.first_name, ' ', users_reviewer.last_name)                       AS renter,
+               reviews.rating                                                                         AS stars,
+               reviews.review_text,
+               items.name                                                                             AS item_name,
+               DATE(reviews.created_at)                                                               AS date_posted,
+               CONCAT(users_reviewer.address, ' ', users_reviewer.barangay, ' ', users_reviewer.city) AS location
+        FROM reviews
+                 LEFT JOIN items ON reviews.item_id = items.id
+                 LEFT JOIN users AS users_owner ON reviews.item_owner_id = users_owner.id
+                 LEFT JOIN users AS users_renter ON reviews.item_renter_id = users_renter.id
                  LEFT JOIN users AS users_reviewer ON reviews.reviewer_id = users_reviewer.id
                  LEFT JOIN rental_transactions ON reviews.item_renter_id = rental_transactions.id
         WHERE reviews.for_user = ?

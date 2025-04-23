@@ -132,11 +132,11 @@
                                 <div class="rentalInfo">
                                     <div class="renterDetails">
                                             <img id="renter-image" src="/uploads/<%= item.renters_profile_image %>" alt=""
-                                            onclick="openForm()"
+                                            onclick="openForm('<%= item.rent_transaction_id %>')"
                                             />
                                             
                                         <div class="renters">
-                                            <h4 class="renterName" onclick="openForm()"
+                                            <h4 class="renterName" onclick="openForm('<%= item.rent_transaction_id %>')"
                                                 > <%= item.renters_name %> </h4>
                                             <h4> • </h4>
                                             <h4 class="renterLocation"> <%= item.renters_address %> </h4>
@@ -226,8 +226,8 @@
                     <h3>Reviewed As:</h3>
                     <div class="toggle-wrapper">
                         <div class="toggle-container">
-                            <button id="renterBtns" class="toggle-btns">Renter</button>
-                            <button id="ownerBtns" class="toggle-btns">Owner</button>
+                            <button id="renterBtn" class="toggle-btns">Renter</button>
+                            <button id="ownerBtn" class="toggle-btns">Owner</button>
                             <div class="toggle-sliders"></div>
                         </div>
                     </div>
@@ -497,8 +497,8 @@
 <script>
     // Toggle between renter and owner
 document.addEventListener("DOMContentLoaded", function () {
-        const renterBtn = document.getElementById("renterBtns");
-        const ownerBtn = document.getElementById("ownerBtns");
+        const renterBtn = document.getElementById("renterBtn");
+        const ownerBtn = document.getElementById("ownerBtn");
         const slider = document.querySelector(".toggle-sliders");
         const renterContent = document.getElementById("renterContent");
         const ownerContent = document.getElementById("ownerContent");
@@ -532,28 +532,6 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("modalOverlay").style.display = "none";
     });
 
-
-// // Function to show the renter profile modal
-// function showRenterProfile() {
-//     const modalOverlay = document.getElementById('modalOverlay');
-//     const myForm = document.getElementById('myForm');
-    
-//     const renterName = document.querySelector('.renterName').textContent.trim();
-//     const renterLocation = document.querySelector('.renterLocation').textContent.trim();
-//     const renterImage = document.getElementById('renter-image').getAttribute('src');
-    
-//     document.getElementById('renter-fullname').textContent = renterName;
-//     document.getElementById('location').textContent = renterLocation;
-//     document.getElementById('profile-image').setAttribute('src', renterImage);
-    
-//     modalOverlay.style.display = 'block';
-//     myForm.style.display = 'block';
-    
-//     modalOverlay.addEventListener('click', closeForm);
-    
-//     fetchReviews(renterName);
-// }
-
 // Function to close the form
 function closeForm() {
     document.getElementById('modalOverlay').style.display = 'none';
@@ -582,17 +560,26 @@ function switchTab(event, tabId) {
 }
 
 // Renter's Profile Modal
-async function openForm() {
-    const item = JSON.parse(localStorage.getItem("selectedItem"));
+async function openForm(transactionId) { 
+    if (!transactionId) {
+        alert("Invalid rental transaction ID");
+        return;
+    }
+
+    // Clear existing reviews first
+    document.getElementById('renterContent').innerHTML = '';
+    document.getElementById('ownerContent').innerHTML = '';
+
+    localStorage.setItem("selectedTransaction", JSON.stringify({ id: transactionId }));
 
     const response = await fetch(
-        `http://localhost:8000/api/user/my-items/renter-info/${item.id}`
+        `http://localhost:8000/api/user/my-items/renter-info-by-transaction/${transactionId}`
     );
     const data = await response.json();
 
     if (!data.success || !data.data) {
-        alert("No renter information available for this item.");
-        return; // Stop further execution
+        alert("No renter information available for this rental transaction.");
+        return;
     }
 
     const {
@@ -604,6 +591,8 @@ async function openForm() {
         city,
         average_rating,
     } = data.data;
+
+    localStorage.setItem("currentRenter", JSON.stringify({ renter_id }));
 
     document.querySelector("#profile-image").src = `/uploads/${renter_profile_image}`;
     document.querySelector("#renters-fullname").textContent = renter;
@@ -626,102 +615,115 @@ async function openForm() {
 
 
 
+
 // // Fetch and display reviews
-// document.addEventListener("DOMContentLoaded", () => {
-//         const userId = JSON.parse(localStorage.getItem("selectedItem"))?.renter_id;
-//         const renterBtn = document.getElementById("renterBtn");
-//         const ownerBtn = document.getElementById("ownerBtn");
-//         const renterContent = document.getElementById("renterContent");
-//         const ownerContent = document.getElementById("ownerContent");
+document.addEventListener("DOMContentLoaded", () => {
+        const userId = JSON.parse(localStorage.getItem("currentRenter"))?.renter_id;
+        const renterBtn = document.getElementById("renterBtn");
+        const ownerBtn = document.getElementById("ownerBtn");
+        const renterContent = document.getElementById("renterContent");
+        const ownerContent = document.getElementById("ownerContent");
 
-//         renterBtn.addEventListener("click", () => {
-//             renterContent.style.display = "block";
-//             ownerContent.style.display = "none";
-//             console.log("Renter ID used:", userId);
-//             fetchReviews(userId, "renter", renterContent);
-//         });
+        renterBtn.addEventListener("click", () => {
+                const userId = JSON.parse(localStorage.getItem("currentRenter"))?.renter_id; // DITO NA BASAHIN!
+            if (!userId) {
+                console.error("No renter selected.");
+                renterContent.innerHTML = "<p>Please select a renter first.</p>";
+                return;
+            }
+            renterContent.style.display = "block";
+            ownerContent.style.display = "none";
+            console.log("Renter ID used:", userId);
+            fetchReviews(userId, "renter", renterContent);
+        });
 
-//         ownerBtn.addEventListener("click", () => {
-//             ownerContent.style.display = "block";
-//             renterContent.style.display = "none";
-//             console.log("Owner ID used:", userId);
-//             fetchReviews(userId, "owner", ownerContent);
-//         });
+        ownerBtn.addEventListener("click", () => {
+            const userId = JSON.parse(localStorage.getItem("currentRenter"))?.renter_id; // DITO NA RIN!
+        if (!userId) {
+            console.error("No renter selected.");
+            ownerContent.innerHTML = "<p>Please select a renter first.</p>";
+            return;
+        }
+            ownerContent.style.display = "block";
+            renterContent.style.display = "none";
+            console.log("Owner ID used:", userId);
+            fetchReviews(userId, "owner", ownerContent);
+        });
 
-//         async function fetchReviews(userId, role, container) {
-//             try {
-//                 const apiUrl = `http://localhost:8000/api/user/profile/reviews/${userId}?role=${role}`;
-//                 console.log("Fetching data from:", apiUrl);
+        async function fetchReviews(userId, role, container) {
+            try {
+                const apiUrl = `http://localhost:8000/api/user/profile/renter-info/${userId}?role=${role}`;
+                console.log("Fetching data from:", apiUrl);
 
-//                 const response = await fetch(apiUrl);
-//                 const {data, success} = await response.json();
+                const response = await fetch(apiUrl);
+                const {data, success} = await response.json();
 
-//                 if (!response.ok) {
-//                     console.error(`HTTP error! status: ${response.status}`);
-//                     container.innerHTML = `<p>Error: Failed to fetch reviews (HTTP ${response.status})</p>`;
-//                     return;
-//                 }
+                if (!response.ok) {
+                    console.error(`HTTP error! status: ${response.status}`);
+                    container.innerHTML = `<p>Error: Failed to fetch reviews (HTTP ${response.status})</p>`;
+                    return;
+                }
 
-//                 if (success) {
-//                     console.log("Fetched reviews:", data);
-//                     renderReviews(data, container);
-//                 } else {
-//                     console.error("Failed to load reviews:", data?.message || "Unknown error");
-//                     container.innerHTML = "<p>Error loading reviews</p>";
-//                 }
-//             } catch (error) {
-//                 console.error("Error fetching reviews:", error.message);
-//                 container.innerHTML = "<p>Connection error while loading reviews</p>";
-//             }
-//         }
+                if (success) {
+                    console.log("Fetched reviews:", data);
+                    renderReviews(data, container);
+                } else {
+                    console.error("Failed to load reviews:", data?.message || "Unknown error");
+                    container.innerHTML = "<p>Error loading reviews</p>";
+                }
+            } catch (error) {
+                console.error("Error fetching reviews:", error.message);
+                container.innerHTML = "<p>Connection error while loading reviews</p>";
+            }
+        }
 
-//         function renderReviews(reviews, container) {
-//             container.innerHTML = "";
+        function renderReviews(reviews, container) {
+            container.innerHTML = "";
 
-//             if (!reviews || reviews.length === 0) {
-//                 container.innerHTML = "<p>No reviews found.</p>";
-//                 return;
-//             }
+            if (!reviews || reviews.length === 0) {
+                container.innerHTML = "<p>No reviews found.</p>";
+                return;
+            }
 
-//             reviews.forEach((review) => {
-//                 const formattedDate = new Date(review.date_posted).toLocaleDateString('en-US');
-//                 const reviewHTML = `
-//                     <div class="reviewItem">
-//                       <br>
-//                       <div class="review-header">
-//                         <img class="itemImage" src="/uploads/${review.profile_image}" alt="${review.renter}" />
-//                         <div class="header-info">
-//                         <h3>${review.renter}</h3>
-//                         <p>${review.location}</p>
-//                         <p>${formattedDate}<p>
-//                           </div>
-//                       </div>
-//                       <div class="review-content">
-//                         <div class="item-rate">
-//                           <span> ${generateStars(review.stars)}</span>
-//                           <strong><p>${review.item_name}</p></strong>
-//                           </div>
-//                         <p><strong>Review:</strong> ${review.review_text}</p>
-//                       </div>
-//                       <br>
-//                       <hr>
-//                     </div>
-//                 `;
-//                 container.innerHTML += reviewHTML;
-//             });
-//         }
+            reviews.forEach((review) => {
+                const formattedDate = new Date(review.date_posted).toLocaleDateString('en-US');
+                const reviewHTML = `
+                    <div class="reviewItem">
+                      <br>
+                      <div class="review-header">
+                        <img class="itemImage" src="/uploads/${review.profile_image}" alt="${review.renter}" />
+                        <div class="header-info">
+                        <h3>${review.renter}</h3>
+                        <p>${review.location}</p>
+                        <p>${formattedDate}<p>
+                          </div>
+                      </div>
+                      <div class="review-content">
+                        <div class="item-rate">
+                          <span> ${generateStars(review.stars)}</span>
+                          <strong><p>${review.item_name}</p></strong>
+                          </div>
+                        <p><strong>Review:</strong> ${review.review_text}</p>
+                      </div>
+                      <br>
+                      <hr>
+                    </div>
+                `;
+                container.innerHTML += reviewHTML;
+            });
+        }
 
-//         // Get Stars
-//         function generateStars(rating) {
-//             let stars = "";
-//             for (let i = 1; i <= rating; i++) {
-//                 stars += "⭐"
-//             }
-//             return stars;
-//         }
+        // Get Stars
+        function generateStars(rating) {
+            let stars = "";
+            for (let i = 1; i <= rating; i++) {
+                stars += "⭐"
+            }
+            return stars;
+        }
 
-//         renterBtn.click(); //para sa autoshow ng reviews
-//     });
+        renterBtn.click(); //para sa autoshow ng reviews
+    });
 
 
 
