@@ -259,64 +259,16 @@
             fetchUsers(userSearchInput.value.trim());
         });
 
-        // Initialize users list
-        await fetchUsers();
 
-        // TODO: @Loki, move this to a separate css rule
-        // Add CSS for the search results box and message
-        const style = document.createElement('style');
-        style.textContent = `
-        .search-results-box {
-            display: none;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 10px 20px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            background-color: none;
-            border-radius: 4px;
+        // Workaround
+        function triggerFetchReportedAccounts() {
+            clearTimeout(debounceReportedAccountsTimer);
+            debounceReportedAccountsTimer = setTimeout(() => {
+                fetchReportedAccounts(reportedAccountsSearchInput.value.trim());
+            }, 300);
         }
-        
-        .search-results-message {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .search-results-message p {
-            margin: 0;
-            font-size: 14px;
-        }
-        
-        .clear-search {
-            background-color: none;
-            color: #800020;
-            border: none;
-            border-radius: 5px;
-            padding: 8px 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.2s;
-        }
-        
-        .clear-search:hover {
-            background-color: #800020;
-            color: #fff;
-            transition: background-color 0.2s;
-        }
-        
-        /* Media query for desktop view - position on the right side */
-        @media (min-width: 768px) {
-            .search-results-box {
-                position: absolute;
-                top: 170px; /* Adjust this value to align with your tabs */
-                right: 20px;
-                width: 350px;
-                z-index: 1;
-            }
-        }
-    `;
-        document.head.appendChild(style);
+        // Trigger on page load
+        window.addEventListener("DOMContentLoaded", triggerFetchReportedAccounts);
 
 
 
@@ -522,9 +474,6 @@
             fetchReportedAccounts(reportedAccountsSearchInput.value.trim());
         });
 
-        // Initialize reported accounts list
-        await fetchReportedAccounts();
-
 
 
         // Banned Accounts
@@ -728,8 +677,71 @@
             fetchBannedAccounts(bannedAccountsSearchInput.value.trim());
         });
 
+        // Initialize users list
+        await fetchUsers();
+
+        // Initialize reported accounts list
+        await fetchReportedAccounts();
+
         // Initialize reported accounts list
         await fetchBannedAccounts();
+
+
+        // TODO: @Loki, move this to a separate css rule
+        // Add CSS for the search results box and message
+        const style = document.createElement('style');
+        style.textContent = `
+        .search-results-box {
+            display: none;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 10px 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            background-color: none;
+            border-radius: 4px;
+        }
+
+        .search-results-message {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-results-message p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .clear-search {
+            background-color: none;
+            color: #800020;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .clear-search:hover {
+            background-color: #800020;
+            color: #fff;
+            transition: background-color 0.2s;
+        }
+
+        /* Media query for desktop view - position on the right side */
+        @media (min-width: 768px) {
+            .search-results-box {
+                position: absolute;
+                top: 170px; /* Adjust this value to align with your tabs */
+                right: 20px;
+                width: 350px;
+                z-index: 1;
+            }
+        }
+    `;
+        document.head.appendChild(style);
     });
 
 
