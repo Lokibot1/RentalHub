@@ -124,8 +124,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     confirmYesDecline.addEventListener("click", async function () {
+        successPopupDecline.style.display = "block";
         declinePopup.style.display = "none";
-        successPopup.style.display = "block";
+        
 
         // Update is_approved to 0
         const itemId = document.querySelector("[name='item_id']").value
