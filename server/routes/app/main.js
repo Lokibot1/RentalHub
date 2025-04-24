@@ -78,4 +78,40 @@ router.get("/reset-password", optionalAuth, (req, res) => {
   });
 });
 
+
+/**
+ * Terms and Condition Page
+ * @route GET /terms-and-condition
+ */
+router.get("/terms-and-condition", (req, res) => {
+  res.render("main/terms-and-condition", {
+    layout: "layouts/main",
+    title: "Terms and Condition",
+  });
+});
+
+
+/**
+ * Privacy Policy Page
+ * @route GET /privacy-policy
+ */
+router.get("/privacy-policy", (req, res) => {
+  res.render("main/privacy-policy", {
+    layout: "layouts/main",
+    title: "Privacy Policy",
+  });
+});
+
+
+/**
+ * Meet My Team Page
+ * @route GET /meet-my-team
+ */
+router.get("/meet-the-team", (req, res) => {
+  res.render("main/meet-the-team", {
+    layout: "layouts/main",
+    title: "Meet My Team",
+  });
+});
+
 export default router

@@ -1,37 +1,34 @@
 <link rel="stylesheet" href="/css/admin-viewprod.css" />
 <link rel="web icon" type="png" href="images/webicon.png">
-<nav class="navbar">
-    <a href="/" class="logo">
-      <span class="rental">Rental</span><span class="hub">Hub</span>
-    </a>
+<nav>
+  <div class="logo">
+    <h1>Rental <span> Hub</span></h1>
+</div>
   </nav>
 
   <!-- Main container for product view -->
   <div class="view-product-container">
     <!-- Left Section: Product Image + Details (Stacked) -->
     <div class="left-section">
+      <div class="product">
       <!-- To grab the current item_id (only for js) -->
       <input type="hidden" name="item_id" value="<%= pendingPost.product_id %>" />
 
       <!-- Product Image -->
-      <div class="product-image">
         <img id="product-image" src="/uploads/<%= pendingPost.product_image %>" alt="Product Image" />
-      </div>
 
       <!-- Product Details -->
       <div class="product-details">
-        <label>Name of product:</label>
-        <p id="product-name"><%= pendingPost.product_name %></p>
-
-        <label>Price per day:</label>
-        <p id="product-price"><%= pendingPost.product_price %></p>
-
-        <label>No. of Item Quantity:</label>
-        <p id="product-quantity"><%= pendingPost.item_quantity %></p>
-
-        <label>Item Description:</label>
-        <p id="product-description"><%= pendingPost.product_description %></p>
+        <h2 id="product-name"><%= pendingPost.product_name %></h2>
+        <h1 id="product-price"><%= pendingPost.product_price %></h1>
+        <h4 id="product-quantity"><%= pendingPost.item_quantity %></h4>
+          <div class="product-description">
+            <h3>Product Description</h3>
+            <p id="product-description"><%= pendingPost.product_description %></p>
+          </div>
+       
       </div>
+    </div>
 
       <!-- Owner Info -->
       <div class="owner-info" onclick="openForm()">
@@ -52,12 +49,13 @@
     </div>
 
     <!-- Right Section: Pending -->
-    <div class="pendingposts">
-      <h3 class="h3pendingpost">Pending Post!!</h3>
-      <p class="p1pendingpost">
+    <div class="right-section">
+      <div class="update-container">  
+      <h1>Pending Post!!</h1>
+      <p>
         If approved, it will be published on the marketplace.
       </p>
-      <p class="p2pendingpost">
+      <p>
         If declined, it will not be posted, and the user may need to revise
         and resubmit.
       </p>
@@ -66,6 +64,7 @@
         <button id="decline-btn">Decline</button>
       </div>
     </div>
+  </div>
 
     <!-- Confirmation Popup -->
     <div id="overlay" class="overlay"></div>
@@ -104,10 +103,11 @@
       </div>
     </div>
   </div>
+
   <div id="success-popup-decline" class="success-popup">
     <p>
       <strong>
-        Declined Sucessfully.
+        Item Declined Sucessfully.
       </strong>
     </p>
   </div>
