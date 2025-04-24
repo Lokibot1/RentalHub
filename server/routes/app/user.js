@@ -1,5 +1,7 @@
 import express from 'express'
 import {checkAuth, checkUser, optionalAuth} from '../../middlewares/auth.js'
+import { db } from "../../configs/db.js"
+import { getUserBannedStatus } from '../../helpers/userStatus.js';
 
 const router = express.Router()
 
@@ -14,12 +16,15 @@ router.get('/dashboard', checkAuth, checkUser, async (req, res) => {
         const response = await fetch(`${process.env.BASE_URL}/api/user/dashboard/${req.user.id}`)
         const dashboard = await response.json()
 
+        const isBanned = await getUserBannedStatus(req.user.id); // ✅ Use it here
+
         res.render('user/dashboard', {
             layout: 'layouts/user',
             title: 'User Dashboard',
             dashboard: dashboard.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned, // ✅ pass this
         })
     } catch (error) {
         console.error('Error fetching data:', error)
@@ -29,6 +34,7 @@ router.get('/dashboard', checkAuth, checkUser, async (req, res) => {
             dashboard: {},
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned: false,
         })
     }
 })
@@ -44,12 +50,15 @@ router.get('/profile', checkAuth, checkUser, async (req, res) => {
         const response = await fetch(`${process.env.BASE_URL}/api/user/profile/${req.user.id}`)
         const userProfile = await response.json()
 
+        const isBanned = await getUserBannedStatus(req.user.id); // ✅ Use it here
+
         res.render('user/profile', {
             layout: 'layouts/user',
             title: 'User Profile',
             userProfile: userProfile.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned, // ✅ pass this
         })
     } catch (error) {
         console.error('Error fetching data:', error)
@@ -59,9 +68,50 @@ router.get('/profile', checkAuth, checkUser, async (req, res) => {
             userProfile: userProfile.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned: false, // default to false in error case
         })
     }
 })
+
+
+// router.get('/profile', checkAuth, checkUser, async (req, res) => {
+//     try {
+//         // Fetch user profile
+//         const response = await fetch(`${process.env.BASE_URL}/api/user/profile/${req.user.id}`);
+//         const userProfile = await response.json();
+
+//         // Check if user is banned
+//         const sql = "SELECT status FROM users WHERE id = ?";
+//         db.query(sql, [req.user.id], (err, results) => {
+//             if (err || results.length === 0) {
+//                 return res.status(500).send("Error checking user status.");
+//             }
+
+//             const isBanned = results[0].status === 'banned';
+
+//             // Render the profile page and pass isBanned
+//             res.render('user/profile', {
+//                 layout: 'layouts/user',
+//                 title: 'User Profile',
+//                 userProfile: userProfile.data,
+//                 isAuthenticated: req.isAuthenticated,
+//                 role: req.role,
+//                 isBanned, // ✅ make it available in the view
+//             });
+//         });
+//     } catch (error) {
+//         console.error('Error fetching data:', error);
+//         res.status(500).render('user/profile', {
+//             layout: 'layouts/user',
+//             title: 'User Profile',
+//             userProfile: {}, // fallback in case userProfile fails
+//             isAuthenticated: req.isAuthenticated,
+//             role: req.role,
+//             isBanned: false, // default to false in error case
+//         });
+//     }
+// });
+
 
 
 /**
@@ -77,6 +127,8 @@ router.get('/my-requests', checkAuth, checkUser, async (req, res) => {
         const ongoingRentResponse = await fetch(`${process.env.BASE_URL}/api/user/my-requests/ongoing/${req.user.id}`)
         const ongoingRentItems = await ongoingRentResponse.json()
 
+        const isBanned = await getUserBannedStatus(req.user.id); // ✅ Use it here
+
         res.render('user/my-requests', {
             layout: 'layouts/user',
             title: 'My Rents',
@@ -85,6 +137,7 @@ router.get('/my-requests', checkAuth, checkUser, async (req, res) => {
             ongoingRentItems: ongoingRentItems.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned, // ✅ pass this
         })
     } catch (error) {
         console.error('Error fetching pending posts:', error)
@@ -96,6 +149,7 @@ router.get('/my-requests', checkAuth, checkUser, async (req, res) => {
             ongoingRentItems: [],
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned: false, // default to false in error case
         })
     }
 })
@@ -120,6 +174,8 @@ router.get('/my-items', checkAuth, checkUser, async (req, res) => {
         const ongoingTransactionResponse = await fetch(`${process.env.BASE_URL}/api/user/my-items/ongoing-transactions/${req.user.id}`)
         const ongoingTransactions = await ongoingTransactionResponse.json()
 
+        const isBanned = await getUserBannedStatus(req.user.id); // ✅ Use it here
+
         res.render('user/my-items', {
             layout: 'layouts/user',
             title: 'My Items',
@@ -130,6 +186,7 @@ router.get('/my-items', checkAuth, checkUser, async (req, res) => {
             user_id: req.user.id,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned, // ✅ pass this
         })
     } catch (error) {
         console.error('Error fetching pending posts:', error)
@@ -144,6 +201,7 @@ router.get('/my-items', checkAuth, checkUser, async (req, res) => {
             user_id: 0,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned: false, // default to false in error case
         })
     }
 })
@@ -159,12 +217,15 @@ router.get('/archives', checkAuth, checkUser, async (req, res) => {
         const response = await fetch(`${process.env.BASE_URL}/api/user/archives/${req.user.id}`)
         const archivedItems = await response.json()
 
+        const isBanned = await getUserBannedStatus(req.user.id); // ✅ Use it here
+
         res.render('user/archives', {
             layout: 'layouts/user',
             title: 'Archives',
             archivedItems: archivedItems.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned, // ✅ pass this
         })
     } catch (error) {
         console.error('Error fetching data:', error)
@@ -174,6 +235,7 @@ router.get('/archives', checkAuth, checkUser, async (req, res) => {
             archivedItems: [],
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned: false, // default to false in error case
         })
     }
 })
@@ -194,31 +256,87 @@ router.get('/listing', checkAuth, (req, res) => {
 })
 
 
+// /**
+//  * View Product Page
+//  *
+//  * @route GET /user/view-product/:item_id
+//  */
+// router.get('/view-product/:item_id', optionalAuth, async (req, res) => {
+//     // Set the user_id
+//     let renter_id = 0
+//     if (req.user !== undefined) {
+//         renter_id = req.user.id
+//     }
+
+//     const response = await fetch(`${process.env.BASE_URL}/api/user/is-owner/${renter_id}/item-id/${req.params.item_id}`)
+//     const user = await response.json()
+
+//     res.render('user/view-product', {
+//         layout: 'layouts/user',
+//         title: 'View Product',
+//         isAuthenticated: req.isAuthenticated,
+//         is_owner: user.data.is_owner === 1,
+//         item_id: req.params.item_id,
+//         renter_id,
+//         role: req.role,
+//     })
+// })
+
 /**
  * View Product Page
  *
  * @route GET /user/view-product/:item_id
  */
 router.get('/view-product/:item_id', optionalAuth, async (req, res) => {
-    // Set the user_id
-    let renter_id = 0
+    let renter_id = 0;
+
+    // Set renter_id if logged in
     if (req.user !== undefined) {
-        renter_id = req.user.id
+        renter_id = req.user.id;
+
+        // Fetch user status from DB
+        const sql = "SELECT status FROM users WHERE id = ?";
+        db.query(sql, [renter_id], async (err, results) => {
+            if (err || results.length === 0) {
+                return res.status(500).send("Error checking user status.");
+            }
+
+            const userStatus = results[0].status;
+
+            const isBanned = userStatus === 'banned';
+
+            // Proceed if not banned
+            const response = await fetch(`${process.env.BASE_URL}/api/user/is-owner/${renter_id}/item-id/${req.params.item_id}`);
+            const user = await response.json();
+
+            res.render('user/view-product', {
+                layout: 'layouts/user',
+                title: 'View Product',
+                isAuthenticated: req.isAuthenticated,
+                is_owner: user.data.is_owner === 1,
+                item_id: req.params.item_id,
+                renter_id,
+                role: req.role,
+                isBanned
+            });
+        });
+
+    } else {
+        // If user is not logged in, skip status check
+        const response = await fetch(`${process.env.BASE_URL}/api/user/is-owner/${renter_id}/item-id/${req.params.item_id}`);
+        const user = await response.json();
+
+        res.render('user/view-product', {
+            layout: 'layouts/user',
+            title: 'View Product',
+            isAuthenticated: false,
+            is_owner: false,
+            item_id: req.params.item_id,
+            renter_id: 0,
+            role: null,
+        });
     }
-
-    const response = await fetch(`${process.env.BASE_URL}/api/user/is-owner/${renter_id}/item-id/${req.params.item_id}`)
-    const user = await response.json()
-
-    res.render('user/view-product', {
-        layout: 'layouts/user',
-        title: 'View Product',
-        isAuthenticated: req.isAuthenticated,
-        is_owner: user.data.is_owner === 1,
-        item_id: req.params.item_id,
-        renter_id,
-        role: req.role,
-    })
-})
+});
 
 
 /**
