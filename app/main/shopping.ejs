@@ -513,28 +513,8 @@ function handleSort(option) {
 
     switch (option) {
         case 'default':
-            fetch('/api/shared/items')
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        displayItems(data.data);
-
-                        button.innerHTML = `All Items <span class="chevron">&#9662;</span>`;
-
-                        sortOptions.style.display = "none";
-                        chevron.style.transform = "rotate(0deg)";
-
-                        const categoryButtons = document.querySelectorAll(".active");
-                        categoryButtons.forEach(btn => btn.classList.remove("active"));
-                    } else {
-                        shoppingContainer.innerHTML = "<p>Failed to load items.</p>";
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching all items:', error);
-                    shoppingContainer.innerHTML = "<p>Error fetching items.</p>";
-                });
-            return;
+        window.location.href = '/shop';
+            break;
         case 'alphabetical':
             sorted.sort((a, b) => a.name.localeCompare(b.name));
             break;
