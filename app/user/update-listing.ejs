@@ -10,12 +10,30 @@
     <ul>
         <li><a href="/">Home</a></li>
         <li>
-            <a href="/listing"><img src="/images/WhiteAdd.png" class="add-icon" /></a>
-        </li>
-        <li>
-            <a href="/login">
-                <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
-            </a>
+            <% if (isAuthenticated && isBanned) { %>
+              <span title="You are banned and cannot add listings">
+                <img src="/images/WhiteAdd.png" class="add-icon" style="opacity: 0.5; cursor: not-allowed;" />
+              </span>
+            <% } else { %>
+              <a href="/user/listing" title="<%= isAuthenticated ? 'Add a listing' : 'Log in to add a listing' %>">
+                <img src="/images/WhiteAdd.png" class="add-icon" />
+              </a>
+            <% } %>
+          </li>          
+          <li>
+            <% if (isAuthenticated && role === 'admin' ) { %>
+                <a href="/admin/admin-dashboard">
+                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
+                </a>
+            <% } else if (isAuthenticated && role === 'user' ) { %>
+                <a href="/user/profile">
+                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
+                </a>
+            <% } else { %>
+                <a href="/login">
+                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
+                </a>
+            <% } %>
         </li>
     </ul>
 </nav>
