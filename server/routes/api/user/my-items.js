@@ -607,10 +607,7 @@ router.patch("/return-items/:rent_transaction_id", async (req, res) => {
                     const updateStatusToDone = `
                         UPDATE rental_transactions
                         SET is_owner_submit_review = 1,
-                            status = CASE
-                                WHEN is_renter_submit_review = 1 THEN 'done'
-                                ELSE status
-                            END
+                            status = 'done'
                         WHERE id = ?
                     `;
                     db.query(updateStatusToDone, [rent_transaction_id], (err) => {

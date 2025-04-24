@@ -201,7 +201,6 @@ router.get("/ongoing/:user_id", async (req, res) => {
                  JOIN items ON items.id = rental_transactions.item_id
                  JOIN users ON users.id = items.user_id
         WHERE rental_transactions.is_approved = 1
-          AND rental_transactions.status = 'ongoing'
           AND rental_transactions.is_renter_submit_review = 0
           AND rental_transactions.renter_id = ?
     `
@@ -264,11 +263,7 @@ router.patch("/return-items/:rent_transaction_id", async (req, res) => {
                 // Update transaction
                 const updateStatusToDone = `
                     UPDATE rental_transactions
-                    SET is_renter_submit_review = 1,
-                        status = CASE
-                                    WHEN is_owner_submit_review = 1 THEN 'done'
-                                    ELSE status
-                                 END
+                    SET is_renter_submit_review = 1
                     WHERE id = ?
                 `
                 db.query(updateStatusToDone, [rent_transaction_id], (err) => {

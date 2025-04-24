@@ -73,47 +73,6 @@ router.get('/profile', checkAuth, checkUser, async (req, res) => {
     }
 })
 
-
-// router.get('/profile', checkAuth, checkUser, async (req, res) => {
-//     try {
-//         // Fetch user profile
-//         const response = await fetch(`${process.env.BASE_URL}/api/user/profile/${req.user.id}`);
-//         const userProfile = await response.json();
-
-//         // Check if user is banned
-//         const sql = "SELECT status FROM users WHERE id = ?";
-//         db.query(sql, [req.user.id], (err, results) => {
-//             if (err || results.length === 0) {
-//                 return res.status(500).send("Error checking user status.");
-//             }
-
-//             const isBanned = results[0].status === 'banned';
-
-//             // Render the profile page and pass isBanned
-//             res.render('user/profile', {
-//                 layout: 'layouts/user',
-//                 title: 'User Profile',
-//                 userProfile: userProfile.data,
-//                 isAuthenticated: req.isAuthenticated,
-//                 role: req.role,
-//                 isBanned, // ✅ make it available in the view
-//             });
-//         });
-//     } catch (error) {
-//         console.error('Error fetching data:', error);
-//         res.status(500).render('user/profile', {
-//             layout: 'layouts/user',
-//             title: 'User Profile',
-//             userProfile: {}, // fallback in case userProfile fails
-//             isAuthenticated: req.isAuthenticated,
-//             role: req.role,
-//             isBanned: false, // default to false in error case
-//         });
-//     }
-// });
-
-
-
 /**
  * My Requests Page
  *
@@ -268,33 +227,6 @@ router.get('/listing', checkAuth, async (req, res) => {
         })
     }
 })
-
-
-// /**
-//  * View Product Page
-//  *
-//  * @route GET /user/view-product/:item_id
-//  */
-// router.get('/view-product/:item_id', optionalAuth, async (req, res) => {
-//     // Set the user_id
-//     let renter_id = 0
-//     if (req.user !== undefined) {
-//         renter_id = req.user.id
-//     }
-
-//     const response = await fetch(`${process.env.BASE_URL}/api/user/is-owner/${renter_id}/item-id/${req.params.item_id}`)
-//     const user = await response.json()
-
-//     res.render('user/view-product', {
-//         layout: 'layouts/user',
-//         title: 'View Product',
-//         isAuthenticated: req.isAuthenticated,
-//         is_owner: user.data.is_owner === 1,
-//         item_id: req.params.item_id,
-//         renter_id,
-//         role: req.role,
-//     })
-// })
 
 /**
  * View Product Page
