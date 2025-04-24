@@ -87,7 +87,11 @@ const upload = multer({storage: storage});
 //     });
 // });
 
-// /**test route**/
+// /**
+//  * Add New Item
+//  *
+//  * @route POST /api/shared/listing
+//  */
 router.post("/", checkAuth, upload.single('item_file'), async (req, res) => {
     const { item_name, item_price, item_week_price, item_description, item_quantity, location, categories } = req.body;
     const item_file = req.file;

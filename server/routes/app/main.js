@@ -1,6 +1,7 @@
 import express from "express"
 import toTitleCase from "../../helpers/toTitleCase.js"
-import { optionalAuth } from "../../middlewares/auth.js"
+import { checkAuth, optionalAuth } from "../../middlewares/auth.js"
+import { db } from "../../configs/db.js"
 
 const router = express.Router();
 
@@ -53,19 +54,54 @@ router.get("/signup", (req, res) => {
 });
 
 
-/**
- * Shopping page
- *
- * @route GET /shop
- */
-router.get("/shop", optionalAuth, (req, res) => {
-  res.render("main/shopping", {
-    layout: "layouts/main",
-    title: 'Shop',
-    isAuthenticated: req.isAuthenticated,
-    role: req.role,
-  });
+// /**
+//  * Shopping page
+//  *
+//  * @route GET /shop
+//  */
+// router.get("/shop", optionalAuth, (req, res) => {
+//   res.render("main/shopping", {
+//     layout: "layouts/main",
+//     title: 'Shop',
+//     isAuthenticated: req.isAuthenticated,
+//     role: req.role,
+//   });
+// });
+
+
+router.get('/shop', optionalAuth, (req, res) => {
+  // If user is logged in, get status
+  if (req.user) {
+    const userId = req.user.id;
+    const sql = "SELECT status FROM users WHERE id = ?";
+
+    db.query(sql, [userId], (err, results) => {
+      if (err || results.length === 0) {
+        return res.status(500).send("Error fetching user status.");
+      }
+
+      const userStatus = results[0].status;
+
+      res.render("main/shopping", {
+        layout: 'layouts/main',
+        title: 'Shop',
+        isAuthenticated: req.isAuthenticated,
+        role: req.role,
+        userStatus
+      });
+    });
+  } else {
+    // Guest user, no DB query needed
+    res.render("main/shopping", {
+      layout: 'layouts/main',
+      title: 'Shop',
+      isAuthenticated: false,
+      role: null,
+      userStatus: null
+    });
+  }
 });
+
 
 /**
  * Reset Password Page
