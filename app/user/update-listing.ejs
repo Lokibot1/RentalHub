@@ -69,7 +69,8 @@
 <!--Error Modal when updating cause of ongoung transactions-->
 <div id="errorModal" class="error-modal">
     <div class="error-content">
-        <p style="color: #800020;">Update failed due to On Going Transactions for this item</p>
+        <p class="note0">Update Failed: Due to On Going Transaction(s) for this item</p>
+        <p class="note">Finish all your transactions first for this item before updating this item</p>
         <button onclick="closeErrorModal()" class="close-button">I Understand</button>
     </div>
 </div>
@@ -169,12 +170,9 @@
                 if (data.message && data.message.includes("ongoing transaction")) {
                     document.getElementById("errorModal").style.display = "flex";
                     document.getElementById("overlay").style.display = "block";
-                    setTimeout(() => {
-                        document.getElementById("errorModal").style.display = "none";
-                        document.getElementById("overlay").style.display = "none";
-                    }, 3000);
                 } else {
-                    alert("Update failed: " + (data.message || "Unknown error"));
+                    document.getElementById("errorModal").style.display = "flex";
+                    document.getElementById("overlay").style.display = "block";
                 }
             }
         } catch (error) {
