@@ -956,7 +956,7 @@ nav button {
   transform: translateX(100%);
 }
 
-
+#modalOverlay,
 .modal-overlay {
   position: fixed;
     top: 0;
@@ -967,7 +967,11 @@ nav button {
     display: none; /* Keep this as none */
     align-items: center;
     justify-content: center;
-    z-index: 999;
+    z-index: 9999;
+}
+#modalOverlay.show,
+.modal-overlay.show {
+  display: block; /* Show the modal when the class is added */
 }
 /* Confirmation modal MYLISTING RENTAL REQUEST */
 .confirmation-modal1 {
