@@ -469,7 +469,6 @@
             </div>
         </div>
 
-        <!-- FIX ME: Review Confirmation Modal, NOT SHOWING  -->
         <div id="confirm-modal1" class="modal">
             <div class="modal-content">
                 <h3>Are you sure you want to submit this review?</h3>
@@ -480,7 +479,8 @@
             </div>
         </div>
 
-        <div class="modalOverlay" id="modalOverlay"></div>
+        <!--Fix me: Toast Notification -->
+        <div id="modal-overlay" class="overlay"></div>
         <div id="review-toast" class="toast">Review Submitted Successfully!</div>
     </div>
 </div>
@@ -1096,7 +1096,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-    class RentalRequest {
+class RentalRequest {
         constructor(id) {
             this.id = id;
             this.acceptBtn = document.querySelector(`[data-id="accept-btn-${id}"]`);
@@ -1167,7 +1167,15 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("confirm-review").onclick = async () => {
                 await this.submitReview(); // Submits the review
                 document.getElementById("confirm-modal1").style.display = "none"; // Hide confirm modal
-                showToast("Review Submitted Successfully!"); // Show toast
+                document.getElementById("review-toast").classList.add("show");
+                document.getElementById("modal-overlay").style.display = "block";
+                
+                setTimeout(() => {
+                    document.getElementById("review-toast").classList.remove("show");
+                    document.getElementById("modal-overlay").style.display = "none";
+                    // Optionally reload the page after submitting
+                    window.location.reload();
+                }, 3000);
             };
 
             document.getElementById('cancel-review').onclick = () => {
@@ -1247,6 +1255,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
     }
+
+    
 
     // Initialize rental requests for existing items
     document.querySelectorAll(".accept-btn, .decline-btn, .review-btn").forEach((button) => {
@@ -1343,6 +1353,82 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
+    // // Review Modal
+    // const confirmModal = document.getElementById("confirm-modal");
+    // const confirmSubmit = document.getElementById("confirm-submit");
+    // const cancelConfirm = document.getElementById("cancel-confirm");
+    // const toast = document.getElementById("toast");
+    // const submitRev = document.getElementById("submit-rev");
+    
+    // // Star Rating System
+    // const stars = document.querySelectorAll(".star2");
+    // let selectedRating = 0;
+
+    // stars.forEach((star) => {
+    //     star.addEventListener("click", function () {
+    //         selectedRating = parseInt(this.getAttribute("data-value")); // Store the selected rating
+    //         updateStars(selectedRating);
+    //     });
+
+    //     star.addEventListener("mouseover", function () {
+    //         updateStars(parseInt(this.getAttribute("data-value")));
+    //     });
+
+    //     star.addEventListener("mouseout", function () {
+    //         updateStars(selectedRating);
+    //     });
+    // });
+
+    // function updateStars(rating) {
+    //     stars.forEach((star, index) => {
+    //         star.classList.toggle("active", index < rating);
+    //     });
+    // }
+
+    // // Handle Review Submission
+    // submitRev.addEventListener("click", function (event) {
+    //     event.preventDefault();
+
+    //     if (selectedRating === 0) {
+    //         showToast("Please select a star rating before submitting.", "error");
+    //         return;
+    //     }
+
+    //     confirmModal.style.display = "flex"; // Show confirmation modal
+    // });
+
+    // // Confirm submission
+    // confirmSubmit.addEventListener("click", function () {
+    //     confirmModal.style.display = "none";
+    //     reviewModal.style.display = "none"; // Hide review modal
+    //     showToast("Review Submitted Successfully!");
+    //     selectedRating = 0; // Reset rating
+    //     updateStars(0);
+    // });
+
+    // // Cancel confirmation modal
+    // cancelConfirm.addEventListener("click", function () {
+    //     confirmModal.style.display = "none";
+    // });
+
+    // // Toast Notification Function
+    // function showToast(message, type = "success") {
+    //     toast.innerText = message;
+    //     toast.classList.add("show");
+
+    //     // Apply different styles based on type
+    //     if (type === "error") {
+    //         toast.classList.add("error");
+    //     } else {
+    //         toast.classList.remove("error");
+    //     }
+
+    //     setTimeout(function () {
+    //         toast.classList.remove("show");
+    //     }, 3000);
+    // }
+
+
     // Review Modal Functionality FIX ME: WIDTH TOO WIDE, DARKBG OVERLAY NOT WORKING
     const confirmModal = document.getElementById("confirm-modal");
     const confirmSubmit = document.getElementById("confirm-submit");
@@ -1416,7 +1502,6 @@ document.addEventListener("DOMContentLoaded", () => {
             toast.classList.remove("show");
         }, 3000);
     }
-
 
     //logout
     document.addEventListener("DOMContentLoaded", function () {
