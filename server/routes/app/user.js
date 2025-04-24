@@ -359,8 +359,11 @@ router.get('/view-product/:item_id', optionalAuth, async (req, res) => {
  * @route GET /user/update-listing/:item_id
  */
 router.get('/update-listing/:item_id', optionalAuth, async (req, res) => {
+    try {
     const response = await fetch(`${process.env.BASE_URL}/api/user/get-item/${req.params.item_id}`)
     const item = await response.json()
+
+    const isBanned = await getUserBannedStatus(req.user.id); // ✅ Use it here
 
     res.render('user/update-listing', {
         layout: 'layouts/user',
@@ -368,7 +371,19 @@ router.get('/update-listing/:item_id', optionalAuth, async (req, res) => {
         item: item.data,
         isAuthenticated: req.isAuthenticated,
         role: req.role,
+        isBanned, // ✅ pass this
     })
+    } catch (error) {
+        console.error('Error fetching data:', error)
+        res.render('user/archives', {
+            layout: 'layouts/user',
+            title: 'Update Listing',
+            item: item.data,
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+            isBanned: false, // default to false in error case
+        })
+    }
 })
 
 
