@@ -562,7 +562,7 @@
                         <a href="#" onclick="viewUserBannedInfo(${account.user_id})">
                             <i class="fa-solid fa-eye"></i>
                         </a>
-                        <a href="#" id="restore" onclick="restoreUser(${account.user_id})">
+                        <a href="#"  class="restore-btn" data-userid="${account.user_id}">
                              <i class="fa-solid fa-repeat"></i>
                          </a>
                     </td>
@@ -950,6 +950,113 @@
         // Cancel: just hide modal
         document.getElementById("cancelRestrict").addEventListener("click", () => {
             document.getElementById("restrictModal").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        });
+
+
+        // Confirm: perform restore
+        document.getElementById("confirmRestore").addEventListener("click", async () => {
+            if (!selectedUserId) return;
+
+            try {
+                const response = await fetch(`/api/admin/manage-users/restore/${selectedUserId}`, {
+                    method: 'PATCH',
+                });
+
+                const {message} = await response.json();
+                console.log('Message:', message);
+
+                document.getElementById("restoreModal").style.display = "none";
+
+                const overlay = document.getElementById("overlay");
+                if (overlay) {
+                    overlay.style.cssText = `
+                    display: block !important;
+                    position: fixed !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    width: 100% !important;
+                    height: 100% !important;
+                    background-color: rgba(0, 0, 0, 0.5) !important;
+                    z-index: 9998 !important;
+                `;
+                }
+
+                // Get toast and make it visible
+                const restoreToast = document.getElementById("restoreToast");
+                console.log("Toast element found:", restoreToast);
+
+                if (restoreToast) {
+                    restoreToast.style.cssText = `
+                    display: block !important; 
+                    position: fixed !important; 
+                    top: 50% !important;
+                    left: 50% !important;
+                    transform: translate(-50%, -50%) !important;
+                    z-index: 9999 !important;
+                    background-color: #f5f5f5;
+                    color: #1b2e3d;
+                    padding: 20px;
+                    border-radius: 20px;
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                    text-align: center;
+                    transition: opacity 0.5s ease-in-out, bottom 0.5s ease-in-out;
+                `;
+
+                    console.log("Toast should be visible now with styles:", restoreToast.style.cssText);
+                }
+
+                if (selectedUserElement) {
+                    console.log("Removing user element:", selectedUserElement);
+
+                    selectedUserElement.style.transition = "opacity 0.5s ease";
+                    selectedUserElement.style.opacity = "0";
+
+                    setTimeout(() => {
+                        selectedUserElement.remove();
+                        console.log("User element removed from DOM");
+
+                        updateUserCounters();
+                    }, 500);
+                }
+
+                setTimeout(() => {
+                    if (restoreToast) restoreToast.style.display = "none";
+                    if (overlay) overlay.style.display = "none";
+                }, 3000);
+
+            } catch (err) {
+                console.error("Error setting user to active:", err);
+            }
+        });
+
+        document.addEventListener("click", function (e) {
+            const restoreButton = e.target.closest("a[data-userid]");
+            if (restoreButton && restoreButton.querySelector(".fa-repeat")) {
+                e.preventDefault();
+
+                selectedUserId = restoreButton.getAttribute("data-userid");
+
+                // Find the correct user element - look for different possible parent structures
+                selectedUserElement = document.getElementById(`user-${selectedUserId}`);
+
+                // If the user element wasn't found by ID, try to find by traversing the DOM from the clicked button
+                if (!selectedUserElement) {
+                    // Try to find the closest user container - adapt this selector to match your HTML structure
+                    selectedUserElement = restoreButton.closest('.user-item, .user-container, .user-row, tr');
+                    console.log("Found user element by traversing up:", selectedUserElement);
+                }
+
+                document.getElementById("restoreModal").style.display = "block";
+                document.getElementById("overlay").style.display = "block";
+            }
+        });
+
+        // Cancel: just hide modal
+        document.getElementById("cancelRestore").addEventListener("click", () => {
+            document.getElementById("restoreModal").style.display = "none";
             document.getElementById("overlay").style.display = "none";
         });
 

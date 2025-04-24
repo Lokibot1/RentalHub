@@ -313,6 +313,11 @@ router.get("/ban/view-user/:user_id", async (req, res) => {
 router.patch("/restore/:user_id", async (req, res) => {
     const { user_id } = req.params;
 
+    if (!user_id || isNaN(user_id)) {
+        return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
+
     const sql = `
         UPDATE users
             JOIN reports ON users.id = reports.reported_user_id
@@ -329,7 +334,7 @@ router.patch("/restore/:user_id", async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: 'User banned successfully.',
+            message: 'Users account set to active.',
         });
     });
 });
