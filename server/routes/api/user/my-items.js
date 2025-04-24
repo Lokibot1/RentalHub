@@ -525,13 +525,28 @@ router.post("/reports", async (req, res) => {
         reporter_id,
         reasons,
         report_text,
+        status,
     } = req.body;
 
     const sql = `
-        INSERT INTO reports (item_id, reported_user_id, reporter_id, reasons, report_text)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO reports (
+            item_id,
+            reported_user_id,
+            reporter_id,
+            reasons,
+            report_text,
+            status
+        )
+        SELECT
+            ?, ?, ?, ?, ?,
+            CASE
+                WHEN u.status = 'banned' THEN 'banned'
+                ELSE 'reported'
+            END
+        FROM users u
+        WHERE u.id = ?
     `
-    db.query(sql, [item_id, reported_user_id, reporter_id, JSON.stringify(reasons), report_text], (err, results) => {
+    db.query(sql, [item_id, reported_user_id, reporter_id, JSON.stringify(reasons), report_text, reported_user_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
             return res.status(500).json({ success: false, message: "Create report failed." });

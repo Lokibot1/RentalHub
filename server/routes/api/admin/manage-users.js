@@ -208,9 +208,7 @@ router.get("/banned-users/all", async (req, res) => {
         SELECT users.id                                       AS user_id,
                CONCAT(users.first_name, ' ', users.last_name) AS fullname
         FROM users
-        JOIN reports ON users.id = reports.reported_user_id
         WHERE users.status = 'banned'
-          AND reports.status = 'banned'
     `;
 
     const params = [];
@@ -303,6 +301,36 @@ router.get("/ban/view-user/:user_id", async (req, res) => {
             success: true,
             data: results.length > 0 ? results[0] : null
         })
+    });
+});
+
+
+/**
+ * Restore user status set to active
+ *
+ * @route PATCH /api/admin/manage-users/restore/:user_id
+ */
+router.patch("/restore/:user_id", async (req, res) => {
+    const { user_id } = req.params;
+
+    const sql = `
+        UPDATE users
+            JOIN reports ON users.id = reports.reported_user_id
+        SET users.status   = 'active',
+            reports.status = 'active'
+        WHERE users.id = ?
+          AND reports.status = 'banned'
+    `
+    db.query(sql, [user_id], (err, results) => {
+        if (err) {
+            console.error("Database query error", err);
+            return res.status(500).json({ success: false, message: "Query failed." });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'User banned successfully.',
+        });
     });
 });
 
