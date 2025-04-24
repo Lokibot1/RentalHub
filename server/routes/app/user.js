@@ -246,13 +246,27 @@ router.get('/archives', checkAuth, checkUser, async (req, res) => {
  *
  * @route GET /user/listing
  */
-router.get('/listing', checkAuth, (req, res) => {
-    res.render('user/listing', {
-        layout: 'layouts/user',
-        title: 'Add New Listing',
-        isAuthenticated: req.isAuthenticated,
-        role: req.role,
-    })
+router.get('/listing', checkAuth, async (req, res) => {
+    try {
+        const isBanned = await getUserBannedStatus(req.user.id)
+
+        res.render('user/listing', {
+            layout: 'layouts/user',
+            title: 'Add New Listing',
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+            isBanned, // ✅ Now defined in the view
+        })
+    } catch (error) {
+        console.error('Error checking banned status:', error)
+        res.render('user/listing', {
+            layout: 'layouts/user',
+            title: 'Add New Listing',
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+            isBanned: false, // fallback default
+        })
+    }
 })
 
 
