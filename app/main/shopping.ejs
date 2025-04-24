@@ -40,13 +40,13 @@
   
       <li>
         <% if (isAuthenticated && role === 'admin') { %>
-        <a href="/admin/listing">
-          <img src="/images/WhiteAdd.png" class="add-icon" />
-        </a>
+          <a href="/admin/listing">
+            <img src="/images/WhiteAdd.png" class="add-icon" />
+          </a>
         <% } else if (isAuthenticated && role === 'user') { %>
-        <a href="/user/listing">
-          <img src="/images/WhiteAdd.png" class="add-icon" />
-        </a>
+          <a href="<%= userStatus === 'banned' ? 'javascript:void(0)' : '/user/listing' %>">
+            <img src="/images/WhiteAdd.png" class="add-icon <%= userStatus === 'banned' ? 'disabled' : '' %>" />
+          </a>
         <% } %>
       </li>
   
