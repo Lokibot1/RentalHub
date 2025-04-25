@@ -76,10 +76,6 @@
         <div id="profileUpdateToast" class="toast">Profile updated successfully!</div>
 
 
-        <div id="overlay" class="overlay"></div>
-        <div id="profileUpdateToast" class="toast">Profile updated successfully!</div>
-
-
         <div id="Reviews" class="tab-content">
           <h2>Reviewed As:</h2>
           <div class="toggle-wrapper">
@@ -203,7 +199,7 @@
           await fetchWithAutoRefresh("http://localhost:8000/api/user/profile/update", {
             method: "PATCH",
             headers: {
-              "Content-Type": "application/json", // Add this
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
               profile_image: profilePicture.src.split("/").pop(), // Extract the image name from the src
