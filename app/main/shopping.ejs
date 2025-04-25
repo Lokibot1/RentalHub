@@ -455,7 +455,6 @@
 
 
     function renderSortedItems(items) {
-        localStorage.setItem("selectedItem", JSON.stringify(items[0]));
 
         let shoppingList = document.createElement("ul");
         shoppingList.className = "shoppingList";
@@ -476,6 +475,7 @@
             `
 
             li.addEventListener("click", function () {
+                localStorage.setItem("selectedItem", JSON.stringify(item));
                 window.location.href = `/user/view-product/${item.id}`;
             });
 
