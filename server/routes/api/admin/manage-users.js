@@ -1,5 +1,6 @@
 import express from "express"
 import { db } from "../../../configs/db.js"
+import { sendNotification } from '../../../helpers/send-notification.js'; // Import your mailer utility
 
 const router = express.Router();
 
@@ -249,26 +250,70 @@ router.get("/banned-users/all", async (req, res) => {
 router.patch("/ban/:user_id", async (req, res) => {
     const { user_id } = req.params;
 
-    const sql = `
-        UPDATE users
-            JOIN reports ON users.id = reports.reported_user_id
-        SET users.status   = 'banned',
-            reports.status = 'banned'
+    // Step 1: Get user email first
+    const getEmailSql = `
+        SELECT users.email
+        FROM users
+        JOIN reports ON users.id = reports.reported_user_id
         WHERE users.id = ?
           AND reports.status = 'reported'
-    `
-    db.query(sql, [user_id], (err, results) => {
-        if (err) {
-            console.error("Database query error", err);
-            return res.status(500).json({ success: false, message: "Query failed." });
+        LIMIT 1
+    `;
+
+    db.query(getEmailSql, [user_id], (emailErr, emailResults) => {
+        if (emailErr) {
+            console.error("Database query error (email fetch):", emailErr);
+            return res.status(500).json({ success: false, message: "Failed to retrieve user email." });
         }
 
-        res.status(200).json({
-            success: true,
-            message: 'User banned successfully.',
+        if (emailResults.length === 0) {
+            return res.status(404).json({ success: false, message: "User or report not found." });
+        }
+
+        const owner_email = emailResults[0].email;
+
+        // Step 2: Update user and report status
+        const updateSql = `
+            UPDATE users
+            JOIN reports ON users.id = reports.reported_user_id
+            SET users.status = 'banned',
+                reports.status = 'banned'
+            WHERE users.id = ?
+              AND reports.status = 'reported'
+        `;
+
+        db.query(updateSql, [user_id], (updateErr, updateResults) => {
+            if (updateErr) {
+                console.error("Database query error (status update):", updateErr);
+                return res.status(500).json({ success: false, message: "Failed to update user status." });
+            }
+
+            // Send email to banned user
+            const subject = 'Your Account Has Been Banned';
+            const html = `
+                <p>We regret to inform you that your account has been <strong>banned</strong> due to a violation of our platform's terms of service.</p>
+                <p>As a result, you will no longer be able to access certain features including posting items, receiving rental requests.</p>
+                <p>If you believe this action was taken in error or if you would like more information, please contact our support team.</p>
+                <p>Thank you for your understanding.</p>
+                <hr />
+                <p><strong>Support Contact:</strong></p>
+                <ul>
+                    <li><strong>Email:</strong> rental.hub.webapp@gmail.com</li>
+                    <li><strong>Phone:</strong> (xxx) xxx-xxxx</li>
+                </ul>
+            `;
+
+            const template = { subject, html };
+            sendNotification(owner_email, template);
+
+            res.status(200).json({
+                success: true,
+                message: 'User banned successfully.',
+            });
         });
     });
 });
+
 
 
 /**
