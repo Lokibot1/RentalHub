@@ -11,16 +11,16 @@
     <ul id="nav-links">
         <li><a href="/shop">Shop</a></li>
         <li>
-            <% if (isAuthenticated && isBanned) { %>
-              <span title="You are banned and cannot add listings">
-                <img src="/images/WhiteAdd.png" class="add-icon" style="opacity: 0.5; cursor: not-allowed;" />
+            <% if (isAuthenticated && isCurrentUserBanned) { %>
+                <span title="You are banned and cannot add listings">
+                <img src="/images/WhiteAdd.png" class="add-icon" style="opacity: 0.5; cursor: not-allowed;"/>
               </span>
             <% } else { %>
-              <a href="/user/listing" title="<%= isAuthenticated ? 'Add a listing' : 'Log in to add a listing' %>">
-                <img src="/images/WhiteAdd.png" class="add-icon" />
-              </a>
+                <a href="/user/listing" title="<%= isAuthenticated ? 'Add a listing' : 'Log in to add a listing' %>">
+                    <img src="/images/WhiteAdd.png" class="add-icon"/>
+                </a>
             <% } %>
-          </li>          
+        </li>
         <li>
             <% if (isAuthenticated && role === 'admin' ) { %>
                 <a href="/admin/admin-dashboard">
@@ -39,15 +39,15 @@
     </ul>
 
     <div
-      class="hamburger"
-      id="hamburger"
-      aria-label="Toggle navigation"
-      role="button"
-      tabindex="0"
+            class="hamburger"
+            id="hamburger"
+            aria-label="Toggle navigation"
+            role="button"
+            tabindex="0"
     >
-      <span></span>
-      <span></span>
-      <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
     </div>
 </nav>
 <!-- Main container for product view -->
@@ -66,7 +66,7 @@
                 <h4 id="product-quantity"></h4>
                 <div class="product-description">
                     <h3>Product Description</h3>
-                <p id="product-description"></p>
+                    <p id="product-description"></p>
                 </div>
             </div>
         </div>
@@ -153,7 +153,7 @@
         </div>
     </div>
 
-     <!-- Right Section: Rental Options -->
+    <!-- Right Section: Rental Options -->
     <% if (!is_owner) { %>
         <div class="right-section">
             <div class="rental-options">
@@ -188,9 +188,19 @@
                         <button type="button" id="meetup-btn">Meet Up</button>
                         <button type="button" id="delivery-btn">Delivery</button>
                     </div>
+
                     <% if (isAuthenticated && (role === 'admin' || role === 'user')) { %>
-                        <% if (isBanned) { %>
-                            <button type="button" class="request-btn" disabled title="You are banned and cannot make requests">Request</button>
+                        <% if (isCurrentUserBanned) { %>
+                            <button type="button" class="request-btn" disabled
+                                    title="You are banned and cannot make requests">Request
+                            </button>
+                        <% } else if (!isCurrentUserBanned && itemOwnerStatus === 'banned') { %>
+                                <button type="submit"
+                                        class="request-btn"
+                                        onclick="alert('Unable to send a rental request. The item owner is banned.'); return false;">
+                                    Request
+                                </button>
+
                         <% } else { %>
                             <button type="submit" id="request-btn" class="request-btn">Request</button>
                         <% } %>
@@ -202,25 +212,27 @@
                         </button>
                     <% } %>
                     <br>
-                    <p class="inquire">For reservation <a href ="/user/inquire/<%= item_id %>" class="inquire-link"> Inquire Now!</a></p>
+                    <p class="inquire">For reservation <a href="/user/inquire/<%= item_id %>" class="inquire-link">
+                            Inquire Now!</a></p>
                 </form>
+            </div>
         </div>
-    </div>
-    <% } %> 
+    <% } %>
     <% if (is_owner) { %>
         <div class="owner-info" style="display: none;">
         </div>
         <div class="right-section">
-            <div class="update-container">  
+            <div class="update-container">
                 <h1>Update Listing</h1>
-                <p>This item was posted by you. If you wish to make any modifications, please click the button below.</p>
+                <p>This item was posted by you. If you wish to make any modifications, please click the button
+                    below.</p>
                 <button class="request-btn" onclick="window.location.href='/user/update-listing/<%= item_id %>'">
                     Update
                 </button>
-             </div>
-        </div>   
+            </div>
+        </div>
     <% } %>
-    
+
 </div>
 
 <script>
@@ -231,7 +243,7 @@
 
     hamburger.addEventListener("click", () => {
         navLinks.classList.toggle("active");
-        hamburger.classList.toggle("open"); 
+        hamburger.classList.toggle("open");
     });
     let selectedItem = null;
 
@@ -318,7 +330,7 @@
                 selectedItem.description;
 
             document.getElementById("product-quantity").innerText =
-            ` ${ selectedItem.quantity} Items left ` ;
+                ` ${selectedItem.quantity} Items left `;
 
             const rentalQuantity = document.querySelector("[name='rental_quantity']");
             if (rentalQuantity) {
