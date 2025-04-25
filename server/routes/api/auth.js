@@ -112,20 +112,18 @@ router.post("/register", async (req, res) => {
           </div>
         `
 
-        try {
-            await transporter.verify();
-            await transporter.sendMail(mailOptions);
-        } catch (error) {
+        transporter.sendMail(mailOptions).catch(async (error) => {
             console.error("First attempt failed:", error);
-            // Optional: Retry once after short delay
-            await new Promise((res) => setTimeout(res, 1000)); // 1-second delay
+
+            // Retry once after delay
+            await new Promise((res) => setTimeout(res, 1000));
             try {
                 await transporter.sendMail(mailOptions);
             } catch (secondError) {
                 console.error("Second attempt failed:", secondError);
-                return res.status(500).json({ message: "Failed to send OTP email." });
+                // optional: log to DB or alert admin
             }
-        }
+        });
 
         res.status(201).json({
             data: { email },

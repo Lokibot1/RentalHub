@@ -6,6 +6,7 @@ USE rentalhub;
 DROP TABLE IF EXISTS inventory;
 DROP TABLE IF EXISTS rental_transactions;
 DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS reports;
 DROP TABLE IF EXISTS items;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS roles;

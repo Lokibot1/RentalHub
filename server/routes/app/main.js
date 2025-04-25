@@ -1,7 +1,7 @@
 import express from "express"
-import toTitleCase from "../../helpers/toTitleCase.js"
-import { checkAuth, optionalAuth } from "../../middlewares/auth.js"
-import { db } from "../../configs/db.js"
+import {optionalAuth} from "../../middlewares/auth.js"
+import {db} from "../../configs/db.js"
+import { warmUpMailer } from "../../helpers/warmup-email.js";
 
 const router = express.Router();
 
@@ -25,6 +25,10 @@ router.get("/", optionalAuth, (req, res) => {
  * @route GET /login
  */
 router.get("/login", (req, res) => {
+  // ✅ Warm up mailer in background (non-blocking)
+  warmUpMailer().catch(console.error); // Warm up the mailer
+
+  // ✅ Immediately render page
   res.render("main/login", {
     layout: "layouts/main",
     title: "Login",
@@ -52,21 +56,6 @@ router.get("/signup", (req, res) => {
     title: "Signup"
   });
 });
-
-
-// /**
-//  * Shopping page
-//  *
-//  * @route GET /shop
-//  */
-// router.get("/shop", optionalAuth, (req, res) => {
-//   res.render("main/shopping", {
-//     layout: "layouts/main",
-//     title: 'Shop',
-//     isAuthenticated: req.isAuthenticated,
-//     role: req.role,
-//   });
-// });
 
 
 router.get('/shop', optionalAuth, (req, res) => {

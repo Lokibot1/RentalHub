@@ -57,6 +57,11 @@ Before you begin, ensure you have met the following requirements:
 
     # JWT Auth
     JWT_SECRET=your_secret_key
+   
+    # Mail
+    MAIL_SERVICE=gmail
+    MAIL_AUTH_USER=rental.hub.webapp@gmail.com
+    MAIL_AUTH_PASS=oiajwvzbyyikmrma
     ```
 
    Then create a folder named `uploads` in the `C:\`.
