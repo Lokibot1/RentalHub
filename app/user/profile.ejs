@@ -199,7 +199,7 @@
           await fetchWithAutoRefresh("http://localhost:8000/api/user/profile/update", {
             method: "PATCH",
             headers: {
-              "Content-Type": "application/json", // Add this
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
               profile_image: profilePicture.src.split("/").pop(), // Extract the image name from the src
