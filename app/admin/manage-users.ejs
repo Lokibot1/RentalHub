@@ -918,6 +918,7 @@
                 setTimeout(() => {
                     if (restrictedToast) restrictedToast.style.display = "none";
                     if (overlay) overlay.style.display = "none";
+                    location.reload();
                 }, 3000);
 
             } catch (err) {
@@ -1025,6 +1026,7 @@
                 setTimeout(() => {
                     if (restoreToast) restoreToast.style.display = "none";
                     if (overlay) overlay.style.display = "none";
+                    location.reload();
                 }, 3000);
 
             } catch (err) {
