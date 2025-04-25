@@ -379,6 +379,44 @@ router.get('/view-pending/:item_id', optionalAuth, async (req, res) => {
     })
 })
 
+// /**
+//  * Inquiry Form Page
+//  *
+//  * @route GET /user/inquire/:item_id
+//  */
+// router.get('/inquire/:item_id', optionalAuth, async (req, res) => {
+//     const { item_id } = req.params;
+
+//     let renter_id = 0;
+//     if (!item_id) {
+//         return res.status(400).send("Missing item_id");
+//     }
+
+//     if (req.user !== undefined) {
+//         renter_id = req.user.id;
+//     }
+
+//     try {
+//         const response = await fetch(`${process.env.BASE_URL}/api/user/is-owner/${renter_id}/item-id/${item_id}`);
+//         const user = await response.json();
+
+//         const isOwner = user?.data?.is_owner === 1;
+
+//         res.render('user/inquire', {
+//             layout: 'layouts/user',
+//             title: 'Inquiry Form',
+//             isAuthenticated: req.isAuthenticated,
+//             is_owner: isOwner,
+//             item_id,
+//             renter_id,
+//             role: req.role,
+//         });
+//     } catch (error) {
+//         console.error("Error fetching ownership status:", error);
+//         res.status(500).send("Server Error");
+//     }
+// });
+
 /**
  * Inquiry Form Page
  *
@@ -386,36 +424,83 @@ router.get('/view-pending/:item_id', optionalAuth, async (req, res) => {
  */
 router.get('/inquire/:item_id', optionalAuth, async (req, res) => {
     const { item_id } = req.params;
-
     let renter_id = 0;
+
     if (!item_id) {
         return res.status(400).send("Missing item_id");
     }
 
     if (req.user !== undefined) {
         renter_id = req.user.id;
-    }
 
-    try {
-        const response = await fetch(`${process.env.BASE_URL}/api/user/is-owner/${renter_id}/item-id/${item_id}`);
-        const user = await response.json();
+        // Fetch user status from DB
+        const sql = `
+            SELECT
+                logged_in_user.status AS logged_in_user_status,
+                item_owner.status AS item_owner_status
+            FROM items
+                     JOIN users AS item_owner ON item_owner.id = items.user_id
+                     JOIN users AS logged_in_user ON logged_in_user.id = ?
+            WHERE items.id = ?
+        `;
 
-        const isOwner = user?.data?.is_owner === 1;
+        db.query(sql, [renter_id, item_id], async (err, results) => {
+            if (err || results.length === 0) {
+                return res.status(500).send("Error checking user status.");
+            }
 
-        res.render('user/inquire', {
-            layout: 'layouts/user',
-            title: 'Inquiry Form',
-            isAuthenticated: req.isAuthenticated,
-            is_owner: isOwner,
-            item_id,
-            renter_id,
-            role: req.role,
+            const { logged_in_user_status, item_owner_status } = results[0];
+            const isCurrentUserBanned = logged_in_user_status === 'banned';
+
+            try {
+                const response = await fetch(`${process.env.BASE_URL}/api/user/is-owner/${renter_id}/item-id/${item_id}`);
+                const user = await response.json();
+
+                const isOwner = user?.data?.is_owner === 1;
+
+                res.render('user/inquire', {
+                    layout: 'layouts/user',
+                    title: 'Inquiry Form',
+                    isAuthenticated: req.isAuthenticated,
+                    is_owner: isOwner,
+                    item_id,
+                    renter_id,
+                    role: req.role,
+                    isCurrentUserBanned,
+                    loggedInUserStatus: logged_in_user_status,
+                    itemOwnerStatus: item_owner_status,
+                });
+            } catch (error) {
+                console.error("Error fetching ownership status:", error);
+                res.status(500).send("Server Error");
+            }
         });
-    } catch (error) {
-        console.error("Error fetching ownership status:", error);
-        res.status(500).send("Server Error");
+
+    } else {
+        // Not logged in
+        try {
+            const response = await fetch(`${process.env.BASE_URL}/api/user/is-owner/0/item-id/${item_id}`);
+            const user = await response.json();
+
+            res.render('user/inquire', {
+                layout: 'layouts/user',
+                title: 'Inquiry Form',
+                isAuthenticated: false,
+                is_owner: false,
+                item_id,
+                renter_id: 0,
+                role: null,
+                isCurrentUserBanned: false,
+                loggedInUserStatus: '',
+                itemOwnerStatus: '',
+            });
+        } catch (error) {
+            console.error("Error fetching ownership status:", error);
+            res.status(500).send("Server Error");
+        }
     }
 });
+
 
 
 

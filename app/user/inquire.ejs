@@ -81,26 +81,57 @@
                         <button type="button" id="meetup-btn">Meet Up</button>
                         <button type="button" id="delivery-btn">Delivery</button>
                     </div>
-                    <% if (isAuthenticated && role==='admin' || role==='user' ) { %>
-                        <button type="submit" id="request-btn" class="request-btn">Submit</button>
-                        <% } else { %>
-                            <button class="request-btn">
-                                <a href="/login?redirect=/user/inquire/<%= item_id %>" style="color: black">
-                                    Submit
-                                </a>
+                    <% if (isAuthenticated && (role === 'admin' || role === 'user')) { %>
+                        <% if (isCurrentUserBanned) { %>
+                            <button type="button" class="request-btn" disabled
+                                    title="You are banned and cannot make requests">Submit
                             </button>
-                            <% } %>
+                        <% } else if (itemOwnerStatus === 'banned') { %>
+                            <button type="submit"
+                                    class="request-btn"
+                                    onclick="showOwnerIsRestrictedToast(event)">
+                                Submit
+                            </button>
+                        <% } else { %>
+                            <button type="submit" id="request-btn" class="request-btn">Submit</button>
+                        <% } %>
+                    <% } else { %>
+                        <button class="request-btn">
+                            <a href="/login?redirect=/user/inquire/<%= item_id %>" style="color: black">
+                                Submit
+                            </a>
+                        </button>
+                    <% } %>                    
                             <p>Note: Submitting will go to the owners email.</p>
                         
                 </form>
             </div>
         </div>
         <% } %>
+
+        <!-- Toast Notification for Users trying to submit a new request to a restricted user. -->
+    <div id="modal-overlay" class="overlay"></div>
+    <div id="owner-is-restricted-toast" class="toast">Request Failed! Item Owner is currently <span style="color: #880000">Banned</span>.</div>
 </div>
 
 
 
 <script>
+
+function showOwnerIsRestrictedToast() {
+        event.preventDefault(); // prevent form submission
+
+        const toast = document.getElementById("owner-is-restricted-toast");
+        const overlay = document.getElementById("modal-overlay");
+
+        toast.classList.add("show");
+        overlay.style.display = "block";
+
+         setTimeout(() => {
+            toast.classList.remove("show");
+            overlay.style.display = "none";
+        }, 3000);
+    }
 
     //Function to get items
     document.addEventListener("DOMContentLoaded", () => {
