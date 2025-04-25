@@ -1,6 +1,14 @@
 <link rel="stylesheet" href="/css/view-product.css" />
 <link rel="web icon" type="png" href="/images/webicon.png" />
 
+<!--Navigation Bar-->
+<nav>
+    <a href="/">
+        <div class="logo">
+            <h1>Rental <span> Hub</span></h1>
+        </div>
+    </a>
+</nav>
 <!-- Main container for product view -->
 <div class="view-product-container">
     <!-- Left Section: Product Image + Details (Stacked) -->
@@ -82,7 +90,8 @@
                                 </a>
                             </button>
                             <% } %>
-                                <br>
+                            <p>Note: Submitting will go to the owners email.</p>
+                        
                 </form>
             </div>
         </div>
@@ -107,13 +116,19 @@
                 document.getElementById("product-image").src = `/uploads/${item.image}` || "default.jpg";
                 document.getElementById("product-name").innerText = item.name;
                 document.getElementById("product-price").textContent = `₱${item.price}`;
-                document.getElementById("product-quantity").textContent = `Available: ${item.quantity}`;
+                document.getElementById("product-quantity").textContent = `${item.quantity} Items left`;
+                
                 document.getElementById("product-description").textContent = item.description;
 
                 document.getElementById("owner-image").src = `/uploads/${item.profile_image}` || "default-owner.jpg";
                 document.getElementById("owner-name").textContent = item.owner;
                 document.getElementById("owner-location").textContent = item.location;
                 document.getElementById("owner-rating").innerHTML = item.average_rating ? `⭐ ${item.average_rating}` : 'No Ratings'
+
+                const rentalQuantity = document.querySelector("[name='rental_quantity']");
+            if (rentalQuantity) {
+                rentalQuantity.setAttribute("max", item.quantity);
+            }
             } else {
                 console.warn("No selected item found in localStorage.");
             }
