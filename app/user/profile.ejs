@@ -202,6 +202,7 @@
               "Content-Type": "application/json", // Add this
             },
             body: JSON.stringify({
+              profile_image: profilePicture.src.split("/").pop(), // Extract the image name from the src
               email: email.value,
               contact_number: contact.value,
               social_media: socialMedia.value,
