@@ -90,7 +90,7 @@
             searchMessage.innerHTML = searchQuery ? `<p>Searching for results...</p>` : ""; // Update message dynamically
             transactionsTableBody.innerHTML = "<tr><td colspan='6'>Searching for results...</td></tr>";
 
-            const response = await fetch(`/api/admin/transactions/search?keyword=${encodeURIComponent(searchQuery)}`);
+            const response = await fetchWithAutoRefresh(`/api/admin/transactions/search?keyword=${encodeURIComponent(searchQuery)}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

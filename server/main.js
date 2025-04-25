@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 import cookieParser from "cookie-parser"
 import expressLayouts from "express-ejs-layouts"
 import morgan from "morgan"
+import { transporter } from './configs/mail.js';
 
 const app = express();
 

@@ -132,7 +132,7 @@
 
             let formData = new FormData(this);
 
-            fetch("/api/shared/listing", {
+            fetchWithAutoRefresh("/api/shared/listing", {
                 method: "POST",
                 body: formData,
             })

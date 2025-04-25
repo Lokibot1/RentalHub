@@ -1,116 +1,115 @@
-<link rel="stylesheet" href="/css/admin-viewprod.css" />
+<link rel="stylesheet" href="/css/admin-viewprod.css"/>
 <link rel="web icon" type="png" href="images/webicon.png">
 <nav>
-  <div class="logo">
-    <h1>Rental <span> Hub</span></h1>
-</div>
-  </nav>
+    <div class="logo">
+        <h1>Rental <span> Hub</span></h1>
+    </div>
+</nav>
 
-  <!-- Main container for product view -->
-  <div class="view-product-container">
+<!-- Main container for product view -->
+<div class="view-product-container">
     <!-- Left Section: Product Image + Details (Stacked) -->
     <div class="left-section">
-      <div class="product">
-      <!-- To grab the current item_id (only for js) -->
-      <input type="hidden" name="item_id" value="<%= pendingPost.product_id %>" />
+        <div class="product">
+            <!-- To grab the current item_id (only for js) -->
+            <input type="hidden" name="item_id" value="<%= pendingPost.product_id %>"/>
 
-      <!-- Product Image -->
-        <img id="product-image" src="/uploads/<%= pendingPost.product_image %>" alt="Product Image" />
+            <!-- Product Image -->
+            <img id="product-image" src="/uploads/<%= pendingPost.product_image %>" alt="Product Image"/>
 
-      <!-- Product Details -->
-      <div class="product-details">
-        <h2 id="product-name"><%= pendingPost.product_name %></h2>
-        <h1 id="product-price"> ₱<%= pendingPost.product_price %></h1>
-        <h4 id="product-quantity"><%= pendingPost.item_quantity %> pieces</h4>
-          <div class="product-description">
-            <h3>Product Description</h3>
-            <p id="product-description"><%= pendingPost.product_description %></p>
-          </div>
-       
-      </div>
-    </div>
+            <!-- Product Details -->
+            <div class="product-details">
+                <h2 id="product-name"><%= pendingPost.product_name %></h2>
+                <h1 id="product-price"> ₱<%= pendingPost.product_price %></h1>
+                <h4 id="product-quantity"><%= pendingPost.item_quantity %> pieces</h4>
+                <div class="product-description">
+                    <h3>Product Description</h3>
+                    <p id="product-description"><%= pendingPost.product_description %></p>
+                </div>
 
-      <!-- Owner Info -->
-      <div class="owner-info" onclick="openForm()">
-        <h2>Posted by</h2>
-        <hr />
-        <div class="owner-details">
-          <div class="pfp">
-            <img id="owner-image" src="/uploads/<%= pendingPost.owner_image %>" alt="Owner Image" />
-          </div>
-          <div>
-            <strong id="owner-name"><%= pendingPost.owner_name %></strong><br />
-            <span id="owner-location"><%= pendingPost.owner_location %></span> <br />
-            <span id="owner-rating">⭐ Loading...</span>
-          </div>
+            </div>
         </div>
-      </div>
-      <br />
+
+        <!-- Owner Info -->
+        <div class="owner-info" onclick="openForm()">
+            <h2>Posted by</h2>
+            <hr/>
+            <div class="owner-details">
+                <div class="pfp">
+                    <img id="owner-image" src="/uploads/<%= pendingPost.owner_image %>" alt="Owner Image"/>
+                </div>
+                <div>
+                    <strong id="owner-name"><%= pendingPost.owner_name %></strong><br/>
+                    <span id="owner-location"><%= pendingPost.owner_location %></span> <br/>
+                    <span id="owner-rating">⭐ Loading...</span>
+                </div>
+            </div>
+        </div>
+        <br/>
     </div>
 
     <!-- Right Section: Pending -->
     <div class="right-section">
-      <div class="update-container">  
-      <h1>Pending Post!!</h1>
-      <p>
-        If approved, it will be published on the marketplace.
-      </p>
-      <p>
-        If declined, it will not be posted, and the user may need to revise
-        and resubmit.
-      </p>
-      <div class="accept-or-declinebtns">
-        <button id="accept-btn">Accept</button>
-        <button id="decline-btn">Decline</button>
-      </div>
+        <div class="update-container">
+            <h1>Pending Post!!</h1>
+            <p>
+                If approved, it will be published on the marketplace.
+            </p>
+            <p>
+                If declined, it will not be posted, and the user may need to revise
+                and resubmit.
+            </p>
+            <div class="accept-or-declinebtns">
+                <button id="accept-btn">Accept</button>
+                <button id="decline-btn">Decline</button>
+            </div>
+        </div>
     </div>
-  </div>
 
     <!-- Confirmation Popup -->
     <div id="overlay" class="overlay"></div>
     <div id="confirm-popup" class="popup">
-      <div class="popup-content">
-        <p class="popup-text">Are you sure you want to</p>
-        <p class="popup-text2">
-          <span class="highlight">accept</span> this posting request?
-        </p>
-        <div class="popup-buttons">
-          <button id="confirm-yes" class="yes-btn">Yes</button>
-          <button id="confirm-no" class="no-btn">No</button>
+        <div class="popup-content">
+            <p class="popup-text">Are you sure you want to</p>
+            <p class="popup-text2">
+                <span class="highlight">accept</span> this posting request?
+            </p>
+            <div class="popup-buttons">
+                <button id="confirm-yes" class="yes-btn">Yes</button>
+                <button id="confirm-no" class="no-btn">No</button>
+            </div>
         </div>
-      </div>
     </div>
     <div id="success-popup" class="success-popup">
-      <p>
-        <strong>
-          Accepted Sucessfully! Item is now live in the marketplace!
-        </strong>
-      </p>
+        <p>
+            <strong>
+                Accepted Sucessfully! Item is now live in the marketplace!
+            </strong>
+        </p>
     </div>
-  </div>
-
-  <!-- Confirmation Popup for Decline-->
-  
-  <div id="decline-popup" class="popup">
-    <div class="popup-content">
-      <p class="popup-text">Are you sure you want to</p>
-      <p class="popup-text2">
-        <span class="highlight">decline</span> this posting request?
-      </p>
-      <div class="popup-buttons">
-        <button id="confirm-yes-decline" class="yes-btn">Yes</button>
-        <button id="confirm-no-decline" class="no-btn">No</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="success-popup-decline" class="success-popup">
-    <p>
-      <strong>
-        Item Declined Sucessfully.
-      </strong>
-    </p>
-  </div>
 </div>
 
-  <script src="/js/admin.js"></script>
+<!-- Confirmation Popup for Decline-->
+
+<div id="decline-popup" class="popup">
+    <div class="popup-content">
+        <p class="popup-text">Are you sure you want to</p>
+        <p class="popup-text2">
+            <span class="highlight">decline</span> this posting request?
+        </p>
+        <div class="popup-buttons">
+            <button id="confirm-yes-decline" class="yes-btn">Yes</button>
+            <button id="confirm-no-decline" class="no-btn">No</button>
+        </div>
+    </div>
+</div>
+
+<div id="success-popup-decline" class="success-popup">
+    <p>
+        <strong>
+            Item Declined Sucessfully.
+        </strong>
+    </p>
+</div>
+
+<script src="/js/admin.js"></script>

@@ -121,7 +121,7 @@
 
   confirmBtn.addEventListener("click", function () {
     // delete product_id from database
-    fetch(`/api/user/my-items/delete-pending-item/${productId}`, {
+    fetchWithAutoRefresh(`/api/user/my-items/delete-pending-item/${productId}`, {
       method: "DELETE",
     })
       .then((response) => {

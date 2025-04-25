@@ -1,167 +1,170 @@
 <link rel="stylesheet" href="/css/archives.css">
 <link rel="web icon" type="png" href="images/webicon.png">
-    <!--Navigation Bar-->
-    <%- include('../partials/admin/navigation-bar.ejs'); %>
+<!--Navigation Bar-->
+<%- include('../partials/admin/navigation-bar.ejs'); %>
 
-    <div class="main">
-      <!-- Side Bar -->
-      <%- include('../partials/admin/sidebar-links.ejs'); %>
+<div class="main">
+    <!-- Side Bar -->
+    <%- include('../partials/admin/sidebar-links.ejs'); %>
 
-      <% 
-        const date=new Date(adminProfile.joined_date); 
-        const formattedDate=new Intl.DateTimeFormat('en-US', {
-          year: 'numeric' , 
-          month: 'long' 
-        }).format(date); 
-      %>
+    <%
+    const date = new Date(adminProfile.joined_date);
+    const formattedDate = new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'long'
+    }).format(date);
+    %>
 
-      <!--Main Content-->
-      <div class="content">
-        <div class="profile-header">    
-          <div class="profile-name">
-            <h2 id="profileName"><%= adminProfile.first_name %></h2>
-            <i>Joined since <%= formattedDate %></i>
-          </div>      
-          <button id="editBtn" class="edit-btn">
-            <img src="/images/edit-btn.png" alt="Edit" />
-          </button>
-        </div>  
-            
+    <!--Main Content-->
+    <div class="content">
+        <div class="profile-header">
+            <div class="profile-name">
+                <h2 id="profileName"><%= adminProfile.first_name %></h2>
+                <i>Joined since <%= formattedDate %></i>
+            </div>
+            <button id="editBtn" class="edit-btn">
+                <img src="/images/edit-btn.png" alt="Edit"/>
+            </button>
+        </div>
+
         <form class="profile-form">
-          <div class="email">
-            <label for="email">Email Address</label>
-            <input type="text" value="<%= adminProfile.email %>" placeholder="Email Address" id="email" disabled />
-          </div>      
-          <hr />      
-          <div class="contact">
-            <div>
-              <label for="contact">Contact Number</label>
-              <input type="text" value="<%= adminProfile.contact_number %>" placeholder="Contact Number" id="contact" disabled />
+            <div class="email">
+                <label for="email">Email Address</label>
+                <input type="text" value="<%= adminProfile.email %>" placeholder="Email Address" id="email" disabled/>
             </div>
-            <div>
-              <label for="socialMedia">Social Media</label>
-              <input type="text" value="<%= adminProfile.social_media %>" placeholder="Social Media" id="socialMedia" disabled />
-            </div>
-          </div>      
-          <hr />      
-          <div class="address">
-            <label for="address">Address</label>
-            <input type="text" value="<%= adminProfile.address %>" placeholder="Address" id="address" disabled />
-          </div>
-        </form>
-      </div>
-
-            <!-- Logout Confirmation Modal -->
-            <div id="logout-modal" class="logout-modal">
-              <div class="logout-content">
-                <p>Are you sure you want to log out?</p>
-                <div class="logout-button-group">
-                  <button id="confirm-logout" class="yes-btn">Yes</button>
-                  <button id="cancel-logout" class="no-btn">No</button>
+            <hr/>
+            <div class="contact">
+                <div>
+                    <label for="contact">Contact Number</label>
+                    <input type="text" value="<%= adminProfile.contact_number %>" placeholder="Contact Number"
+                           id="contact" disabled/>
                 </div>
-              </div>
+                <div>
+                    <label for="socialMedia">Social Media</label>
+                    <input type="text" value="<%= adminProfile.social_media %>" placeholder="Social Media"
+                           id="socialMedia" disabled/>
+                </div>
             </div>
+            <hr/>
+            <div class="address">
+                <label for="address">Address</label>
+                <input type="text" value="<%= adminProfile.address %>" placeholder="Address" id="address" disabled/>
+            </div>
+        </form>
+    </div>
 
-    <script>
-      const editBtn = document.getElementById("editBtn");
-      const profilePicture = document.getElementById("profilePicture");
-      const profileName = document.getElementById("profileName");
-      const email = document.getElementById("email");
-      const address = document.getElementById("address");
-      const contact = document.getElementById("contact");
-      const socialMedia = document.getElementById("socialMedia");
+    <!-- Logout Confirmation Modal -->
+    <div id="logout-modal" class="logout-modal">
+        <div class="logout-content">
+            <p>Are you sure you want to log out?</p>
+            <div class="logout-button-group">
+                <button id="confirm-logout" class="yes-btn">Yes</button>
+                <button id="cancel-logout" class="no-btn">No</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-      let isEditing = false;
+<script>
+    const editBtn = document.getElementById("editBtn");
+    const profilePicture = document.getElementById("profilePicture");
+    const profileName = document.getElementById("profileName");
+    const email = document.getElementById("email");
+    const address = document.getElementById("address");
+    const contact = document.getElementById("contact");
+    const socialMedia = document.getElementById("socialMedia");
 
-      editBtn.addEventListener("click", async function () {
+    let isEditing = false;
+
+    editBtn.addEventListener("click", async function () {
         isEditing = !isEditing;
 
         if (isEditing) {
-          editBtn.innerHTML = '<img src="/img/save-btn.png" alt="Save">';
-          email.disabled = false;
-          address.disabled = false;
-          contact.disabled = false;
-          socialMedia.disabled = false;
-          email.classList.remove("disabled");
-          address.classList.remove("disabled");
-          contact.classList.remove("disabled");
-          socialMedia.classList.remove("disabled");
+            editBtn.innerHTML = '<img src="/img/save-btn.png" alt="Save">';
+            email.disabled = false;
+            address.disabled = false;
+            contact.disabled = false;
+            socialMedia.disabled = false;
+            email.classList.remove("disabled");
+            address.classList.remove("disabled");
+            contact.classList.remove("disabled");
+            socialMedia.classList.remove("disabled");
         } else {
-          editBtn.innerHTML = '<img src="/img/edit-btn.png" alt="Edit">';
-          email.disabled = true;
-          address.disabled = true;
-          contact.disabled = true;
-          socialMedia.disabled = true;
-          email.classList.add("disabled");
-          address.classList.add("disabled");
-          contact.classList.add("disabled");
-          socialMedia.classList.add("disabled");
+            editBtn.innerHTML = '<img src="/img/edit-btn.png" alt="Edit">';
+            email.disabled = true;
+            address.disabled = true;
+            contact.disabled = true;
+            socialMedia.disabled = true;
+            email.classList.add("disabled");
+            address.classList.add("disabled");
+            contact.classList.add("disabled");
+            socialMedia.classList.add("disabled");
 
-          try {
-          await fetch("http://localhost:8000/api/admin/profile/update", {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json", // Add this
-            },
-            body: JSON.stringify({
-              email: email.value,
-              contact_number: contact.value,
-              social_media: socialMedia.value,
-              address: address.value,
-            }),
-          });
+            try {
+                await fetchWithAutoRefresh("http://localhost:8000/api/admin/profile/update", {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json", // Add this
+                    },
+                    body: JSON.stringify({
+                        email: email.value,
+                        contact_number: contact.value,
+                        social_media: socialMedia.value,
+                        address: address.value,
+                    }),
+                });
 
-          //window.location.href = "/user/profile"; // Redirect to user profile
-        } catch (error) {
-          alert(error.message);
-        }
-          
-          // Save the updated values (log lang muna sya for now, wala pa naman backend e hehe adjust nyo nalang san masstore)
-          console.log("Updated Info:");
-          console.log("Email:", email.value);
-          console.log("Address:", address.value);
-          console.log("Contact #:", contact.value);
-          console.log("Social Media:", socialMedia.value);
+                //window.location.href = "/user/profile"; // Redirect to user profile
+            } catch (error) {
+                alert(error.message);
+            }
+
+            // Save the updated values (log lang muna sya for now, wala pa naman backend e hehe adjust nyo nalang san masstore)
+            console.log("Updated Info:");
+            console.log("Email:", email.value);
+            console.log("Address:", address.value);
+            console.log("Contact #:", contact.value);
+            console.log("Social Media:", socialMedia.value);
         }
         profileImageInput.addEventListener("change", function () {
-        const file = profileImageInput.files[0];
+            const file = profileImageInput.files[0];
 
-        if (file) {
-          const reader = new FileReader();
+            if (file) {
+                const reader = new FileReader();
 
-          reader.onload = function (e) {
-            profilePicture.src = e.target.result;
-          };
+                reader.onload = function (e) {
+                    profilePicture.src = e.target.result;
+                };
 
-          reader.readAsDataURL(file);
-        }
-      });
+                reader.readAsDataURL(file);
+            }
+        });
     });
 
     //logout
-document.addEventListener("DOMContentLoaded", function () {
-    const logoutLink = document.getElementById("logout");
-    const modal = document.getElementById("logout-modal");
-    const confirmLogout = document.getElementById("confirm-logout");
-    const cancelLogout = document.getElementById("cancel-logout");
-  
-    // Ensure modal starts hidden
-    modal.style.display = "none";
-  
-    // Show modal when logout is clicked
-    logoutLink.addEventListener("click", function (event) {
-      event.preventDefault(); // Prevents default link behavior
-      modal.style.display = "flex"; // Show modal only on click
+    document.addEventListener("DOMContentLoaded", function () {
+        const logoutLink = document.getElementById("logout");
+        const modal = document.getElementById("logout-modal");
+        const confirmLogout = document.getElementById("confirm-logout");
+        const cancelLogout = document.getElementById("cancel-logout");
+
+        // Ensure modal starts hidden
+        modal.style.display = "none";
+
+        // Show modal when logout is clicked
+        logoutLink.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevents default link behavior
+            modal.style.display = "flex"; // Show modal only on click
+        });
+
+        // Redirect when "Yes" is clicked
+        confirmLogout.addEventListener("click", function () {
+            window.location.href = "/logout"; // Adjust logout URL
+        });
+
+        // Close modal when "No" is clicked
+        cancelLogout.addEventListener("click", function () {
+            modal.style.display = "none"; // Hide modal
+        });
     });
-  
-    // Redirect when "Yes" is clicked
-    confirmLogout.addEventListener("click", function () {
-      window.location.href = "/logout"; // Adjust logout URL
-    });
-  
-    // Close modal when "No" is clicked
-    cancelLogout.addEventListener("click", function () {
-      modal.style.display = "none"; // Hide modal
-    });
-  });
 </script>

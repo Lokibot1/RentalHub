@@ -26,72 +26,11 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage});
 
 
-// /**
-//  * Add New Item
-//  *
-//  * @route POST /api/shared/listing
-//  */
-// router.post("/", checkAuth, upload.single('item_file'), async (req, res) => {
-//     const {item_name, item_price, item_week_price, item_description, item_quantity, location, categories} = req.body;
-//     const item_file = req.file; // Access the uploaded file
-//     let isApproved = false
-
-//     if (!item_file) {
-//         return res.status(400).json({success: false, message: "File upload failed."});
-//     }
-
-//     isApproved = req.user.role === 'admin';
-
-//     // Begin transaction
-//     db.beginTransaction((err) => {
-//         if (err) {
-//             console.error("Transaction initiation failed:", err);
-//             return res.status(500).json({success: false, message: "Transaction error."});
-//         }
-
-//         // Insert item into `items` table
-//         const insertItemSql = "INSERT INTO items (name, price, price_per_week, description, location, file_path, category_id, user_id, is_approved) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-//         db.query(insertItemSql, [item_name, item_price, item_week_price, item_description, location, item_file.filename, categories, req.user.id, isApproved], (err, result) => {
-//             if (err) {
-//                 console.error("Item insertion failed:", err);
-//                 return db.rollback(() => {
-//                     res.status(500).json({success: false, message: "Failed to add item."});
-//                 });
-//             }
-
-//             const itemId = result.insertId; // Get the inserted item ID
-
-//             // Insert stock data into `inventory` table
-//             const insertInventorySql = "INSERT INTO inventory (item_id, stock_quantity) VALUES (?, ?)";
-//             db.query(insertInventorySql, [itemId, item_quantity], (err) => {
-//                 if (err) {
-//                     console.error("Inventory insertion failed:", err);
-//                     return db.rollback(() => {
-//                         res.status(500).json({success: false, message: "Failed to add item inventory."});
-//                     });
-//                 }
-
-//                 // Commit transaction
-//                 db.commit((err) => {
-//                     if (err) {
-//                         console.error("Transaction commit failed:", err);
-//                         return db.rollback(() => {
-//                             res.status(500).json({success: false, message: "Transaction error."});
-//                         });
-//                     }
-
-//                     res.status(201).json({success: true, message: "Item added successfully with inventory."});
-//                 });
-//             });
-//         });
-//     });
-// });
-
-// /**
-//  * Add New Item
-//  *
-//  * @route POST /api/shared/listing
-//  */
+/**
+ * Add New Item
+ *
+ * @route POST /api/shared/listing
+ */
 router.post("/", checkAuth, upload.single('item_file'), async (req, res) => {
     const { item_name, item_price, item_week_price, item_description, item_quantity, location, categories } = req.body;
     const item_file = req.file;

@@ -181,7 +181,7 @@
                 searchMessage.innerHTML = searchQuery ? `<p>Searching for results...</p>` : "";
                 userTableBody.innerHTML = "<tr><td colspan='2'>Searching for users...</td></tr>";
 
-                const response = await fetch(`/api/admin/manage-users/search?keyword=${encodeURIComponent(searchQuery)}`);
+                const response = await fetchWithAutoRefresh(`/api/admin/manage-users/search?keyword=${encodeURIComponent(searchQuery)}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -283,7 +283,7 @@
                 searchMessage.innerHTML = searchQuery ? `<p>Searching for results...</p>` : "";
                 reportedAccountsTableBody.innerHTML = "<tr><td colspan='2'>Searching for users...</td></tr>";
 
-                const response = await fetch(`/api/admin/manage-users/reports/all?keyword=${encodeURIComponent(searchQuery)}`);
+                const response = await fetchWithAutoRefresh(`/api/admin/manage-users/reports/all?keyword=${encodeURIComponent(searchQuery)}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -369,7 +369,7 @@
             const title = document.querySelector('.title');
 
             try {
-                const res = await fetch(`/api/admin/manage-users/reports/${reporter_id}`);
+                const res = await fetchWithAutoRefresh(`/api/admin/manage-users/reports/${reporter_id}`);
                 const response = await res.json();
 
                 // Check if response is successful and has data
@@ -508,7 +508,7 @@
                 searchMessage.innerHTML = searchQuery ? `<p>Searching for results...</p>` : "";
                 bannedAccountsTableBody.innerHTML = "<tr><td colspan='2'>Searching for users...</td></tr>";
 
-                const response = await fetch(`/api/admin/manage-users/banned-users/all?keyword=${encodeURIComponent(searchQuery)}`);
+                const response = await fetchWithAutoRefresh(`/api/admin/manage-users/banned-users/all?keyword=${encodeURIComponent(searchQuery)}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -592,7 +592,7 @@
         //     const title = document.querySelector('.title');
         //
         //     try {
-        //         const res = await fetch(`/api/admin/manage-users/reports/${reporter_id}`);
+        //         const res = await fetchWithAutoRefresh(`/api/admin/manage-users/reports/${reporter_id}`);
         //         const response = await res.json();
         //
         //         // Check if response is successful and has data
@@ -769,7 +769,7 @@
     const viewUserDetail = async (userId) => {
         console.log('Users:', userId);
 
-        const response = await fetch(`http://localhost:8000/api/admin/manage-users/get-user-by-id/${userId}`);
+        const response = await fetchWithAutoRefresh(`http://localhost:8000/api/admin/manage-users/get-user-by-id/${userId}`);
         const {data: user, success} = await response.json();
 
         if (success) {
@@ -852,7 +852,7 @@
             if (!selectedUserId) return;
 
             try {
-                const response = await fetch(`/api/admin/manage-users/ban/${selectedUserId}`, {
+                const response = await fetchWithAutoRefresh(`/api/admin/manage-users/ban/${selectedUserId}`, {
                     method: 'PATCH',
                 });
 
@@ -959,7 +959,7 @@
             if (!selectedUserId) return;
 
             try {
-                const response = await fetch(`/api/admin/manage-users/restore/${selectedUserId}`, {
+                const response = await fetchWithAutoRefresh(`/api/admin/manage-users/restore/${selectedUserId}`, {
                     method: 'PATCH',
                 });
 
@@ -1086,7 +1086,7 @@
     console.log('Ban User:', userId);
     
     try {
-        const response = await fetch(`/api/admin/manage-users/ban/view-user/${userId}`);
+        const response = await fetchWithAutoRefresh(`/api/admin/manage-users/ban/view-user/${userId}`);
         const {data: user, success} = await response.json();
         
         console.log('Response data:', user);

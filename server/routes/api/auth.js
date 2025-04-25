@@ -1,5 +1,6 @@
 import express from "express"
 import bcrypt from "bcryptjs"
+import crypto from "crypto";
 import jwt from "jsonwebtoken"
 import { transporter, mailOptions } from "../../configs/mail.js"
 import { db } from "../../configs/db.js"
@@ -112,20 +113,18 @@ router.post("/register", async (req, res) => {
           </div>
         `
 
-        try {
-            await transporter.verify();
-            await transporter.sendMail(mailOptions);
-        } catch (error) {
+        transporter.sendMail(mailOptions).catch(async (error) => {
             console.error("First attempt failed:", error);
-            // Optional: Retry once after short delay
-            await new Promise((res) => setTimeout(res, 1000)); // 1-second delay
+
+            // Retry once after delay
+            await new Promise((res) => setTimeout(res, 1000));
             try {
                 await transporter.sendMail(mailOptions);
             } catch (secondError) {
                 console.error("Second attempt failed:", secondError);
-                return res.status(500).json({ message: "Failed to send OTP email." });
+                // optional: log to DB or alert admin
             }
-        }
+        });
 
         res.status(201).json({
             data: { email },
@@ -237,7 +236,13 @@ router.post("/login", async (req, res) => {
             return res.status(500).json({ message: "Internal server error" });
         }
 
-        const sql = "SELECT users.id AS id, email, password, roles.name AS role FROM users INNER JOIN roles ON users.role_id = roles.id WHERE email = ?";
+        const sql = `
+            SELECT users.id AS id, email, password, roles.name AS role 
+            FROM users 
+            INNER JOIN roles ON users.role_id = roles.id 
+            WHERE email = ?
+        `;
+
         db.query(sql, [email], async (err, results) => {
             if (err) {
                 console.error("Query error:", err);
@@ -255,21 +260,43 @@ router.post("/login", async (req, res) => {
                 return res.status(400).json({ message: "Invalid email or password" });
             }
 
-            const token = jwt.sign({
+            // 1. Generate access token
+            const accessToken = jwt.sign({
                 id: user.id,
                 email: user.email,
                 role: user.role,
-            }, process.env.JWT_SECRET, { expiresIn: "2h" });
+            }, process.env.JWT_SECRET, { expiresIn: "15m" });
 
-            res.cookie("token", token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "Strict"
-            });
+            // 2. Generate refresh token (random string)
+            const refreshToken = crypto.randomBytes(64).toString("hex");
 
-            res.json({
-                message: "Login successful",
-                token,
+            // 3. Store refresh token in DB
+            const insertSql = "INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 7 DAY))";
+            db.query(insertSql, [user.id, refreshToken], (err) => {
+                if (err) {
+                    console.error("Failed to store refresh token:", err);
+                    return res.status(500).json({ message: "Internal server error" });
+                }
+
+                // 4. Set access token as cookie (or optionally send as JSON)
+                res.cookie("token", accessToken, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === "production",
+                    sameSite: "Strict",
+                    maxAge: 15 * 60 * 1000 // 15 minutes
+                });
+
+                // 5. Set refresh token as cookie
+                res.cookie("refreshToken", refreshToken, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === "production",
+                    sameSite: "Strict",
+                    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+                });
+
+                res.json({
+                    message: "Login successful",
+                });
             });
         });
     });

@@ -20,7 +20,7 @@ async function signup(event) {
     const passwordError = document.getElementById("password-error");
 
     try {
-        const response = await fetch("/api/auth/register", {
+        const response = await fetchWithAutoRefresh("/api/auth/register", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({

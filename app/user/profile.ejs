@@ -190,7 +190,7 @@
         socialMedia.classList.add("disabled");
 
         try {
-          await fetch("http://localhost:8000/api/user/profile/update", {
+          await fetchWithAutoRefresh("http://localhost:8000/api/user/profile/update", {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json", // Add this
@@ -249,7 +249,7 @@
 
       async function fetchReviews(role) {
           try {
-              const response = await fetch(`http://localhost:8000/api/user/profile/reviews/${userId}?role=${role}`);
+              const response = await fetchWithAutoRefresh(`http://localhost:8000/api/user/profile/reviews/${userId}?role=${role}`);
               const data = await response.json();
 
               if (data.success) {

@@ -411,7 +411,7 @@
             console.log("Inquiry Data:", inquiryData);  // Log the inquiry data to check if mode is included
 
             try {
-                const response = await fetch("/api/send-inquiry", {
+                const response = await fetchWithAutoRefresh("/api/send-inquiry", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(inquiryData),
@@ -604,7 +604,7 @@
                     };
 
                     try {
-                        const response = await fetch(`/api/user/view-product/send-inquiry`, {
+                        const response = await fetchWithAutoRefresh(`/api/user/view-product/send-inquiry`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(formObject),

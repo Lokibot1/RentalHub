@@ -168,7 +168,7 @@
 
 
         try {
-            const response = await fetch(`/api/shared/update-product/${itemId}`, {
+            const response = await fetchWithAutoRefresh(`/api/shared/update-product/${itemId}`, {
                 method: "PATCH",
             });
 

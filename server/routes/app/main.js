@@ -1,7 +1,7 @@
 import express from "express"
-import toTitleCase from "../../helpers/toTitleCase.js"
-import { checkAuth, optionalAuth } from "../../middlewares/auth.js"
-import { db } from "../../configs/db.js"
+import {optionalAuth} from "../../middlewares/auth.js"
+import {db} from "../../configs/db.js"
+import { warmUpMailer } from "../../helpers/warmup-email.js";
 
 const router = express.Router();
 
@@ -25,6 +25,10 @@ router.get("/", optionalAuth, (req, res) => {
  * @route GET /login
  */
 router.get("/login", (req, res) => {
+  // ✅ Warm up mailer in background (non-blocking)
+  warmUpMailer().catch(console.error); // Warm up the mailer
+
+  // ✅ Immediately render page
   res.render("main/login", {
     layout: "layouts/main",
     title: "Login",
@@ -37,8 +41,60 @@ router.get("/login", (req, res) => {
  * @route GET /logout
  */
 router.get("/logout", (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (refreshToken) {
+    const deleteSql = "DELETE FROM refresh_tokens WHERE token = ?";
+    db.query(deleteSql, [refreshToken], () => {
+      // Ignore error for now
+    });
+  }
+
+  // Clear cookies
   res.clearCookie("token");
+  res.clearCookie("refreshToken", { path: "/refresh" });
+
   res.redirect("/login");
+});
+
+router.post("/refresh", (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) return res.status(401).json({ message: "No refresh token provided" });
+
+  const sql = "SELECT user_id, expires_at FROM refresh_tokens WHERE token = ?";
+  db.query(sql, [refreshToken], (err, results) => {
+    if (err || results.length === 0) {
+      return res.status(403).json({ message: "Invalid refresh token" });
+    }
+
+    const tokenData = results[0];
+
+    if (new Date(tokenData.expires_at) < new Date()) {
+      return res.status(403).json({ message: "Refresh token expired" });
+    }
+
+    const getUserSql = "SELECT id, email, roles.name AS role FROM users INNER JOIN roles ON users.role_id = roles.id WHERE users.id = ?";
+    db.query(getUserSql, [tokenData.user_id], (err, userResults) => {
+      if (err || userResults.length === 0) return res.status(403).json({ message: "User not found" });
+
+      const user = userResults[0];
+
+      const newAccessToken = jwt.sign({
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      }, process.env.JWT_SECRET, { expiresIn: "15m" });
+
+      res.cookie("token", newAccessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "Strict"
+      });
+
+      res.json({ token: newAccessToken });
+    });
+  });
 });
 
 
@@ -52,21 +108,6 @@ router.get("/signup", (req, res) => {
     title: "Signup"
   });
 });
-
-
-// /**
-//  * Shopping page
-//  *
-//  * @route GET /shop
-//  */
-// router.get("/shop", optionalAuth, (req, res) => {
-//   res.render("main/shopping", {
-//     layout: "layouts/main",
-//     title: 'Shop',
-//     isAuthenticated: req.isAuthenticated,
-//     role: req.role,
-//   });
-// });
 
 
 router.get('/shop', optionalAuth, (req, res) => {

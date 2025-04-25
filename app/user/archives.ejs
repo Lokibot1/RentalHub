@@ -85,7 +85,7 @@
     }
 
     try {
-        const response = await fetch(`/api/user/archives/restore-item/${currentItemId}`, {
+        const response = await fetchWithAutoRefresh(`/api/user/archives/restore-item/${currentItemId}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
         });

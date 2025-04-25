@@ -141,7 +141,7 @@ sendResetBtn.onclick = function() {
     }
     
     // Make API call to forgot-password endpoint
-    fetch('http://localhost:8000/api/user/forgot-password', {
+    fetchWithAutoRefresh('http://localhost:8000/api/user/forgot-password', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -182,7 +182,7 @@ loginButton.addEventListener('click', async (event) => {
     const password = passwordField.value
 
     try {
-        const response = await fetch("/api/auth/login", {
+        const response = await fetchWithAutoRefresh("/api/auth/login", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({email, password}),

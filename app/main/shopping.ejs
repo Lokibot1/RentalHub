@@ -6,103 +6,101 @@
 <!--Navigation Bar-->
 <nav>
     <a href="/">
-      <div class="logo">
-        <h1>Rental <span>Hub</span></h1>
-      </div>
+        <div class="logo">
+            <h1>Rental <span>Hub</span></h1>
+        </div>
     </a>
-  
+
     <div class="search-wrapper">
-      <input
-        type="search"
-        id="search"
-        placeholder="Search for items"
-        class="search-input"
-      />
-      <button id="search-button" aria-label="Search">
-        <img src="/images/wsearch.png" alt="Search icon" />
-      </button>
+        <input
+                type="search"
+                id="search"
+                placeholder="Search for items"
+                class="search-input"
+        />
+        <button id="search-button" aria-label="Search">
+            <img src="/images/wsearch.png" alt="Search icon"/>
+        </button>
     </div>
-  
+
     <div
-      class="hamburger"
-      id="hamburger"
-      aria-label="Toggle navigation"
-      role="button"
-      tabindex="0"
+            class="hamburger"
+            id="hamburger"
+            aria-label="Toggle navigation"
+            role="button"
+            tabindex="0"
     >
-      <span></span>
-      <span></span>
-      <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
     </div>
-  
+
     <ul id="nav-links">
-      <li><a href="/">Home</a></li>
-  
-      <li>
-        <% if (isAuthenticated && role === 'admin') { %>
-          <a href="/admin/listing">
-            <img src="/images/WhiteAdd.png" class="add-icon" />
-          </a>
-        <% } else if (isAuthenticated && role === 'user') { %>
-          <a href="<%= userStatus === 'banned' ? 'javascript:void(0)' : '/user/listing' %>">
-            <img src="/images/WhiteAdd.png" class="add-icon <%= userStatus === 'banned' ? 'disabled' : '' %>" />
-          </a>
-        <% } %>
-      </li>
-  
-      <li>
-        <% if (isAuthenticated && role === 'admin') { %>
-        <a href="/admin/admin-dashboard">
-          <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
-        </a>
-        <% } else if (isAuthenticated && role === 'user') { %>
-        <a href="/user/profile">
-          <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
-        </a>
-        <% } else { %>
-        <a href="/login">
-          <img src="/images/Icon1.png" alt="Profile" class="profile-icon" />
-        </a>
-        <% } %>
-      </li>
+        <li><a href="/">Home</a></li>
+
+        <li>
+            <% if (isAuthenticated && role === 'admin') { %>
+                <a href="/admin/listing">
+                    <img src="/images/WhiteAdd.png" class="add-icon"/>
+                </a>
+            <% } else if (isAuthenticated && role === 'user') { %>
+                <a href="<%= userStatus === 'banned' ? 'javascript:void(0)' : '/user/listing' %>">
+                    <img src="/images/WhiteAdd.png" class="add-icon <%= userStatus === 'banned' ? 'disabled' : '' %>"/>
+                </a>
+            <% } %>
+        </li>
+
+        <li>
+            <% if (isAuthenticated && role === 'admin') { %>
+                <a href="/admin/admin-dashboard">
+                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
+                </a>
+            <% } else if (isAuthenticated && role === 'user') { %>
+                <a href="/user/profile">
+                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
+                </a>
+            <% } else { %>
+                <a href="/login">
+                    <img src="/images/Icon1.png" alt="Profile" class="profile-icon"/>
+                </a>
+            <% } %>
+        </li>
     </ul>
-  </nav>
-  
-  
-  
-  
-  <!-- Categories -->
-  <div class="categories-cont">
+</nav>
+
+
+<!-- Categories -->
+<div class="categories-cont">
     <button class="category active" onclick="openCategory('events-and-parties')">
-      Events & Parties
+        Events & Parties
     </button>
-  
+
     <button class="category" onclick="openCategory('tech-and-gadgets')">
-      Tech & Gadgets
+        Tech & Gadgets
     </button>
-  
+
     <button class="category" onclick="openCategory('clothing-and-accessories')">
-      Clothing & Accessories
+        Clothing & Accessories
     </button>
-  
+
     <button class="category" onclick="openCategory('sports-and-outdoor-gear')">
-      Sports & Outdoor Gear
+        Sports & Outdoor Gear
     </button>
-  
+
     <button class="category" onclick="openCategory('tools-and-equipment')">
-      Tools & Equipment
+        Tools & Equipment
     </button>
-  
+
     <button class="category" onclick="openCategory('musical-instruments')">
-      Musical Instruments
+        Musical Instruments
     </button>
-  
+
     <button class="category" onclick="openCategory('home-and-office')">
-      Home & Office
+        Home & Office
     </button>
-  
+
     <button class="category" onclick="openCategory('pets-accessories')">
-      Pets Accessories
+        Pets Accessories
     </button>
     <button class="category" onclick="openCategory('books-and-literature')">
         Books and Literature
@@ -113,25 +111,25 @@
     <button class="category" onclick="openCategory('vehicles')">
         Vehicles
     </button>
-  </div>
-  
-  <div class="sort-dropdown">
+</div>
+
+<div class="sort-dropdown">
     <button class="sort-toggle" onclick="toggleSortOptions()">
         <img src="/images/filter.png" alt="Filter Icon" class="sort-icon">
-        Sort by 
+        Sort by
         <span class="chevron">&#9662;</span>
-    </button>    
-      <ul class="sort-options" id="sortOptions">
-          <li onclick="handleSort('default')">All Items</li>
-          <li onclick="handleSort('newest-first')">Newest First</li>
-          <li onclick="handleSort('alphabetical')">A-Z</li>
-          <li onclick="handleSort('price-low-high')">Price (low to high)</li>
-          <li onclick="handleSort('price-high-low')">Price (high to low)</li>
-      </ul>
-  </div>
-  
-  <!-- Tabs -->
-  <div id="shopping-container"></div>
+    </button>
+    <ul class="sort-options" id="sortOptions">
+        <li onclick="handleSort('default')">All Items</li>
+        <li onclick="handleSort('newest-first')">Newest First</li>
+        <li onclick="handleSort('alphabetical')">A-Z</li>
+        <li onclick="handleSort('price-low-high')">Price (low to high)</li>
+        <li onclick="handleSort('price-high-low')">Price (high to low)</li>
+    </ul>
+</div>
+
+<!-- Tabs -->
+<div id="shopping-container"></div>
 <!--Scripts-->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -185,7 +183,7 @@
 
     hamburger.addEventListener("click", () => {
         navLinks.classList.toggle("active");
-        hamburger.classList.toggle("open"); 
+        hamburger.classList.toggle("open");
     });
 
     const searchInput = document.getElementById("search");
@@ -198,7 +196,7 @@
     // Fetch items based on category ID
     async function fetchAllItems() {
         try {
-            const response = await fetch('/api/shared/items');
+            const response = await fetchWithAutoRefresh('/api/shared/items');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -219,14 +217,14 @@
     }
 
     // Call fetchAllItems when page is loaded
-document.addEventListener("DOMContentLoaded", function() {
-    fetchAllItems();
-});
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchAllItems();
+    });
 
     // Fetch items based on category ID
     async function fetchItems(categoryId) {
         try {
-            const response = await fetch(`/api/shared/items/category/${categoryId}`);
+            const response = await fetchWithAutoRefresh(`/api/shared/items/category/${categoryId}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -262,13 +260,13 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log('category:', category)
 
         try {
-            const response = await fetch(`/api/shared/items/search?keyword=${encodeURIComponent(query)}&category=${category}`);
+            const response = await fetchWithAutoRefresh(`/api/shared/items/search?keyword=${encodeURIComponent(query)}&category=${category}`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const { data: items, success } = await response.json();
+            const {data: items, success} = await response.json();
 
             if (success && items.length > 0) {
                 displayItems(items)
@@ -280,7 +278,6 @@ document.addEventListener("DOMContentLoaded", function() {
             shoppingContainer.innerHTML = "<p>Error loading items. Please try again later.</p>";
         }
     }
-
 
 
     // Clear the search field
@@ -335,8 +332,6 @@ document.addEventListener("DOMContentLoaded", function() {
             // Hide the categories container
             categoriesContainer.style.display = 'none'
             sortDropDown.style.top = '3.5rem'
-
-
 
 
             selectedCategory = currentUrl.searchParams.get('category')
@@ -442,125 +437,128 @@ document.addEventListener("DOMContentLoaded", function() {
         return categoryId;
     }
 
-// Modify the displayItems function to store items globally
-let globalItems = [];
+    // Modify the displayItems function to store items globally
+    let globalItems = [];
 
-function displayItems(items) {
-    globalItems = [...items];
-    
-    shoppingContainer.innerHTML = "";
+    function displayItems(items) {
+        globalItems = [...items];
 
-    if (!items.length) {
-        shoppingContainer.innerHTML = "<p>No items found matching your search.</p>";
-        return;
+        shoppingContainer.innerHTML = "";
+
+        if (!items.length) {
+            shoppingContainer.innerHTML = "<p>No items found matching your search.</p>";
+            return;
+        }
+
+        renderSortedItems(globalItems);
     }
 
-    renderSortedItems(globalItems);
-}
 
+    function renderSortedItems(items) {
+        localStorage.setItem("selectedItem", JSON.stringify(items[0]));
 
-function renderSortedItems(items) {
-    let shoppingList = document.createElement("ul");
-    shoppingList.className = "shoppingList";
+        let shoppingList = document.createElement("ul");
+        shoppingList.className = "shoppingList";
 
-    items.forEach(item => {
-        if (item.quantity <= 0) return;
+        items.forEach(item => {
+            if (item.quantity <= 0) return;
 
-        let li = document.createElement("li");
-        li.className = "shoppingItem";
-        li.innerHTML = `
-        <img src="/uploads/${item.image}" alt="Item Image" class="itemImage">
-       <div class="item-details"> 
-            <strong>${item.name}</strong>
-            <strong>₱ ${item.price} per day</strong>
-            <h5 title="${item.location}"> ${item.location}</h5>
-            <p class="item-quantity"> ${item.quantity} items left | <span style="color:#333333;">${item.reviews_count > 0 ? item.reviews_count + ' reviews' : 'No review'}</span> </p> 
-            </div>`;
-        li.addEventListener("click", function () {
-            localStorage.setItem("selectedItem", JSON.stringify(item));
-            window.location.href = `/user/view-product/${item.id}`;
+            let li = document.createElement("li");
+            li.className = "shoppingItem";
+            li.innerHTML = `
+                <img src="/uploads/${item.image}" alt="Item Image" class="itemImage">
+                <div class="item-details">
+                    <strong>${item.name}</strong>
+                    <strong>₱ ${item.price} per day</strong>
+                    <h5 title="${item.location}"> ${item.location}</h5>
+                    <p class="item-quantity"> ${item.quantity} items left | <span style="color:#333333;">${item.reviews_count > 0 ? item.reviews_count + ' reviews' : 'No review'}</span> </p>
+                </div>
+            `
+
+            li.addEventListener("click", function () {
+                window.location.href = `/user/view-product/${item.id}`;
+            });
+
+            shoppingList.appendChild(li);
         });
 
-        shoppingList.appendChild(li);
+        shoppingContainer.appendChild(shoppingList);
+    }
+
+    function toggleSortOptions() {
+        const options = document.getElementById("sortOptions");
+        const isOpen = options.style.display === "block";
+        options.style.display = isOpen ? "none" : "block";
+
+        const chevron = document.querySelector(".chevron");
+        chevron.style.transform = isOpen ? "rotate(0deg)" : "rotate(180deg)";
+    }
+
+    document.addEventListener("click", function (e) {
+        const dropdown = document.querySelector(".sort-dropdown");
+        const options = document.getElementById("sortOptions");
+        if (!dropdown.contains(e.target)) {
+            options.style.display = "none";
+            document.querySelector(".chevron").style.transform = "rotate(0deg)";
+        }
     });
 
-    shoppingContainer.appendChild(shoppingList);
-}
+    function handleSort(option) {
+        let sorted = [...globalItems];
+        const button = document.querySelector(".sort-toggle");
+        const chevron = document.querySelector(".chevron");
+        const sortOptions = document.getElementById("sortOptions");
 
-function toggleSortOptions() {
-    const options = document.getElementById("sortOptions");
-    const isOpen = options.style.display === "block";
-    options.style.display = isOpen ? "none" : "block";
+        switch (option) {
+            case 'default':
+                window.location.href = '/shop';
+                break;
+            case 'alphabetical':
+                sorted.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'price-low-high':
+                sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+                break;
+            case 'price-high-low':
+                sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+                break;
+            case 'newest-first':
+                sorted.sort((a, b) => {
+                    if (a.created_at && b.created_at) {
+                        return new Date(b.created_at) - new Date(a.created_at);
+                    }
+                    return b.id - a.id;
+                });
+                break;
+            default:
+                return;
+        }
 
-    const chevron = document.querySelector(".chevron");
-    chevron.style.transform = isOpen ? "rotate(0deg)" : "rotate(180deg)";
-}
+        let label = "Sort by";
+        switch (option) {
+            case 'default':
+                label = "All Items";
+                break;
+            case 'alphabetical':
+                label = "A-Z";
+                break;
+            case 'price-low-high':
+                label = "Price (low to high)";
+                break;
+            case 'price-high-low':
+                label = "Price (high to low)";
+                break;
+            case 'newest-first':
+                label = "Newest First";
+                break;
+        }
+        button.innerHTML = `${label} <span class="chevron">&#9662;</span>`;
 
-document.addEventListener("click", function (e) {
-    const dropdown = document.querySelector(".sort-dropdown");
-    const options = document.getElementById("sortOptions");
-    if (!dropdown.contains(e.target)) {
-        options.style.display = "none";
+        document.getElementById("sortOptions").style.display = "none";
         document.querySelector(".chevron").style.transform = "rotate(0deg)";
+
+        shoppingContainer.innerHTML = "";
+        renderSortedItems(sorted);
     }
-});
-
-function handleSort(option) {
-    let sorted = [...globalItems];
-    const button = document.querySelector(".sort-toggle");
-    const chevron = document.querySelector(".chevron");
-    const sortOptions = document.getElementById("sortOptions");
-
-    switch (option) {
-        case 'default':
-        window.location.href = '/shop';
-            break;
-        case 'alphabetical':
-            sorted.sort((a, b) => a.name.localeCompare(b.name));
-            break;
-        case 'price-low-high':
-            sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-            break;
-        case 'price-high-low':
-            sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-            break;
-        case 'newest-first':
-            sorted.sort((a, b) => {
-                if (a.created_at && b.created_at) {
-                    return new Date(b.created_at) - new Date(a.created_at);
-                }
-                return b.id - a.id;
-            });
-            break;
-        default:
-            return;
-    }
-
-    let label = "Sort by";
-    switch (option) {
-        case 'default':
-            label = "All Items";
-            break;
-        case 'alphabetical':
-            label = "A-Z";
-            break;
-        case 'price-low-high':
-            label = "Price (low to high)";
-            break;
-        case 'price-high-low':
-            label = "Price (high to low)";
-            break;
-        case 'newest-first':
-            label = "Newest First";
-            break;
-    }
-    button.innerHTML = `${label} <span class="chevron">&#9662;</span>`;
-
-    document.getElementById("sortOptions").style.display = "none";
-    document.querySelector(".chevron").style.transform = "rotate(0deg)";
-
-    shoppingContainer.innerHTML = "";
-    renderSortedItems(sorted);
-}
 </script>
 <script src="/js/get-category-id.js"></script>

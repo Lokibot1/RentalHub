@@ -1,0 +1,40 @@
+<script>
+    async function fetchWithAutoRefresh(url, options = {}) {
+        let res = await fetch(url, options);
+
+        // If token expired (401), try refresh
+        if (res.status === 401) {
+            const refreshed = await refreshAccessToken();
+
+            if (refreshed) {
+                // Retry original request with updated token
+                res = await fetch(url, options);
+            } else {
+                // Redirect to login if refresh failed
+                window.location.href = "/login";
+                return;
+            }
+        }
+
+        return res;
+    }
+
+    async function refreshAccessToken() {
+        try {
+            const res = await fetch("/refresh", {
+                method: "POST",
+                credentials: "include" // VERY IMPORTANT for sending cookies
+            });
+
+            return res.ok;
+        } catch (err) {
+            console.error("Refresh failed", err);
+            return false;
+        }
+    }
+
+    // Optional: Set an interval to refresh token every 14 minutes
+    setInterval(() => {
+        refreshAccessToken();
+    }, 14 * 60 * 1000); // 14 minutes
+</script>

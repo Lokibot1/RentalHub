@@ -234,6 +234,7 @@ router.get('/listing', checkAuth, async (req, res) => {
  * @route GET /user/view-product/:item_id
  */
 router.get('/view-product/:item_id', optionalAuth, async (req, res) => {
+    const { item_id } = req.params
     let renter_id = 0;
 
     // Set renter_id if logged in
@@ -241,15 +242,25 @@ router.get('/view-product/:item_id', optionalAuth, async (req, res) => {
         renter_id = req.user.id;
 
         // Fetch user status from DB
-        const sql = "SELECT status FROM users WHERE id = ?";
-        db.query(sql, [renter_id], async (err, results) => {
+        const sql = `
+            SELECT
+                logged_in_user.status AS logged_in_user_status,
+                item_owner.status AS item_owner_status
+            FROM items
+                     JOIN users AS item_owner ON item_owner.id = items.user_id
+                     JOIN users AS logged_in_user ON logged_in_user.id = ?
+            WHERE items.id = ?
+        `
+        db.query(sql, [renter_id, item_id], async (err, results) => {
             if (err || results.length === 0) {
                 return res.status(500).send("Error checking user status.");
             }
 
-            const userStatus = results[0].status;
+            console.log('results', results)
 
-            const isBanned = userStatus === 'banned';
+            const {logged_in_user_status, item_owner_status} = results[0];
+
+            const isCurrentUserBanned = logged_in_user_status === 'banned';
 
             // Proceed if not banned
             const response = await fetch(`${process.env.BASE_URL}/api/user/is-owner/${renter_id}/item-id/${req.params.item_id}`);
@@ -263,7 +274,9 @@ router.get('/view-product/:item_id', optionalAuth, async (req, res) => {
                 item_id: req.params.item_id,
                 renter_id,
                 role: req.role,
-                isBanned
+                isCurrentUserBanned,
+                loggedInUserStatus: logged_in_user_status,
+                itemOwnerStatus: item_owner_status,
             });
         });
 
@@ -280,6 +293,9 @@ router.get('/view-product/:item_id', optionalAuth, async (req, res) => {
             item_id: req.params.item_id,
             renter_id: 0,
             role: null,
+            isCurrentUserBanned: false,
+            loggedInUserStatus: '',
+            itemOwnerStatus: '',
         });
     }
 });
