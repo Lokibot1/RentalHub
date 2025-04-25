@@ -572,7 +572,7 @@ async function openForm(transactionId) {
 
     localStorage.setItem("selectedTransaction", JSON.stringify({ id: transactionId }));
 
-    const response = await fetch(
+    const response = await fetchWithAutoRefresh(
         `http://localhost:8000/api/user/my-items/renter-info-by-transaction/${transactionId}`
     );
     const data = await response.json();
@@ -652,7 +652,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const apiUrl = `http://localhost:8000/api/user/profile/renter-info/${userId}?role=${role}`;
                 console.log("Fetching data from:", apiUrl);
 
-                const response = await fetch(apiUrl);
+                const response = await fetchWithAutoRefresh(apiUrl);
                 const {data, success} = await response.json();
 
                 if (!response.ok) {
@@ -773,7 +773,7 @@ confirmButton.addEventListener('click', async function () {
             archiveModal.style.display = 'none';
 
             console.log("Sending PATCH request to archive item:", itemId);
-            const response = await fetch(`http://localhost:8000/api/user/my-items/archive-item/${itemId}`, {
+            const response = await fetchWithAutoRefresh(`http://localhost:8000/api/user/my-items/archive-item/${itemId}`, {
                 method: 'PATCH'
             });
 
@@ -852,7 +852,7 @@ confirmButton.addEventListener('click', async function () {
     // FETCH USER LISTINGS AND SORT THEM INTO TABS
     async function fetchAndSortListings() {
         try {
-            const response = await fetch("/api/user-listings"); // Fetch all user listings
+            const response = await fetchWithAutoRefresh("/api/user-listings"); // Fetch all user listings
             const listings = await response.json();
 
             // Containers for each tab
@@ -916,7 +916,7 @@ confirmButton.addEventListener('click', async function () {
     // CANCEL A SINGLE LISTING FUNCTION
     async function cancelListing(listingId) {
         try {
-            const response = await fetch(`/api/cancel-listing/${listingId}`, {
+            const response = await fetchWithAutoRefresh(`/api/cancel-listing/${listingId}`, {
                 method: "DELETE",
                 headers: {"Content-Type": "application/json"},
             });
@@ -953,7 +953,7 @@ confirmButton.addEventListener('click', async function () {
                     break;
             }
 
-            const response = await fetch(`/api/cancel-all/${status}`, {
+            const response = await fetchWithAutoRefresh(`/api/cancel-all/${status}`, {
                 method: "DELETE",
                 headers: {"Content-Type": "application/json"},
             });
@@ -1074,7 +1074,7 @@ confirmButton.addEventListener('click', async function () {
     async confirmReport(event) {
         event.preventDefault();
 
-        await fetch('http://localhost:8000/api/user/my-items/reports', {
+        await fetchWithAutoRefresh('http://localhost:8000/api/user/my-items/reports', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -1187,7 +1187,7 @@ class RentalRequest {
 
         async confirmAccept() {
             try {
-                await fetch(`http://localhost:8000/api/user/my-items/rental-requests/approved`, {
+                await fetchWithAutoRefresh(`http://localhost:8000/api/user/my-items/rental-requests/approved`, {
                     method: "PATCH",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({rental_transaction_id: this.dataId}),
@@ -1227,7 +1227,7 @@ class RentalRequest {
             const rentTransactionId = this.dataId
 
             try {
-                await fetch(`http://localhost:8000/api/user/my-items/return-items/${rentTransactionId}`, {
+                await fetchWithAutoRefresh(`http://localhost:8000/api/user/my-items/return-items/${rentTransactionId}`, {
                     method: 'PATCH',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
@@ -1313,7 +1313,7 @@ class RentalRequest {
 
             // When the user clicks "Yes", decline the request
             yesButton.addEventListener('click', async () => {
-                const response = await fetch('/api/user/my-items/rental-requests/declined', {
+                const response = await fetchWithAutoRefresh('/api/user/my-items/rental-requests/declined', {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'

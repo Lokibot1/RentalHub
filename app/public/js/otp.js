@@ -107,7 +107,7 @@ function verifyOTP() {
         if (timeLeft > 0) {
             alert(`Verifying OTP: ${otp}`);
             // Here you would typically send the OTP to your server for verification
-            fetch('/auth/otp/verify', {
+            fetchWithAutoRefresh('/auth/otp/verify', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ otp }),

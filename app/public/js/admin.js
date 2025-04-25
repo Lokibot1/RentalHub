@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const itemId = document.querySelector("[name='item_id']").value
 
         try {
-            const response = await fetch(`http://localhost:8000/api/admin/manage-listings/approve/${itemId}`, {
+            const response = await fetchWithAutoRefresh(`http://localhost:8000/api/admin/manage-listings/approve/${itemId}`, {
                 method: "POST",
             });
 
@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const itemId = document.querySelector("[name='item_id']").value
 
         try {
-            const response = await fetch(`http://localhost:8000/api/admin/manage-listings/decline-requests/${itemId}`, {
+            const response = await fetchWithAutoRefresh(`http://localhost:8000/api/admin/manage-listings/decline-requests/${itemId}`, {
                 method: "PATCH",
             });
 

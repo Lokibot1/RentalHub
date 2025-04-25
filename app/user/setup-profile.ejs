@@ -72,7 +72,7 @@
 
         const fetchData = async (url) => {
             try {
-                const response = await fetch(url);
+                const response = await fetchWithAutoRefresh(url);
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 return await response.json();
             } catch (error) {
@@ -309,7 +309,7 @@
     
         // ✅ Send formData directly (multipart/form-data)
         try {
-            await fetch("http://localhost:8000/api/user/profile/setup", {
+            await fetchWithAutoRefresh("http://localhost:8000/api/user/profile/setup", {
                 method: "PATCH",
                 body: formData, // No need for headers; browser sets it automatically
             });

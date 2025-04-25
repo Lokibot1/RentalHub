@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS reports;
 DROP TABLE IF EXISTS items;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS refresh_tokens;
 DROP TABLE IF EXISTS users;
 
 
@@ -87,19 +88,20 @@ VALUES ('admin'),
 -- items
 CREATE TABLE IF NOT EXISTS items
 (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    name        VARCHAR(100)   NOT NULL,
-    price       DECIMAL(10, 2) NOT NULL,
-    description TEXT,
-    location    VARCHAR(255)   NOT NULL,
-    file_path   VARCHAR(100)   NOT NULL,
-    user_id     INT            NOT NULL,
-    category_id INT            NOT NULL,
-    is_archived TINYINT(1)     NOT NULL DEFAULT 0,
-    is_approved TINYINT(1)     NOT NULL DEFAULT 0,
-    is_declined TINYINT(1)     NOT NULL DEFAULT 0,
-    created_at  TIMESTAMP               DEFAULT CURRENT_TIMESTAMP,
-    updated_at  TIMESTAMP               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    id             INT AUTO_INCREMENT PRIMARY KEY,
+    name           VARCHAR(100)   NOT NULL,
+    price          DECIMAL(10, 2) NOT NULL,
+    price_per_week DECIMAL(10, 2) NOT NULL,
+    description    TEXT,
+    location       VARCHAR(255)   NOT NULL,
+    file_path      VARCHAR(100)   NOT NULL,
+    user_id        INT            NOT NULL,
+    category_id    INT            NOT NULL,
+    is_archived    TINYINT(1)     NOT NULL DEFAULT 0,
+    is_approved    TINYINT(1)     NOT NULL DEFAULT 0,
+    is_declined    TINYINT(1)     NOT NULL DEFAULT 0,
+    created_at     TIMESTAMP               DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMP               DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories (id),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
@@ -130,7 +132,7 @@ CREATE TABLE inventory
     stock_quantity INT       DEFAULT 0,
     created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_updated   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+    FOREIGN KEY (item_id) REFERENCES items (id) ON DELETE CASCADE
 );
 
 
@@ -166,7 +168,18 @@ CREATE TABLE IF NOT EXISTS reports
     reasons          JSON NOT NULL,
     report_text      TEXT NOT NULL,
     status           ENUM ('reported', 'banned', 'active') DEFAULT 'reported',
-    created_at       TIMESTAMP                   DEFAULT CURRENT_TIMESTAMP,
+    created_at       TIMESTAMP                             DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (item_id) REFERENCES items (id),
     FOREIGN KEY (reporter_id) REFERENCES users (id)
+);
+
+
+-- refresh_tokens
+CREATE TABLE refresh_tokens
+(
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    token      VARCHAR(255) NOT NULL UNIQUE,
+    user_id    INT          NOT NULL,
+    expires_at DATETIME     NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );

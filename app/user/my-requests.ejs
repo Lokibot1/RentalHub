@@ -350,7 +350,7 @@
 
         async confirmAccept() {
             try {
-                await fetch(`http://localhost:8000/api/user/my-items/rental-requests/approved`, {
+                await fetchWithAutoRefresh(`http://localhost:8000/api/user/my-items/rental-requests/approved`, {
                     method: "PATCH",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({rental_transaction_id: this.dataId}),
@@ -390,7 +390,7 @@
             const rentTransactionId = this.dataId
 
             try {
-                await fetch(`http://localhost:8000/api/user/my-requests/return-items/${rentTransactionId}`, {
+                await fetchWithAutoRefresh(`http://localhost:8000/api/user/my-requests/return-items/${rentTransactionId}`, {
                     method: 'PATCH',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
@@ -437,7 +437,7 @@
         document.getElementById("cancel-all").addEventListener("click", async function () {
             try {
                 const activeTab = document.querySelector(".tablinks.active").dataset.api; // Get active tab's API
-                const response = await fetch("/api/cancel-all", { //ready na to juls for api, adjust mo nalang if diff api gagamitin mo.
+                const response = await fetchWithAutoRefresh("/api/cancel-all", { //ready na to juls for api, adjust mo nalang if diff api gagamitin mo.
                     method: "DELETE",                               //eto rin juls, adjust mo nalang din, pwede rin POST method if server restriced kase app
                     headers: {"Content-Type": "application/json"},
                 });
@@ -461,7 +461,7 @@
     // CANCEL RENT FUNCTION SA REVIEWS TAB
     async function cancelRent(rentId, containerId) {
         try {
-            const response = await fetch(`/api/cancel-rent/${rentId}`, {
+            const response = await fetchWithAutoRefresh(`/api/cancel-rent/${rentId}`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
             });
@@ -590,7 +590,7 @@
         cancelSubmit.addEventListener("click", async function () {
             if (selectedRequestId) {
                 try {
-                    const response = await fetch(`/api/user/my-requests/cancel/${selectedRequestId}`, {
+                    const response = await fetchWithAutoRefresh(`/api/user/my-requests/cancel/${selectedRequestId}`, {
                         method: 'DELETE'
                     });
 
@@ -764,7 +764,7 @@
         event.preventDefault();
 
         try {
-            await fetch('http://localhost:8000/api/user/my-items/reports', {
+            await fetchWithAutoRefresh('http://localhost:8000/api/user/my-items/reports', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

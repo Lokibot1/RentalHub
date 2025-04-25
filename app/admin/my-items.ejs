@@ -312,7 +312,7 @@
     // FETCH USER LISTINGS AND SORT THEM INTO TABS
     async function fetchAndSortListings() {
         try {
-            const response = await fetch("/api/user-listings"); // Fetch all user listings
+            const response = await fetchWithAutoRefresh("/api/user-listings"); // Fetch all user listings
             const listings = await response.json();
 
             // Containers for each tab
@@ -378,7 +378,7 @@
     // CANCEL A SINGLE LISTING FUNCTION
     async function cancelListing(listingId) {
         try {
-            const response = await fetch(`/api/cancel-listing/${listingId}`, {
+            const response = await fetchWithAutoRefresh(`/api/cancel-listing/${listingId}`, {
                 method: "DELETE",
                 headers: {"Content-Type": "application/json"},
             });
@@ -415,7 +415,7 @@
                     break;
             }
 
-            const response = await fetch(`/api/cancel-all/${status}`, {
+            const response = await fetchWithAutoRefresh(`/api/cancel-all/${status}`, {
                 method: "DELETE",
                 headers: {"Content-Type": "application/json"},
             });
@@ -534,7 +534,7 @@
 
         async confirmAccept() {
             try {
-                await fetch(`${window.location.origin}/api/admin/my-items/rental-requests/approved`, {
+                await fetchWithAutoRefresh(`${window.location.origin}/api/admin/my-items/rental-requests/approved`, {
                     method: "PATCH",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({rental_transaction_id: this.dataId}),
@@ -557,7 +557,7 @@
 
         async confirmDecline() {
             try {
-                await fetch(`${window.location.origin}/api/admin/my-items/rental-requests/declined`, {
+                await fetchWithAutoRefresh(`${window.location.origin}/api/admin/my-items/rental-requests/declined`, {
                     method: "PATCH",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({rental_transaction_id: this.dataId}),

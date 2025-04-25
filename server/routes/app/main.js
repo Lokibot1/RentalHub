@@ -41,8 +41,60 @@ router.get("/login", (req, res) => {
  * @route GET /logout
  */
 router.get("/logout", (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (refreshToken) {
+    const deleteSql = "DELETE FROM refresh_tokens WHERE token = ?";
+    db.query(deleteSql, [refreshToken], () => {
+      // Ignore error for now
+    });
+  }
+
+  // Clear cookies
   res.clearCookie("token");
+  res.clearCookie("refreshToken", { path: "/refresh" });
+
   res.redirect("/login");
+});
+
+router.post("/refresh", (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) return res.status(401).json({ message: "No refresh token provided" });
+
+  const sql = "SELECT user_id, expires_at FROM refresh_tokens WHERE token = ?";
+  db.query(sql, [refreshToken], (err, results) => {
+    if (err || results.length === 0) {
+      return res.status(403).json({ message: "Invalid refresh token" });
+    }
+
+    const tokenData = results[0];
+
+    if (new Date(tokenData.expires_at) < new Date()) {
+      return res.status(403).json({ message: "Refresh token expired" });
+    }
+
+    const getUserSql = "SELECT id, email, roles.name AS role FROM users INNER JOIN roles ON users.role_id = roles.id WHERE users.id = ?";
+    db.query(getUserSql, [tokenData.user_id], (err, userResults) => {
+      if (err || userResults.length === 0) return res.status(403).json({ message: "User not found" });
+
+      const user = userResults[0];
+
+      const newAccessToken = jwt.sign({
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      }, process.env.JWT_SECRET, { expiresIn: "15m" });
+
+      res.cookie("token", newAccessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "Strict"
+      });
+
+      res.json({ token: newAccessToken });
+    });
+  });
 });
 
 

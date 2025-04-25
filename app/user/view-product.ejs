@@ -243,7 +243,7 @@
     // Open Form (Show overlay & form)
     async function openForm() {
         const item = JSON.parse(localStorage.getItem("selectedItem"));
-        const response = await fetch(
+        const response = await fetchWithAutoRefresh(
             `http://localhost:8000/api/user/view-product/posted-by/${item.id}`
         );
         const data = await response.json();
@@ -760,7 +760,7 @@
                     };
 
                     try {
-                        const response = await fetch(`/api/user/my-requests`, {
+                        const response = await fetchWithAutoRefresh(`/api/user/my-requests`, {
                             method: "POST",
                             headers: {"Content-Type": "application/json"},
                             body: JSON.stringify(formObject),
@@ -939,7 +939,7 @@
                 const apiUrl = `http://localhost:8000/api/user/profile/reviews/${userId}?role=${role}`;
                 console.log("Fetching data from:", apiUrl);
 
-                const response = await fetch(apiUrl);
+                const response = await fetchWithAutoRefresh(apiUrl);
                 const {data, success} = await response.json();
 
                 if (!response.ok) {
@@ -1011,7 +1011,7 @@
 
 
     async function getSelectedItem(item_id) {
-        const response = await fetch(
+        const response = await fetchWithAutoRefresh(
             `http://localhost:8000/api/shared/items/search-by/${item_id}`
         );
         const {data} = await response.json();
@@ -1032,7 +1032,7 @@
         async function fetchApprovedItems() {
             try {
                 const apiUrl = `http://localhost:8000/api/user/my-items/approved/${userId}`;
-                const response = await fetch(apiUrl);
+                const response = await fetchWithAutoRefresh(apiUrl);
 
                 if (!response.ok) {
                     console.error(`HTTP error! status: ${response.status}`);
