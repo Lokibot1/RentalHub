@@ -160,40 +160,40 @@
 
   <script>
     const editBtn = document.getElementById("editBtn");
-const profilePicture = document.getElementById("profilePicture");
-const profileName = document.getElementById("profileName");
-const email = document.getElementById("email");
-const address = document.getElementById("address");
-const contact = document.getElementById("contact");
-const socialMedia = document.getElementById("socialMedia");
-const profileUpdateToast = document.getElementById("profileUpdateToast");
-const overlay = document.getElementById("overlay");
+    const profilePicture = document.getElementById("profilePicture");
+    const profileName = document.getElementById("profileName");
+    const email = document.getElementById("email");
+    const address = document.getElementById("address");
+    const contact = document.getElementById("contact");
+    const socialMedia = document.getElementById("socialMedia");
+    const profileUpdateToast = document.getElementById("profileUpdateToast");
+    const overlay = document.getElementById("overlay");
 
-let isEditing = false;
+    let isEditing = false;
 
-editBtn.addEventListener("click", async function () {
-  isEditing = !isEditing;
+    editBtn.addEventListener("click", async function () {
+      isEditing = !isEditing;
 
-  if (isEditing) {
-    editBtn.innerHTML = '<img src="/images/save-btn.png" alt="Save">';
-    email.disabled = false;
-    address.disabled = false;
-    contact.disabled = false;
-    socialMedia.disabled = false;
-    email.classList.remove("disabled");
-    address.classList.remove("disabled");
-    contact.classList.remove("disabled");
-    socialMedia.classList.remove("disabled");
-  } else {
-    editBtn.innerHTML = '<img src="/images/edit-btn.png" alt="Edit">';
-    email.disabled = true;
-    address.disabled = true;
-    contact.disabled = true;
-    socialMedia.disabled = true;
-    email.classList.add("disabled");
-    address.classList.add("disabled");
-    contact.classList.add("disabled");
-    socialMedia.classList.add("disabled");
+      if (isEditing) {
+        editBtn.innerHTML = '<img src="/images/save-btn.png" alt="Save">';
+        email.disabled = false;
+        address.disabled = false;
+        contact.disabled = false;
+        socialMedia.disabled = false;
+        email.classList.remove("disabled");
+        address.classList.remove("disabled");
+        contact.classList.remove("disabled");
+        socialMedia.classList.remove("disabled");
+      } else {
+        editBtn.innerHTML = '<img src="/images/edit-btn.png" alt="Edit">';
+        email.disabled = true;
+        address.disabled = true;
+        contact.disabled = true;
+        socialMedia.disabled = true;
+        email.classList.add("disabled");
+        address.classList.add("disabled");
+        contact.classList.add("disabled");
+        socialMedia.classList.add("disabled");
 
         try {
           await fetchWithAutoRefresh("http://localhost:8000/api/user/profile/update", {
@@ -209,19 +209,19 @@ editBtn.addEventListener("click", async function () {
             }),
           });
 
-      // ✅ Show toast and overlay
-      profileUpdateToast.classList.add("show");
-      overlay.style.display = "block";
+          
+          profileUpdateToast.classList.add("show");
+          overlay.style.display = "block";
 
-      // ✅ Hide after 3 seconds
-      setTimeout(() => {
-        profileUpdateToast.classList.remove("show");
-        overlay.style.display = "none";
-        location.reload(); // Refresh after toast disappears
-      }, 3000);
-    } catch (error) {
-      alert(error.message);
-    }
+         
+          setTimeout(() => {
+            profileUpdateToast.classList.remove("show");
+            overlay.style.display = "none";
+            location.reload(); 
+          }, 3000);
+        } catch (error) {
+          alert(error.message);
+        }
 
         // Save the updated values (log lang muna sya for now, wala pa naman backend e hehe adjust nyo nalang san masstore)
         console.log("Updated Info:");
