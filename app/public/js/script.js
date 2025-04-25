@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("Login successful!");
                 window.location.href = "index.html"; // Redirect to homepage
             } catch (error) {
-                alert(error.message);
+                alert("Login Failed: This may be due to an invalid email or password. Please try again.");
             }
         });
     }

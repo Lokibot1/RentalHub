@@ -197,7 +197,7 @@
                         <% } else if (!isCurrentUserBanned && itemOwnerStatus === 'banned') { %>
                                 <button type="submit"
                                         class="request-btn"
-                                        onclick="alert('Unable to send a rental request. The item owner is banned.'); return false;">
+                                        onclick= "showOwnerIsRestrictedToast(event)">
                                     Request
                                 </button>
 
@@ -233,6 +233,10 @@
         </div>
     <% } %>
 
+    <!-- Toast Notification for Users trying to submit a new request to a restricted user. -->
+    <div id="modal-overlay" class="overlay"></div>
+    <div id="owner-is-restricted-toast" class="toast">Request Failed! Owner is currently restricted.</div>
+
 </div>
 
 <script>
@@ -251,6 +255,21 @@
         document.getElementById("myForm").style.display = "none";
         document.getElementById("modalOverlay").style.display = "none";
     });
+
+    function showOwnerIsRestrictedToast() {
+        event.preventDefault(); // prevent form submission
+
+        const toast = document.getElementById("owner-is-restricted-toast");
+        const overlay = document.getElementById("modal-overlay");
+
+        toast.classList.add("show");
+        overlay.style.display = "block";
+
+         setTimeout(() => {
+            toast.classList.remove("show");
+            overlay.style.display = "none";
+        }, 3000);
+    }
 
     // Open Form (Show overlay & form)
     async function openForm() {
