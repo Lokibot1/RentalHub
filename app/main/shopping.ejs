@@ -455,6 +455,8 @@
 
 
     function renderSortedItems(items) {
+        localStorage.setItem("selectedItem", JSON.stringify(items[0]));
+
         let shoppingList = document.createElement("ul");
         shoppingList.className = "shoppingList";
 
@@ -464,15 +466,16 @@
             let li = document.createElement("li");
             li.className = "shoppingItem";
             li.innerHTML = `
-        <img src="/uploads/${item.image}" alt="Item Image" class="itemImage">
-       <div class="item-details"> 
-            <strong>${item.name}</strong>
-            <strong>₱ ${item.price} per day</strong>
-            <h5 title="${item.location}"> ${item.location}</h5>
-            <p class="item-quantity"> ${item.quantity} items left | <span style="color:#333333;">${item.reviews_count > 0 ? item.reviews_count + ' reviews' : 'No review'}</span> </p> 
-            </div>`;
+                <img src="/uploads/${item.image}" alt="Item Image" class="itemImage">
+                <div class="item-details">
+                    <strong>${item.name}</strong>
+                    <strong>₱ ${item.price} per day</strong>
+                    <h5 title="${item.location}"> ${item.location}</h5>
+                    <p class="item-quantity"> ${item.quantity} items left | <span style="color:#333333;">${item.reviews_count > 0 ? item.reviews_count + ' reviews' : 'No review'}</span> </p>
+                </div>
+            `
+
             li.addEventListener("click", function () {
-                localStorage.setItem("selectedItem", JSON.stringify(item));
                 window.location.href = `/user/view-product/${item.id}`;
             });
 

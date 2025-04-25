@@ -219,11 +219,13 @@ router.get('/category/:category_id', async (req, res) => {
             return res.status(500).json({success: false, message: "Query failed."});
         }
 
+        // Custom filtering of results especially for price_per_week
         const filteredResults = results.map(
             ({
                  id,
                  name,
                  price,
+                 price_per_week,
                  description,
                  location,
                  quantity,
@@ -238,6 +240,7 @@ router.get('/category/:category_id', async (req, res) => {
                     id,
                     name,
                     price,
+                    price_per_week,
                     description,
                     location,
                     quantity,
