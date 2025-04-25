@@ -84,7 +84,7 @@ router.post("/refresh", (req, res) => {
         id: user.id,
         email: user.email,
         role: user.role,
-      }, process.env.JWT_SECRET, { expiresIn: "15m" });
+      }, process.env.JWT_SECRET, { expiresIn: "15h" });
 
       res.cookie("token", newAccessToken, {
         httpOnly: true,
