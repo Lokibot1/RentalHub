@@ -76,6 +76,10 @@
         <div id="profileUpdateToast" class="toast">Profile updated successfully!</div>
 
 
+        <div id="overlay" class="overlay"></div>
+        <div id="profileUpdateToast" class="toast">Profile updated successfully!</div>
+
+
         <div id="Reviews" class="tab-content">
           <h2>Reviewed As:</h2>
           <div class="toggle-wrapper">
@@ -160,40 +164,40 @@
 
   <script>
     const editBtn = document.getElementById("editBtn");
-    const profilePicture = document.getElementById("profilePicture");
-    const profileName = document.getElementById("profileName");
-    const email = document.getElementById("email");
-    const address = document.getElementById("address");
-    const contact = document.getElementById("contact");
-    const socialMedia = document.getElementById("socialMedia");
-    const profileUpdateToast = document.getElementById("profileUpdateToast");
-    const overlay = document.getElementById("overlay");
+const profilePicture = document.getElementById("profilePicture");
+const profileName = document.getElementById("profileName");
+const email = document.getElementById("email");
+const address = document.getElementById("address");
+const contact = document.getElementById("contact");
+const socialMedia = document.getElementById("socialMedia");
+const profileUpdateToast = document.getElementById("profileUpdateToast");
+const overlay = document.getElementById("overlay");
 
-    let isEditing = false;
+let isEditing = false;
 
-    editBtn.addEventListener("click", async function () {
-      isEditing = !isEditing;
+editBtn.addEventListener("click", async function () {
+  isEditing = !isEditing;
 
-      if (isEditing) {
-        editBtn.innerHTML = '<img src="/images/save-btn.png" alt="Save">';
-        email.disabled = false;
-        address.disabled = false;
-        contact.disabled = false;
-        socialMedia.disabled = false;
-        email.classList.remove("disabled");
-        address.classList.remove("disabled");
-        contact.classList.remove("disabled");
-        socialMedia.classList.remove("disabled");
-      } else {
-        editBtn.innerHTML = '<img src="/images/edit-btn.png" alt="Edit">';
-        email.disabled = true;
-        address.disabled = true;
-        contact.disabled = true;
-        socialMedia.disabled = true;
-        email.classList.add("disabled");
-        address.classList.add("disabled");
-        contact.classList.add("disabled");
-        socialMedia.classList.add("disabled");
+  if (isEditing) {
+    editBtn.innerHTML = '<img src="/images/save-btn.png" alt="Save">';
+    email.disabled = false;
+    address.disabled = false;
+    contact.disabled = false;
+    socialMedia.disabled = false;
+    email.classList.remove("disabled");
+    address.classList.remove("disabled");
+    contact.classList.remove("disabled");
+    socialMedia.classList.remove("disabled");
+  } else {
+    editBtn.innerHTML = '<img src="/images/edit-btn.png" alt="Edit">';
+    email.disabled = true;
+    address.disabled = true;
+    contact.disabled = true;
+    socialMedia.disabled = true;
+    email.classList.add("disabled");
+    address.classList.add("disabled");
+    contact.classList.add("disabled");
+    socialMedia.classList.add("disabled");
 
         try {
           await fetchWithAutoRefresh("http://localhost:8000/api/user/profile/update", {
