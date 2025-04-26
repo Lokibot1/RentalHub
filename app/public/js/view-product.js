@@ -64,7 +64,7 @@ function openForm() {
             ? (
                 ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length
               ).toFixed(1)
-            : "No Ratings";
+            : "This item has no ratings yet.";
   
         document.getElementById("owner-rating").innerHTML =
           generateStars(averageRating);
@@ -76,7 +76,7 @@ function openForm() {
   
   // Function to convert rating number to stars
   function generateStars(rating) {
-    if (rating === "No Ratings") return rating;
+    if (rating === "This item has no ratings yet.") return rating;
     let stars = "⭐".repeat(Math.floor(rating)); // Full stars
     return stars + ` (${rating})`; // Show the average rating value
   }

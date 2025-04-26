@@ -154,7 +154,7 @@ function showOwnerIsRestrictedToast() {
                 document.getElementById("owner-image").src = `/uploads/${item.profile_image}` || "default-owner.jpg";
                 document.getElementById("owner-name").textContent = item.owner;
                 document.getElementById("owner-location").textContent = item.location;
-                document.getElementById("owner-rating").innerHTML = item.average_rating ? `⭐ ${item.average_rating}` : 'No Ratings'
+                document.getElementById("owner-rating").innerHTML = item.average_rating ? `⭐ ${item.average_rating}` : 'This item has no ratings yet.'
 
                 const rentalQuantity = document.querySelector("[name='rental_quantity']");
             if (rentalQuantity) {
@@ -168,7 +168,7 @@ function showOwnerIsRestrictedToast() {
     })
 
     function generateStars(rating) {
-        if (rating === "No Ratings") return rating;
+        if (rating === "This item has no ratings yet.") return rating;
         let stars = "⭐".repeat(Math.floor(rating)); // Full stars
         return stars + ` (${rating})`; // Show the average rating value
     }

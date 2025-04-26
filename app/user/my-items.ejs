@@ -605,7 +605,7 @@ async function openForm(transactionId) {
     document.querySelector("#location").textContent = city;
     document.querySelector(
         "p#renter-rating"
-    ).textContent = average_rating ? `⭐ ${parseFloat(average_rating).toFixed(2)}` : 'No Ratings';
+    ).textContent = average_rating ? `⭐ ${parseFloat(average_rating).toFixed(2)}` : 'This item has no ratings yet.';
 
     document.getElementById("myForm").style.display = "flex";
     document.getElementById("modalOverlay").style.display = "block";

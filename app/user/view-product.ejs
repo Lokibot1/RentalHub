@@ -300,7 +300,7 @@
         document.querySelector("#location").textContent = location;
         document.querySelector(
             "p#owner-rating"
-        ).textContent = selectedItem.average_rating ? `⭐ ${selectedItem.average_rating}` : 'No Ratings'
+        ).textContent = selectedItem.average_rating ? `⭐ ${selectedItem.average_rating}` : 'This item has no ratings yet.'
 
         document.getElementById("myForm").style.display = "flex";
         document.getElementById("modalOverlay").style.display = "block"; // Show the overlay
@@ -369,7 +369,7 @@
                 selectedItem.location || "Unknown Location";
             document.querySelector(
                 "#owner-rating"
-            ).textContent = selectedItem.average_rating ? `⭐ ${selectedItem.average_rating}` : 'No Ratings'
+            ).textContent = selectedItem.average_rating ? `⭐ ${selectedItem.average_rating}` : 'This item has no ratings yet.'
         } else {
             alert("No product selected!");
             window.location.href = ".shopping";
@@ -381,7 +381,7 @@
 
     // Function to convert rating number to stars
     function generateStars(rating) {
-        if (rating === "No Ratings") return rating;
+        if (rating === "This item has no ratings yet.") return rating;
         let stars = "⭐".repeat(Math.floor(rating)); // Full stars
         return stars + ` (${rating})`; // Show the average rating value
     }
