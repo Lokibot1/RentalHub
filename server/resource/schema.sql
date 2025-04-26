@@ -147,7 +147,7 @@ CREATE TABLE rental_transactions
     total_price             DECIMAL(10, 2)              NOT NULL,
     rental_quantity         INT                         NOT NULL                         DEFAULT 1,
     mode_of_delivery        ENUM ('meetup', 'delivery') NOT NULL                         DEFAULT 'meetup',
-    status                  ENUM ('pending', 'ongoing', 'cancelled', 'declined', 'done') DEFAULT 'pending',
+    status                  ENUM ('pending', 'ongoing', 'cancelled', 'declined', 'done', 'voided') DEFAULT 'pending',
     is_renter_submit_review TINYINT(1)                  NOT NULL                         DEFAULT 0,
     is_owner_submit_review  TINYINT(1)                  NOT NULL                         DEFAULT 0,
     is_approved             TINYINT(1)                  NOT NULL                         DEFAULT 0,

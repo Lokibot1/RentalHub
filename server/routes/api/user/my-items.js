@@ -224,6 +224,7 @@ router.get("/rental-requests/:user_id", async (req, res) => {
                  JOIN inventory ON inventory.item_id = items.id
         WHERE rental_transactions.is_approved = 0
           AND rental_transactions.status != 'declined'
+          AND rental_transactions.status != 'voided'
           AND items.user_id = ?
     `
     db.query(sql, [user_id], (err, results) => {
