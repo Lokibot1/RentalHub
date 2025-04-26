@@ -364,7 +364,7 @@ router.patch("/rental-requests/approved", (req, res) => {
 
             if (is_archived) {
                 console.log("Update failed. Item is archived.");
-                return rollback(res, "Update failed. Item is archived.");
+                return rollback(res, "Update failed. Item is archived.", 403);
             }
 
             const ownerContact = {
@@ -468,8 +468,8 @@ router.patch("/rental-requests/declined", (req, res) => {
 
 
 // Helper function to rollback transaction
-function rollback(res, message) {
-    db.rollback(() => res.status(400).json({ success: false, message }));
+function rollback(res, message, status = 400) {
+    db.rollback(() => res.status(status).json({ success: false, message }));
 }
 
 
