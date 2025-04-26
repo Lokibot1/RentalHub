@@ -1258,6 +1258,7 @@ class RentalRequest {
     confirmDecline() {
         this.declineConfirmationModal.style.display = "none";
         this.declineContainer.style.display = "block";
+        this.overlay.style.display = "block";
 
         setTimeout(() => {
             this.overlay.style.display = "none";
