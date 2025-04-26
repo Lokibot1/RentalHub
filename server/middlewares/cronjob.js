@@ -3,7 +3,7 @@ import { db } from "../configs/db.js";
 import { sendNotification } from '../helpers/send-notification.js'; // Import your mailer utility
 
 // Run every 2 minutes (for testing)
-cron.schedule('*/2 * * * *', () => {
+cron.schedule('0 * * * *', () => {
     console.log('Running rental request cleanup cron...');
 
     // Step 1: Find transactions that should be voided
