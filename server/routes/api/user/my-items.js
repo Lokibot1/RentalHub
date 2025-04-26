@@ -343,7 +343,7 @@ router.patch("/rental-requests/approved", (req, res) => {
         const selectSql = `
             SELECT rt.item_id, rt.rental_quantity, i.user_id AS item_owner_id, rt.renter_id,
 					i.name   AS item_name,
-                   renter.email AS renter_email,
+                   renter.email AS renter_email, i.is_archived,
                    owner.email  AS owner_email,
                    owner.contact_number,
                    owner.social_media
@@ -359,7 +359,12 @@ router.patch("/rental-requests/approved", (req, res) => {
                 return rollback(res, "Transaction details not found.")
             }
 
-            const { item_id, item_name, rental_quantity, renter_email, contact_number, owner_email, social_media } = results[0];
+            const { item_id, item_name, rental_quantity, renter_email, contact_number, owner_email, social_media, is_archived } = results[0];
+
+            if (is_archived) {
+                console.log("Update failed. Item is archived.");
+                return rollback(res, "Update failed. Item is archived.");
+            }
 
             const ownerContact = {
                 contact_number,
