@@ -76,43 +76,122 @@ router.patch("/setup", upload.single('profile_image'), async (req, res) => {
     });
 });
 
+// /**
+//  * Update profile inside user dashboard
+//  *
+//  * @route PATCH /api/user/profile/update
+//  */
+// router.patch("/update", async (req, res) => {
+//     const token = req.cookies.token || '';
+//     const user = jwt.verify(token, process.env.JWT_SECRET);
+//     const {profile_image, email, contact_number, social_media, address} = req.body
+
+//     const sql = `
+//         UPDATE users
+//         SET profile_image  = ?,
+//             email          = ?,
+//             contact_number = ?,
+//             social_media   = ?,
+//             address        = ?
+//         WHERE id = ?
+//     `
+
+//     db.query(sql, [
+//         profile_image,
+//         email,
+//         contact_number,
+//         social_media,
+//         address,
+//         user.id
+//     ], (err) => {
+//         if (err) {
+//             console.error("Database not connected", err);
+//             return res.status(500).json({success: false, message: "Update failed."});
+//         }
+
+//         res.status(200).json({
+//             success: true,
+//             message: `Profile updated!`
+//         });
+//     });
+// });
+
+
 /**
  * Update profile inside user dashboard
  *
  * @route PATCH /api/user/profile/update
  */
-router.patch("/update", async (req, res) => {
-    const token = req.cookies.token || '';
-    const user = jwt.verify(token, process.env.JWT_SECRET);
-    const {email, contact_number, social_media, address} = req.body
+router.patch("/update", upload.single('profile_image'), async (req, res) => {
+    try {
+        const token = req.cookies.token || '';
+        const user = jwt.verify(token, process.env.JWT_SECRET);
 
-    const sql = `
-        UPDATE users
-        SET email          = ?,
-            contact_number = ?,
-            social_media   = ?,
-            address        = ?
-        WHERE id = ?
-    `
+        const { email, contact_number, social_media, address } = req.body;
+        let profile_image = null;
 
-    db.query(sql, [
-        email,
-        contact_number,
-        social_media,
-        address,
-        user.id
-    ], (err) => {
-        if (err) {
-            console.error("Database not connected", err);
-            return res.status(500).json({success: false, message: "Update failed."});
+        if (req.file) {
+            profile_image = req.file.filename; // Save filename only
         }
 
-        res.status(200).json({
-            success: true,
-            message: `Profile updated!`
+        let fieldsToUpdate = [];
+        let values = [];
+
+        if (profile_image) {
+            fieldsToUpdate.push('profile_image = ?');
+            values.push(profile_image);
+        }
+
+        if (email) {
+            fieldsToUpdate.push('email = ?');
+            values.push(email);
+        }
+
+        if (contact_number) {
+            fieldsToUpdate.push('contact_number = ?');
+            values.push(contact_number);
+        }
+
+        if (social_media) {
+            fieldsToUpdate.push('social_media = ?');
+            values.push(social_media);
+        }
+
+        if (address) {
+            fieldsToUpdate.push('address = ?');
+            values.push(address);
+        }
+
+        if (fieldsToUpdate.length === 0) {
+            return res.status(400).json({ success: false, message: "No fields to update." });
+        }
+
+        values.push(user.id);
+
+        const sql = `
+            UPDATE users
+            SET ${fieldsToUpdate.join(', ')}
+            WHERE id = ?
+        `;
+
+        db.query(sql, values, (err) => {
+            if (err) {
+                console.error("Database update error", err);
+                return res.status(500).json({ success: false, message: "Update failed." });
+            }
+
+            res.status(200).json({
+                success: true,
+                message: "Profile updated successfully!",
+            });
         });
-    });
+
+    } catch (error) {
+        console.error("Error during profile update", error);
+        return res.status(401).json({ success: false, message: "Invalid or expired token." });
+    }
 });
+
 
 
 /**

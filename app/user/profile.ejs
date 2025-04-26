@@ -27,134 +27,136 @@
           <div class="tab">
             <button class="tablinks active" onclick="openTab(event, 'Profile')">Profile</button>
             <button class="tablinks" onclick="openTab(event, 'Reviews')">Reviews</button>
-            
+
             <div id="Profile" class="tab-content" style="display: block">
-          <div class="profile-header">
-            <label for="profileImageInput">
-              <img src="/uploads/<%= userProfile.profile_image %>" alt="Profile Picture" class="profile-img"
-                id="profilePicture" />
-            </label>
-            <input type="file" id="profileImageInput" accept="image/*" hidden />
-            <div class="profile-name">
-              <h2 id="profileName" style="color: #121212f1;">
-                <%= userProfile.fullname %>
-              </h2>
-              <i>Joined since <%= formattedDate %></i>
-            </div>
-            <button id="editBtn" class="edit-btn">
-              <img src="/images/edit-btn.png" alt="Edit" />
-            </button>
-          </div>
-
-          <form class="profile-form">
-            <div class="email">
-              <label for="email">Email Address</label>
-              <input type="text" id="email" value="<%= userProfile.email %>" placeholder="Email Address" disabled />
-            </div>
-            <hr />
-            <div class="contact">
-              <div>
-                <label for="contact">Contact Number</label>
-                <input type="text" id="contact" value="<%= userProfile.contact_number %>" placeholder="Contact Number"
-                  disabled />
+              <div class="profile-header">
+                <label for="profileImageInput">
+                  <img src="/uploads/<%= userProfile.profile_image %>" alt="Profile Picture" class="profile-img"
+                    id="profilePicture" />
+                </label>
+                <input type="file" id="profileImageInput" accept="image/*" hidden />
+                <div class="profile-name">
+                  <h2 id="profileName" style="color: #121212f1;">
+                    <%= userProfile.fullname %>
+                  </h2>
+                  <i>Joined since <%= formattedDate %></i>
+                </div>
+                <button id="editBtn" class="edit-btn">
+                  <img src="/images/edit-btn.png" alt="Edit" />
+                </button>
               </div>
-              <div>
-                <label for="socialMedia">Social Media</label>
-                <input type="text" id="socialMedia" value="<%= userProfile.social_media %>" placeholder="Social Media"
-                  disabled />
+
+              <form class="profile-form">
+                <div class="email">
+                  <label for="email">Email Address</label>
+                  <input type="text" id="email" value="<%= userProfile.email %>" placeholder="Email Address" disabled />
+                </div>
+                <hr />
+                <div class="contact">
+                  <div>
+                    <label for="contact">Contact Number</label>
+                    <input type="text" id="contact" value="<%= userProfile.contact_number %>"
+                      placeholder="Contact Number" disabled />
+                  </div>
+                  <div>
+                    <label for="socialMedia">Social Media</label>
+                    <input type="text" id="socialMedia" value="<%= userProfile.social_media %>"
+                      placeholder="Social Media" disabled />
+                  </div>
+                </div>
+                <hr />
+                <div class="address">
+                  <label for="address">Address</label>
+                  <input type="text" id="address" value="<%= userProfile.address %>" placeholder="Address" disabled />
+                </div>
+              </form>
+            </div>
+
+            <div id="overlay" class="overlay"></div>
+            <div id="profileUpdateToast" class="toast">Profile updated successfully!</div>
+
+
+            <div id="Reviews" class="tab-content">
+              <h2>Reviewed As:</h2>
+              <div class="toggle-wrapper">
+                <div class="toggle-container">
+                  <button id="renterBtn" class="toggle-btn" style="color: #121212f1;">Renter</button>
+                  <button id="ownerBtn" class="toggle-btn" style="color: #121212f1;">Owner</button>
+                  <div class="toggle-slider"></div>
+                </div>
               </div>
-            </div>
-            <hr />
-            <div class="address">
-              <label for="address">Address</label>
-              <input type="text" id="address" value="<%= userProfile.address %>" placeholder="Address" disabled />
-            </div>
-          </form>
-        </div>
 
-        <div id="overlay" class="overlay"></div>
-        <div id="profileUpdateToast" class="toast">Profile updated successfully!</div>
-
-
-        <div id="Reviews" class="tab-content">
-          <h2>Reviewed As:</h2>
-          <div class="toggle-wrapper">
-            <div class="toggle-container">
-                <button id="renterBtn" class="toggle-btn" style="color: #121212f1;">Renter</button>
-                <button id="ownerBtn" class="toggle-btn" style="color: #121212f1;">Owner</button>
-                <div class="toggle-slider"></div>
-            </div>
-        </div>
-    
-        <div id="renterContent" class="content-box">
-            <div class="content-wrapper">
-              <hr>
-              <br>
-                <div class="review-header">
+              <div id="renterContent" class="content-box">
+                <div class="content-wrapper">
+                  <hr>
+                  <br>
+                  <div class="review-header">
                     <label for="profileImageInput">
                       <img src="/uploads/<%= userProfile.profile_image %>" alt="Profile Picture" class="profile-img"
                         id="profilePicture" />
                     </label>
-                    
-                  <div class="header-info">
-                    <h2 id="profileName">
-                      <p>name</p>
-                      <%= userProfile.fullname %>
-                    </h2>
+
+                    <div class="header-info">
+                      <h2 id="profileName">
+                        <p>name</p>
+                        <%= userProfile.fullname %>
+                      </h2>
                       <h4 id="profileLocation">
                         <p>location</p>
                       </h4>
                     </div>
-              </div>
-              <br>
+                  </div>
+                  <br>
                   <div class="review-content">
                     <div class="item-rate">
                       <span id="owner-rating">⭐ Loading...</span>
-                       <p>Item Name</p>
+                      <p>Item Name</p>
                     </div>
-                      <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
+                    <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
+                      labore et
                       dolore magna aliqua.</p>
+                  </div>
+                  <br>
+                  <hr>
                 </div>
-                <br>
-                <hr>
-        </div>
-        </div>
-    
-        <div id="ownerContent" class="content-box" style="display: none">
-          <div class="content-wrapper">
-            <hr>
-            <br>
-              <div class="review-header">
-                  <label for="profileImageInput">
-                    <img src="/uploads/<%= userProfile.profile_image %>" alt="Profile Picture" class="profile-img"
-                      id="profilePicture" />
-                  </label>
-                  
-                <div class="header-info">
-                  <h2 id="profileName">
-                    <p>name</p>
-                    <%= userProfile.fullname %>
-                  </h2>
-                    <h4 id="profileLocation">
-                      <p>location</p>
-                    </h4>
-                  </div>
-            </div>
-            <br>
-                <div class="review-content">
-                  <div class="item-rate">
-                    <span id="owner-rating">⭐ Loading...</span>
-                     <p>Item Name</p>
-                  </div>
-                    <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua.</p>
               </div>
-              <br>
-              <hr>
+
+              <div id="ownerContent" class="content-box" style="display: none">
+                <div class="content-wrapper">
+                  <hr>
+                  <br>
+                  <div class="review-header">
+                    <label for="profileImageInput">
+                      <img src="/uploads/<%= userProfile.profile_image %>" alt="Profile Picture" class="profile-img"
+                        id="profilePicture" />
+                    </label>
+
+                    <div class="header-info">
+                      <h2 id="profileName">
+                        <p>name</p>
+                        <%= userProfile.fullname %>
+                      </h2>
+                      <h4 id="profileLocation">
+                        <p>location</p>
+                      </h4>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="review-content">
+                    <div class="item-rate">
+                      <span id="owner-rating">⭐ Loading...</span>
+                      <p>Item Name</p>
+                    </div>
+                    <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
+                      labore et
+                      dolore magna aliqua.</p>
+                  </div>
+                  <br>
+                  <hr>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        </div>
-      </div>
       </div>
   </div>
 
@@ -195,34 +197,57 @@
         contact.classList.add("disabled");
         socialMedia.classList.add("disabled");
 
+        // try {
+        //   await fetchWithAutoRefresh("http://localhost:8000/api/user/profile/update", {
+        //     method: "PATCH",
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({
+        //       profile_image: profilePicture.src.split("/").pop(), // Extract the image name from the src
+        //       email: email.value,
+        //       contact_number: contact.value,
+        //       social_media: socialMedia.value,
+        //       address: address.value,
+        //     }),
+        //   });
+
+
         try {
+          const formData = new FormData();
+
+          // Append regular fields
+          formData.append("email", email.value);
+          formData.append("contact_number", contact.value);
+          formData.append("social_media", socialMedia.value);
+          formData.append("address", address.value);
+
+          // Append image only if a new one was selected
+          const file = profileImageInput.files[0];
+          if (file) {
+            formData.append("profile_image", file);
+          }
+
           await fetchWithAutoRefresh("http://localhost:8000/api/user/profile/update", {
             method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              profile_image: profilePicture.src.split("/").pop(), // Extract the image name from the src
-              email: email.value,
-              contact_number: contact.value,
-              social_media: socialMedia.value,
-              address: address.value,
-            }),
+            body: formData,
+            credentials: "include", // needed to send cookies
           });
 
-          
           profileUpdateToast.classList.add("show");
           overlay.style.display = "block";
 
-         
           setTimeout(() => {
             profileUpdateToast.classList.remove("show");
             overlay.style.display = "none";
-            location.reload(); 
+            location.reload();
           }, 3000);
+
         } catch (error) {
           alert(error.message);
         }
+
+
 
         // Save the updated values (log lang muna sya for now, wala pa naman backend e hehe adjust nyo nalang san masstore)
         console.log("Updated Info:");
@@ -261,31 +286,31 @@
       const ownerBtn = document.getElementById("ownerBtn");
       const renterContent = document.getElementById("renterContent");
       const ownerContent = document.getElementById("ownerContent");
-      const userId = "<%= userProfile.id %>"; 
+      const userId = "<%= userProfile.id %>";
 
       async function fetchReviews(role) {
-          try {
-              const response = await fetchWithAutoRefresh(`http://localhost:8000/api/user/profile/reviews/${userId}?role=${role}`);
-              const data = await response.json();
+        try {
+          const response = await fetchWithAutoRefresh(`http://localhost:8000/api/user/profile/reviews/${userId}?role=${role}`);
+          const data = await response.json();
 
-              if (data.success) {
-                  renderReviews(data.data, role);
-              } else {
-                  console.error("Failed to fetch reviews");
-              }
-          } catch (error) {
-              console.error("Error fetching reviews:", error);
+          if (data.success) {
+            renderReviews(data.data, role);
+          } else {
+            console.error("Failed to fetch reviews");
           }
+        } catch (error) {
+          console.error("Error fetching reviews:", error);
+        }
       }
 
       function renderReviews(reviews, role) {
-          const contentBox = role === "renter" ? renterContent : ownerContent;
-          contentBox.innerHTML = ""; 
+        const contentBox = role === "renter" ? renterContent : ownerContent;
+        contentBox.innerHTML = "";
 
-          reviews.forEach(review => {
-            const formattedDate = new Date(review.date_posted).toLocaleDateString('en-US');
-            
-              const reviewHTML = `
+        reviews.forEach(review => {
+          const formattedDate = new Date(review.date_posted).toLocaleDateString('en-US');
+
+          const reviewHTML = `
                   <div class="content-wrapper">
                       <hr>
                       <br>
@@ -309,25 +334,25 @@
                       <br>
                       <hr>
                   </div>`;
-              contentBox.innerHTML += reviewHTML;
-          });
+          contentBox.innerHTML += reviewHTML;
+        });
       }
 
       renterBtn.addEventListener("click", () => {
-          renterContent.style.display = "block";
-          ownerContent.style.display = "none";
-          fetchReviews("renter");
+        renterContent.style.display = "block";
+        ownerContent.style.display = "none";
+        fetchReviews("renter");
       });
 
       ownerBtn.addEventListener("click", () => {
-          ownerContent.style.display = "block";
-          renterContent.style.display = "none";
-          fetchReviews("owner");
+        ownerContent.style.display = "block";
+        renterContent.style.display = "none";
+        fetchReviews("owner");
       });
 
       // Load renter reviews by default
       fetchReviews("renter");
-  });
+    });
 
     //logout
     document.addEventListener("DOMContentLoaded", function () {
@@ -358,49 +383,49 @@
 
     // OPEN TAB FUNCTION
     function openTab(evt, tabName) {
-        let i, tabs, buttons;
-        tabs = document.getElementsByClassName("tab-content");
-        for (i = 0; i < tabs.length; i++) {
-            tabs[i].style.display = "none";
-        }
-        buttons = document.getElementsByClassName("tablinks");
-        for (i = 0; i < buttons.length; i++) {
-            buttons[i].classList.remove("active");
-        }
-        document.getElementById(tabName).style.display = "block";
-        evt.currentTarget.classList.add("active");
+      let i, tabs, buttons;
+      tabs = document.getElementsByClassName("tab-content");
+      for (i = 0; i < tabs.length; i++) {
+        tabs[i].style.display = "none";
+      }
+      buttons = document.getElementsByClassName("tablinks");
+      for (i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("active");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.classList.add("active");
     }
 
     // Toggle between renter and owner
-document.addEventListener("DOMContentLoaded", function () {
-    const renterBtn = document.getElementById("renterBtn");
-    const ownerBtn = document.getElementById("ownerBtn");
-    const slider = document.querySelector(".toggle-slider");
-    const renterContent = document.getElementById("renterContent");
-    const ownerContent = document.getElementById("ownerContent");
+    document.addEventListener("DOMContentLoaded", function () {
+      const renterBtn = document.getElementById("renterBtn");
+      const ownerBtn = document.getElementById("ownerBtn");
+      const slider = document.querySelector(".toggle-slider");
+      const renterContent = document.getElementById("renterContent");
+      const ownerContent = document.getElementById("ownerContent");
 
-    // Default state: Show "For Renters" and position the slider
-    slider.style.transform = "translateX(0%)";
-    renterBtn.style.color = "#12263f";
-    ownerBtn.style.color = "white";
-    renterContent.style.display = "block"; // Show renters section
-    ownerContent.style.display = "none"; // Hide owners section
+      // Default state: Show "For Renters" and position the slider
+      slider.style.transform = "translateX(0%)";
+      renterBtn.style.color = "#12263f";
+      ownerBtn.style.color = "white";
+      renterContent.style.display = "block"; // Show renters section
+      ownerContent.style.display = "none"; // Hide owners section
 
-    renterBtn.addEventListener("click", function () {
+      renterBtn.addEventListener("click", function () {
         slider.style.transform = "translateX(0%)";
         renterBtn.style.color = "#12263f";
         ownerBtn.style.color = "white";
         renterContent.style.display = "block"; // Show renters section
         ownerContent.style.display = "none"; // Hide owners section
-    });
+      });
 
-    ownerBtn.addEventListener("click", function () {
+      ownerBtn.addEventListener("click", function () {
         slider.style.transform = "translateX(100%)";
         ownerBtn.style.color = "#12263f";
         renterBtn.style.color = "white";
         renterContent.style.display = "none"; // Hide renters section
         ownerContent.style.display = "block"; // Show owners section
+      });
     });
-});
 
-</script>
+  </script>
