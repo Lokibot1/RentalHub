@@ -493,6 +493,16 @@
         <button onclick="closeErrorModal()" class="close-button">I Understand</button>
     </div>
 </div>
+
+<!--Error Modal when accepting a request when the item is archived-->
+<div id="accept-error-modal" class="accept-error-modal">
+    <div class="accept-error-content">
+        <p class="note0">Cannot Accept Request: <br>This item is archived and no longer available</p>
+        <p class="note">Restore the item before accepting this request</p>
+        <button onclick="closeAcceptError()" class="close-button">I Understand</button>
+    </div>
+</div>
+
 <!-- JavaScript -->
 <script>
     // Toggle between renter and owner
@@ -536,6 +546,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function closeForm() {
     document.getElementById('modalOverlay').style.display = 'none';
     document.getElementById('myForm').style.display = 'none';
+    document.getElementById('accept-error-modal').style.display = 'none';   
 }
 
 // Function to handle tab switching
@@ -813,7 +824,8 @@ confirmButton.addEventListener('click', async function () {
         window.closeErrorModal = function () {
             console.log("Close button is clicked");
             document.getElementById('errorModal').style.display = 'none';
-            overlay.style.display = 'none';
+            document.getElementById('accept-error-modal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
         }
 
         // Cancel delete
@@ -1095,166 +1107,208 @@ document.addEventListener("DOMContentLoaded", () => {
     new ReportModalHandler();
 });
 
+function closeAcceptError() {
+    document.getElementById("accept-error-modal").style.display = "none";
+    document.getElementById("overlay").style.display = "none";
+}
 
 class RentalRequest {
-        constructor(id) {
-            this.id = id;
-            this.acceptBtn = document.querySelector(`[data-id="accept-btn-${id}"]`);
-            this.declineBtn = document.querySelector(`[data-id="decline-btn-${id}"]`);
-            this.confirmationModal = document.getElementById("confirmation-modal1");
-            this.declineConfirmationModal = document.getElementById("decline-confirmation-modal1");
-            this.overlay = document.getElementById("overlay");
-            this.successContainer = document.getElementById("success-container1");
-            this.declineContainer = document.getElementById("decline-container1");
+    constructor(id) {
+        this.id = id;
+        this.acceptBtn = document.querySelector(`[data-id="accept-btn-${id}"]`);
+        this.declineBtn = document.querySelector(`[data-id="decline-btn-${id}"]`);
+        this.confirmationModal = document.getElementById("confirmation-modal1");
+        this.declineConfirmationModal = document.getElementById("decline-confirmation-modal1");
+        this.overlay = document.getElementById("overlay");
+        this.successContainer = document.getElementById("success-container1");
+        this.declineContainer = document.getElementById("decline-container1");
 
-            this.reviewButton = document.querySelector(`[data-id="review-btn-${id}"]`)
-            this.reviewDescription = document.querySelector('#review-description')
-            this.reviewModal = document.querySelector('#review-modal')
+        this.reviewButton = document.querySelector(`[data-id="review-btn-${id}"]`);
+        this.reviewDescription = document.querySelector('#review-description');
+        this.reviewModal = document.querySelector('#review-modal');
+        
+        // Fix the selector - remove the # since we're using getElementById
+        this.acceptErrorModal = document.getElementById("accept-error-modal");
+        
+        // Getting the current data-id
+        this.dataId = 0;
 
-            // Getting the current data-id
-            this.dataId = 0
-
-            this.addEventListeners();
+        // Ensure modals are hidden on initialization
+        if (this.acceptErrorModal) {
+            this.acceptErrorModal.style.display = "none";
         }
-
-        addEventListeners() {
-            if (this.acceptBtn) {
-                this.acceptBtn.addEventListener("click", (event) => {
-                    this.dataId = event.target.getAttribute('data-id').replace("accept-btn-", "");
-                    this.showModal("accept");
-                })
-            }
-
-            if (this.declineBtn) {
-                this.declineBtn.addEventListener("click", () => {
-                    this.dataId = event.target.getAttribute('data-id').replace("decline-btn-", "");
-                    this.showModal("decline")
-                });
-            }
-
-            if (this.reviewButton) {
-                this.reviewButton.addEventListener('click', () => {
-                    this.dataId = event.target.getAttribute('data-id').replace('review-btn-', '');
-                    this.showModal('review-modal')
-                });
-            }
-        }
-
-        showModal(action) {
-            this.overlay.style.display = "block";
-
-            if (action === "accept") {
-                this.confirmationModal.style.display = "block";
-                document.getElementById("yes-btn1").onclick = () => this.confirmAccept();
-                document.getElementById("no-btn1").onclick = () => this.hideModals();
-            } else if (action === "decline") {
-                this.declineConfirmationModal.style.display = "block";
-                document.getElementById("decline-yes-btn1").onclick = () => this.confirmDecline();
-                document.getElementById("decline-no-btn1").onclick = () => this.hideModals();
-            } else if (action === 'review-modal') {
-                this.reviewModal.style.display = "block";
-
-                document.getElementById('submit-rev').onclick = (event) => {
-                    event.preventDefault();
-                    document.getElementById('review-modal').style.display = "none";
-                    document.getElementById('confirm-modal1').style.display = "block";
-                };
-
-                document.getElementById('cancel-rev').onclick = () => this.hideModals();
-            }
-
-            // Handle confirmation modal actions
-            document.getElementById("confirm-review").onclick = async () => {
-                await this.submitReview(); // Submits the review
-                document.getElementById("confirm-modal1").style.display = "none"; // Hide confirm modal
-                document.getElementById("review-toast").classList.add("show");
-                document.getElementById("modal-overlay").style.display = "block";
-                
-                setTimeout(() => {
-                    document.getElementById("review-toast").classList.remove("show");
-                    document.getElementById("modal-overlay").style.display = "none";
-                    // Optionally reload the page after submitting
-                    window.location.reload();
-                }, 3000);
-            };
-
-            document.getElementById('cancel-review').onclick = () => {
-                document.getElementById('confirm-modal1').style.display = "none"; // Close confirm modal
-                this.overlay.style.display = "none"; // Hide overlay
-            };
-        }
-
-
-        async confirmAccept() {
-            try {
-                await fetchWithAutoRefresh(`http://localhost:8000/api/user/my-items/rental-requests/approved`, {
-                    method: "PATCH",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({rental_transaction_id: this.dataId}),
-                });
-            } catch (error) {
-                alert(error.message);
-            }
-            this.confirmationModal.style.display = "none";
-            this.successContainer.style.display = "block";
-
-            setTimeout(() => {
-                this.overlay.style.display = "none";
-                this.successContainer.style.display = "none";
-
-                window.location.reload()
-            }, 3000);
-        }
-
-        confirmDecline() {
-            this.declineConfirmationModal.style.display = "none";
-            this.declineContainer.style.display = "block";
-
-            setTimeout(() => {
-                this.overlay.style.display = "none";
-                this.declineContainer.style.display = "none";
-            }, 3000);
-        }
-
-        hideModals() {
-            this.confirmationModal.style.display = "none";
-            this.declineConfirmationModal.style.display = "none";
+        if (this.overlay) {
             this.overlay.style.display = "none";
-            this.reviewModal.style.display = 'none'
         }
 
-        async submitReview() {
-            const rentTransactionId = this.dataId
+        this.addEventListeners();
+    }
 
-            try {
-                await fetchWithAutoRefresh(`http://localhost:8000/api/user/my-items/return-items/${rentTransactionId}`, {
-                    method: 'PATCH',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        stars: selectedRating,
-                        description: this.reviewDescription.value,
-                    })
-                })
+    addEventListeners() {
+        if (this.acceptBtn) {
+            this.acceptBtn.addEventListener("click", (event) => {
+                this.dataId = event.target.getAttribute('data-id').replace("accept-btn-", "");
+                this.showModal("accept");
+            });
+        }
 
-                document.getElementById('review-toast').style.display = "block";
-                setTimeout(() => {
-                    document.getElementById('review-toast').style.display = "none";
-                }, 3000);
-            } catch (error) {
-                alert(error.message);
-            }
+        if (this.declineBtn) {
+            this.declineBtn.addEventListener("click", (event) => { // Added missing event parameter
+                this.dataId = event.target.getAttribute('data-id').replace("decline-btn-", "");
+                this.showModal("decline");
+            });
+        }
 
-            this.reviewModal.style.display = "none";
-
-            setTimeout(() => {
-                this.overlay.style.display = "none";
-                this.successContainer.style.display = "none";
-
-                window.location.reload()
-            }, 3000);
-
+        if (this.reviewButton) {
+            this.reviewButton.addEventListener('click', (event) => { // Added missing event parameter
+                this.dataId = event.target.getAttribute('data-id').replace('review-btn-', '');
+                this.showModal('review-modal');
+            });
+        }
+        
+        // Add listener for the "I Understand" button
+        const understandBtn = document.querySelector('.close-button');
+        if (understandBtn) {
+            understandBtn.addEventListener('click', () => this.hideModals());
         }
     }
+
+    showModal(action) {
+        this.overlay.style.display = "block";
+
+        if (action === "accept") {
+            this.confirmationModal.style.display = "block";
+            document.getElementById("yes-btn1").onclick = () => this.confirmAccept();
+            document.getElementById("no-btn1").onclick = () => this.hideModals();
+        } else if (action === "decline") {
+            this.declineConfirmationModal.style.display = "block";
+            document.getElementById("decline-yes-btn1").onclick = () => this.confirmDecline();
+            document.getElementById("decline-no-btn1").onclick = () => this.hideModals();
+        } else if (action === 'review-modal') {
+            this.reviewModal.style.display = "block";
+
+            document.getElementById('submit-rev').onclick = (event) => {
+                event.preventDefault();
+                document.getElementById('review-modal').style.display = "none";
+                document.getElementById('confirm-modal1').style.display = "block";
+            };
+
+            document.getElementById('cancel-rev').onclick = () => this.hideModals();
+        }
+
+        // Handle confirmation modal actions
+        document.getElementById("confirm-review").onclick = async () => {
+            await this.submitReview(); // Submits the review
+            document.getElementById("confirm-modal1").style.display = "none"; // Hide confirm modal
+            document.getElementById("review-toast").classList.add("show");
+            document.getElementById("modal-overlay").style.display = "block";
+            
+            setTimeout(() => {
+                document.getElementById("review-toast").classList.remove("show");
+                document.getElementById("modal-overlay").style.display = "none";
+                // Optionally reload the page after submitting
+                window.location.reload();
+            }, 3000);
+        };
+
+        document.getElementById('cancel-review').onclick = () => {
+            document.getElementById('confirm-modal1').style.display = "none"; // Close confirm modal
+            this.overlay.style.display = "none"; // Hide overlay
+        };
+    }
+
+    async confirmAccept() {
+        try {
+            const response = await fetchWithAutoRefresh(`http://localhost:8000/api/user/my-items/rental-requests/approved`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ rental_transaction_id: this.dataId }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                if (result.message && result.message.includes('archived')) {
+                    // Hide confirmation modal first
+                    this.confirmationModal.style.display = "none";
+                    
+                    // Show the error modal and overlay
+                    this.acceptErrorModal.style.display = "flex";
+                    this.overlay.style.display = "block";
+                } else {
+                    this.hideModals();
+                    throw new Error(result.message || "Failed to accept the rental request.");
+                }
+            } else {
+                // Success case
+                this.confirmationModal.style.display = "none";
+                this.successContainer.style.display = "block";
+
+                setTimeout(() => {
+                    this.hideModals();
+                    window.location.reload();
+                }, 3000);
+            }
+        } catch (error) {
+            this.hideModals();
+            alert(error.message);
+        }
+    }
+
+    confirmDecline() {
+        this.declineConfirmationModal.style.display = "none";
+        this.declineContainer.style.display = "block";
+
+        setTimeout(() => {
+            this.overlay.style.display = "none";
+            this.declineContainer.style.display = "none";
+        }, 3000);
+    }
+
+    hideModals() {
+        if (this.confirmationModal) this.confirmationModal.style.display = "none";
+        if (this.declineConfirmationModal) this.declineConfirmationModal.style.display = "none";
+        if (this.successContainer) this.successContainer.style.display = "none";
+        if (this.declineContainer) this.declineContainer.style.display = "none";
+        if (this.reviewModal) this.reviewModal.style.display = "none";
+        if (this.acceptErrorModal) this.acceptErrorModal.style.display = "none";
+        if (document.getElementById("confirm-modal1")) document.getElementById("confirm-modal1").style.display = "none";
+        
+        // Hide overlay
+        if (this.overlay) this.overlay.style.display = "none";
+    }
+
+    async submitReview() {
+        const rentTransactionId = this.dataId;
+
+        try {
+            await fetchWithAutoRefresh(`http://localhost:8000/api/user/my-items/return-items/${rentTransactionId}`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    stars: selectedRating,
+                    description: this.reviewDescription.value,
+                })
+            });
+
+            document.getElementById('review-toast').style.display = "block";
+            setTimeout(() => {
+                document.getElementById('review-toast').style.display = "none";
+            }, 3000);
+        } catch (error) {
+            alert(error.message);
+        }
+
+        this.reviewModal.style.display = "none";
+
+        setTimeout(() => {
+            this.overlay.style.display = "none";
+            this.successContainer.style.display = "none";
+
+            window.location.reload();
+        }, 3000);
+    }
+}
 
     
 
