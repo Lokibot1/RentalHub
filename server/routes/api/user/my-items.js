@@ -443,28 +443,74 @@ router.patch("/rental-requests/declined", (req, res) => {
     db.beginTransaction((err) => {
         if (err) return res.status(500).json({ success: false, message: "Transaction initiation failed." });
 
-        // Update rental transaction to declined status (is_approved = -1)
+        // First, update the transaction status
         const updateTransactionSql = `
             UPDATE rental_transactions
             SET is_approved = 0,
-                status      = 'declined'
+                status = 'declined'
             WHERE id = ?
-        `
+        `;
 
         db.query(updateTransactionSql, [rental_transaction_id], (err) => {
             if (err) return rollback(res, "Failed to decline rental transaction.");
 
-            db.commit((err) => {
-                if (err) return res.status(500).json({ success: false, message: "Declined failed." });
+            // Now fetch item and transaction details to send notification
+            const getTransactionDetailsSql = `
+                SELECT 
+                    i.id AS item_id,
+                    i.name AS item_name,
+                    rt.rental_quantity,
+                    u.email AS renter_email,
+                    u.contact_number,
+                    u.email AS owner_email,
+                    u.social_media
+                FROM rental_transactions rt
+                JOIN items i ON rt.item_id = i.id
+                JOIN users u ON rt.renter_id = u.id
+                WHERE rt.id = ?
+            `;
 
-                res.status(200).json({
-                    success: true,
-                    message: 'Rental request declined.'
+            db.query(getTransactionDetailsSql, [rental_transaction_id], (err, results) => {
+                if (err || results.length === 0) return rollback(res, "Failed to fetch transaction details.");
+
+                const { item_name, rental_quantity, renter_email, contact_number, owner_email, social_media } = results[0];
+
+                const ownerContact = {
+                    contact_number,
+                    email: owner_email,
+                    social_media
+                };
+
+                const subject = 'Rental Request Declined';
+                const html = `
+                    <p>Your rental request for <strong>${item_name}</strong> has been <strong>declined</strong>.</p>
+                    <p>Rental Quantity: ${rental_quantity}</p>
+                    <p>Rental Transaction ID: ${rental_transaction_id}</p>
+                    <p>You can contact the item owner for more information:</p>
+                    <ul>
+                        <li><strong>Phone Number:</strong> ${ownerContact.contact_number}</li>
+                        <li><strong>Email:</strong> ${ownerContact.email}</li>
+                        <li><strong>Social Media:</strong> ${ownerContact.social_media}</li>
+                    </ul>
+                `;
+
+                const template = { subject, html };
+
+                sendNotification(renter_email, template);
+
+                db.commit((err) => {
+                    if (err) return res.status(500).json({ success: false, message: "Decline commit failed." });
+
+                    res.status(200).json({
+                        success: true,
+                        message: 'Rental request declined.'
+                    });
                 });
             });
         });
     });
 });
+
 
 
 // Helper function to rollback transaction
