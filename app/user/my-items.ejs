@@ -1189,6 +1189,10 @@ class RentalRequest {
 
             document.getElementById('submit-rev').onclick = (event) => {
                 event.preventDefault();
+                if (!selectedRating) {
+                    alert("Please provide a star rating.");
+                    return;
+                }
                 document.getElementById('review-modal').style.display = "none";
                 document.getElementById('confirm-modal1').style.display = "block";
             };
@@ -1280,6 +1284,10 @@ class RentalRequest {
     }
 
     async submitReview() {
+        if (!selectedRating) {
+                alert("Please select a rating before submitting your review.");
+                return;
+            }
         const rentTransactionId = this.dataId;
 
         try {
