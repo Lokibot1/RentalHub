@@ -22,6 +22,7 @@ router.get("/posted-items", async (req, res) => {
                  JOIN inventory ON items.id = inventory.item_id
         WHERE users.role_id = 1
           AND items.is_approved = 1
+          AND items.is_archived = 0
     `
 
     db.query(sql, (err, results) => {
@@ -33,6 +34,53 @@ router.get("/posted-items", async (req, res) => {
         res.status(200).json({
             success: true,
             data: results
+        });
+    });
+});
+
+
+/**
+ * ARCHIVE ITEMS
+ *
+ * @route PATCH /api/admin/my-items/archive-item/:item_id
+ */
+router.patch("/archive-item/:item_id", (req, res) => {
+    const { item_id } = req.params;
+
+    if (!item_id) {
+        return res.status(400).json({ success: false, message: "Missing item id" });
+    }
+
+    db.beginTransaction((err) => {
+        if (err) return res.status(500).json({ success: false, message: "Transaction initiation failed." });
+
+        // Update rental transaction to declined status (is_approved = -1)
+        const updateTransactionSql = `
+            UPDATE items
+            SET is_archived = 1
+            WHERE is_approved = 1
+              AND id = ?
+              AND NOT EXISTS (
+                  SELECT 1 FROM rental_transactions
+                  WHERE rental_transactions.item_id = items.id
+                    AND rental_transactions.status = 'ongoing'
+              )
+        `
+        db.query(updateTransactionSql, [item_id], (err, result) => {
+            if (err) return rollback(res, "Failed to archive items because it has an existing rental transaction.");
+
+            if (result.affectedRows === 0) {
+                return rollback(res, "Archive failed due to ongoing transactions.");
+            }
+
+            db.commit((err) => {
+                if (err) return res.status(500).json({ success: false, message: "Archive failed." });
+
+                res.status(200).json({
+                    success: true,
+                    message: 'Archived successfully!'
+                });
+            });
         });
     });
 });

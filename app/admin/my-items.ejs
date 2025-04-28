@@ -41,11 +41,12 @@
 
                     <% if (adminItems.length > 0) { %>
                         <% adminItems.forEach(function(item) { %>
-                            <a href="/dashboard/update-listing">
+                    
                                 <div class="shoppingItem">
                                     <img src="/images/trashcan.png" alt="Delete" class="itemDelete"
                                          onclick="showDeleteModal()"/>
                                     <!--To Fix: Same Function sya nung sa posted items na trashcan sa user-->
+                                    <a href="/user/update-listing/<%= item.item_id %>">
                                     <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
                                     <div class="item-details">
                                     <strong class="itemName"><%= item.name %></strong>
@@ -53,8 +54,8 @@
                                         <h5 class="itemLocation"><%= item.location %></h5>
                                         <p class="itemQuantity"> <%= item.stock_quantity %> Left </p>
                                     </div>
+                                    </a>
                                 </div>
-                            </a>
                         <% }); %>
                     <% } else { %>
                         <p>No posted items available.</p>
