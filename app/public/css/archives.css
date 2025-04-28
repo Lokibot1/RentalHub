@@ -1498,3 +1498,26 @@ nav button {
   min-height: 300px;
   border-radius: 0 0 10px 10px;
 }
+
+.report-error-modal{
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+}
+
+.accept-error-content {
+  background: white;
+  padding: 20px;
+  border-radius: 30px;
+  text-align: center;
+  width: 400px;
+  font-size: 1.3rem;
+  font-weight: bolder;
+}

@@ -245,6 +245,15 @@
     </div>
 </div>
 
+<!--Error Modal when accepting a Filing A Report Once-->
+<div id="errorModal" class="report-error-modal">
+    <div class="accept-error-content">
+        <p class="note0">Report Submission Failed: <br>You already filed a report regarding this transaction.</p>
+        <button onclick="closeErrorModal()" class="close-button">I Understand</button>
+    </div>
+</div>
+
+
 <!--JavaScript-->
 <script>
             const cancelModal = document.getElementById("cancel-modal");
@@ -675,7 +684,8 @@
         this.confirmSubmitBtn = document.getElementById("confirm-submit");
         this.cancelConfirmBtn = document.getElementById("cancel-confirms");
         this.toast = document.getElementById("report-toast");
-
+        this.reportErrorModal = document.getElementById("errorModal"); // Changed to match your HTML
+        
         // Store the logged in user ID from options
         this.currentLoggedInUserId = options.loggedInUserId || null;
 
@@ -690,17 +700,21 @@
     }
 
     initialize() {
-        this.reportButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                this.setItemIds(button);
-                this.triggeringButton = button;
-                this.showModal();
+        this.reportButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                this.setItemIds(btn);
+                this.triggeringButton = btn;
+
+                if (this.alreadyReported(btn)) {
+                    this.showErrorModal(); // Show error modal if already reported
+                } else {
+                    this.showModal();
+                }
             });
         });
 
         this.submitReportBtn.addEventListener("click", (e) => this.handleFormSubmit(e));
         this.cancelReportBtn.addEventListener("click", () => this.hideModal());
-
         this.confirmSubmitBtn.addEventListener("click", (e) => this.submitReport(e));
         this.cancelConfirmBtn.addEventListener("click", () => {
             this.hideConfirmModal();
@@ -710,7 +724,29 @@
         this.modalOverlay.addEventListener("click", () => {
             this.hideModal();
             this.hideConfirmModal();
+            this.hideErrorModal();
         });
+
+        // Add event listener for the close button in error modal
+        const errorModalCloseBtn = document.querySelector("#errorModal .close-button");
+        if (errorModalCloseBtn) {
+            errorModalCloseBtn.addEventListener("click", () => this.hideErrorModal());
+        }
+    }
+
+    showErrorModal() {
+        this.reportErrorModal.style.display = "flex";
+        this.modalOverlay.style.display = "block";
+    }
+
+    hideErrorModal() {
+        this.reportErrorModal.style.display = "none";
+        this.modalOverlay.style.display = "none";
+    }
+
+    alreadyReported(button) {
+        const alreadyReportedValue = button.getAttribute('data-already-reported');
+        return alreadyReportedValue === 'true';
     }
 
     setItemIds(button) {
@@ -740,6 +776,8 @@
 
     hideConfirmModal() {
         this.confirmModal.style.display = "none";
+        this.modalOverlay.style.display = "none";
+        
     }
 
     showToast() {
@@ -770,7 +808,7 @@
         event.preventDefault();
 
         try {
-            await fetchWithAutoRefresh('http://localhost:8000/api/user/my-items/reports', {
+            const response = await fetchWithAutoRefresh('http://localhost:8000/api/user/my-items/reports', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -782,10 +820,27 @@
                 }),
             });
 
-            this.showToast();
-            this.hideConfirmModal();
+            if (response.ok) {
+                this.hideConfirmModal();
+                this.showToast();
+                
+                // Update the button's data attribute to indicate this item has been reported
+                if (this.triggeringButton) {
+                    this.triggeringButton.setAttribute('data-already-reported', 'true');
+                }
+            } else if (response.status === 409) {
+                this.hideConfirmModal();
+                this.showErrorModal();
+                
+                // Update the button's data attribute
+                if (this.triggeringButton) {
+                    this.triggeringButton.setAttribute('data-already-reported', 'true');
+                }
+            } else {
+                console.error('An unexpected error occurred.');
+            }
         } catch (error) {
-            console.error("Error submitting report:", error);
+            console.error('Error submitting report:', error);
         }
     }
 }
@@ -793,4 +848,14 @@
 document.addEventListener("DOMContentLoaded", () => {
     const reportManager = new ReportManager({ loggedInUserId: currentLoggedInUserId });
 });
+
+// Global function to close error modal
+window.closeErrorModal = function() {
+    const errorModal = document.getElementById('errorModal');
+    const modalOverlay = document.getElementById('modal-overlay');
+    
+    if (errorModal) errorModal.style.display = 'none';
+    if (modalOverlay) modalOverlay.style.display = 'none';
+}
+
 </script>
