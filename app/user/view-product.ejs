@@ -72,6 +72,7 @@
         </div>
 
         <!-- Owner Info -->
+        <% if (!is_owner) { %>
         <div class="owner-info" onclick="openForm()">
             <h2>Posted by</h2>
             <br>
@@ -88,6 +89,7 @@
             </div>
         </div>
     </div>
+    <% } %>
 
     <!-- Modal for Owner Information -->
     <div id="modalOverlay" class="modal-overlay"></div>
@@ -219,7 +221,6 @@
         </div>
     <% } %>
     <% if (is_owner) { %>
-        <div class="owner-info" style="display: none;">
         </div>
         <div class="right-section">
             <div class="update-container">
