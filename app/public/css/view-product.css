@@ -215,7 +215,7 @@ nav span {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 0rem 3rem;
+  padding: 0rem 0rem;
   gap: 3rem;
 }
 
@@ -225,7 +225,31 @@ nav span {
   display: flex;
   gap: 1rem;
   flex-direction: column;
-  padding: 1rem 0rem;
+  padding: 3.5rem 0rem;
+}
+
+.back-button {
+  margin: 40px 0px 0px 3rem;
+}
+
+.back-button a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.back-button span {
+  font-size: 1.5rem;
+  color: #880000;
+  font-weight: 600;
+}
+
+.back-button p {
+  font-size: 1rem;
+  color: #121212;
+  margin: 0;
+  font-weight: 600;
 }
 
 /* Product Image Section */
@@ -366,16 +390,14 @@ nav span {
 .right-section {
   width: 30%;
   gap: 1rem;
-  padding: 1rem 0rem;
+  padding: 3.5rem 0rem; 
 }
 
 .update-container {
-  display: flex;
-  flex-direction: column;
   position: sticky;
-  height: 40rem;
+  height: 27rem;
   top: 50px;
-  gap: 5rem;
+  gap: .5rem;
   background: white;
   box-shadow: 0rem 0rem 0.4rem #888;
   border-radius: 25px;
