@@ -287,4 +287,36 @@ router.get("/transactions", checkAuth, checkAdmin, async (req, res) => {
 })
 
 
+/**
+ * Archives Page
+ *
+ * @route GET /admin/archives
+ */
+router.get('/archive', checkAuth, async (req, res) => {
+    try {
+        const response = await fetch(`${process.env.BASE_URL}/api/admin/archive/${req.user.id}`)
+        const archivedItems = await response.json()
+
+        res.render('admin/archive', {
+            layout: 'layouts/user',
+            title: 'Archives',
+            archivedItems: archivedItems.data,
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+            isBanned, // ✅ pass this
+        })
+    } catch (error) {
+        console.error('Error fetching data:', error)
+        res.render('admin/archive', {
+            layout: 'layouts/user',
+            title: 'Archives',
+            archivedItems: [],
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+            isBanned: false, // default to false in error case
+        })
+    }
+})
+
+
 export default router
