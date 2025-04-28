@@ -1144,6 +1144,7 @@ function closeAcceptError() {
     document.getElementById("accept-error-modal").style.display = "none";
     document.getElementById("overlay").style.display = "none";
     document.getElementById("report-error-modal").style.display = "none";
+    document.getElementById("modal-overlay").style.display = "none";
 }
 
 class RentalRequest {
@@ -1160,6 +1161,7 @@ class RentalRequest {
         this.reviewButton = document.querySelector(`[data-id="review-btn-${id}"]`);
         this.reviewDescription = document.querySelector('#review-description');
         this.reviewModal = document.querySelector('#review-modal');
+        this.modalOverlay = document.getElementById("modal-overlay")
         
         // Fix the selector - remove the # since we're using getElementById
         this.acceptErrorModal = document.getElementById("accept-error-modal");
@@ -1173,6 +1175,10 @@ class RentalRequest {
         }
         if (this.overlay) {
             this.overlay.style.display = "none";
+        }
+
+        if(this.modalOverlay){
+            this.modalOverlay.style.display = "none"
         }
 
         this.addEventListeners();
@@ -1204,6 +1210,7 @@ class RentalRequest {
         const understandBtn = document.querySelector('.close-button');
         if (understandBtn) {
             understandBtn.addEventListener('click', () => this.hideModals());
+            modalOverlay.addEventListener('click', () => this.hideModals());
         }
     }
 
@@ -1313,8 +1320,10 @@ class RentalRequest {
         if (this.acceptErrorModal) this.acceptErrorModal.style.display = "none";
         if (document.getElementById("confirm-modal1")) document.getElementById("confirm-modal1").style.display = "none";
         
+        
         // Hide overlay
         if (this.overlay) this.overlay.style.display = "none";
+        if (this.modalOverlay) this.modalOverlay.style.display = "none";
     }
 
     async submitReview() {
