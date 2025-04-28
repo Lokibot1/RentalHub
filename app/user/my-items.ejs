@@ -503,6 +503,14 @@
     </div>
 </div>
 
+<!--Error Modal when accepting a Filing A Report Once-->
+<div id="report-error-modal" class="report-error-modal">
+    <div class="accept-error-content">
+        <p class="note0">Report Submission Failed: <br>You already filed a report regarding this transaction.</p>
+        <button onclick="closeAcceptError()" class="close-button">I Understand</button>
+    </div>
+</div>
+
 <!-- JavaScript -->
 <script>
     // Toggle between renter and owner
@@ -998,6 +1006,7 @@ confirmButton.addEventListener('click', async function () {
         this.confirmModal = document.getElementById("confirm-modal");
         this.confirmSubmit = document.getElementById("confirm-submit");
         this.cancelConfirm = document.getElementById("cancel-confirms");
+        this.reportErrorModal = document.getElementById("report-error-modal")
 
         this.selectedItemId = null;
         this.selectedUserId = null;
@@ -1010,30 +1019,41 @@ confirmButton.addEventListener('click', async function () {
 
     init() {
         this.reportButtons.forEach(btn => {
-            btn.addEventListener("click", () => {
-                this.setItemIds(btn);
-                this.triggeringButton = btn; // save the button for later use
+        btn.addEventListener("click", () => {
+            this.setItemIds(btn);
+            this.triggeringButton = btn;
+
+            if (this.alreadyReported(btn)) {
+                this.reportErrorModal.style.display = "flex";
+                this.modalOverlay.style.display = "block";
+            } else {
                 this.showModal();
-            });
+            }
         });
+    });
 
-        this.cancelRprt.addEventListener("click", () => this.hideModal());
 
-        this.submitRprt.addEventListener("click", (event) => this.handleReportSubmit(event));
+    this.cancelRprt.addEventListener("click", () => this.hideModal());
 
-        this.cancelConfirm.addEventListener("click", () => {
-            this.hideConfirmModal();
-            this.modalOverlay.style.display = "none";
-        });
+    this.submitRprt.addEventListener("click", (event) => this.handleReportSubmit(event));
 
-        this.confirmSubmit.addEventListener("click", (event) => this.confirmReport(event));
+    this.cancelConfirm.addEventListener("click", () => {
+        this.hideConfirmModal();
+        this.modalOverlay.style.display = "none";
+    });
 
-        this.modalOverlay.addEventListener("click", () => {
-            this.hideModal();
-            this.hideConfirmModal();
-        });
+    this.confirmSubmit.addEventListener("click", (event) => this.confirmReport(event));
+
+    this.modalOverlay.addEventListener("click", () => {
+        this.hideModal();
+        this.hideConfirmModal();
+    });
+}
+
+    alreadyReported(button) {
+        const alreadyReportedValue = button.getAttribute('data-already-reported');
+        return alreadyReportedValue === 'true';
     }
-
     setItemIds(button) {
         this.selectedItemId = button.getAttribute('data-selected-item-id');
         this.selectedUserId = button.getAttribute('data-selected-renter-id');
@@ -1084,11 +1104,12 @@ confirmButton.addEventListener('click', async function () {
     }
 
     async confirmReport(event) {
-        event.preventDefault();
+    event.preventDefault();
 
-        await fetchWithAutoRefresh('http://localhost:8000/api/user/my-items/reports', {
+    try {
+        const response = await fetchWithAutoRefresh('http://localhost:8000/api/user/my-items/reports', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 item_id: this.selectedItemId,
                 reported_user_id: this.selectedUserId,
@@ -1098,9 +1119,21 @@ confirmButton.addEventListener('click', async function () {
             }),
         });
 
-        this.showToast();
-        this.hideConfirmModal();
+        if (response.ok) {
+            this.showToast();
+            this.hideConfirmModal();
+        } else if (response.status === 409) {
+            this.hideConfirmModal();
+            this.modalOverlay.style.display = "block";
+            this.reportErrorModal.style.display = "flex";
+        } else {
+            console.error('An unexpected error occurred.');
+        }
+    } catch (error) {
+        console.error('Error submitting report:', error);
     }
+}
+
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -1110,6 +1143,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function closeAcceptError() {
     document.getElementById("accept-error-modal").style.display = "none";
     document.getElementById("overlay").style.display = "none";
+    document.getElementById("report-error-modal").style.display = "none";
 }
 
 class RentalRequest {
