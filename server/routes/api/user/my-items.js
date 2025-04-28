@@ -597,11 +597,23 @@ router.post("/reports", async (req, res) => {
             END
         FROM users u
         WHERE u.id = ?
+          AND NOT EXISTS (
+              SELECT 1 FROM reports r
+              WHERE r.item_id = ? AND r.reporter_id = ?
+          )
     `
-    db.query(sql, [item_id, reported_user_id, reporter_id, JSON.stringify(reasons), report_text, reported_user_id], (err, results) => {
+    db.query(sql, [item_id, reported_user_id, reporter_id, JSON.stringify(reasons), report_text, reported_user_id, item_id, reporter_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
             return res.status(500).json({ success: false, message: "Create report failed." });
+        }
+
+        if (results.affectedRows === 0) {
+            console.log(`User ${reporter_id} already reported item ${item_id}.`);
+            return res.status(409).json({
+                success: false,
+                message: 'You have already reported this item.',
+            });
         }
 
         res.status(201).json({
