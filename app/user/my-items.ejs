@@ -488,8 +488,8 @@
 <!--Error Modal when archiving cause of ongoung transactions-->
 <div id="errorModal" class="error-modal">
     <div class="error-content">
-        <p class="note0">Update Failed: Due to On Going Transaction(s) for this item</p>
-        <p class="note">Finish all your transactions first for this item before updating this item</p>
+        <p class="note0">Archive Failed: Due to On Going Transaction(s) for this item</p>
+        <p class="note">Finish all your transactions first for this item before archiving this item</p>
         <button onclick="closeErrorModal()" class="close-button">I Understand</button>
     </div>
 </div>
@@ -1189,6 +1189,10 @@ class RentalRequest {
 
             document.getElementById('submit-rev').onclick = (event) => {
                 event.preventDefault();
+                if (!selectedRating) {
+                    alert("Please provide a star rating.");
+                    return;
+                }
                 document.getElementById('review-modal').style.display = "none";
                 document.getElementById('confirm-modal1').style.display = "block";
             };
@@ -1258,6 +1262,7 @@ class RentalRequest {
     confirmDecline() {
         this.declineConfirmationModal.style.display = "none";
         this.declineContainer.style.display = "block";
+        this.overlay.style.display = "block";
 
         setTimeout(() => {
             this.overlay.style.display = "none";
@@ -1279,6 +1284,10 @@ class RentalRequest {
     }
 
     async submitReview() {
+        if (!selectedRating) {
+                alert("Please select a rating before submitting your review.");
+                return;
+            }
         const rentTransactionId = this.dataId;
 
         try {

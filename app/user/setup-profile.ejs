@@ -255,6 +255,11 @@
         }
         */
 
+        if (!socialMedia.value.trim()) {
+            errorMessages.push("Social media links are required");
+            isValid = false;
+        }
+
         if (!region) {
             errorMessages.push("Region is required");
             isValid = false;
