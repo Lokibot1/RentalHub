@@ -174,6 +174,11 @@
             return;
         }
 
+        if (isBanned) {
+            alert("You cannot update this listing due to restrictions on your account.");
+            return;
+        }
+
         // Get the current URL last segment to extract itemId
         let url = window.location.href;
         let itemId = url.substring(url.lastIndexOf("/") + 1);
