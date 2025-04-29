@@ -155,7 +155,9 @@
                                         </div>
                                         <div class="rentalAction">
                                             <button class="accept-btn"
-                                                    data-id="accept-btn-<%= item.rent_transaction_id %>">
+                                                    data-id="accept-btn-<%= item.rent_transaction_id %>""
+                                                    data-isbanned="<%= isBanned %>">
+                                                    
                                                 ✓
                                             </button>
                                             <button class="decline-btn"
@@ -1187,6 +1189,13 @@ class RentalRequest {
     addEventListeners() {
         if (this.acceptBtn) {
             this.acceptBtn.addEventListener("click", (event) => {
+                const isBanned = event.target.getAttribute('data-isbanned') === 'true';
+
+            if (isBanned) {
+                alert("You cannot accept the request due to restriction.");
+                return;
+            }
+            
                 this.dataId = event.target.getAttribute('data-id').replace("accept-btn-", "");
                 this.showModal("accept");
             });
