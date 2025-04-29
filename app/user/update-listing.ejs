@@ -60,8 +60,12 @@
                 required />
 
             <select name="categories" id="categories" required></select>
-
-            <button type="submit">Update Listing</button>
+            <% if (isBanned) { %>
+                <center><p class="banned-note">You are banned and cannot update this listing.</p></center>
+                <button type="submit" disabled class="btn-update" title="You are restricted from updating this listing">Update Listing</button>
+            <% } else { %>
+                <button type="submit">Update Listing</button>
+            <% } %>
         </form>
     </div>  
 
@@ -161,6 +165,11 @@
     .getElementById("listingForm")
     .addEventListener("submit", async function (e) {
         e.preventDefault();
+
+        if (isBanned) {
+            alert("You cannot update this listing due to restrictions on your account.");
+            return;
+        }
 
         // Get the current URL last segment to extract itemId
         let url = window.location.href;
