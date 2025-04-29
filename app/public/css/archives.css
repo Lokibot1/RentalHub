@@ -619,7 +619,7 @@ nav button {
   width: 100% !important;
   height: 100% !important;
   background-color: rgba(0, 0, 0, 0.7) !important; /* Darker for visibility */
-  z-index: 9999 !important;
+  z-index: 999 !important;
   pointer-events: auto !important;
 }
 

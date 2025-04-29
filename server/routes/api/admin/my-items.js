@@ -246,6 +246,7 @@ router.get("/ongoing-transactions", async (req, res) => {
                  JOIN users AS renter ON rental_transactions.renter_id = renter.id
         WHERE items.user_id = 1
           AND rental_transactions.is_approved = 1
+          AND rental_transactions.is_owner_submit_review != 1
     `
 
     db.query(sql, (err, results) => {

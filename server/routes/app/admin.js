@@ -83,6 +83,7 @@ router.get("/admin-rents", checkAuth, checkAdmin, async (req, res) => {
             ongoingRentItems: ongoingRentItems.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            currentUserId: req.user.id
         });
       } catch (error) {
         console.error("Error fetching pending posts:", error);
@@ -93,6 +94,7 @@ router.get("/admin-rents", checkAuth, checkAdmin, async (req, res) => {
             ongoingRentItems: [],
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            currentUserId: req.user.id
         });
       }
 });
