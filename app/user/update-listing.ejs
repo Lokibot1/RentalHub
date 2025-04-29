@@ -109,6 +109,8 @@
         // let selectedItem = localStorage.getItem('selectedItem')
         // let item = JSON.parse(selectedItem)
 
+        const isBanned = JSON.parse('<%= JSON.stringify(isBanned) %>');
+
          const item = JSON.parse('<%- JSON.stringify(item) %>');
          console.log("Loaded item:", item);
 
