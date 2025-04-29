@@ -1,0 +1,168 @@
+<link rel="stylesheet" href="/css/archives.css"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=directory_sync" />
+<link rel="web icon" type="png" href="/images/webicon.png">
+<!--Navigation Bar-->
+<%- include('../partials/admin/navigation-bar.ejs'); %>
+
+<div class="main">
+    <!--Sidebar-->
+    <%- include('../partials/admin/sidebar-links.ejs'); %>
+
+    <!--Main Content-->
+    <div class="content">
+        <!--        <button id="restore-btn" class="restore-btn">Restore All</button>-->
+        <!--        <pre><%= JSON.stringify(archivedItems, null, 2) %></pre>-->
+        <div class="shoppingList">
+            <% if (archivedItems.length > 0) { %>
+                <% archivedItems.forEach(function(item) { %>
+                    <div class="shoppingItem1">
+                        <button class="restore-btn" data-id="<%= item.id %>"><span class="material-symbols-outlined">
+                            directory_sync
+                            </span></button>
+                        <img src="/uploads/<%= item.image %>" alt="" class="itemImage"/>
+                        <div class="item-details">
+                            <strong class="itemName"><%= item.name %></strong>
+                            <strong class="itemPrice">₱ <%= item.price %></strong>
+                            <h5 class="itemLocation"><%= item.location %></h5>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p>No archived items available.</p>
+            <% } %>
+        </div>
+    </div>
+    <!--Confirmation Modal-->
+    <div id="overlay" class="overlay"></div>
+    <div id="restore-Modal" class="modal">
+        <div class="modal-content">
+            <h3>
+                Are you sure you want to
+                <span style="color: #009959">restore</span> this item?
+            </h3>
+            <div class="modal-buttons" data-id="1">
+                <button class="btn-yes" id="confirmBan">Yes</button>
+                <button class="btn-no" id="cancelBtn">No</button>
+            </div>
+        </div>
+    </div>
+    <div id="restoreToast" class="toast"></div>
+</div>
+
+<!--JAVASCRIPT-->
+<script>
+    // Restore Posting
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOM fully loaded"); // Debugging step
+
+        const restoreButtons = document.querySelectorAll(".restore-btn");
+        const restoreModal = document.getElementById("restore-Modal");
+        const confirmBan = document.getElementById("confirmBan");
+        const restoreToast = document.getElementById("restoreToast");
+        const overlay = document.getElementById("overlay");
+        let currentItemId = null;
+
+        console.log("Restore buttons found:", restoreButtons.length); // Debugging step
+
+        // Attach click event to each restore button
+        restoreButtons.forEach(button => {
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                currentItemId = this.getAttribute("data-id"); // Get item ID
+
+                restoreModal.style.display = "flex";
+                overlay.style.display = "block";
+            });
+        });
+
+        // Confirm Restore
+        confirmBan.addEventListener("click", async function () {
+    if (!currentItemId) {
+        console.error("Error: No item selected for restoration.");
+        return;
+    }
+
+    try {
+        const response = await fetchWithAutoRefresh(`/api/user/archives/restore-item/${currentItemId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+        });
+
+        if (!response.ok) {
+            throw new Error("Error restoring item.");
+        }
+
+        console.log('Item restored successfully');
+
+        const restoredItem = document.querySelector(`.restore-btn[data-id="${currentItemId}"]`).parentElement;
+        if (restoredItem) {
+            restoredItem.remove();
+        }
+
+        showRestoreToast("Item restored successfully!");
+
+    } catch (error) {
+        console.error("Error:", error);
+        showRestoreToast("Failed to restore item.");
+    }
+
+    restoreModal.style.display = "none";
+});
+
+
+        // Cancel Restore
+        document.getElementById("cancelBtn").addEventListener("click", function () {
+            restoreModal.style.display = "none";
+            overlay.style.display = "none";
+        });
+
+        // Hide modal when clicking outside
+        overlay.addEventListener("click", function (event) {
+            if (event.target === overlay) {
+                restoreModal.style.display = "none";
+                overlay.style.display = "none";
+            }
+        });
+
+        // Show toast message
+        function showRestoreToast(message) {
+            restoreToast.textContent = message;
+            restoreToast.classList.add("show");
+            overlay.style.display = "block";
+            setTimeout(() => {
+                restoreToast.classList.remove("show");
+                overlay.style.display = "none";
+            }, 3000);
+        }
+    });
+
+
+    //logout
+    document.addEventListener("DOMContentLoaded", function () {
+        const logoutLink = document.getElementById("logout");
+        const modal = document.getElementById("logout-modal");
+        const confirmLogout = document.getElementById("confirm-logout");
+        const cancelLogout = document.getElementById("cancel-logout");
+
+        // Ensure modal starts hidden
+        modal.style.display = "none";
+
+        // Show modal when logout is clicked
+        logoutLink.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevents default link behavior
+            modal.style.display = "flex"; // Show modal only on click
+        });
+
+        // Redirect when "Yes" is clicked
+        confirmLogout.addEventListener("click", function () {
+            window.location.href = "/logout"; // Adjust logout URL
+        });
+
+        // Close modal when "No" is clicked
+        cancelLogout.addEventListener("click", function () {
+            modal.style.display = "none"; // Hide modal
+        });
+    });
+</script>
