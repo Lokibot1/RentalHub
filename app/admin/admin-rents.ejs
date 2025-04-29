@@ -35,7 +35,7 @@
 
                 <% if (rentRequestItems.length > 0) { %>
                     <% rentRequestItems.forEach(function(item) { %>
-                        <div class="rentalItem">
+                        <div class="rentalItem" data-request-id="<%= item.request_id || item.id %>">
                             <div class="rentalInfo">
                                 <div class="renterDetails">
                                     <strong class="renterName">
@@ -50,7 +50,7 @@
                                 </div>
                             </div>
                             <div class="completeAction">
-                                <button id="cancel-btn" class="cancel-btn">Cancel</button>
+                                <button class="cancel-btn">Cancel</button>
                             </div>
                         </div>
                     <% }); %>
@@ -60,18 +60,19 @@
             </div>
         </div>
 
+        <div class="overlay" id="modal-overlay"></div>
         <!-- Confirmation Modal -->
         <div id="cancel-modal" class="modal">
             <div class="modal-content" style="width: 40%;">
                 <h3>Are you sure you want to cancel this request?</h3>
                 <div class="modal-buttons">
                     <button class="btn-yes" id="cancel-submit">Confirm</button>
-                    <button class="btn-no" id="cancel-confirm">Cancel</button>
+                    <button class="btn-no" id="cancel-confirmss">Cancel</button>
                 </div>
             </div>
         </div>
 
-        <div class="overlay" id="modal-overlay"></div>
+        
         <div id="cancelToast" class="toast">Request Cancelled Successfully!</div>
 
         <!-- On Going Modal -->
@@ -166,27 +167,123 @@
 
 <!--JavaScript-->
 <script>
-    document.addEventListener("DOMContentLoaded", async function () {
-        await loadActiveTab(); // Auto load data for the active tab
+    // Updated JavaScript for the toast and overlay issue
+document.addEventListener("DOMContentLoaded", function () {
+    // Get all required elements
+    const cancelBtns = document.querySelectorAll(".cancel-btn");
+    const cancelModal = document.getElementById("cancel-modal");
+    const modalOverlay = document.getElementById("modal-overlay");
+    const cancelSubmit = document.getElementById("cancel-submit");
+    const cancelConfirm = document.getElementById("cancel-confirmss");
+    const cancelToast = document.getElementById("cancelToast");
+    
+    console.log("Elements loaded:", {
+        cancelBtns: cancelBtns.length,
+        cancelModal: !!cancelModal,
+        modalOverlay: !!modalOverlay,
+        cancelToast: !!cancelToast
+    });
 
-        // "Cancel All" BTN EVENT LISTENER
-        document.getElementById("cancel-all").addEventListener("click", async function () {
-            try {
-                const activeTab = document.querySelector(".tablinks.active").dataset.api; // Get active tab's API
-                const response = await fetchWithAutoRefresh("/api/cancel-all", { //ready na to juls for api, adjust mo nalang if diff api gagamitin mo.
-                    method: "DELETE",                               //eto rin juls, adjust mo nalang din, pwede rin POST method if server restriced kase app
-                    headers: {"Content-Type": "application/json"},
-                });
+    let selectedRequestId = null;
 
-                if (response.ok) {
-                    alert("All rentals have been canceled.");
-                    await fetchRents(activeTab, activeTab === "/api/my-rents" ? "request-container" : "review-container"); // Refresh only the active tab
-                }
-            } catch (error) {
-                console.error("Error canceling all rentals:", error);
-            }
+    // Show modal when cancel button is clicked
+    cancelBtns.forEach(btn => {
+        btn.addEventListener("click", function() {
+            console.log("Cancel button clicked");
+            
+            // Get request ID
+            const rentalItem = this.closest('.rentalItem');
+            selectedRequestId = rentalItem.getAttribute("data-request-id");
+            console.log("Selected request ID:", selectedRequestId);
+            
+            // Show modal and overlay
+            showModal();
         });
     });
+
+    // Function to show modal and overlay
+    function showModal() {
+        console.log("Showing modal and overlay");
+        cancelModal.style.display = "flex";
+        modalOverlay.style.cssText = "display: block !important; background-color: rgba(0,0,0,0.7) !important;";
+    }
+
+    // Function to hide modal but not overlay
+    function hideModalOnly() {
+        console.log("Hiding modal only");
+        cancelModal.style.display = "none";
+        // Keep overlay visible
+    }
+
+    // Function to hide both modal and overlay
+    function hideAll() {
+        console.log("Hiding all elements");
+        cancelModal.style.display = "none";
+        modalOverlay.style.display = "none";
+        cancelToast.classList.remove("show"); // Also hide toast
+    }
+
+    // Function to show toast with overlay
+    function showToast() {
+        console.log("Showing toast with overlay");
+        // Make sure overlay is visible
+        modalOverlay.style.cssText = "display: block !important; background-color: rgba(0,0,0,0.7) !important;";
+        // Show toast
+        cancelToast.classList.add("show");
+    }
+
+    // Close on cancel button (just the modal, keep overlay for toast)
+    cancelConfirm.addEventListener("click", function() {
+        hideModalOnly();
+    });
+    
+    // Close everything when clicking overlay
+    modalOverlay.addEventListener("click", function() {
+        // Only close everything if toast isn't showing
+        if (!cancelToast.classList.contains("show")) {
+            hideAll();
+        }
+    });
+    
+    // Handle submission
+    cancelSubmit.addEventListener("click", async function() {
+        console.log("Submit clicked, selectedRequestId:", selectedRequestId);
+        
+        if (selectedRequestId) {
+            try {
+                // Hide just the modal first
+                hideModalOnly();
+                
+                const response = await fetchWithAutoRefresh(`/api/user/my-requests/cancel/${selectedRequestId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                console.log("API response:", result);
+                
+                if (result.success) {
+                    // Show toast with overlay still visible
+                    showToast();
+                    
+                    // Set timeout to reload page after toast is shown
+                    setTimeout(() => {
+                        console.log("Reloading page");
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    // Hide everything if request failed
+                    hideAll();
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                hideAll();
+            }
+        } else {
+            console.warn("No request ID selected");
+            hideAll();
+        }
+    });
+});
 
     // LOAD ACTIVE TAB DATA AUTOMATICALLY
     async function loadActiveTab() {
@@ -352,44 +449,6 @@
         }, 3000);
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const cancelBtn = document.getElementById("cancel-btn");
-        const cancelModal = document.getElementById("cancel-modal");
-        const cancelSubmit = document.getElementById("cancel-submit");
-        const cancelConfirm = document.getElementById("cancel-confirm");
-        const cancelToast = document.getElementById("cancelToast");
-
-        // Show modal when cancel button is clicked
-        cancelBtn.addEventListener("click", function () {
-            cancelModal.style.display = "block";
-        });
-
-        // Hide modal when confirm is clicked and show toast notification
-        cancelSubmit.addEventListener("click", function () {
-            cancelModal.style.display = "none";
-            showToast();
-        });
-
-        // Hide modal when cancel button inside modal is clicked
-        cancelConfirm.addEventListener("click", function () {
-            cancelModal.style.display = "none";
-        });
-
-        // Function to show toast notification
-        function showToast() {
-            cancelToast.classList.add("show");
-            setTimeout(() => {
-                cancelToast.classList.remove("show");
-            }, 3000); // Hide after 3 seconds
-        }
-
-        // Close modal if user clicks outside of it
-        window.addEventListener("click", function (event) {
-            if (event.target === cancelModal) {
-                cancelModal.style.display = "none";
-            }
-        });
-    });
 
     //logout
     document.addEventListener("DOMContentLoaded", function () {
