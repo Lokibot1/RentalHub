@@ -37,7 +37,7 @@
                     <img id="owner-image" src="" alt="Owner Image" />
                 </div>
                 <div class="o-details">
-                    <strong id="owner-name">Loading...</strong><br />
+                    <strong id="owner-name">Loading... </strong> is currently <strong id="status" style="color: #880000"> Loading...</strong><br/>
                     <span id="owner-location">Loading...</span> <br />
                     <span id="owner-rating">⭐ Loading...</span>
                 </div>
@@ -102,7 +102,7 @@
                             </a>
                         </button>
                     <% } %>                    
-                            <p>Note: Submitting will go to the owners email.</p>
+                            <p><strong>Note:</strong> Submitting an Inquiry will go to the owners email.</p>
                         
                 </form>
             </div>
@@ -772,5 +772,48 @@ function showOwnerIsRestrictedToast() {
 
         qtyInput.value = newQty;
     }
+
+    // Function to fetch and log owner data
+    async function fetchOwnerData() {
+        try {
+            const item = JSON.parse(localStorage.getItem("selectedItem"));
+            if (!item || !item.id) {
+                console.error("No selected item found in localStorage.");
+                return;
+            }
+
+            const response = await fetch(`http://localhost:8000/api/user/view-product/posted-by/${item.id}`);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            if (result.success && result.data) {
+                console.log("Owner Data:", result.data);
+                document.getElementById("status").textContent = result.data.status || "Unknown Status";
+
+                let status = result.data.status ? result.data.status.charAt(0).toUpperCase() + result.data.status.slice(1) : "Unknown Status";
+                const statusElement = document.getElementById("status");
+                statusElement.textContent = status;
+
+                if (result.data.status === "banned") {
+                    statusElement.style.color = "#880000"; // Red color for banned
+                } else if (result.data.status === "active") {
+                    statusElement.style.color = "#009959"; // Green color for active
+                } else {
+                    statusElement.style.color = "#000000"; // Default color for unknown status
+                }
+            } else {
+                console.warn("No owner data found.");
+            }
+        } catch (error) {
+            console.error("Error fetching owner data:", error);
+        }
+    }
+
+    // Fetch owner data immediately when page loads
+    fetchOwnerData();
 
 </script>
