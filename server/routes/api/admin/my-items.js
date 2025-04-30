@@ -91,26 +91,33 @@ router.patch("/archive-item/:item_id", (req, res) => {
  *
  * @route GET /api/admin/my-items/rental-requests
  */
-router.get("/rental-requests", async (req, res) => {
+router.get("/rental-requests/:user_id", async (req, res) => {
+    const { user_id } = req.params
+
     const sql = `
         SELECT rental_transactions.id                         AS rent_transaction_id,
                CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
+               users.address                                  AS renters_address,
+               users.profile_image                            AS renters_profile_image,
                items.location                                 AS item_location,
                items.file_path                                AS item_image,
                items.name                                     AS item_name,
+               rental_transactions.rental_quantity            AS item_quantity,
+               rental_transactions.created_at,
                rental_transactions.start_date                 AS start_date,
                rental_transactions.end_date                   AS end_date,
-               rental_transactions.mode_of_delivery           AS mode_of_delivery,
-               rental_transactions.status
+               rental_transactions.mode_of_delivery           AS mode_of_delivery
         FROM rental_transactions
                  JOIN users ON users.id = rental_transactions.renter_id
                  JOIN items ON items.id = rental_transactions.item_id
+                 JOIN inventory ON inventory.item_id = items.id
         WHERE rental_transactions.is_approved = 0
           AND rental_transactions.status != 'declined'
-          AND items.user_id = 1
+          AND rental_transactions.status != 'voided'
+          AND items.user_id = ?
     `
 
-    db.query(sql, (err, results) => {
+    db.query(sql, [ user_id ], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
             return res.status(500).json({success: false, message: "Query failed."});

@@ -123,7 +123,7 @@ router.get("/my-items", checkAuth, checkAdmin, async (req, res) => {
         const response = await fetch(`${process.env.BASE_URL}/api/admin/my-items/posted-items`);
         const adminItems = await response.json();
 
-        const responseRentalRequests = await fetch(`${process.env.BASE_URL}/api/admin/my-items/rental-requests`);
+        const responseRentalRequests = await fetch(`${process.env.BASE_URL}/api/admin/my-items/rental-requests/${req.user.id}`);
         const adminRentalRequests = await responseRentalRequests.json();
 
         console.log('adminRentalRequests:', adminRentalRequests)
