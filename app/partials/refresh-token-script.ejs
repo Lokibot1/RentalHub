@@ -26,15 +26,23 @@
                 credentials: "include" // VERY IMPORTANT for sending cookies
             });
 
-            return res.ok;
+            if (res.status === 403) {
+                console.error("Refresh token expired");
+                window.location.href = "/login";
+                return false;
+            } else {
+                return res.ok;
+            }
         } catch (err) {
             console.error("Refresh failed", err);
             return false;
         }
     }
 
-    // Optional: Set an interval to refresh token every 14 minutes
+    // Optional: Set an interval to refresh token every 30 minutes
     setInterval(() => {
+        console.log('setInterval', new Date());
+
         refreshAccessToken();
-    }, 14 * 60 * 1000); // 14 minutes
+    }, 30 * 60 * 1000); // 30 minutes
 </script>
