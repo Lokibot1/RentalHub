@@ -82,7 +82,6 @@
             <!--Request Items-->
             <div id="RentalRequests" class="tab-content" style="display: none">
                 <div class="RentalList">
-
                     <%
                     function formatDateRange(startDate, endDate) {
                         const options = {year: 'numeric', month: 'long', day: 'numeric'};
@@ -100,7 +99,6 @@
                         return new Date(dateString).toLocaleDateString("en-US", options);
                     }
                     %>
-
                     <% if (adminRentalRequests.length > 0) { %>
                         <% adminRentalRequests.forEach(function(item) { %>
                             <div class="rentalItem" style="margin-bottom: 10px;">
@@ -147,6 +145,7 @@
                                         <h4 class="MOD"><%= item.mode_of_delivery %></h4>
                                     </div>
                                 </div>
+                            </div>
 
                                 <!-- Dark Background Overlay -->
                                 <div id="overlay" class="overlay"></div>
