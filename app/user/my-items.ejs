@@ -513,6 +513,14 @@
     </div>
 </div>
 
+<div id="accept-error-restriction" class="accept-error-modal">
+    <div class="accept-error-content">
+        <p class="note0">Cannot Accept Request <br>You are currently banned and cant accept new rental requests.</p>
+        <p class="note">This may due to multiple reports from other users.</p>
+        <button onclick="closeAcceptError()" class="close-button">I Understand</button>
+    </div>
+</div>
+
 <!-- JavaScript -->
 <script>
     // Toggle between renter and owner
@@ -1147,6 +1155,7 @@ function closeAcceptError() {
     document.getElementById("overlay").style.display = "none";
     document.getElementById("report-error-modal").style.display = "none";
     document.getElementById("modal-overlay").style.display = "none";
+    document.getElementById("accept-error-restriction").style.display = "none";
 }
 
 class RentalRequest {
@@ -1167,6 +1176,7 @@ class RentalRequest {
         
         // Fix the selector - remove the # since we're using getElementById
         this.acceptErrorModal = document.getElementById("accept-error-modal");
+        this.acceptErrorRestriction = document.getElementById("accept-error-restriction");
         
         // Getting the current data-id
         this.dataId = 0;
@@ -1192,7 +1202,7 @@ class RentalRequest {
                 const isBanned = event.target.getAttribute('data-isbanned') === 'true';
 
             if (isBanned) {
-                alert("You cannot accept the request due to restriction.");
+                this.acceptErrorRestriction.style.display = "flex";
                 return;
             }
             
