@@ -436,6 +436,8 @@
     function setItemId(button) {
         selectedItemId = button.getAttribute('data-selected-item-id')
         selectedUserId = button.getAttribute('data-selected-user-id')
+        console.log('Selected Item ID:', this.selectedItemId);
+        console.log('Selected User ID:', this.selectedUserId);
     }
 
     // Initialize rental requests for existing items

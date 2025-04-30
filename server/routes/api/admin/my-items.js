@@ -229,27 +229,36 @@ function rollback(res, message) {
 /**
  * Get ongoing transactions
  *
- * @route GET /api/admin/my-items/ongoing-transactions
+ * @route GET /api/admin/my-items/ongoing-transactions/:user_id
  */
-router.get("/ongoing-transactions", async (req, res) => {
+router.get("/ongoing-transactions/:user_id", async (req, res) => {
+    const { user_id } = req.params
+
     const sql = `
-        SELECT items.id                                         AS id,
-               renter.id                                        AS renter_id, # TODO: Possible owner or renter
-               CONCAT(renter.first_name, ' ', renter.last_name) AS renters_name,
-               items.file_path                                  AS item_image,
-               items.name                                       AS item_name,
-               start_date,
-               end_date,
-               mode_of_delivery
-        FROM items
-                 JOIN rental_transactions ON items.id = rental_transactions.item_id
-                 JOIN users AS renter ON rental_transactions.renter_id = renter.id
-        WHERE items.user_id = 1
-          AND rental_transactions.is_approved = 1
-          AND rental_transactions.is_owner_submit_review != 1
+        SELECT rental_transactions.id                         AS rent_transaction_id,
+               CONCAT(users.first_name, ' ', users.last_name) AS renters_name,
+               users.id                                       AS renter_id,
+               users.address                                  AS renters_address,
+               items.file_path                                AS item_image,
+               item_id                                        AS item_id,
+               items.name                                     AS item_name,
+               items.location                                 AS item_location,
+               rental_transactions.created_at,
+               rental_transactions.start_date                 AS start_date,
+               rental_transactions.end_date                   AS end_date,
+               rental_transactions.mode_of_delivery           AS mode_of_delivery,
+               rental_transactions.rental_quantity            AS rental_quantity,
+               rental_transactions.status
+        FROM rental_transactions
+                 JOIN users ON users.id = rental_transactions.renter_id
+                 JOIN items ON items.id = rental_transactions.item_id
+        WHERE rental_transactions.is_approved = 1
+          AND rental_transactions.status = 'ongoing'
+          AND rental_transactions.is_owner_submit_review = 0
+          AND items.user_id = ?
     `
 
-    db.query(sql, (err, results) => {
+    db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Database not connected", err);
             return res.status(500).json({success: false, message: "Query failed."});
@@ -258,6 +267,65 @@ router.get("/ongoing-transactions", async (req, res) => {
         res.status(200).json({
             success: true,
             data: results
+        });
+    });
+});
+
+
+/**
+ * Create report
+ *
+ * @route POST /api/admin/my-items/reports
+ */
+router.post("/reports", async (req, res) => {
+    const {
+        item_id,
+        reported_user_id,
+        reporter_id,
+        reasons,
+        report_text,
+        status,
+    } = req.body;
+
+    const sql = `
+        INSERT INTO reports (
+            item_id,
+            reported_user_id,
+            reporter_id,
+            reasons,
+            report_text,
+            status
+        )
+        SELECT
+            ?, ?, ?, ?, ?,
+            CASE
+                WHEN u.status = 'banned' THEN 'banned'
+                ELSE 'reported'
+            END
+        FROM users u
+        WHERE u.id = ?
+          AND NOT EXISTS (
+              SELECT 1 FROM reports r
+              WHERE r.item_id = ? AND r.reporter_id = ?
+          )
+    `
+    db.query(sql, [item_id, reported_user_id, reporter_id, JSON.stringify(reasons), report_text, reported_user_id, item_id, reporter_id], (err, results) => {
+        if (err) {
+            console.error("Database not connected", err);
+            return res.status(500).json({ success: false, message: "Create report failed." });
+        }
+
+        if (results.affectedRows === 0) {
+            console.log(`User ${reporter_id} already reported item ${item_id}.`);
+            return res.status(409).json({
+                success: false,
+                message: 'You have already reported this item.',
+            });
+        }
+
+        res.status(201).json({
+            success: true,
+            message: 'Report created successfully.',
         });
     });
 });

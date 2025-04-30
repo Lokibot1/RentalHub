@@ -128,8 +128,10 @@ router.get("/my-items", checkAuth, checkAdmin, async (req, res) => {
 
         console.log('adminRentalRequests:', adminRentalRequests)
 
-        const responseOngoingTransactions = await fetch(`${process.env.BASE_URL}/api/admin/my-items/ongoing-transactions`);
-        const adminOngoingTransactions = await responseOngoingTransactions.json();
+        const adminOngoingTransactionsResponse = await fetch(`${process.env.BASE_URL}/api/admin/my-items/ongoing-transactions/${req.user.id}`);
+        const adminOngoingTransactions = await adminOngoingTransactionsResponse.json();
+
+        console.log('adminOngoingTransactions:', adminOngoingTransactions);
 
         const isBanned = await getUserBannedStatus(req.user.id);
 
@@ -140,6 +142,7 @@ router.get("/my-items", checkAuth, checkAdmin, async (req, res) => {
             adminRentalRequests: adminRentalRequests.data,
             adminOngoingTransactions: adminOngoingTransactions.data,
             isAuthenticated: req.isAuthenticated,
+            user_id: req.user.id,
             role: req.role,
             currentUserId: req.user.id,
             isBanned,
@@ -153,6 +156,7 @@ router.get("/my-items", checkAuth, checkAdmin, async (req, res) => {
             adminItems: [],
             adminRentalRequests: [],
             adminOngoingTransactions: [],
+            user_id: 0,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
             currentUserId: req.user.id,

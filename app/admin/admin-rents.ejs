@@ -905,7 +905,7 @@ class ReportManager {
         event.preventDefault();
 
         try {
-            const response = await fetchWithAutoRefresh('http://localhost:8000/api/user/my-items/reports', {
+            const response = await fetchWithAutoRefresh('http://localhost:8000/api/admin/my-items/reports', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
