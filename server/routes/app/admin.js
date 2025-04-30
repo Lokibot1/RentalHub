@@ -1,5 +1,6 @@
 import express from "express"
 import { checkAuth, checkAdmin } from "../../middlewares/auth.js"
+import { getUserBannedStatus } from "../../helpers/userStatus.js";
 
 const router = express.Router();
 
@@ -12,6 +13,8 @@ router.get("/admin-dashboard", checkAuth, checkAdmin, async (req, res) => {
         const response = await fetch(`${process.env.BASE_URL}/api/admin/dashboard`);
         const dashboard = await response.json();
 
+        const isBanned = await getUserBannedStatus(req.user.id);
+
         console.log('dashboard data', dashboard.data)
 
         res.render("admin/admin-dashboard", {
@@ -20,6 +23,7 @@ router.get("/admin-dashboard", checkAuth, checkAdmin, async (req, res) => {
             dashboard: dashboard.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned,
         });
     } catch (error) {
         console.error("Error fetching pending posts:", error);
@@ -29,6 +33,7 @@ router.get("/admin-dashboard", checkAuth, checkAdmin, async (req, res) => {
             dashboard: {},
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned: false,
         });
     }
 });
@@ -42,6 +47,8 @@ router.get("/admin-profile", checkAuth, checkAdmin, async (req, res) => {
     try {
         const response = await fetch(`${process.env.BASE_URL}/api/admin/profile`);
         const adminProfile = await response.json();
+
+        const isBanned = await getUserBannedStatus(req.user.id);
     
         res.render("admin/admin-profile", {
             layout: "layouts/dashboard",
@@ -49,6 +56,7 @@ router.get("/admin-profile", checkAuth, checkAdmin, async (req, res) => {
             adminProfile: adminProfile.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned,
         });
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -58,6 +66,7 @@ router.get("/admin-profile", checkAuth, checkAdmin, async (req, res) => {
             adminProfile: [],
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned: false,
         });
       }
 });
@@ -75,6 +84,8 @@ router.get("/admin-rents", checkAuth, checkAdmin, async (req, res) => {
     
         const ongoingRentResponse = await fetch(`${process.env.BASE_URL}/api/admin/my-rents/ongoing/${req.user.id}`);
         const ongoingRentItems = await ongoingRentResponse.json();
+
+        const isBanned = await getUserBannedStatus(req.user.id);
     
         res.render("admin/admin-rents", {
             layout: "layouts/dashboard",
@@ -83,6 +94,8 @@ router.get("/admin-rents", checkAuth, checkAdmin, async (req, res) => {
             ongoingRentItems: ongoingRentItems.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            currentUserId: req.user.id,
+            isBanned,
         });
       } catch (error) {
         console.error("Error fetching pending posts:", error);
@@ -93,6 +106,8 @@ router.get("/admin-rents", checkAuth, checkAdmin, async (req, res) => {
             ongoingRentItems: [],
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            currentUserId: req.user.id,
+            isBanned: false,
         });
       }
 });
@@ -116,6 +131,8 @@ router.get("/my-items", checkAuth, checkAdmin, async (req, res) => {
         const responseOngoingTransactions = await fetch(`${process.env.BASE_URL}/api/admin/my-items/ongoing-transactions`);
         const adminOngoingTransactions = await responseOngoingTransactions.json();
 
+        const isBanned = await getUserBannedStatus(req.user.id);
+
         res.render("admin/my-items", {
             layout: "layouts/dashboard",
             title: "Admin - My Items",
@@ -124,6 +141,8 @@ router.get("/my-items", checkAuth, checkAdmin, async (req, res) => {
             adminOngoingTransactions: adminOngoingTransactions.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            currentUserId: req.user.id,
+            isBanned,
         });
     } catch (error) {
         console.error("Error fetching pending posts:", error);
@@ -136,6 +155,8 @@ router.get("/my-items", checkAuth, checkAdmin, async (req, res) => {
             adminOngoingTransactions: [],
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            currentUserId: req.user.id,
+            isBanned: false,
         });
     }
 });
@@ -152,6 +173,7 @@ router.get("/listing", checkAuth, checkAdmin, (req, res) => {
         title: "Add New Listing",
         isAuthenticated: req.isAuthenticated,
         role: req.role,
+        isBanned,
     });
 });
 
@@ -163,7 +185,8 @@ router.get("/manage-users", checkAuth, checkAdmin, async (req, res) => {
     try {
         const response = await fetch(`${process.env.BASE_URL}/api/admin/manage-users`);
         const users = await response.json();
-
+        
+        const isBanned = await getUserBannedStatus(req.user.id);
 
         res.render("admin/manage-users", {
             layout: "layouts/dashboard",
@@ -171,6 +194,7 @@ router.get("/manage-users", checkAuth, checkAdmin, async (req, res) => {
             users: users.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned,
         });
     } catch (error) {
         console.error("Error fetching pending posts:", error);
@@ -181,6 +205,7 @@ router.get("/manage-users", checkAuth, checkAdmin, async (req, res) => {
             users: [],
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned: false,
         });
     }
 });
@@ -201,6 +226,8 @@ router.get("/manage-listings", checkAuth, checkAdmin, async (req, res) => {
         const declinedRequestResponse = await fetch(`${process.env.BASE_URL}/api/admin/manage-listings/decline-requests`);
         const declinedRequests = await declinedRequestResponse.json();
 
+        const isBanned = await getUserBannedStatus(req.user.id);
+
         res.render("admin/manage-listings", {
             layout: "layouts/dashboard",
             title: "Manage Listings",
@@ -209,6 +236,7 @@ router.get("/manage-listings", checkAuth, checkAdmin, async (req, res) => {
             declinedRequests: declinedRequests.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned,
         });
     } catch (error) {
         console.error("Error fetching pending posts:", error);
@@ -220,6 +248,7 @@ router.get("/manage-listings", checkAuth, checkAdmin, async (req, res) => {
             declinedRequests: [],
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned: false,
         });
     }
 });
@@ -236,12 +265,15 @@ router.get("/admin-view-product/:item_id", checkAuth, checkAdmin, async (req, re
         const response = await fetch(`${process.env.BASE_URL}/api/admin/manage-listings/pending/${item_id}`); // Adjust the URL if necessary
         const pendingPost = await response.json();
 
+        const isBanned = await getUserBannedStatus(req.user.id);
+
         res.render("admin/admin-viewprod", {
             layout: "layouts/dashboard",
             title: "View Product",
             pendingPost: pendingPost.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned,
         });
     } catch (error) {
         console.error("Error fetching pending posts:", error);
@@ -251,6 +283,7 @@ router.get("/admin-view-product/:item_id", checkAuth, checkAdmin, async (req, re
             pendingPost: [],
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned: false,
         });
     }
 });
@@ -265,6 +298,8 @@ router.get("/transactions", checkAuth, checkAdmin, async (req, res) => {
     try {
         const response = await fetch(`${process.env.BASE_URL}/api/admin/transactions`);
         const transactions = await response.json();
+        
+        const isBanned = await getUserBannedStatus(req.user.id);
 
         res.render("admin/transactions", {
             layout: "layouts/dashboard",
@@ -272,6 +307,7 @@ router.get("/transactions", checkAuth, checkAdmin, async (req, res) => {
             transactions: transactions.data,
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned,
         });
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -282,7 +318,42 @@ router.get("/transactions", checkAuth, checkAdmin, async (req, res) => {
             transactions: [],
             isAuthenticated: req.isAuthenticated,
             role: req.role,
+            isBanned: false,
         });
+    }
+})
+
+
+/**
+ * Archives Page
+ *
+ * @route GET /admin/archives
+ */
+router.get('/archive', checkAuth, async (req, res) => {
+    try {
+        const response = await fetch(`${process.env.BASE_URL}/api/admin/archive/${req.user.id}`)
+        const archivedItems = await response.json()
+
+        const isBanned = await getUserBannedStatus(req.user.id);
+
+        res.render('admin/archive', {
+            layout: 'layouts/user',
+            title: 'Archives',
+            archivedItems: archivedItems.data,
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+            isBanned, // ✅ pass this
+        })
+    } catch (error) {
+        console.error('Error fetching data:', error)
+        res.render('admin/archive', {
+            layout: 'layouts/user',
+            title: 'Archives',
+            archivedItems: [],
+            isAuthenticated: req.isAuthenticated,
+            role: req.role,
+            isBanned: false, // default to false in error case
+        })
     }
 })
 

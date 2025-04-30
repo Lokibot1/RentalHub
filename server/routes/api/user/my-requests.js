@@ -130,6 +130,7 @@ router.get("/requests/:user_id", async (req, res) => {
                  JOIN users ON users.id = items.user_id
         WHERE rental_transactions.is_approved = 0
           AND rental_transactions.status != 'declined'
+          AND rental_transactions.status != 'voided'
           AND rental_transactions.renter_id = ?
     `
 

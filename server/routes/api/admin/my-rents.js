@@ -87,6 +87,7 @@ router.get("/ongoing/:user_id", async (req, res) => {
                  JOIN users ON users.id = items.user_id
         WHERE rental_transactions.is_approved = 1
           AND rental_transactions.renter_id = ?
+          AND rental_transactions.is_renter_submit_review != 1
     `
 
     db.query(sql, [user_id], (err, results) => {
