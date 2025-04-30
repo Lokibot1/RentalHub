@@ -2,6 +2,8 @@ import express from "express"
 import {optionalAuth} from "../../middlewares/auth.js"
 import {db} from "../../configs/db.js"
 import { warmUpMailer } from "../../helpers/warmup-email.js";
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 const router = express.Router();
 
@@ -58,12 +60,12 @@ router.get("/logout", (req, res) => {
 });
 
 router.post("/refresh", (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
+  const oldRefreshToken = req.cookies.refreshToken;
 
-  if (!refreshToken) return res.status(401).json({ message: "No refresh token provided" });
+  if (!oldRefreshToken) return res.status(401).json({ message: "No refresh token provided" });
 
   const sql = "SELECT user_id, expires_at FROM refresh_tokens WHERE token = ?";
-  db.query(sql, [refreshToken], (err, results) => {
+  db.query(sql, [oldRefreshToken], (err, results) => {
     if (err || results.length === 0) {
       return res.status(403).json({ message: "Invalid refresh token" });
     }
@@ -74,28 +76,55 @@ router.post("/refresh", (req, res) => {
       return res.status(403).json({ message: "Refresh token expired" });
     }
 
-    const getUserSql = "SELECT id, email, roles.name AS role FROM users INNER JOIN roles ON users.role_id = roles.id WHERE users.id = ?";
+    const getUserSql = `
+      SELECT users.id, email, roles.name AS role
+      FROM users
+      INNER JOIN roles ON users.role_id = roles.id
+      WHERE users.id = ?
+    `;
     db.query(getUserSql, [tokenData.user_id], (err, userResults) => {
-      if (err || userResults.length === 0) return res.status(403).json({ message: "User not found" });
+      if (err || userResults.length === 0)
+        return res.status(403).json({ message: "User not found" });
 
       const user = userResults[0];
 
+      // 1. Create new access token
       const newAccessToken = jwt.sign({
         id: user.id,
         email: user.email,
         role: user.role,
-      }, process.env.JWT_SECRET, { expiresIn: "7h" });
+      }, process.env.JWT_SECRET, { expiresIn: "5m" });
 
-      res.cookie("token", newAccessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "Strict"
+      // 2. Create new refresh token
+      const newRefreshToken = crypto.randomBytes(64).toString("hex");
+      const newExpiry = new Date(Date.now() + 1000 * 60 * 5); // 5 minutes
+
+      // 3. Update refresh token in DB
+      const updateTokenSql = "UPDATE refresh_tokens SET token = ?, expires_at = ? WHERE user_id = ?";
+      db.query(updateTokenSql, [newRefreshToken, newExpiry, user.id], (err) => {
+        if (err) return res.status(500).json({ message: "Failed to update refresh token" });
+
+        // 4. Set new cookies
+        res.cookie("token", newAccessToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "Strict",
+          maxAge: 1000 * 60 * 5 // 5 mins
+        });
+
+        res.cookie("refreshToken", newRefreshToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "Strict",
+          maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+        });
+
+        res.json({ token: newAccessToken });
       });
-
-      res.json({ token: newAccessToken });
     });
   });
 });
+
 
 
 /**
