@@ -11,10 +11,7 @@
     <!--Main Content-->
     <div class="content">
         <div class="tab">
-            <!-- <button
-                    class="tablinks active"
-                    onclick="openTab(event, 'PendingPosts')"
-            >
+            <!-- <button class="tablinks active" onclick="openTab(event, 'PendingPosts')">
                 Pending Posts
             </button> -->
             <button class="tablinks active" onclick="openTab(event, 'Items')">
@@ -28,12 +25,11 @@
             </button>
 
             <!--Tab Content-->
-
             <!--Pending Post-->
             <div id="PendingPosts" class="tab-content">
                 <div class="shoppingList">
                 </div>
-            </div>
+        </div>
 
             <!--Items Post-->
             <div id="Items" class="tab-content" style="display: block">
@@ -43,19 +39,23 @@
                         <% adminItems.forEach(function(item) { %>
                     
                                 <div class="shoppingItem">
+                                    <div class="itemDelete-wrapper">
                                     <img src="/images/trashcan.png" alt="Delete" class="itemDelete"
-                                         onclick="showDeleteModal()"/>
+                                         data-item-id="<%= item.item_id %>"/>
                                     <!--To Fix: Same Function sya nung sa posted items na trashcan sa user-->
                                     <a href="/user/update-listing/<%= item.item_id %>">
                                     <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
                                     <div class="item-details">
-                                    <strong class="itemName"><%= item.name %></strong>
-                                        <strong class="itemPrice">$<%= item.price %></strong>
-                                        <h5 class="itemLocation"><%= item.location %></h5>
-                                        <p class="itemQuantity"> <%= item.stock_quantity %> Left </p>
+                                    <strong class="itemName" title="<%= item.name %>"> <%= item.name %> </strong>
+                                        <strong class="itemPrice">₱<%= item.price %></strong>
+                                        <h5 class="itemLocation" title="<%= item.location %>"><%= item.location %></h5>
+                                        <p class="itemQuantity"><%= item.stock_quantity %> Left | <span style="color:#333333">
+                                            <%= item.reviews_count > 0 ? item.reviews.count + "reviews" : "No reviews yet" %>
+                                        </span></p>
                                     </div>
                                     </a>
                                 </div>
+                            </div>
                         <% }); %>
                     <% } else { %>
                         <p>No posted items available.</p>
@@ -63,63 +63,96 @@
                 </div>
             </div>
 
-            <%
-            function formatDateRange(startDate, endDate) {
-                const options = {year: 'numeric', month: 'long', day: 'numeric'};
+            <!-- Archive Confirmation Modal -->
+            <div id="archiveModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <p><strong>Are you sure you want to <span style="color: #990000;">archive</span> this item?</strong>
+                    </p>
+                    <div class="modal-buttons">
+                        <button id="confirmDelete" class="btn-yes">Yes</button>
+                        <button id="cancelDelete" class="btn-no">No</button>
+                    </div>
+                </div>
+            </div>
 
-                const start = new Date(startDate).toLocaleDateString('en-US', options);
-                const end = new Date(endDate).toLocaleDateString('en-US', options);
+            <div id="successModal" class="modal" style="display: none;">
+                <div class="success-message1">
+                    <p><strong>Item archived successfully!</strong></p>
+                </div>
+            </div>
 
-                return `${start} - ${end}`;
-            }
-            %>
 
             <!--Request Items-->
             <div id="RentalRequests" class="tab-content" style="display: none">
                 <div class="RentalList">
 
+                    <%
+                    function formatDateRange(startDate, endDate) {
+                        const options = {year: 'numeric', month: 'long', day: 'numeric'};
+
+                        const start = new Date(startDate).toLocaleDateString('en-US', options);
+                        const end = new Date(endDate).toLocaleDateString('en-US', options);
+
+                        return `${start} - ${end}`;
+                    }
+
+                    // This function formats the date to "Month Day, Year"
+                    // Example: "April 4, 2025"
+                    function formatDate(dateString) {
+                        const options = {year: "numeric", month: "long", day: "numeric"};
+                        return new Date(dateString).toLocaleDateString("en-US", options);
+                    }
+                    %>
+
                     <% if (adminRentalRequests.length > 0) { %>
                         <% adminRentalRequests.forEach(function(item) { %>
-                            <div class="rentalItem">
+                            <div class="rentalItem" style="margin-bottom: 10px;">
                                 <div class="rentalInfo">
                                     <div class="renterDetails">
-                                        <strong class="renterName"><%= item.renters_name %></strong>
-                                        <strong>•</strong>
-                                        <strong class="renterLocation"><%= item.item_location %></strong>
+                                            <img id="renter-image" src="/uploads/<%= item.renters_profile_image %>" alt=""
+                                            onclick="openForm('<%= item.rent_transaction_id %>')"
+                                            />
+                                            
+                                        <div class="renters">
+                                            <h4 class="renterName" onclick="openForm('<%= item.rent_transaction_id %>')"
+                                                > <%= item.renters_name %> </h4>
+                                            <h4> • </h4>
+                                            <h4 class="renterLocation"> <%= item.renters_address %> </h4>
                                     </div>
-                                    <div class="itemDetails">
-                                        <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
-                                        <h2 class="itemName"><%= item.item_name %></h2>
+                                    </div>
+                                    <div class="middle">
+                                        <div class="itemDetails">
+                                            <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
+                                            <div class="details">
+                                                <p class="itemName">Item Name: <%= item.item_name %></p>
+                                                <p class="itemLocation">Item Location: <%= item.item_location %></p>
+                                                <p class="Quantity">Quantity: <%= item.item_quantity %></p>
+                                                <p class="postedDate">Requested
+                                                    on: <%= formatDate(item.created_at) %></p>
+                                            </div>
+                                        </div>
+                                        <div class="rentalAction">
+                                            <button class="accept-btn"
+                                                    data-id="accept-btn-<%= item.rent_transaction_id %>""
+                                                    data-isbanned="<%= isBanned %>">
+                                                    
+                                                ✓
+                                            </button>
+                                            <button class="decline-btn"
+                                                    data-id="decline-btn-<%= item.rent_transaction_id %>">
+                                                ✗
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="rentalDurationContainer">
-                                        <strong class="rentalDuration"><%= formatDateRange(item.start_date, item.end_date) %></strong>
-                                        <strong>•</strong>
-                                        <strong class="MOD"><%= item.mode_of_delivery %></strong>
+                                        <h4 class="rentalDuration"><%= formatDateRange(item.start_date, item.end_date) %></h4>
+                                        <h4> • </h4>
+                                        <h4 class="MOD"><%= item.mode_of_delivery %></h4>
                                     </div>
                                 </div>
 
                                 <!-- Dark Background Overlay -->
                                 <div id="overlay" class="overlay"></div>
-                                <div class="rentalAction">
-                                    <button class="accept-btn" data-id="accept-btn-<%= item.rent_transaction_id %>">
-                                        ✓
-                                    </button>
-                                    <button class="decline-btn" data-id="decline-btn-<%= item.rent_transaction_id %>">
-                                        ✗
-                                    </button>
-                                </div>
-                                <div id="confirmation-modal1" class="confirmation-modal1">
-                                    <div class="confirmation-box1">
-                                        <h2 class="accept-text2">Are you sure you want to <span
-                                                    class="accept-text1">accept</span> this request?</h2>
-                                        <p class="note1">*Note: Remember to ask for Valid ID upon transaction*</p>
-                                        <div class="button-container1">
-                                            <button id="yes-btn1" class="yes-btn1">Yes</button>
-                                            <button id="no-btn1" class="no-btn1">No</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         <% }); %>
                     <% } else { %>
                         <p>No rental requests available.</p>
@@ -144,6 +177,20 @@
                 </div>
             </div>
 
+            <!-- Accept Confirmation Modal -->
+            <div id="confirmation-modal1" class="confirmation-modal1">
+                <div class="confirmation-box1">
+                    <h2 class="accept-text2">Are you sure you want to <span class="accept-text1">accept</span>
+                        this
+                        request?</h2>
+                    <p class="note1">*Note: Remember to ask for Valid ID upon transaction*</p>
+                    <div class="button-container1">
+                        <button id="yes-btn1" class="yes-btn1">Yes</button>
+                        <button id="no-btn1" class="no-btn1">No</button>
+                    </div>
+                </div>
+            </div>
+
             <div id="overlay" class="overlay"></div>
             <div id="decline-container1" class="decline-container1">
                 <div id="decline-message1" class="decline-message1">
@@ -152,149 +199,632 @@
             </div>
         </div>
 
-        <!--On Transactions-->
-        <div id="OnTransactions" class="tab-content" style="display: none">
-            <div class="RentalList">
+        <!-- Modal for Renter Information -->
+        <div id="modalOverlay" class="modal-overlay"></div>
+        <div id="myForm">
+        <button class="close-btn" onclick="closeForm()">X</button>
 
-                <% if (adminOngoingTransactions.length > 0) { %>
-                    <% adminOngoingTransactions.forEach(function(item) { %>
-                        <div class="rentalItem">
-                            <div class="rentalInfo">
-                                <div class="renterDetails">
-                                    <strong class="renterName"><%= item.renters_name %></strong>
-                                </div>
-                                <div class="itemDetails">
-                                    <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
-                                    <h2 class="itemName"><%= item.item_name %></h2>
-                                </div>
-                                <div class="rentalDurationContainer">
-                                    <strong class="rentalDuration"><%= formatDateRange(item.start_date, item.end_date) %></strong>
-                                    <strong>•</strong>
-                                    <strong class="MOD"><%= item.mode_of_delivery %></strong>
-                                </div>
-                            </div>
-                            <div class="completeAction">
-                                <button id="report-btn">File a Report</button>
-                                <!--FIX ME: width problem, no submit requirements, no darkbg overlay-->
-                                <button id="review-btn">Done</button>
-                            </div>
+        <!--Profile Details-->
+        <div class="side-profile">
+            <div class="profile">
+                <img id="profile-image" src="" alt=""/>
+            </div>
+            <hr/>
+            <h3 id="renters-fullname">*Renter Name*</h3>
+            <p id="contact-number">*Contact Info*</p>
+            <p id="social-media">
+                <a id="social-media-link" href="#" target="_blank"
+                >*Social Media Link*</a
+                >
+            </p>
+            <p id="location">*Location*</p>
+            <p id="renter-rating">*Rating*</p>
+        </div>
+
+        <!-- Right Side-->
+        <div class="side-info">
+            <div class="tabs">
+                
+                <button class="tab-btn active" onclick="switchTab(event, 'reviews')">
+                    Reviews
+                </button>
+            </div>
+            <div class="pop-content">
+                <div
+                        id="review
+                        class="tab-content active">
+                    <h3>Reviewed As:</h3>
+                    <div class="toggle-wrapper">
+                        <div class="toggle-container">
+                            <button id="renterBtn" class="toggle-btns">Renter</button>
+                            <button id="ownerBtn" class="toggle-btns">Owner</button>
+                            <div class="toggle-sliders"></div>
                         </div>
-                    <% }); %>
-                <% } else { %>
-                    <p>No ongoing transactions available.</p>
-                <% } %>
-            </div>
-        </div>
-
-        <!--Report Modal-->
-        <div id="modal-overlay" class="overlay"></div>
-        <div id="report-modal" class="modal">
-            <div class="modal-content" style="text-align: left">
-                <h2>Report Renter</h2>
-                <form id="report-form">
-                    <label>Reason:</label>
-                    <div>
-                        <input
-                                type="checkbox"
-                                id="duplicate"
-                                name="reason"
-                                value="duplicate"
-                        />
-                        <label for="duplicate">Duplicate</label>
                     </div>
-                    <div>
-                        <input
-                                type="checkbox"
-                                id="inappropriate"
-                                name="reason"
-                                value="inappropriate"
-                        />
-                        <label for="inappropriate">Inappropriate</label>
+                    <br>
+                    <hr>    
+                    <div id="renterContent" class="content-box" style="display: block">
+                        <div class="reviewItem">
+                            <br>
+                            <div class="review-header">
+                              <img class="itemImage" src="/uploads/${review.profile_image}" alt="${review.renter}" />
+                              <div class="header-info">
+                              <h3>Julia Salgado</h3>
+                              <p>Apolonio Samson, Quezon City</p>
+                              <p>April 25, 2005<p>
+                                </div>
+                            </div>
+                            <div class="review-content">
+                              <div class="item-rate">
+                                <span> *****</span>
+                                <strong><p>Sapatos ni Dora</p></strong>
+                                </div>
+                              <p><strong>Review:</strong> Layo nararating ko pag suot ko to whahah solid pari si owner solid!</p>
+                            </div>
+                            <br>
+                            <hr>
+                          </div>
+
                     </div>
-                    <div>
-                        <input
-                                type="checkbox"
-                                id="fraudulent"
-                                name="reason"
-                                value="fraudulent"
-                        />
-                        <label for="fraudulent">Fraudulent</label>
+                    <div id="ownerContent" class="content-box" style="display: none">
+                        <div class="reviewItem">
+                            <br>
+                            <div class="review-header">
+                              <img class="itemImage" src="/uploads/${review.profile_image}" alt="${review.renter}" />
+                              <div class="header-info">
+                              <h3>Brian Dijamco</h3>
+                              <p>Novaliches, Quezon City</p>
+                              <p>June 06, 2005<p>
+                                </div>
+                            </div>
+                            <div class="review-content">
+                              <div class="item-rate">
+                                <span> *****</span>
+                                <strong><p>Internet Cable ng Converge</p></strong>
+                                </div>
+                              <p><strong>Review:</strong> Lopet Tinde!</p>
+                            </div>
+                            <br>
+                            <hr>
+                          </div>
                     </div>
-                    <br/>
-                    <label for="description">Describe What Happened</label>
-                    <br/>
-                    <textarea
-                            id="description"
-                            name="description"
-                            rows="4"
-                            cols="50"
-                    ></textarea>
-                    <br/>
-                    <button id="submit-rprt" type="submit">Submit</button>
-                    <button id="cancel-rprt" type="button">Cancel</button>
-                </form>
-            </div>
-        </div>
+                
+                <div id="reviews" class="tab-content">
+                    
 
-
-        <!-- Toast Notification -->
-        <div id="report-toast" class="toast">Report Submitted Successfully!</div>
-
-        <!-- Modal for Review  -->
-        <div id="review-modal" class="modal">
-            <div class="modal-content" style="text-align: left">
-                <h2>Review Renter</h2>
-                <form id="review-form">
-                    <label for="rating">Rating:</label>
-                    <br/>
-                    <div class="stars">
-                        <span class="star2" data-value="1">★</span>
-                        <span class="star2" data-value="2">★</span>
-                        <span class="star2" data-value="3">★</span>
-                        <span class="star2" data-value="4">★</span>
-                        <span class="star2" data-value="5">★</span>
-                    </div>
-                    <br/>
-                    <label for="description">Describe Your Experience</label>
-                    <br/>
-                    <textarea id="description" name="description" rows="4" cols="50"></textarea>
-                    <br/>
-                    <button id="submit-rev" type="submit">Submit</button>
-                    <button id="cancel-rev" type="button">Cancel</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- FIX ME: Report Confirmation Modal, NOT SHOWING  -->
-        <div id="confirm-modal" class="modal">
-            <div class="modal-content">
-                <h3>Are you sure you want to submit this review?</h3>
-                <div class="modal-buttons">
-                    <button class="btn-yes" id="confirm-submit">Confirm</button>
-                    <button class="btn-no" id="cancel-confirm">Cancel</button>
                 </div>
             </div>
+            </div>
         </div>
 
-        <div class="modalOverlay" id="modalOverlay"></div>
-        <div id="toast" class="toast">Report Submitted Successfully!</div>
-
-        <!-- Logout Confirmation Modal -->
-        <!-- <div id="logout-modal" class="logout-modal">
-            <div class="logout-content">
-                <p>Are you sure you want to log out?</p>
-                <div class="logout-button-group">
-                    <button id="confirm-logout" class="yes-btn">Yes</button>
-                    <button id="cancel-logout" class="no-btn">No</button>
+            <!--On Transactions-->
+            <div id="OnTransactions" class="tab-content" style="display: none">
+                <div class="RentalList">
+                    <% if (adminOngoingTransactions.length > 0) { %>
+                        <% adminOngoingTransactions.forEach(function(item) { %>
+                            <div class="rentalItem">
+                                <div class="rentalInfo">
+                                    <div class="renterDetails">
+                                        <h4 class="renterName"> <%= item.renters_name %> </h4>
+                                        <strong> • </strong>
+                                        <h4 class="renterLocation"> <%= item.renters_address %> </h4>
+                                    </div>
+                                    <div class="itemDetails">
+                                        <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
+                                        <div class="details">
+                                            <p class="itemName">Item Name: <%= item.item_name %></p>
+                                            <p class="itemLocation">Item Location: <%= item.item_location %></p>
+                                            <p class="Quantity">Quantity: <%= item.rental_quantity %> </p>
+                                            <p class="postedDate">Requested on: <%= formatDate(item.created_at) %></p>
+                                        </div>
+                                    </div>
+                                    <div class="rentalDurationContainer">
+                                        <strong class="rentalDuration"><%= formatDateRange(item.start_date, item.end_date) %></strong>
+                                        <strong> • </strong>
+                                        <strong class="MOD"><%= item.mode_of_delivery %></strong>
+                                    </div>
+                                </div>
+                                <div class="completeAction">
+                                        <button data-id="report-btn"
+                                            class="report-btn"
+                                            data-selected-renter-id="<%= item.renter_id %>"
+                                            data-selected-item-id="<%= item.item_id %>"
+                                            onclick="setItemId(this)">
+                                        File a Report
+                                        </button>
+                                        <!--FIX ME: width problem, no submit requirements, no darkbg overlay-->
+                                        <button class="review-btn" data-id="review-btn-<%= item.rent_transaction_id %>">
+                                            Done
+                                        </button>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p>No ongoing transactions available.</p>
+                    <% } %>
+                    </div>
                 </div>
             </div>
-        </div> -->
 
-    </div>
+            <!--Report Modal-->
+            <div id="modal-overlay" class="overlay"></div>
+            <div id="report-modal" class="modal">
+                <div class="modal-content" style="text-align: left">
+                    <h2>Report Renter</h2>
+                    <form id="report-form">
+                        <label>Reason:</label>
+                        <div>
+                            <input type="checkbox" id="damageToItem" name="reason" value="Damage to Item"/>
+                            <label for="damageToItem">Damage to Item</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="lateReturn" name="reason" value="Late Return of Item"/>
+                            <label for="lateReturn">Late Return of Item</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="notReturned" name="reason" value="Item Not Returned"/>
+                            <label for="notReturned">Item Not Returned</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="noShow" name="reason" value="No Show"/>
+                            <label for="noShow">No Show</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="duplicate" name="reason" value="Duplicate"/>
+                            <label for="duplicate">Duplicate</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="inappropriate" name="reason" value="Inappropriate"/>
+                            <label for="inappropriate">Inappropriate</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="fraudulent" name="reason" value="Fraudulent"/>
+                            <label for="fraudulent">Fraudulent</label>
+                        </div>
+                        <br/>
+                        <label for="description">Describe What Happened</label>
+                        <br/>
+                        <textarea id="description" name="description" rows="4" cols="50"></textarea>
+                        <br/>
+                        <button id="submit-rprt" type="submit">Submit</button>
+                        <button id="cancel-rprt" type="button">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Toast Notification -->
+            <div id="report-toast" class="toast">Report Submitted Successfully!</div>
+            <!-- FIX ME: Report Confirmation Modal, NOT SHOWING  -->
+            <div id="confirm-modal" class="modal">
+                <div class="modal-content">
+                    <h3>Are you sure you want to submit this report?</h3>
+                    <div class="modal-buttons">
+                        <button class="btn-yes" id="confirm-submit">Confirm</button>
+                        <button class="btn-no" id="cancel-confirms">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for Review  -->
+            <div id="review-modal" class="modal">
+                <div class="modal-content" style="text-align: left">
+                    <h2>Review for Renter</h2>
+                    <form id="review-form">
+                        <label for="rating">Rating:</label>
+                        <br/>
+                        <div class="stars">
+                            <span class="star2" data-value="1">★</span>
+                            <span class="star2" data-value="2">★</span>
+                            <span class="star2" data-value="3">★</span>
+                            <span class="star2" data-value="4">★</span>
+                            <span class="star2" data-value="5">★</span>
+                        </div>
+                        <br/>
+                        <label for="review-description">Describe Your Experience</label>
+                        <br/>
+                        <textarea id="review-description" name="review_description" rows="4" cols="50"></textarea>
+                        <br/>
+                        <button id="submit-rev" type="submit">Submit</button>
+                        <button id="cancel-rev" type="button">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="confirm-modal1" class="modal">
+                <div class="modal-content">
+                    <h3>Are you sure you want to submit this review?</h3>
+                    <div class="modal-buttons">
+                        <button class="btn-yes" id="confirm-review">Confirm</button>
+                        <button class="btn-no" id="cancel-review">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <!--Fix me: Toast Notification -->
+            <div id="modal-overlay" class="overlay"></div>
+            <div id="review-toast" class="toast">Review Submitted Successfully!</div>
+
+            <!-- Logout Confirmation Modal -->
+            <!-- <div id="logout-modal" class="logout-modal">
+                <div class="logout-content">
+                    <p>Are you sure you want to log out?</p>
+                    <div class="logout-button-group">
+                        <button id="confirm-logout" class="yes-btn">Yes</button>
+                        <button id="cancel-logout" class="no-btn">No</button>
+                    </div>
+                </div>
+            </div> -->
+
+            <!--Error Modal when archiving cause of ongoung transactions-->
+            <div id="errorModal" class="error-modal">
+                <div class="error-content">
+                    <p class="note0">Archive Failed: Due to On Going Transaction(s) for this item</p>
+                    <p class="note">Finish all your transactions first for this item before archiving this item</p>
+                    <button onclick="closeErrorModal()" class="close-button">I Understand</button>
+                </div>
+            </div>
+
+            <!--Error Modal when accepting a request when the item is archived-->
+            <div id="accept-error-modal" class="accept-error-modal">
+                <div class="accept-error-content">
+                    <p class="note0">Cannot Accept Request: <br>This item is archived and no longer available</p>
+                    <p class="note">Restore the item before accepting this request</p>
+                    <button onclick="closeAcceptError()" class="close-button">I Understand</button>
+                </div>
+            </div>
+
+            <!--Error Modal when accepting a Filing A Report Once-->
+            <div id="report-error-modal" class="report-error-modal">
+                <div class="accept-error-content">
+                    <p class="note0">Report Submission Failed: <br>You already filed a report regarding this transaction.</p>
+                    <button onclick="closeAcceptError()" class="close-button">I Understand</button>
+                </div>
+            </div>
+    </div>    
 </div>
-
 <!-- JavaScript -->
 <script>
+    // Toggle between renter and owner
+document.addEventListener("DOMContentLoaded", function () {
+        const renterBtn = document.getElementById("renterBtn");
+        const ownerBtn = document.getElementById("ownerBtn");
+        const slider = document.querySelector(".toggle-sliders");
+        const renterContent = document.getElementById("renterContent");
+        const ownerContent = document.getElementById("ownerContent");
+
+        // Default state: Show "For Renters" and position the slider
+        slider.style.transform = "translateX(0%)";
+        renterBtn.style.color = "#12263f";
+        ownerBtn.style.color = "white";
+        renterContent.style.display = "block"; // Show renters section
+        ownerContent.style.display = "none"; // Hide owners section
+
+        renterBtn.addEventListener("click", function () {
+            slider.style.transform = "translateX(0%)";
+            renterBtn.style.color = "#12263f";
+            ownerBtn.style.color = "white";
+            renterContent.style.display = "block"; // Show renters section
+            ownerContent.style.display = "none"; // Hide owners section
+        });
+
+        ownerBtn.addEventListener("click", function () {
+            slider.style.transform = "translateX(100%)";
+            ownerBtn.style.color = "#12263f";
+            renterBtn.style.color = "white";
+            renterContent.style.display = "none"; // Hide renters section
+            ownerContent.style.display = "block"; // Show owners section
+        });
+    });
+
+    window.addEventListener("load", function () {
+        document.getElementById("myForm").style.display = "none";
+        document.getElementById("modalOverlay").style.display = "none";
+    });
+
+// Function to close the form
+function closeForm() {
+    document.getElementById('modalOverlay').style.display = 'none';
+    document.getElementById('myForm').style.display = 'none';
+    document.getElementById('accept-error-modal').style.display = 'none';   
+}
+
+// Function to handle tab switching
+function switchTab(event, tabId) {
+    // Get all tab content and buttons
+    const tabContents = document.querySelectorAll('.tab-content');
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    
+    // Hide all tab contents
+    tabContents.forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Remove active class from all buttons
+    tabButtons.forEach(button => {
+        button.classList.remove('active');
+    });
+    
+    // Show the selected tab and mark its button as active
+    document.getElementById(tabId).classList.add('active');
+    event.currentTarget.classList.add('active');
+}
+
+// Renter's Profile Modal
+async function openForm(transactionId) { 
+    if (!transactionId) {
+        alert("Invalid rental transaction ID");
+        return;
+    }
+
+    // Clear existing reviews first
+    document.getElementById('renterContent').innerHTML = '';
+    document.getElementById('ownerContent').innerHTML = '';
+
+    localStorage.setItem("selectedTransaction", JSON.stringify({ id: transactionId }));
+
+    const response = await fetchWithAutoRefresh(
+        `http://localhost:8000/api/user/my-items/renter-info-by-transaction/${transactionId}`
+    );
+    const data = await response.json();
+
+    if (!data.success || !data.data) {
+        alert("No renter information available for this rental transaction.");
+        return;
+    }
+
+    const {
+        renter_id,
+        renter_profile_image,
+        renter,
+        contact_number,
+        social_media,
+        city,
+        average_rating,
+    } = data.data;
+
+    localStorage.setItem("currentRenter", JSON.stringify({ renter_id }));
+
+    document.querySelector("#profile-image").src = `/uploads/${renter_profile_image}`;
+    document.querySelector("#renters-fullname").textContent = renter;
+    document.querySelector("#contact-number").textContent = contact_number;
+
+    const socialMediaLink = document.querySelector("#social-media-link");
+    socialMediaLink.textContent = social_media;
+    socialMediaLink.href = social_media;
+
+    document.querySelector("#location").textContent = city;
+    document.querySelector(
+        "p#renter-rating"
+    ).textContent = average_rating ? `⭐ ${parseFloat(average_rating).toFixed(2)}` : 'This item has no ratings yet.';
+
+    document.getElementById("myForm").style.display = "flex";
+    document.getElementById("modalOverlay").style.display = "block";
+    document.getElementById("renterBtn").click();
+}
+
+
+// // Fetch and display reviews
+document.addEventListener("DOMContentLoaded", () => {
+        const userId = JSON.parse(localStorage.getItem("currentRenter"))?.renter_id;
+        const renterBtn = document.getElementById("renterBtn");
+        const ownerBtn = document.getElementById("ownerBtn");
+        const renterContent = document.getElementById("renterContent");
+        const ownerContent = document.getElementById("ownerContent");
+
+        renterBtn.addEventListener("click", () => {
+                const userId = JSON.parse(localStorage.getItem("currentRenter"))?.renter_id; // DITO NA BASAHIN!
+            if (!userId) {
+                console.error("No renter selected.");
+                renterContent.innerHTML = "<p>Please select a renter first.</p>";
+                return;
+            }
+            renterContent.style.display = "block";
+            ownerContent.style.display = "none";
+            console.log("Renter ID used:", userId);
+            fetchReviews(userId, "renter", renterContent);
+        });
+
+        ownerBtn.addEventListener("click", () => {
+            const userId = JSON.parse(localStorage.getItem("currentRenter"))?.renter_id; // DITO NA RIN!
+        if (!userId) {
+            console.error("No renter selected.");
+            ownerContent.innerHTML = "<p>Please select a renter first.</p>";
+            return;
+        }
+            ownerContent.style.display = "block";
+            renterContent.style.display = "none";
+            console.log("Owner ID used:", userId);
+            fetchReviews(userId, "owner", ownerContent);
+        });
+
+        async function fetchReviews(userId, role, container) {
+            try {
+                const apiUrl = `http://localhost:8000/api/user/profile/renter-info/${userId}?role=${role}`;
+                console.log("Fetching data from:", apiUrl);
+
+                const response = await fetchWithAutoRefresh(apiUrl);
+                const {data, success} = await response.json();
+
+                if (!response.ok) {
+                    console.error(`HTTP error! status: ${response.status}`);
+                    container.innerHTML = `<p>Error: Failed to fetch reviews (HTTP ${response.status})</p>`;
+                    return;
+                }
+
+                if (success) {
+                    console.log("Fetched reviews:", data);
+                    renderReviews(data, container);
+                } else {
+                    console.error("Failed to load reviews:", data?.message || "Unknown error");
+                    container.innerHTML = "<p>Error loading reviews</p>";
+                }
+            } catch (error) {
+                console.error("Error fetching reviews:", error.message);
+                container.innerHTML = "<p>Connection error while loading reviews</p>";
+            }
+        }
+
+        function renderReviews(reviews, container) {
+            container.innerHTML = "";
+
+            if (!reviews || reviews.length === 0) {
+                container.innerHTML = "<p>No reviews found.</p>";
+                return;
+            }
+
+            reviews.forEach((review) => {
+                const formattedDate = new Date(review.date_posted).toLocaleDateString('en-US');
+                const reviewHTML = `
+                    <div class="reviewItem">
+                      <br>
+                      <div class="review-header">
+                        <img class="itemImage" src="/uploads/${review.profile_image}" alt="${review.renter}" />
+                        <div class="header-info">
+                        <h3>${review.renter}</h3>
+                        <p>${review.location}</p>
+                        <p>${formattedDate}<p>
+                          </div>
+                      </div>
+                      <div class="review-content">
+                        <div class="item-rate">
+                          <span> ${generateStars(review.stars)}</span>
+                          <strong><p>${review.item_name}</p></strong>
+                          </div>
+                        <p><strong>Review:</strong> ${review.review_text}</p>
+                      </div>
+                      <br>
+                      <hr>
+                    </div>
+                `;
+                container.innerHTML += reviewHTML;
+            });
+        }
+
+        // Get Stars
+        function generateStars(rating) {
+            let stars = "";
+            for (let i = 1; i <= rating; i++) {
+                stars += "⭐"
+            }
+            return stars;
+        }
+
+        renterBtn.click(); //para sa autoshow ng reviews
+    });
+
+
+    let selectedItemId = 0
+    let selectedUserId = 0
+    let currentLoggedInUserId = "<%= currentUserId %>"
+    let selectedReasons = []
+    let description = ""
+
+    // archive function eto yung bago pero di gumagana.
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('.itemDelete');
+        const archiveModal = document.getElementById('archiveModal');
+        const successModal = document.getElementById('successModal');
+        const overlay = document.getElementById('overlay');
+        const confirmButton = document.getElementById('confirmDelete');
+        const cancelButton = document.getElementById('cancelDelete');
+        const errorModal = document.getElementById('errorModal');
+        let currentItem = null;
+        let itemId = 0;
+
+        // Show delete confirmation modal when trash icon is clicked
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();  
+                e.stopPropagation(); 
+
+                itemId = this.getAttribute('data-item-id'); 
+                currentItem = this.closest('.shoppingItem'); 
+
+                if (!currentItem) {
+                    console.error("Error: Could not find the parent '.shoppingItem' element.");
+                    return;
+                }
+
+                console.log("Archive button clicked for item ID:", itemId);
+
+                // Show the delete confirmation modal
+                archiveModal.style.display = 'block';
+                overlay.style.display = 'block';
+            });
+        });
+
+// Confirm archive
+confirmButton.addEventListener('click', async function () {
+    console.log("Archive confirmation button clicked");
+
+    if (currentItem) {
+        try {
+            archiveModal.style.display = 'none';
+
+            console.log("Sending PATCH request to archive item:", itemId);
+            const response = await fetchWithAutoRefresh(`http://localhost:8000/api/admin/my-items/archive-item/${itemId}`, {
+                method: 'PATCH'
+            });
+
+            const data = await response.json();
+            console.log("Archive Response:", data);
+
+            if (data.success) {
+                // Archive successful
+                currentItem.style.display = 'none';
+                overlay.style.display = 'block';
+                successModal.style.display = 'block';
+
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    successModal.style.display = 'none';
+                }, 3000);
+            } else {
+                // Archive failed, likely due to ongoing transaction
+                overlay.style.display = 'block';
+                errorModal.style.display = 'flex';
+
+                console.warn("Archive failed: ", data.message || "Unknown error");
+            }
+
+        } catch (error) {
+            console.error("Fetch error:", error);
+            overlay.style.display = 'block';
+            errorModal.style.display = 'flex';
+        }
+    } else {
+        console.error("No item selected.");
+    }
+});
+
+
+// Function to close the error modal
+        window.closeErrorModal = function () {
+            console.log("Close button is clicked");
+            document.getElementById('errorModal').style.display = 'none';
+            document.getElementById('accept-error-modal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        // Cancel delete
+        cancelButton.addEventListener('click', function () {
+            archiveModal.style.display = 'none';
+            overlay.style.display = 'none';
+        });
+
+        // Hide modals when clicking outside
+        if (overlay) {
+            overlay.addEventListener('click', function (event) {
+                if (event.target === overlay) {
+                    archiveModal.style.display = 'none';
+                    overlay.style.display = 'none';
+                    successModal.style.display = 'none';
+                }
+            });
+        }
+    });
+
+
     // OPEN TAB FUNCTION
     function openTab(evt, tabName) {
         var i, tabs, buttons;
@@ -436,187 +966,532 @@
     });
     //
 
-    //REPORT MODAL FIX ME: NO OVERLAY ON TOAST + NO CONDITIONS
-    document.addEventListener("DOMContentLoaded", function () {
-        const reportBtn = document.getElementById("report-btn");
-        const reportModal = document.getElementById("report-modal");
-        const modalOverlay = document.getElementById("modal-overlay");
-        const submitRprt = document.getElementById("submit-rprt");
-        const cancelRprt = document.getElementById("cancel-rprt");
-        const toast = document.getElementById("report-toast");
+    // //REPORT MODAL FIX ME: NO OVERLAY ON TOAST + NO CONDITIONS
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     const reportBtn = document.getElementById("report-btn");
+    //     const reportModal = document.getElementById("report-modal");
+    //     const modalOverlay = document.getElementById("modal-overlay");
+    //     const submitRprt = document.getElementById("submit-rprt");
+    //     const cancelRprt = document.getElementById("cancel-rprt");
+    //     const toast = document.getElementById("report-toast");
 
-        // Function to show modal
-        function showModal() {
-            reportModal.style.display = "block";
-            modalOverlay.style.display = "block";
+    //     // Function to show modal
+    //     function showModal() {
+    //         reportModal.style.display = "block";
+    //         modalOverlay.style.display = "block";
+    //     }
+
+    //     // Function to hide modal
+    //     function hideModal() {
+    //         reportModal.style.display = "none";
+    //         modalOverlay.style.display = "none";
+    //     }
+
+    //     // Function to show toast notification
+    //     function showToast() {
+    //         toast.classList.add("show");
+    //         setTimeout(() => {
+    //             toast.classList.remove("show");
+    //         }, 3000); // Hide toast after 3 seconds
+    //     }
+
+    //     // Event listener for report button
+    //     if (reportBtn) {
+    //         reportBtn.addEventListener("click", showModal);
+    //     }
+
+    //     // Event listener for cancel button
+    //     cancelRprt.addEventListener("click", hideModal);
+
+    //     // Event listener for submit button
+    //     submitRprt.addEventListener("click", function (event) {
+    //         event.preventDefault(); // Prevent form submission
+    //         hideModal();
+    //         showToast();
+    //     });
+
+    //     // Close modal when clicking outside
+    //     modalOverlay.addEventListener("click", hideModal);
+    // });
+
+    class ReportModalHandler {
+    constructor() {
+        this.reportButtons = document.querySelectorAll('[data-id="report-btn"]');
+        this.reportModal = document.getElementById("report-modal");
+        this.modalOverlay = document.getElementById("modal-overlay");
+        this.submitRprt = document.getElementById("submit-rprt");
+        this.cancelRprt = document.getElementById("cancel-rprt");
+        this.toast = document.getElementById("report-toast");
+        this.confirmModal = document.getElementById("confirm-modal");
+        this.confirmSubmit = document.getElementById("confirm-submit");
+        this.cancelConfirm = document.getElementById("cancel-confirms");
+        this.reportErrorModal = document.getElementById("report-error-modal")
+
+        this.selectedItemId = null;
+        this.selectedUserId = null;
+        this.selectedReasons = [];
+        this.description = "";
+        this.triggeringButton = null;
+
+        this.init();
+    }
+
+    init() {
+        this.reportButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            this.setItemIds(btn);
+            this.triggeringButton = btn;
+
+            if (this.alreadyReported(btn)) {
+                this.reportErrorModal.style.display = "flex";
+                this.modalOverlay.style.display = "block";
+            } else {
+                this.showModal();
+            }
+        });
+    });
+
+
+    this.cancelRprt.addEventListener("click", () => this.hideModal());
+
+    this.submitRprt.addEventListener("click", (event) => this.handleReportSubmit(event));
+
+    this.cancelConfirm.addEventListener("click", () => {
+        this.hideConfirmModal();
+        this.modalOverlay.style.display = "none";
+    });
+
+    this.confirmSubmit.addEventListener("click", (event) => this.confirmReport(event));
+
+    this.modalOverlay.addEventListener("click", () => {
+        this.hideModal();
+        this.hideConfirmModal();
+    });
+}
+
+    alreadyReported(button) {
+        const alreadyReportedValue = button.getAttribute('data-already-reported');
+        return alreadyReportedValue === 'true';
+    }
+    setItemIds(button) {
+        this.selectedItemId = button.getAttribute('data-selected-item-id');
+        this.selectedUserId = button.getAttribute('data-selected-renter-id');
+    }
+
+    showModal() {
+        this.reportModal.style.display = "block";
+        this.modalOverlay.style.display = "block";
+    }
+
+    hideModal() {
+        this.reportModal.style.display = "none";
+        this.modalOverlay.style.display = "none";
+    }
+
+    showConfirmModal() {
+        this.confirmModal.style.display = "block";
+        this.modalOverlay.style.display = "block";
+    }
+
+    hideConfirmModal() {
+        this.confirmModal.style.display = "none";
+    }
+
+    showToast() {
+        this.modalOverlay.style.display = "block";
+        this.toast.classList.add("show");
+
+        setTimeout(() => {
+            this.toast.classList.remove("show");
+            this.modalOverlay.style.display = "none";
+        }, 3000);
+    }
+
+    handleReportSubmit(event) {
+        event.preventDefault();
+        const checkboxes = document.querySelectorAll('input[name="reason"]:checked');
+        const descriptionValue = document.querySelector("textarea[name='description']").value;
+
+        if (checkboxes.length > 0) {
+            this.selectedReasons = Array.from(checkboxes).map(cb => cb.value);
+            this.description = descriptionValue;
+            this.hideModal();
+            this.showConfirmModal();
+        } else {
+            alert("Please select at least one reason before confirming.");
         }
+    }
 
-        // Function to hide modal
-        function hideModal() {
-            reportModal.style.display = "none";
-            modalOverlay.style.display = "none";
-        }
+    async confirmReport(event) {
+    event.preventDefault();
 
-        // Function to show toast notification
-        function showToast() {
-            toast.classList.add("show");
-            setTimeout(() => {
-                toast.classList.remove("show");
-            }, 3000); // Hide toast after 3 seconds
-        }
-
-        // Event listener for report button
-        if (reportBtn) {
-            reportBtn.addEventListener("click", showModal);
-        }
-
-        // Event listener for cancel button
-        cancelRprt.addEventListener("click", hideModal);
-
-        // Event listener for submit button
-        submitRprt.addEventListener("click", function (event) {
-            event.preventDefault(); // Prevent form submission
-            hideModal();
-            showToast();
+    try {
+        const response = await fetchWithAutoRefresh('http://localhost:8000/api/user/my-items/reports', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                item_id: this.selectedItemId,
+                reported_user_id: this.selectedUserId,
+                reporter_id: currentLoggedInUserId,
+                reasons: this.selectedReasons,
+                report_text: this.description
+            }),
         });
 
-        // Close modal when clicking outside
-        modalOverlay.addEventListener("click", hideModal);
-    });
+        if (response.ok) {
+            this.showToast();
+            this.hideConfirmModal();
+        } else if (response.status === 409) {
+            this.hideConfirmModal();
+            this.modalOverlay.style.display = "block";
+            this.reportErrorModal.style.display = "flex";
+        } else {
+            console.error('An unexpected error occurred.');
+        }
+    } catch (error) {
+        console.error('Error submitting report:', error);
+    }
+}
+
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    new ReportModalHandler();
+});
+
+function closeAcceptError() {
+    document.getElementById("accept-error-modal").style.display = "none";
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("report-error-modal").style.display = "none";
+    document.getElementById("modal-overlay").style.display = "none";
+}
 
 
     // RENTAL REQUEST accept
     class RentalRequest {
-        constructor(id) {
-            this.id = id;
-            this.acceptBtn = document.querySelector(`[data-id="accept-btn-${id}"]`);
-            this.declineBtn = document.querySelector(`[data-id="decline-btn-${id}"]`);
-            this.confirmationModal = document.getElementById("confirmation-modal1");
-            this.declineConfirmationModal = document.getElementById("decline-confirmation-modal1");
-            this.overlay = document.getElementById("overlay");
-            this.successContainer = document.getElementById("success-container1");
-            this.declineContainer = document.getElementById("decline-container1");
+    constructor(id) {
+        this.id = id;
+        this.acceptBtn = document.querySelector(`[data-id="accept-btn-${id}"]`);
+        this.declineBtn = document.querySelector(`[data-id="decline-btn-${id}"]`);
+        this.confirmationModal = document.getElementById("confirmation-modal1");
+        this.declineConfirmationModal = document.getElementById("decline-confirmation-modal1");
+        this.overlay = document.getElementById("overlay");
+        this.successContainer = document.getElementById("success-container1");
+        this.declineContainer = document.getElementById("decline-container1");
 
-            // Store the transaction ID
-            this.dataId = id;
+        this.reviewButton = document.querySelector(`[data-id="review-btn-${id}"]`);
+        this.reviewDescription = document.querySelector('#review-description');
+        this.reviewModal = document.querySelector('#review-modal');
+        this.modalOverlay = document.getElementById("modal-overlay")
+        
+        // Fix the selector - remove the # since we're using getElementById
+        this.acceptErrorModal = document.getElementById("accept-error-modal");
+        
+        // Getting the current data-id
+        this.dataId = 0;
 
-            this.addEventListeners();
+        // Ensure modals are hidden on initialization
+        if (this.acceptErrorModal) {
+            this.acceptErrorModal.style.display = "none";
         }
-
-        addEventListeners() {
-            if (this.acceptBtn) {
-                this.acceptBtn.addEventListener("click", () => {
-                    this.showModal("accept");
-                });
-            }
-
-            if (this.declineBtn) {
-                this.declineBtn.addEventListener("click", () => {
-                    this.showModal("decline");
-                });
-            }
-        }
-
-        showModal(action) {
-            this.overlay.style.display = "block";
-
-            if (action === "accept") {
-                this.confirmationModal.style.display = "block";
-
-                document.getElementById("yes-btn1").onclick = () => this.confirmAccept();
-                document.getElementById("no-btn1").onclick = () => this.hideModals();
-            } else if (action === "decline") {
-                this.declineConfirmationModal.style.display = "block";
-
-                document.getElementById("decline-yes-btn1").onclick = () => this.confirmDecline();
-                document.getElementById("decline-no-btn1").onclick = () => this.hideModals();
-            }
-        }
-
-        async confirmAccept() {
-            try {
-                await fetchWithAutoRefresh(`${window.location.origin}/api/admin/my-items/rental-requests/approved`, {
-                    method: "PATCH",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({rental_transaction_id: this.dataId}),
-                });
-            } catch (error) {
-                console.error("Error accepting request:", error);
-                alert("An error occurred while accepting the request.");
-            }
-
-            this.confirmationModal.style.display = "none";
-            this.successContainer.style.display = "block";
-
-            setTimeout(() => {
-                this.overlay.style.display = "none";
-                this.successContainer.style.display = "none";
-
-                window.location.reload();
-            }, 3000);
-        }
-
-        async confirmDecline() {
-            try {
-                await fetchWithAutoRefresh(`${window.location.origin}/api/admin/my-items/rental-requests/declined`, {
-                    method: "PATCH",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({rental_transaction_id: this.dataId}),
-                });
-            } catch (error) {
-                console.error("Error declining request:", error);
-                alert("An error occurred while declining the request.");
-            }
-
-            this.declineConfirmationModal.style.display = "none";
-            this.declineContainer.style.display = "block";
-
-            setTimeout(() => {
-                this.overlay.style.display = "none";
-                this.declineContainer.style.display = "none";
-
-                window.location.reload();
-            }, 3000);
-        }
-
-        hideModals() {
-            this.confirmationModal.style.display = "none";
-            this.declineConfirmationModal.style.display = "none";
+        if (this.overlay) {
             this.overlay.style.display = "none";
+        }
+
+        if(this.modalOverlay){
+            this.modalOverlay.style.display = "none"
+        }
+
+        this.addEventListeners();
+    }
+
+    addEventListeners() {
+        if (this.acceptBtn) {
+            this.acceptBtn.addEventListener("click", (event) => {
+                const isBanned = event.target.getAttribute('data-isbanned') === 'true';
+
+            if (isBanned) {
+                alert("You cannot accept the request due to restriction.");
+                return;
+            }
+            
+                this.dataId = event.target.getAttribute('data-id').replace("accept-btn-", "");
+                this.showModal("accept");
+            });
+        }
+
+        if (this.declineBtn) {
+            this.declineBtn.addEventListener("click", (event) => { // Added missing event parameter
+                this.dataId = event.target.getAttribute('data-id').replace("decline-btn-", "");
+                this.showModal("decline");
+            });
+        }
+
+        if (this.reviewButton) {
+            this.reviewButton.addEventListener('click', (event) => { // Added missing event parameter
+                this.dataId = event.target.getAttribute('data-id').replace('review-btn-', '');
+                this.showModal('review-modal');
+            });
+        }
+        
+        // Add listener for the "I Understand" button
+        const understandBtn = document.querySelector('.close-button');
+        if (understandBtn) {
+            understandBtn.addEventListener('click', () => this.hideModals());
+            modalOverlay.addEventListener('click', () => this.hideModals());
         }
     }
 
-    // Initialize rental requests for existing items
-    document.addEventListener("DOMContentLoaded", function () {
-        // Initialize existing accept buttons
-        document.querySelectorAll(".accept-btn").forEach((button) => {
-            const id = button.getAttribute("data-id").replace("accept-btn-", "");
-            new RentalRequest(id);
-        });
+    showModal(action) {
+        this.overlay.style.display = "block";
 
-        // No need to initialize decline buttons separately as they're handled by the same RentalRequest instance
+        if (action === "accept") {
+            this.confirmationModal.style.display = "block";
+            document.getElementById("yes-btn1").onclick = () => this.confirmAccept();
+            document.getElementById("no-btn1").onclick = () => this.hideModals();
+        } else if (action === "decline") {
+            this.declineConfirmationModal.style.display = "block";
+            document.getElementById("decline-yes-btn1").onclick = () => this.confirmDecline();
+            document.getElementById("decline-no-btn1").onclick = () => this.hideModals();
+        } else if (action === 'review-modal') {
+            this.reviewModal.style.display = "block";
+
+            document.getElementById('submit-rev').onclick = (event) => {
+                event.preventDefault();
+                if (!selectedRating) {
+                    alert("Please provide a star rating.");
+                    return;
+                }
+                document.getElementById('review-modal').style.display = "none";
+                document.getElementById('confirm-modal1').style.display = "block";
+            };
+
+            document.getElementById('cancel-rev').onclick = () => this.hideModals();
+        }
+
+        // Handle confirmation modal actions
+        document.getElementById("confirm-review").onclick = async () => {
+            await this.submitReview(); // Submits the review
+            document.getElementById("confirm-modal1").style.display = "none"; // Hide confirm modal
+            document.getElementById("review-toast").classList.add("show");
+            document.getElementById("modal-overlay").style.display = "block";
+            
+            setTimeout(() => {
+                document.getElementById("review-toast").classList.remove("show");
+                document.getElementById("modal-overlay").style.display = "none";
+                // Optionally reload the page after submitting
+                window.location.reload();
+            }, 3000);
+        };
+
+        document.getElementById('cancel-review').onclick = () => {
+            document.getElementById('confirm-modal1').style.display = "none"; // Close confirm modal
+            this.overlay.style.display = "none"; // Hide overlay
+        };
+    }
+
+    async confirmAccept() {
+        try {
+            const response = await fetchWithAutoRefresh(`http://localhost:8000/api/user/my-items/rental-requests/approved`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ rental_transaction_id: this.dataId }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                if (result.message && result.message.includes('archived')) {
+                    // Hide confirmation modal first
+                    this.confirmationModal.style.display = "none";
+                    
+                    // Show the error modal and overlay
+                    this.acceptErrorModal.style.display = "flex";
+                    this.overlay.style.display = "block";
+                } else {
+                    this.hideModals();
+                    throw new Error(result.message || "Failed to accept the rental request.");
+                }
+            } else {
+                // Success case
+                this.confirmationModal.style.display = "none";
+                this.successContainer.style.display = "block";
+
+                setTimeout(() => {
+                    this.hideModals();
+                    window.location.reload();
+                }, 3000);
+            }
+        } catch (error) {
+            this.hideModals();
+            alert(error.message);
+        }
+    }
+
+    confirmDecline() {
+        this.declineConfirmationModal.style.display = "none";
+        this.declineContainer.style.display = "block";
+        this.overlay.style.display = "block";
+
+        setTimeout(() => {
+            this.overlay.style.display = "none";
+            this.declineContainer.style.display = "none";
+        }, 3000);
+    }
+
+    hideModals() {
+        if (this.confirmationModal) this.confirmationModal.style.display = "none";
+        if (this.declineConfirmationModal) this.declineConfirmationModal.style.display = "none";
+        if (this.successContainer) this.successContainer.style.display = "none";
+        if (this.declineContainer) this.declineContainer.style.display = "none";
+        if (this.reviewModal) this.reviewModal.style.display = "none";
+        if (this.acceptErrorModal) this.acceptErrorModal.style.display = "none";
+        if (document.getElementById("confirm-modal1")) document.getElementById("confirm-modal1").style.display = "none";
+        
+        
+        // Hide overlay
+        if (this.overlay) this.overlay.style.display = "none";
+        if (this.modalOverlay) this.modalOverlay.style.display = "none";
+    }
+
+    async submitReview() {
+        if (!selectedRating) {
+                alert("Please select a rating before submitting your review.");
+                return;
+            }
+        const rentTransactionId = this.dataId;
+
+        try {
+            await fetchWithAutoRefresh(`http://localhost:8000/api/user/my-items/return-items/${rentTransactionId}`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    stars: selectedRating,
+                    description: this.reviewDescription.value,
+                })
+            });
+
+            document.getElementById('review-toast').style.display = "block";
+            setTimeout(() => {
+                document.getElementById('review-toast').style.display = "none";
+            }, 3000);
+        } catch (error) {
+            alert(error.message);
+        }
+
+        this.reviewModal.style.display = "none";
+
+        setTimeout(() => {
+            this.overlay.style.display = "none";
+            this.successContainer.style.display = "none";
+
+            window.location.reload();
+        }, 3000);
+    }
+}
+
+    
+
+    // Initialize rental requests for existing items
+    document.querySelectorAll(".accept-btn, .decline-btn, .review-btn").forEach((button) => {
+        const id = button.dataset.id.split("-").pop(); // Extracts the unique ID from data-id
+        new RentalRequest(id);
+    });
+
+    // Function to dynamically add a new rental request
+    let rentalItemCount = 1;
+
+    function addRentalItem(renterName, location, itemName, rentalDuration, modeOfDelivery) {
+        rentalItemCount++;
+
+        const rentalItem = document.createElement("div");
+        rentalItem.classList.add("rentalItem");
+        rentalItem.innerHTML = `
+            <div class="rentalInfo">
+              <div class="renterDetails">
+                <strong class="renterName">${renterName}</strong>
+                <strong>•</strong>
+                <strong class="renterLocation">${location}</strong>
+              </div>
+              <div class="itemDetails">
+                <img src="" alt="" class="itemImage" />
+                <h2 class="itemName">${itemName}</h2>
+              </div>
+              <div class="rentalDurationContainer">
+                <strong class="rentalDuration">${rentalDuration}</strong>
+                <strong>•</strong>
+                <strong class="MOD">${modeOfDelivery}</strong>
+              </div>
+            </div>
+
+            <div class="rentalAction">
+              <button class="accept-btn" data-id="accept-btn-${rentalItemCount}">✓</button>
+              <button class="decline-btn" data-id="decline-btn-${rentalItemCount}">✗</button>
+            </div>
+        `
+
+        document.getElementById("rentalContainer").appendChild(rentalItem);
+        new RentalRequest(rentalItemCount);
+    }
+
+    document.querySelectorAll('.decline-btn').forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const rentalTransactionId = event.target.dataset.id.split('-').pop();
+
+            // Show the decline confirmation modal
+            const modal = document.getElementById('decline-confirmation-modal1');
+            modal.style.display = 'block';
+
+            const yesButton = document.getElementById('decline-yes-btn1');
+            const noButton = document.getElementById('decline-no-btn1');
+
+            // When the user clicks "Yes", decline the request
+            yesButton.addEventListener('click', async () => {
+                const response = await fetchWithAutoRefresh('/api/user/my-items/rental-requests/declined', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({rental_transaction_id: rentalTransactionId})
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Find and remove the rental item from the DOM
+                    const rentalItem = event.target.closest('.rentalItem');
+                    if (rentalItem) {
+                        rentalItem.remove(); // Remove the item from the DOM
+                    }
+
+                    // Check if there are any remaining rental requests
+                    const rentalItems = document.querySelectorAll('.rentalItem');
+                    if (rentalItems.length === 0) {
+                        // If no rental requests remain, display the "No Rental Requests available." message
+                        const rentalList = document.querySelector('.RentalList');
+                        rentalList.innerHTML = '<p>No Rental Requests available.</p>';
+                    }
+                } else {
+                    alert('Failed to decline the rental request.');
+                }
+
+                // Close the modal
+                modal.style.display = 'none';
+            });
+
+            // When the user clicks "No", simply close the modal without doing anything
+            noButton.addEventListener('click', () => {
+                modal.style.display = 'none'; // Close the modal
+            });
+        });
     });
 
 
     // Review Modal Functionality FIX ME: WIDTH TOO WIDE, DARKBG OVERLAY NOT WORKING
-    const reviewBtn = document.getElementById("review-btn");
-    const reviewModal = document.getElementById("review-modal");
     const confirmModal = document.getElementById("confirm-modal");
-    const submitRev = document.getElementById("submit-rev");
     const confirmSubmit = document.getElementById("confirm-submit");
     const cancelConfirm = document.getElementById("cancel-confirm");
-    const cancelRev = document.getElementById("cancel-rev");
     const toast = document.getElementById("toast");
-
-    // Show review modal
-    reviewBtn.addEventListener("click", function () {
-        reviewModal.style.display = "flex";
-    });
-
-    // Hide review modal
-    cancelRev.addEventListener("click", function () {
-        reviewModal.style.display = "none";
-    });
 
     // Star Rating System
     const stars = document.querySelectorAll(".star2");
@@ -667,16 +1542,6 @@
     // Cancel confirmation modal
     cancelConfirm.addEventListener("click", function () {
         confirmModal.style.display = "none";
-    });
-
-    // Hide modal when clicking outside
-    window.addEventListener("click", function (event) {
-        if (event.target === reviewModal) {
-            reviewModal.style.display = "block";
-        }
-        if (event.target === confirmModal) {
-            confirmModal.style.display = "none";
-        }
     });
 
     // Toast Notification Function
