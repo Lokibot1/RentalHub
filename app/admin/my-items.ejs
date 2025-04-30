@@ -205,7 +205,105 @@
                                 </div>
                             </div>
                         </div>
-                        
+
+                        <!-- Modal for Review  -->
+            <div id="review-modal" class="modal">
+                <div class="modal-content" style="text-align: left">
+                    <h2>Review for Renter</h2>
+                    <form id="review-form">
+                        <label for="rating">Rating:</label>
+                        <br/>
+                        <div class="stars">
+                            <span class="star2" data-value="1">★</span>
+                            <span class="star2" data-value="2">★</span>
+                            <span class="star2" data-value="3">★</span>
+                            <span class="star2" data-value="4">★</span>
+                            <span class="star2" data-value="5">★</span>
+                        </div>
+                        <br/>
+                        <label for="review-description">Describe Your Experience</label>
+                        <br/>
+                        <textarea id="review-description" name="review_description" rows="4" cols="50"></textarea>
+                        <br/>
+                        <button id="submit-rev" type="submit">Submit</button>
+                        <button id="cancel-rev" type="button">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="confirm-modal1" class="modal">
+                <div class="modal-content">
+                    <h3>Are you sure you want to submit this review?</h3>
+                    <div class="modal-buttons">
+                        <button class="btn-yes" id="confirm-review">Confirm</button>
+                        <button class="btn-no" id="cancel-review">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <!--Fix me: Toast Notification -->
+            <div id="modal-overlay" class="overlay"></div>
+            <div id="review-toast" class="toast">Review Submitted Successfully!</div>
+
+            <!--Report Modal-->
+            <div id="modal-overlay" class="overlay"></div>
+            <div id="report-modal" class="modal">
+                <div class="modal-content" style="text-align: left">
+                    <h2>Report Renter</h2>
+                    <form id="report-form">
+                        <label>Reason:</label>
+                        <div>
+                            <input type="checkbox" id="damageToItem" name="reason" value="Damage to Item"/>
+                            <label for="damageToItem">Damage to Item</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="lateReturn" name="reason" value="Late Return of Item"/>
+                            <label for="lateReturn">Late Return of Item</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="notReturned" name="reason" value="Item Not Returned"/>
+                            <label for="notReturned">Item Not Returned</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="noShow" name="reason" value="No Show"/>
+                            <label for="noShow">No Show</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="duplicate" name="reason" value="Duplicate"/>
+                            <label for="duplicate">Duplicate</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="inappropriate" name="reason" value="Inappropriate"/>
+                            <label for="inappropriate">Inappropriate</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="fraudulent" name="reason" value="Fraudulent"/>
+                            <label for="fraudulent">Fraudulent</label>
+                        </div>
+                        <br/>
+                        <label for="description">Describe What Happened</label>
+                        <br/>
+                        <textarea id="description" name="description" rows="4" cols="50"></textarea>
+                        <br/>
+                        <button id="submit-rprt" type="submit">Submit</button>
+                        <button id="cancel-rprt" type="button">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Toast Notification -->
+            <div id="report-toast" class="toast">Report Submitted Successfully!</div>
+            <!-- FIX ME: Report Confirmation Modal, NOT SHOWING  -->
+            <div id="confirm-modal" class="modal">
+                <div class="modal-content">
+                    <h3>Are you sure you want to submit this report?</h3>
+                    <div class="modal-buttons">
+                        <button class="btn-yes" id="confirm-submit">Confirm</button>
+                        <button class="btn-no" id="cancel-confirms">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            
             <div id="overlay" class="overlay"></div>
             <div id="success-container1" class="success-container1">
                 <div id="success-message1" class="success-message1">
@@ -342,103 +440,8 @@
             </div>
 
 
-            <!--Report Modal-->
-            <div id="modal-overlay" class="overlay"></div>
-            <div id="report-modal" class="modal">
-                <div class="modal-content" style="text-align: left">
-                    <h2>Report Renter</h2>
-                    <form id="report-form">
-                        <label>Reason:</label>
-                        <div>
-                            <input type="checkbox" id="damageToItem" name="reason" value="Damage to Item"/>
-                            <label for="damageToItem">Damage to Item</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" id="lateReturn" name="reason" value="Late Return of Item"/>
-                            <label for="lateReturn">Late Return of Item</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" id="notReturned" name="reason" value="Item Not Returned"/>
-                            <label for="notReturned">Item Not Returned</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" id="noShow" name="reason" value="No Show"/>
-                            <label for="noShow">No Show</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" id="duplicate" name="reason" value="Duplicate"/>
-                            <label for="duplicate">Duplicate</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" id="inappropriate" name="reason" value="Inappropriate"/>
-                            <label for="inappropriate">Inappropriate</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" id="fraudulent" name="reason" value="Fraudulent"/>
-                            <label for="fraudulent">Fraudulent</label>
-                        </div>
-                        <br/>
-                        <label for="description">Describe What Happened</label>
-                        <br/>
-                        <textarea id="description" name="description" rows="4" cols="50"></textarea>
-                        <br/>
-                        <button id="submit-rprt" type="submit">Submit</button>
-                        <button id="cancel-rprt" type="button">Cancel</button>
-                    </form>
-                </div>
-            </div>
+            
 
-            <!-- Toast Notification -->
-            <div id="report-toast" class="toast">Report Submitted Successfully!</div>
-            <!-- FIX ME: Report Confirmation Modal, NOT SHOWING  -->
-            <div id="confirm-modal" class="modal">
-                <div class="modal-content">
-                    <h3>Are you sure you want to submit this report?</h3>
-                    <div class="modal-buttons">
-                        <button class="btn-yes" id="confirm-submit">Confirm</button>
-                        <button class="btn-no" id="cancel-confirms">Cancel</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal for Review  -->
-            <div id="review-modal" class="modal">
-                <div class="modal-content" style="text-align: left">
-                    <h2>Review for Renter</h2>
-                    <form id="review-form">
-                        <label for="rating">Rating:</label>
-                        <br/>
-                        <div class="stars">
-                            <span class="star2" data-value="1">★</span>
-                            <span class="star2" data-value="2">★</span>
-                            <span class="star2" data-value="3">★</span>
-                            <span class="star2" data-value="4">★</span>
-                            <span class="star2" data-value="5">★</span>
-                        </div>
-                        <br/>
-                        <label for="review-description">Describe Your Experience</label>
-                        <br/>
-                        <textarea id="review-description" name="review_description" rows="4" cols="50"></textarea>
-                        <br/>
-                        <button id="submit-rev" type="submit">Submit</button>
-                        <button id="cancel-rev" type="button">Cancel</button>
-                    </form>
-                </div>
-            </div>
-
-            <div id="confirm-modal1" class="modal">
-                <div class="modal-content">
-                    <h3>Are you sure you want to submit this review?</h3>
-                    <div class="modal-buttons">
-                        <button class="btn-yes" id="confirm-review">Confirm</button>
-                        <button class="btn-no" id="cancel-review">Cancel</button>
-                    </div>
-                </div>
-            </div>
-
-            <!--Fix me: Toast Notification -->
-            <div id="modal-overlay" class="overlay"></div>
-            <div id="review-toast" class="toast">Review Submitted Successfully!</div>
 
             <!-- Logout Confirmation Modal -->
             <!-- <div id="logout-modal" class="logout-modal">
@@ -1165,6 +1168,7 @@ function closeAcceptError() {
 
     // RENTAL REQUEST accept
     class RentalRequest {
+
     constructor(id) {
         this.id = id;
         this.acceptBtn = document.querySelector(`[data-id="accept-btn-${id}"]`);
@@ -1177,7 +1181,7 @@ function closeAcceptError() {
 
         this.reviewButton = document.querySelector(`[data-id="review-btn-${id}"]`);
         this.reviewDescription = document.querySelector('#review-description');
-        this.reviewModal = document.querySelector('#review-modal');
+        this.reviewModal = document.getElementById("review-modal");
         this.modalOverlay = document.getElementById("modal-overlay")
         
         // Fix the selector - remove the # since we're using getElementById
@@ -1234,7 +1238,8 @@ function closeAcceptError() {
         const understandBtn = document.querySelector('.close-button');
         if (understandBtn) {
             understandBtn.addEventListener('click', () => this.hideModals());
-            modalOverlay.addEventListener('click', () => this.hideModals());
+            this.modalOverlay.addEventListener('click', () => this.hideModals());
+
         }
     }
 
@@ -1249,21 +1254,28 @@ function closeAcceptError() {
             this.declineConfirmationModal.style.display = "block";
             document.getElementById("decline-yes-btn1").onclick = () => this.confirmDecline();
             document.getElementById("decline-no-btn1").onclick = () => this.hideModals();
-        } else if (action === 'review-modal') {
-            this.reviewModal.style.display = "block";
+        } else if (action === "review-modal") {
+        // Use modalOverlay instead of overlay for review modal
+        this.modalOverlay.style.display = "block";
+        this.reviewModal.style.display = "block";
 
-            document.getElementById('submit-rev').onclick = (event) => {
-                event.preventDefault();
-                if (!selectedRating) {
-                    alert("Please provide a star rating.");
-                    return;
-                }
-                document.getElementById('review-modal').style.display = "none";
-                document.getElementById('confirm-modal1').style.display = "block";
-            };
+        document.getElementById('submit-rev').onclick = (event) => {
+            event.preventDefault();
+            if (!selectedRating) {
+                alert("Please provide a star rating.");
+                return;
+            }
+            // Hide review modal and show confirmation
+            this.reviewModal.style.display = "none";
+            document.getElementById('confirm-modal1').style.display = "block";
+        };
 
-            document.getElementById('cancel-rev').onclick = () => this.hideModals();
-        }
+        document.getElementById('cancel-rev').onclick = () => {
+            this.reviewModal.style.display = "none";
+            this.modalOverlay.style.display = "none";
+            document.getElementById('overlay').style.display = "none";
+        };
+    }
 
         // Handle confirmation modal actions
         document.getElementById("confirm-review").onclick = async () => {
@@ -1336,19 +1348,18 @@ function closeAcceptError() {
     }
 
     hideModals() {
-        if (this.confirmationModal) this.confirmationModal.style.display = "none";
-        if (this.declineConfirmationModal) this.declineConfirmationModal.style.display = "none";
-        if (this.successContainer) this.successContainer.style.display = "none";
-        if (this.declineContainer) this.declineContainer.style.display = "none";
-        if (this.reviewModal) this.reviewModal.style.display = "none";
-        if (this.acceptErrorModal) this.acceptErrorModal.style.display = "none";
-        if (document.getElementById("confirm-modal1")) document.getElementById("confirm-modal1").style.display = "none";
-        
-        
-        // Hide overlay
-        if (this.overlay) this.overlay.style.display = "none";
-        if (this.modalOverlay) this.modalOverlay.style.display = "none";
-    }
+    if (this.confirmationModal) this.confirmationModal.style.display = "none";
+    if (this.declineConfirmationModal) this.declineConfirmationModal.style.display = "none";
+    if (this.successContainer) this.successContainer.style.display = "none";
+    if (this.declineContainer) this.declineContainer.style.display = "none";
+    if (this.reviewModal) this.reviewModal.style.display = "none";
+    if (this.acceptErrorModal) this.acceptErrorModal.style.display = "none";
+    if (document.getElementById("confirm-modal1")) document.getElementById("confirm-modal1").style.display = "none";
+    
+    // Hide both overlays
+    if (this.overlay) this.overlay.style.display = "none";
+    if (this.modalOverlay) this.modalOverlay.style.display = "none";
+}
 
     async submitReview() {
         if (!selectedRating) {
