@@ -32,28 +32,58 @@
         <!-- Requests -->
         <div id="Requests" class="tab-content" style="display: block">
             <div class="RentalList">
+                <%
+                    function formatDateRange(startDate, endDate) {
+                        const options = {year: 'numeric', month: 'long', day: 'numeric'};
 
+                        const start = new Date(startDate).toLocaleDateString('en-US', options);
+                        const end = new Date(endDate).toLocaleDateString('en-US', options);
+
+                        return `${start} - ${end}`;
+                    }
+
+                    // This function formats the date to "Month Day, Year"
+                    // Example: "April 4, 2025"
+                    function formatDate(dateString) {
+                        const options = {year: "numeric", month: "long", day: "numeric"};
+                        return new Date(dateString).toLocaleDateString("en-US", options);
+                    }
+                    %>
                 <% if (rentRequestItems.length > 0) { %>
                     <% rentRequestItems.forEach(function(item) { %>
-                        <div class="rentalItem" data-request-id="<%= item.id %>">
+                        <div class="rentalItem" data-request-id="<%= item.request_id || item.id %>" style="margin-bottom: 10px;">
                             <div class="rentalInfo">
                                 <div class="renterDetails">
-                                    <strong class="renterName"><%= item.owner_name %></strong>
+                                        <h4 class="renterName">
+                                            <%= item.owner_name %>
+                                        </h4>
+                                        <strong> • </strong>
+                                        <h4 class="renterLocation"> <%= item.owners_address %> </h4>
                                 </div>
-                                <div class="itemDetails">
-                                    <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
-                                    <h2 class="itemName"><%= item.item_name %></h2>
-                                </div>
+                                    <div class="itemDetails">
+                                        <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
+                                        <div class="details">
+                                            <p class="itemName">Item Name: <%= item.item_name %></p>
+                                            <p class="itemLocation">Item Location: <%= item.item_location %></p>
+                                            <p class="Quantity">Quantity: <%= item.item_quantity %></p>
+                                            <p class="postedDate">Requested
+                                                on: <%= formatDate(item.created_at) %></p>
+                                    </div>
+                                    </div>
+                                    <div class="rentalDurationContainer">
+                                <strong class="rentalDuration"><%= formatDateRange(item.start_date, item.end_date) %></strong>
+                                <strong>•</strong>
+                                <strong class="MOD"><%= item.mode_of_delivery %></strong>
+                            </div>
                             </div>
                             <div class="completeAction">
                                 <button class="cancel-btn">Cancel</button>
                             </div>
-                        </div>
+                            </div>
                     <% }); %>
                 <% } else { %>
                     <p>No pending requests available.</p>
                 <% } %>
-
             </div>
         </div>
 
@@ -80,11 +110,21 @@
                         <div class="rentalItem">
                             <div class="rentalInfo">
                                 <div class="renterDetails">
-                                    <strong class="renterName"><%= item.owner_name %></strong>
+                                    <h4 class="renterName">
+                                        <%= item.owner_name %>
+                                    </h4>
+                                    <strong> • </strong>
+                                    <h4 class="renterLocation"> <%= item.owners_address %> </h4>
                                 </div>
-                                <div class="itemDetails">
-                                    <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
-                                    <h2 class="itemName"><%= item.item_name %></h2>
+                                    <div class="itemDetails">
+                                        <img src="/uploads/<%= item.item_image %>" alt="" class="itemImage"/>
+                                        <div class="details">
+                                            <p class="itemName">Item Name: <%= item.item_name %></p>
+                                            <p class="itemLocation">Item Location: <%= item.item_location %></p>
+                                            <p class="Quantity">Quantity: <%= item.item_quantity %></p>
+                                            <p class="postedDate">Requested
+                                                on: <%= formatDate(item.created_at) %></p>
+                                    </div>
                                 </div>
                                 <div class="rentalDurationContainer">
                                     <strong class="rentalDuration"><%= formatDateRange(item.start_date, item.end_date) %></strong>
