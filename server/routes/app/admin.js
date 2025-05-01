@@ -81,6 +81,8 @@ router.get("/admin-rents", checkAuth, checkAdmin, async (req, res) => {
     try {
         const rentRequestResponse = await fetch(`${process.env.BASE_URL}/api/admin/my-rents/requests/${req.user.id}`);
         const rentRequests = await rentRequestResponse.json();
+
+        console.log('rentRequests:', rentRequests)
     
         const ongoingRentResponse = await fetch(`${process.env.BASE_URL}/api/admin/my-rents/ongoing/${req.user.id}`);
         const ongoingRentItems = await ongoingRentResponse.json();
