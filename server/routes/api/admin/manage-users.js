@@ -121,7 +121,7 @@ router.get("/reports/all", async (req, res) => {
     const { keyword } = req.query;
 
     let sql = `
-        SELECT DISTINCT reports.reporter_id,
+        SELECT DISTINCT 
                         reports.reported_user_id,
                         CONCAT(users.first_name, ' ', users.last_name) AS fullname
         FROM reports
