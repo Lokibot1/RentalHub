@@ -12,15 +12,17 @@ const router = express.Router();
 router.get("/pending", async (req, res) => {
     const sql = `
         SELECT CONCAT(users.first_name, ' ', users.last_name) AS owner,
-               items.id                                       AS item_id,
-               items.name                                     AS item_name,
-               categories.name                                AS category_name
+                items.id                                       AS item_id,
+                items.name                                     AS item_name,
+                categories.name                                AS category_name,
+                AVG(reviews.rating)                            AS average_rating
         FROM items
-                 JOIN users ON items.user_id = users.id
-                 JOIN categories
-                      ON items.category_id = categories.id
-        WHERE is_approved = 0
-          AND is_declined = 0
+                LEFT JOIN reviews ON items.id = reviews.item_id
+                JOIN users ON items.user_id = users.id
+                JOIN categories ON items.category_id = categories.id
+        WHERE items.is_approved = 0
+        AND items.is_declined = 0
+        GROUP BY items.id, users.first_name, users.last_name, items.name, categories.name;
     `
     db.query(sql, (err, results) => {
         if (err) {

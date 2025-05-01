@@ -226,6 +226,8 @@ router.get("/manage-listings", checkAuth, checkAdmin, async (req, res) => {
         const pendingResponse = await fetch(`${process.env.BASE_URL}/api/admin/manage-listings/pending`);
         const pendingPosts = await pendingResponse.json();
 
+        console.log('pendingPosts:', pendingPosts)
+
         const approvedResponse = await fetch(`${process.env.BASE_URL}/api/admin/manage-listings`);
         const approvedPosts = await approvedResponse.json();
 
@@ -270,6 +272,7 @@ router.get("/admin-view-product/:item_id", checkAuth, checkAdmin, async (req, re
     try {
         const response = await fetch(`${process.env.BASE_URL}/api/admin/manage-listings/pending/${item_id}`); // Adjust the URL if necessary
         const pendingPost = await response.json();
+        console.log('pendingPost:', pendingPost)
 
         const isBanned = await getUserBannedStatus(req.user.id);
 

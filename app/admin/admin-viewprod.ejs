@@ -41,7 +41,11 @@
                 <div>
                     <strong id="owner-name"><%= pendingPost.owner_name %></strong><br/>
                     <span id="owner-location"><%= pendingPost.owner_location %></span> <br/>
-                    <span id="owner-rating">⭐ Loading...</span>
+                    <% if ( pendingPost.average_rating != null ) { %>
+                        <span id="owner-rating"><%= pendingPost.average_rating %></span>
+                    <% } else { %>
+                        <span id="owner-rating">No rating</span>
+                    <% } %>
                 </div>
             </div>
         </div>
