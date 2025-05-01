@@ -124,7 +124,12 @@ router.get("/requests/:user_id", async (req, res) => {
         SELECT rental_transactions.id                         AS id,
                CONCAT(users.first_name, ' ', users.last_name) AS owner_name,
                items.file_path                                AS item_image,
-               items.name                                     AS item_name
+               items.name                                     AS item_name,
+               items.location                                 AS item_location,
+               rental_quantity                                AS item_quantity,
+               rental_transactions.created_at                 AS created_at,
+               start_date,
+               end_date
         FROM rental_transactions
                  JOIN items ON items.id = rental_transactions.item_id
                  JOIN users ON users.id = items.user_id
@@ -195,6 +200,9 @@ router.get("/ongoing/:user_id", async (req, res) => {
                CONCAT(users.first_name, ' ', users.last_name) AS owner_name,
                items.file_path                                AS item_image,
                items.name                                     AS item_name,
+               items.location                                 AS item_location,
+               rental_quantity                                AS item_quantity,
+               rental_transactions.created_at                 AS created_at,
                start_date,
                end_date,
                mode_of_delivery
