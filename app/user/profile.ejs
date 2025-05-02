@@ -73,6 +73,16 @@
             </div>
 
             <div id="overlay" class="overlay"></div>
+            <div id="confirmUpdate" class="logout-modal">
+              <div class="logout-content" style="width: 300px; text-align: center;">
+                <p>Are you sure you want to save the changes?</p>
+                <p style="font-size: .7rem; color: #880000;">Note: Your new email address will be the one you use to login and send the notifactions to.</p>
+                <div class="logout-button-group">
+                  <button id="confirm-update" class="yes-btn">Yes</button>
+                  <button id="cancel-update" class="no-btn">No</button>
+                </div>
+              </div>
+            </div>
             <div id="profileUpdateToast" class="toast">Profile updated successfully!</div>
 
 
@@ -170,6 +180,10 @@
     const socialMedia = document.getElementById("socialMedia");
     const profileUpdateToast = document.getElementById("profileUpdateToast");
     const overlay = document.getElementById("overlay");
+    const confirmUpdateModal = document.getElementById("confirmUpdate");
+    const confirmUpdateBtn = document.getElementById("confirm-update");
+    const cancelUpdateBtn = document.getElementById("cancel-update");
+
 
     let isEditing = false;
 
@@ -187,15 +201,22 @@
         contact.classList.remove("disabled");
         socialMedia.classList.remove("disabled");
       } else {
-        editBtn.innerHTML = '<img src="/images/edit-btn.png" alt="Edit">';
-        email.disabled = true;
-        address.disabled = true;
-        contact.disabled = true;
-        socialMedia.disabled = true;
-        email.classList.add("disabled");
-        address.classList.add("disabled");
-        contact.classList.add("disabled");
-        socialMedia.classList.add("disabled");
+        confirmUpdateModal.style.display = "flex";
+  overlay.style.display = "block";
+
+  // If confirmed
+  confirmUpdateBtn.onclick = async function () {
+    confirmUpdateModal.style.display = "none";
+
+    editBtn.innerHTML = '<img src="/images/edit-btn.png" alt="Edit">';
+    email.disabled = true;
+    address.disabled = true;
+    contact.disabled = true;
+    socialMedia.disabled = true;
+    email.classList.add("disabled");
+    address.classList.add("disabled");
+    contact.classList.add("disabled");
+    socialMedia.classList.add("disabled");
 
         // try {
         //   await fetchWithAutoRefresh("http://localhost:8000/api/user/profile/update", {
@@ -214,63 +235,52 @@
 
 
         try {
-          const formData = new FormData();
+      const formData = new FormData();
+      formData.append("email", email.value);
+      formData.append("contact_number", contact.value);
+      formData.append("social_media", socialMedia.value);
+      formData.append("address", address.value);
 
-          // Append regular fields
-          formData.append("email", email.value);
-          formData.append("contact_number", contact.value);
-          formData.append("social_media", socialMedia.value);
-          formData.append("address", address.value);
-
-          // Append image only if a new one was selected
-          const file = profileImageInput.files[0];
-          if (file) {
-            formData.append("profile_image", file);
-          }
-
-          await fetchWithAutoRefresh("http://localhost:8000/api/user/profile/update", {
-            method: "PATCH",
-            body: formData,
-            credentials: "include", // needed to send cookies
-          });
-
-          profileUpdateToast.classList.add("show");
-          overlay.style.display = "block";
-
-          setTimeout(() => {
-            profileUpdateToast.classList.remove("show");
-            overlay.style.display = "none";
-            location.reload();
-          }, 3000);
-
-        } catch (error) {
-          alert(error.message);
-        }
-
-
-
-        // Save the updated values (log lang muna sya for now, wala pa naman backend e hehe adjust nyo nalang san masstore)
-        console.log("Updated Info:");
-        console.log("Email:", email.value);
-        console.log("Address:", address.value);
-        console.log("Contact #:", contact.value);
-        console.log("Social Media:", socialMedia.value);
+      const file = profileImageInput.files[0];
+      if (file) {
+        formData.append("profile_image", file);
       }
 
-      profileImageInput.addEventListener("change", function () {
-        const file = profileImageInput.files[0];
-
-        if (file) {
-          const reader = new FileReader();
-
-          reader.onload = function (e) {
-            profilePicture.src = e.target.result;
-          };
-
-          reader.readAsDataURL(file);
-        }
+      await fetchWithAutoRefresh("http://localhost:8000/api/user/profile/update", {
+        method: "PATCH",
+        body: formData,
+        credentials: "include",
       });
-    });
+
+      profileUpdateToast.classList.add("show");
+
+      setTimeout(() => {
+        profileUpdateToast.classList.remove("show");
+        overlay.style.display = "none";
+        location.reload();
+      }, 3000);
+
+    } catch (error) {
+      alert(error.message);
+      overlay.style.display = "none";
+    }
+
+    console.log("Updated Info:");
+    console.log("Email:", email.value);
+    console.log("Address:", address.value);
+    console.log("Contact #:", contact.value);
+    console.log("Social Media:", socialMedia.value);
+
+    isEditing = false;
+  };
+
+  // If canceled
+  cancelUpdateBtn.onclick = function () {
+    confirmUpdateModal.style.display = "none";
+    overlay.style.display = "none";
+    isEditing = true; // Keep edit mode active
+  };
+}
 
     // Get Stars Function
     function generateReviewStars(rating) {
@@ -427,5 +437,6 @@
         ownerContent.style.display = "block"; // Show owners section
       });
     });
+  });
 
   </script>
