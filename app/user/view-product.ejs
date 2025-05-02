@@ -630,6 +630,35 @@
         renderCalendar();
     });
 
+    function calculateRentalBreakdown(startDateStr, endDateStr, pricePerDay, pricePerWeek) {
+    const start = new Date(startDateStr);
+    const end = new Date(endDateStr);
+
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+
+    const msPerDay = 1000 * 60 * 60 * 24;
+    const totalDays = Math.floor((end - start) / msPerDay) + 1;
+
+    const fullWeeks = Math.floor(totalDays / 7);
+    const extraDays = totalDays % 7;
+
+    const weekCost = fullWeeks * pricePerWeek;
+    const dayCost = extraDays * pricePerDay;
+
+    return {
+        totalDays,
+        fullWeeks,
+        extraDays,
+        weekCost,
+        dayCost
+    };
+}
+
+
+
+
+
     //PRESSED FUNCTION SA Mode of Payment
     document.addEventListener("DOMContentLoaded", function () {
         const meetupBtn = document.getElementById("meetup-btn");
@@ -703,11 +732,24 @@
                 return;
             }
 
-            showConfirmationModal(startDate, endDate, selectedDeliveryMethod);
+            const quantity = parseInt(document.getElementById("quantity").value) || 1;
+
+            const result = calculateRentalBreakdown(startDateStr, endDateStr, selectedItem.price, selectedItem.price_per_week);
+            console.log(`Rental Duration: ${result.dayCost}`);
+            console.log(`Total Cost: ₱${result.weekCost}`);
+
+            result.totalDayCost = result.dayCost * quantity;
+            result.totalWeekCost = result.weekCost * quantity;
+            result.quantity = quantity;
+
+            // You can now show it in your confirmation modal too
+            showConfirmationModal(startDate, endDate, selectedDeliveryMethod, result);
+
+            // showConfirmationModal(startDate, endDate, selectedDeliveryMethod);
         });
 
         // Function to show confirmation modal
-        function showConfirmationModal(startDate, endDate, deliveryMethod) {
+        function showConfirmationModal(startDate, endDate, deliveryMethod, result) {
             const modalOverlay = document.createElement("div");
             modalOverlay.className = "modal-overlay";
 
@@ -717,7 +759,16 @@
               <p><strong>Confirm rental request</strong><br>
               <strong>From:</strong> ${formatDate(startDate)}<br>
               <strong>To:</strong> ${formatDate(endDate)}<br>
-              <strong>Delivery Method:</strong> ${deliveryMethod}</p><br>
+              <strong>Handover Method:</strong> ${deliveryMethod}</p><br>
+              <p><strong>Quantity:</strong> ${result.quantity}</p><br>
+              <p><strong>Rental Duration:</strong> ${result.totalDays} days (${result.fullWeeks} weeks and ${result.extraDays} days)</p><br>
+
+              <p><strong>Cost Breakdown:</strong><br>
+              Weekly Cost: ₱${result.weekCost} x ${result.quantity} = ₱${result.totalWeekCost}<br>
+              Daily Cost: ₱${result.dayCost} x ${result.quantity} = ₱${result.totalDayCost}<br>
+              </p><br>
+
+            <p><strong>Total Cost:</strong> ₱${result.totalWeekCost + result.totalDayCost}</p><br>
               <strong class="note">Note: Please contact the owner for the transaction settlement.</strong>
               <br>
               <br>
