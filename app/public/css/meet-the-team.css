@@ -28,6 +28,30 @@ body {
   padding: 0 20px;
 }
 
+.back-button {
+  margin: 0 0px 0px 3rem;
+}
+
+.back-button a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.back-button span {
+  font-size: 1.5rem;
+  color: #880000;
+  font-weight: 600;
+}
+
+.back-button p {
+  font-size: 1rem;
+  color: #121212;
+  margin: 0;
+  font-weight: 600;
+}
+
 h1 {
   font-family: "Playfair Display", serif;
   font-size: 3.5rem;
