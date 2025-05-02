@@ -65,6 +65,9 @@
     </div>
 </div>
 
+<div id="overlay" class="overlay"></div>
+<div id="profileUpdateToast" class="toast">Profile updated successfully!</div>
+
 <script>
     const editBtn = document.getElementById("editBtn");
     const profilePicture = document.getElementById("profilePicture");
@@ -73,51 +76,87 @@
     const address = document.getElementById("address");
     const contact = document.getElementById("contact");
     const socialMedia = document.getElementById("socialMedia");
+    const profileUpdateToast = document.getElementById("profileUpdateToast");
+    const overlay = document.getElementById("overlay");
 
     let isEditing = false;
 
     editBtn.addEventListener("click", async function () {
-        isEditing = !isEditing;
+      isEditing = !isEditing;
 
-        if (isEditing) {
-            editBtn.innerHTML = '<img src="/img/save-btn.png" alt="Save">';
-            email.disabled = false;
-            address.disabled = false;
-            contact.disabled = false;
-            socialMedia.disabled = false;
-            email.classList.remove("disabled");
-            address.classList.remove("disabled");
-            contact.classList.remove("disabled");
-            socialMedia.classList.remove("disabled");
-        } else {
-            editBtn.innerHTML = '<img src="/img/edit-btn.png" alt="Edit">';
-            email.disabled = true;
-            address.disabled = true;
-            contact.disabled = true;
-            socialMedia.disabled = true;
-            email.classList.add("disabled");
-            address.classList.add("disabled");
-            contact.classList.add("disabled");
-            socialMedia.classList.add("disabled");
+      if (isEditing) {
+        editBtn.innerHTML = '<img src="/images/save-btn.png" alt="Save">';
+        email.disabled = false;
+        address.disabled = false;
+        contact.disabled = false;
+        socialMedia.disabled = false;
+        email.classList.remove("disabled");
+        address.classList.remove("disabled");
+        contact.classList.remove("disabled");
+        socialMedia.classList.remove("disabled");
+      } else {
+        editBtn.innerHTML = '<img src="/images/edit-btn.png" alt="Edit">';
+        email.disabled = true;
+        address.disabled = true;
+        contact.disabled = true;
+        socialMedia.disabled = true;
+        email.classList.add("disabled");
+        address.classList.add("disabled");
+        contact.classList.add("disabled");
+        socialMedia.classList.add("disabled");
+
+            // try {
+            //     await fetchWithAutoRefresh("http://localhost:8000/api/admin/profile/update", {
+            //         method: "PATCH",
+            //         headers: {
+            //             "Content-Type": "application/json", // Add this
+            //         },
+            //         body: JSON.stringify({
+            //             email: email.value,
+            //             contact_number: contact.value,
+            //             social_media: socialMedia.value,
+            //             address: address.value,
+            //         }),
+            //     });
+
+            //     //window.location.href = "/user/profile"; // Redirect to user profile
+            // } catch (error) {
+            //     alert(error.message);
+            // }
 
             try {
-                await fetchWithAutoRefresh("http://localhost:8000/api/admin/profile/update", {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json", // Add this
-                    },
-                    body: JSON.stringify({
-                        email: email.value,
-                        contact_number: contact.value,
-                        social_media: socialMedia.value,
-                        address: address.value,
-                    }),
-                });
+          const formData = new FormData();
 
-                //window.location.href = "/user/profile"; // Redirect to user profile
-            } catch (error) {
-                alert(error.message);
-            }
+          // Append regular fields
+          formData.append("email", email.value);
+          formData.append("contact_number", contact.value);
+          formData.append("social_media", socialMedia.value);
+          formData.append("address", address.value);
+
+          // Append image only if a new one was selected
+          const file = profileImageInput.files[0];
+          if (file) {
+            formData.append("profile_image", file);
+          }
+
+          await fetchWithAutoRefresh("http://localhost:8000/api/admin/profile/update", {
+            method: "PATCH",
+            body: formData,
+            credentials: "include", // needed to send cookies
+          });
+
+          profileUpdateToast.classList.add("show");
+          overlay.style.display = "block";
+
+          setTimeout(() => {
+            profileUpdateToast.classList.remove("show");
+            overlay.style.display = "none";
+            location.reload();
+          }, 3000);
+
+        } catch (error) {
+          alert(error.message);
+        }
 
             // Save the updated values (log lang muna sya for now, wala pa naman backend e hehe adjust nyo nalang san masstore)
             console.log("Updated Info:");
