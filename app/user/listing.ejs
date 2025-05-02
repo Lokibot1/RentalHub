@@ -173,7 +173,7 @@
                 .then((response) => response.json())
                 .then((data) => {
                     if (data.success) {
-                        alert("Item added!");
+                        alert("Item Submitted Succesfully, It is now up for approval by the Admin!");
                         document.getElementById("listingForm").reset(); // Reset form
                         window.location.href = '/shop'; // Redirect to shopping page
                     } else {
