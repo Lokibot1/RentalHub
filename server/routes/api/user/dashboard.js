@@ -22,7 +22,7 @@ router.get("/:user_id", async (req, res) => {
                                AND is_archived != 1) 
                                AS total_pending_posts,
 
-        (SELECT COUNT(*) FROM items WHERE items.user_id = users.id AND is_approved = 1) AS total_items_posted,
+        (SELECT COUNT(*) FROM items WHERE items.user_id = users.id AND is_approved = 1 AND is_archived = 0) AS total_items_posted,
 
         (SELECT COUNT(*) FROM rental_transactions rt
                                 LEFT JOIN items i ON rt.item_id = i.id
