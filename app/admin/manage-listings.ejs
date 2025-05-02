@@ -154,10 +154,10 @@
         function filterTable(inputId, tableId) {
             const input = document.getElementById(inputId);
             const filter = input.value.toLowerCase();
-            const table = document.getElementById(tableId);
-            const rows = table.getElementsByTagName("tr");
+            const tbody = document.getElementById(tableId);
+            const rows = tbody.getElementsByTagName("tr");
 
-            for (let i = 1; i < rows.length; i++) { // Skip table header
+            for (let i = 0; i < rows.length; i++) { // Skip table header
                 let row = rows[i];
                 let textContent = row.textContent || row.innerText;
 
