@@ -202,85 +202,86 @@
         socialMedia.classList.remove("disabled");
       } else {
         confirmUpdateModal.style.display = "flex";
-  overlay.style.display = "block";
+        overlay.style.display = "block";
 
-  // If confirmed
-  confirmUpdateBtn.onclick = async function () {
-    confirmUpdateModal.style.display = "none";
+        // If confirmed
+        confirmUpdateBtn.onclick = async function () {
+          confirmUpdateModal.style.display = "none";
 
-    editBtn.innerHTML = '<img src="/images/edit-btn.png" alt="Edit">';
-    email.disabled = true;
-    address.disabled = true;
-    contact.disabled = true;
-    socialMedia.disabled = true;
-    email.classList.add("disabled");
-    address.classList.add("disabled");
-    contact.classList.add("disabled");
-    socialMedia.classList.add("disabled");
+          editBtn.innerHTML = '<img src="/images/edit-btn.png" alt="Edit">';
+          email.disabled = true;
+          address.disabled = true;
+          contact.disabled = true;
+          socialMedia.disabled = true;
+          email.classList.add("disabled");
+          address.classList.add("disabled");
+          contact.classList.add("disabled");
+          socialMedia.classList.add("disabled");
 
-        // try {
-        //   await fetchWithAutoRefresh("http://localhost:8000/api/user/profile/update", {
-        //     method: "PATCH",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({
-        //       profile_image: profilePicture.src.split("/").pop(), // Extract the image name from the src
-        //       email: email.value,
-        //       contact_number: contact.value,
-        //       social_media: socialMedia.value,
-        //       address: address.value,
-        //     }),
-        //   });
+              // try {
+              //   await fetchWithAutoRefresh("http://localhost:8000/api/user/profile/update", {
+              //     method: "PATCH",
+              //     headers: {
+              //       "Content-Type": "application/json",
+              //     },
+              //     body: JSON.stringify({
+              //       profile_image: profilePicture.src.split("/").pop(), // Extract the image name from the src
+              //       email: email.value,
+              //       contact_number: contact.value,
+              //       social_media: socialMedia.value,
+              //       address: address.value,
+              //     }),
+              //   });
 
 
-        try {
-      const formData = new FormData();
-      formData.append("email", email.value);
-      formData.append("contact_number", contact.value);
-      formData.append("social_media", socialMedia.value);
-      formData.append("address", address.value);
+              try {
+            const formData = new FormData();
+            formData.append("email", email.value);
+            formData.append("contact_number", contact.value);
+            formData.append("social_media", socialMedia.value);
+            formData.append("address", address.value);
 
-      const file = profileImageInput.files[0];
-      if (file) {
-        formData.append("profile_image", file);
+            const file = profileImageInput.files[0];
+            if (file) {
+              formData.append("profile_image", file);
+            }
+
+            await fetchWithAutoRefresh("http://localhost:8000/api/user/profile/update", {
+              method: "PATCH",
+              body: formData,
+              credentials: "include",
+            });
+
+            profileUpdateToast.classList.add("show");
+
+            setTimeout(() => {
+              profileUpdateToast.classList.remove("show");
+              overlay.style.display = "none";
+              location.reload();
+            }, 3000);
+
+          } catch (error) {
+            alert(error.message);
+            overlay.style.display = "none";
+          }
+
+          console.log("Updated Info:");
+          console.log("Email:", email.value);
+          console.log("Address:", address.value);
+          console.log("Contact #:", contact.value);
+          console.log("Social Media:", socialMedia.value);
+
+          isEditing = false;
+        };
+
+        // If canceled
+        cancelUpdateBtn.onclick = function () {
+          confirmUpdateModal.style.display = "none";
+          overlay.style.display = "none";
+          isEditing = true; // Keep edit mode active
+        };
       }
-
-      await fetchWithAutoRefresh("http://localhost:8000/api/user/profile/update", {
-        method: "PATCH",
-        body: formData,
-        credentials: "include",
-      });
-
-      profileUpdateToast.classList.add("show");
-
-      setTimeout(() => {
-        profileUpdateToast.classList.remove("show");
-        overlay.style.display = "none";
-        location.reload();
-      }, 3000);
-
-    } catch (error) {
-      alert(error.message);
-      overlay.style.display = "none";
-    }
-
-    console.log("Updated Info:");
-    console.log("Email:", email.value);
-    console.log("Address:", address.value);
-    console.log("Contact #:", contact.value);
-    console.log("Social Media:", socialMedia.value);
-
-    isEditing = false;
-  };
-
-  // If canceled
-  cancelUpdateBtn.onclick = function () {
-    confirmUpdateModal.style.display = "none";
-    overlay.style.display = "none";
-    isEditing = true; // Keep edit mode active
-  };
-}
+    });
 
     // Get Stars Function
     function generateReviewStars(rating) {
@@ -437,6 +438,6 @@
         ownerContent.style.display = "block"; // Show owners section
       });
     });
-  });
+
 
   </script>
