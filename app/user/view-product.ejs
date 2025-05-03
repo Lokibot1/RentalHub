@@ -760,15 +760,15 @@
               <strong>From:</strong> ${formatDate(startDate)}<br>
               <strong>To:</strong> ${formatDate(endDate)}<br>
               <strong>Handover Method:</strong> ${deliveryMethod}</p><br>
-              <p><strong>Quantity:</strong> ${result.quantity}</p><br>
-              <p><strong>Rental Duration:</strong> ${result.totalDays} days (${result.fullWeeks} weeks and ${result.extraDays} days)</p><br>
 
               <p><strong>Cost Breakdown:</strong><br>
-              Weekly Cost: ₱${result.weekCost} x ${result.quantity} = ₱${result.totalWeekCost}<br>
+              <p><strong>Quantity:</strong> ${result.quantity}</p><br>
+              Weekly Cost: ₱${result.weekCost} x ${result.quantity} = ₱${result.totalWeekCost}<br>  
               Daily Cost: ₱${result.dayCost} x ${result.quantity} = ₱${result.totalDayCost}<br>
-              </p><br>
+              <p><strong>Rental Duration:</strong> ${result.totalDays} days (${result.fullWeeks} weeks and ${result.extraDays} days)</p><br>
+              </p>
 
-            <p><strong>Total Cost:</strong> ₱${result.totalWeekCost + result.totalDayCost}</p><br>
+            <p><strong>Total Cost:</strong> ₱${result.totalWeekCost + result.totalDayCost}</p><br><br>
               <strong class="note">Note: Please contact the owner for the transaction settlement.</strong>
               <br>
               <br>
@@ -803,12 +803,18 @@
               </p>
               <br>
               <p>
-                  <strong>5. Payment Terms:</strong><br>
+                  <strong>5.  Inaction on Rental Requests:</strong><br>
+                  If no action (acceptance or denial) is taken by the owner after two (2) days of a rental request submission,
+                  the request will be considered void and automatically canceled by the system.<br>
+              </p>
+              <br>
+              <p>
+                  <strong>6. Payment Terms:</strong><br>
                   The Owner (Lessor) and User (Lessee) shall independently agree on and handle all payment arrangements. RENTALHUB is not responsible for payment processing and acts solely as a facilitator.
               </p>
               <br>
               <p>
-                  <strong>6. Acceptance of Terms:</strong><br>
+                  <strong>7. Acceptance of Terms:</strong><br>
                   By requesting an item on Rental Hub, users confirm that they have read, understood, and agreed to these terms. Non-compliance may result in penalties, account restrictions, or removal from the platform.
               </p>
               <br>
