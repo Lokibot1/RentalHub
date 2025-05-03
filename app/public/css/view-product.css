@@ -225,7 +225,7 @@ nav span {
   display: flex;
   gap: 1rem;
   flex-direction: column;
-  padding: 3.5rem 0rem;
+  padding: 1rem 0rem;
 }
 
 .back-button {
@@ -390,7 +390,7 @@ nav span {
 .right-section {
   width: 30%;
   gap: 1rem;
-  padding: 3.5rem 0rem; 
+  padding: 1rem 0rem; 
 }
 
 .update-container {
