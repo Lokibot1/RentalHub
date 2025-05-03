@@ -1,5 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Work+Sans:wght@400;500;600;700&display=swap");
-
+:root{
+  --transition: all 0.3s ease;
+}
 * {
   margin: 0;
   padding: 0;
@@ -288,6 +290,7 @@ button {
   grid-template-columns: repeat(5, 1fr);
   padding: 1rem 9rem;
   gap: 2rem;
+  transition: var(--transition);
   justify-items: center;
 }
 /* Item Container */
@@ -297,7 +300,7 @@ button {
   height: 17rem;
   font: 1rem sans-serif;
   background: transparent;
-  box-shadow: 0rem 0rem 0.7rem #888;
+  box-shadow: 0rem 0rem 0.7rem rgba(136, 136, 136, 0.2);
   backdrop-filter: blur(5rem);
   word-wrap: break-word;
   border-radius: 1.5rem;
@@ -307,10 +310,20 @@ button {
   text-align: left;
   overflow: hidden;
   margin-bottom: 1rem;
-  transition: transform 0.3s ease-in-out;
+  opacity: 0; /* Start invisible */
+  transform: translateY(20px) scale(0.98); /* Start slightly below and smaller */
+  transition: box-shadow 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
+  will-change: transform, opacity, scale; /* Optimize for animation */
 }
+
+.shoppingItem.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .shoppingItem:hover {
-  transform: scale(1.05);
+  box-shadow: 0rem 0.3rem 1rem rgba(136, 136, 136, 0.4);
+  transform: translateY(-2px) scale(1.01);
 }
 .itemImage {
   width: 13rem;

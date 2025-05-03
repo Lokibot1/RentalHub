@@ -344,7 +344,26 @@
             searchItems(searchInput.value.trim(), selectedCategory)
         }
     });
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        // Register ScrollTrigger plugin
+        gsap.registerPlugin(ScrollTrigger);
 
+        // Animate team members when they come into view
+        const shoppingList = document.querySelectorAll(".shoppingList");
+
+        shoppingList.forEach((item, index) => {
+            gsap.to(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    start: "top bottom-=100",
+                    toggleClass: "active",
+                    once: true,
+                },
+                delay: index * 0.1,
+            });
+        });
+    });
 
     // Set the active category based on URL path
     document.addEventListener("DOMContentLoaded", function () {
@@ -461,35 +480,78 @@
 
 
     function renderSortedItems(items) {
+    let shoppingList = document.createElement("ul");
+    shoppingList.className = "shoppingList";
 
-        let shoppingList = document.createElement("ul");
-        shoppingList.className = "shoppingList";
+    items.forEach(item => {
+        if (item.quantity <= 0) return;
 
-        items.forEach(item => {
-            if (item.quantity <= 0) return;
+        let li = document.createElement("li");
+        li.className = "shoppingItem";
+        li.innerHTML = `
+            <img src="/uploads/${item.image}" alt="Item Image" class="itemImage">
+            <div class="item-details">
+                <strong>${item.name}</strong>
+                <strong>₱ ${item.price} per day</strong>
+                <h5 title="${item.location}"> ${item.location}</h5>
+                <p class="item-quantity"> ${item.quantity} items left | <span style="color:#333333;">${item.reviews_count > 0 ? item.reviews_count + ' reviews' : 'No review'}</span> </p>
+            </div>
+        `;
 
-            let li = document.createElement("li");
-            li.className = "shoppingItem";
-            li.innerHTML = `
-                <img src="/uploads/${item.image}" alt="Item Image" class="itemImage">
-                <div class="item-details">
-                    <strong>${item.name}</strong>
-                    <strong>₱ ${item.price} per day</strong>
-                    <h5 title="${item.location}"> ${item.location}</h5>
-                    <p class="item-quantity"> ${item.quantity} items left | <span style="color:#333333;">${item.reviews_count > 0 ? item.reviews_count + ' reviews' : 'No review'}</span> </p>
-                </div>
-            `
-
-            li.addEventListener("click", function () {
-                localStorage.setItem("selectedItem", JSON.stringify(item));
-                window.location.href = `/user/view-product/${item.id}`;
-            });
-
-            shoppingList.appendChild(li);
+        li.addEventListener("click", function () {
+            localStorage.setItem("selectedItem", JSON.stringify(item));
+            window.location.href = `/user/view-product/${item.id}`;
         });
 
-        shoppingContainer.appendChild(shoppingList);
-    }
+        shoppingList.appendChild(li);
+    });
+
+    shoppingContainer.appendChild(shoppingList);
+    
+    // Add this part to animate the items after they're loaded
+    animateShoppingItems();
+}
+
+// Add this new function
+function animateShoppingItems() {
+    gsap.registerPlugin(ScrollTrigger);
+    
+    // Kill any existing ScrollTriggers to avoid conflicts
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    
+    const shoppingItems = document.querySelectorAll(".shoppingItem");
+    
+    // Create a single timeline for better performance
+    const masterTimeline = gsap.timeline({
+        scrollTrigger: {
+            trigger: shoppingItems[0]?.parentElement || document.body,
+            start: "top 90%", // Start earlier for a more natural feel
+            end: "bottom 10%",
+            toggleActions: "play none none reset", // Reset on scroll up for better UX
+            markers: false
+        }
+    });
+    
+    // Add each item to the timeline with staggered effect
+    shoppingItems.forEach((item, index) => {
+        // Reset initial state
+        gsap.set(item, { 
+            opacity: 0, 
+            y: 20, // Reduced initial offset for subtler animation
+            scale: 0.98 // Slight scale for depth
+        });
+        
+        // Add to master timeline
+        masterTimeline.to(item, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.6, // Longer duration for smoother feel
+            ease: "power2.out", // More natural easing curve
+            delay: index * 0.08, // More noticeable stagger
+        }, index * 0.04); // Slightly offset each animation in the timeline
+    });
+}
 
     function toggleSortOptions() {
         const options = document.getElementById("sortOptions");
