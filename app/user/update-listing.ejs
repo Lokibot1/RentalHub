@@ -113,61 +113,67 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // let selectedItem = localStorage.getItem('selectedItem')
-        // let item = JSON.parse(selectedItem)
+        try {
+            
+            const isBanned = JSON.parse('<%= JSON.stringify(isBanned) %>');
+            
 
-        const isBanned = JSON.parse('<%= JSON.stringify(isBanned) %>');
+            const itemData = '<%= encodeURIComponent(JSON.stringify(item)) %>';
+            const item = JSON.parse(decodeURIComponent(itemData));
+            
+            console.log("Loaded item:", item);
 
-        const item = JSON.parse('<%- JSON.stringify(item).replace(/[\u0000-\u001F\u007F-\u009F\\]/g, function(match) { return "\\u" + ("0000" + match.charCodeAt(0).toString(16)).slice(-4); }) %>');
-        
-         console.log("Loaded item:", item);
+            // Set values upon load
+            document.querySelector('[name="item_name"]').value = item.name || '';
+            document.querySelector('[name="item_price"]').value = item.price || '';
+            document.querySelector('[name="item_week_price"]').value = item.price_per_week || '';
+            document.querySelector('[name="item_description"]').value = item.description || '';
+            document.querySelector('[name="item_quantity"]').value = item.quantity || '';
+            document.querySelector('[name="location"]').value = item.location || '';
 
-        // Set values upon load
-        document.querySelector('[name="item_name"]').value = item.name
-        document.querySelector('[name="item_price"]').value = item.price
-        document.querySelector('[name="item_week_price"]').value = item.price_per_week
-        document.querySelector('[name="item_description"]').value = item.description
-        document.querySelector('[name="item_quantity"]').value = item.quantity
-        document.querySelector('[name="location"]').value = item.location
+            // Set preview values
+            if (item.file_path) document.querySelector('img#preview').src = `/uploads/${item.file_path}`;
+            document.querySelector('span#product-name').textContent = item.name || '';
+            document.querySelector('span#product-price').textContent = item.price || '';
+            document.querySelector('span#product-week-price').textContent = item.price_per_week || '';
+            document.querySelector('span#product-description').textContent = item.description || '';
+            document.querySelector('span#item-quantity').textContent = item.quantity || '';
 
-        // Set preview values
-        document.querySelector('img#preview').src = `/uploads/${item.file_path}`
-        document.querySelector('span#product-name').textContent = item.name
-        document.querySelector('span#product-price').textContent = item.price
-        document.querySelector('span#product-week-price').textContent = item.price_per_week
-        document.querySelector('span#product-description').textContent = item.description
-        document.querySelector('span#item-quantity').textContent = item.quantity
+            const categories = [
+                { value: 1, text: "Events & Parties" },
+                { value: 2, text: "Tech & Gadgets" },
+                { value: 3, text: "Clothing & Accessories" },
+                { value: 4, text: "Sports & Outdoor Gear" },
+                { value: 5, text: "Tools & Equipment" },
+                { value: 6, text: "Musical Instruments" },
+                { value: 7, text: "Home & Office" },
+                { value: 8, text: "Pets Accessories" },
+                { value: 9, text: "Books and Literature" },
+                { value: 10, text: "Staycations" },
+                { value: 11, text: "Vehicles" },
+            ];
 
-        const categories = [
-            { value: 1, text: "Events & Parties" },
-            { value: 2, text: "Tech & Gadgets" },
-            { value: 3, text: "Clothing & Accessories" },
-            { value: 4, text: "Sports & Outdoor Gear" },
-            { value: 5, text: "Tools & Equipment" },
-            { value: 6, text: "Musical Instruments" },
-            { value: 7, text: "Home & Office" },
-            { value: 8, text: "Pets Accessories" },
-            { value: 9, text: "Books and Literature" },
-            { value: 10, text: "Staycations" },
-            { value: 11, text: "Vehicles" },
-        ];
+            const select = document.getElementById("categories");
+            const selectedValue = item.category_id; // Change this value to preselect a different option
 
-        const select = document.getElementById("categories");
-        const selectedValue = item.category_id; // Change this value to preselect a different option
+            categories.forEach(category => {
+                const option = document.createElement("option");
+                option.value = category.value;
+                option.textContent = category.text;
 
-        categories.forEach(category => {
-            const option = document.createElement("option");
-            option.value = category.value;
-            option.textContent = category.text;
+                if (category.value === selectedValue) {
+                    option.selected = true; // Set the default selected option
+                }
 
-            if (category.value === selectedValue) {
-                option.selected = true; // Set the default selected option
-            }
+                select.appendChild(option);
+            });
 
-            select.appendChild(option);
-        });
+            console.log('selectedItem', item);
+        } catch (error) {
+            console.error("Error loading item data:", error);
+            alert("There was an error loading this item's data. Please try again or contact support.");
+        }
 
-        console.log('selectedItem', item)
 
 
         //Listing Functionality
