@@ -39,10 +39,26 @@
         }
     }
 
-    // Optional: Set an interval to refresh token every 30 minutes
+    // Optional: Set an interval to refresh token every 1 hour
     setInterval(() => {
-        console.log('setInterval', new Date());
-
+        console.log('Auto-refresh at:', new Date());
         refreshAccessToken();
-    }, 30 * 60 * 1000); // 30 minutes
+    }, 60 * 60 * 1000); // Every 1 hour
+
+    // INACTIVITY LOGOUT SCRIPT (15 min)
+    let inactivityTimeout;
+
+    function resetInactivityTimer() {
+        clearTimeout(inactivityTimeout);
+        inactivityTimeout = setTimeout(() => {
+            console.log("Logged out due to inactivity");
+            window.location.href = "/logout";
+        }, 15 * 60 * 1000); // 15 minutes
+    }
+
+    ["mousemove", "keydown", "click", "scroll"].forEach(event => {
+        window.addEventListener(event, resetInactivityTimer);
+    });
+
+    resetInactivityTimer();
 </script>

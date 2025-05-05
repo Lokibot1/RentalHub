@@ -54,8 +54,7 @@ router.get("/logout", (req, res) => {
 
   // Clear cookies
   res.clearCookie("token");
-  res.clearCookie("refreshToken", { path: "/refresh" });
-
+  res.clearCookie("refreshToken");
   res.redirect("/login");
 });
 
@@ -108,10 +107,10 @@ router.post("/refresh", (req, res) => {
         id: user.id,
         email: user.email,
         role: user.role,
-      }, process.env.JWT_SECRET, { expiresIn: "30m" });
+      }, process.env.JWT_SECRET, { expiresIn: "1d" }); // 1 day
 
       const newRefreshToken = crypto.randomBytes(64).toString("hex");
-      const newExpiry = new Date(Date.now() + 1000 * 60 * 30); // 30 minutes
+      const newExpiry = new Date(Date.now() + 1000 * 60 * 60 * 24); // 1 day
 
       const updateTokenSql = "UPDATE refresh_tokens SET token = ?, expires_at = ? WHERE user_id = ?";
       db.query(updateTokenSql, [newRefreshToken, newExpiry, user.id], (err) => {
@@ -121,14 +120,14 @@ router.post("/refresh", (req, res) => {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
           sameSite: "Strict",
-          maxAge: 1000 * 60 * 30
+          maxAge: 1000 * 60 * 60 * 24 // 1 day
         });
 
         res.cookie("refreshToken", newRefreshToken, {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
           sameSite: "Strict",
-          maxAge: 1000 * 60 * 60 * 24 * 7
+          maxAge: 1000 * 60 * 60 * 24 // 1 day
         });
 
         res.json({ token: newAccessToken });
