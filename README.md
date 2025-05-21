@@ -17,7 +17,7 @@ Before you begin, ensure you have met the following requirements:
 1. Clone the repository:
 
     ```sh
-    git clone https://github.com/almerleoalmazan/rentalhub.git
+    git clone https://github.com/Lokibot1/rentalhub.git
     ```
 
 2. Navigate to the project directory:
