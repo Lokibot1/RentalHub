@@ -1,5 +1,4 @@
 # RentalHub
-<<<<<<< HEAD
 =======
 Originally developed with @https://github.com/almerleoalmazan as our mentor, https://github.com/codeut182 as our backend developer, and https://github.com/jsjs2324 for enhancement of FrontEnd specifically on User Interface.
 >>>>>>> 8f31363ccd37cd2ee05e9763966638bdde264247
