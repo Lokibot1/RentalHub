@@ -136,7 +136,6 @@ Replace your-new-branch with a descriptive name. This ensures you are always wor
 ## Project Contributors
 Originally developed with @https://github.com/almerleoalmazan as our mentor, https://github.com/codeut182 as our backend developer, and https://github.com/jsjs2324 for enhancement of FrontEnd specifically on User Interface.
 
-
 ## Project Structure
 
 - [app/](http://_vscodecontentref_/9): Contains HTML files (EJS Templating) for the frontend.
